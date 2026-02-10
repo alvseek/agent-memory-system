@@ -9,8 +9,8 @@ I have to use this document as my **ONLY** source of truth to execute and track 
 - As this file is only the implementation phase log, the original plan must be fully in my context, therefore, I have to make sure I loaded the **Plan File** before executing any task and read carefully the reference to the original step
 - I have to do the implementation by doing it in order per step THEN, I ALWAYS have to fill the step log directly using
 {*Pick one depending on the protocol used*
- [Deep Trench Log Placeholder](//@claude-agents/control-files/plans/deep-trench-log-placeholder.md)
- [Shallow Shore Log Placeholder](//@claude-agents/control-files/plans/shallow-shore-log-placeholder.md)
+ [Deep Trench Log Placeholder](//@agent-memory/control-files/plans/deep-trench-log-placeholder.md)
+ [Shallow Shore Log Placeholder](//@agent-memory/control-files/plans/shallow-shore-log-placeholder.md)
 }
 - The log place holder template has Testing Log and Implementation Log. I have to choose the correct log template (A/B) based on the step task. And I have to do this EVERYTIME I've finished implementing each of the step 
 

@@ -57,7 +57,7 @@ Use the [Knowledge File Template](#knowledge-file-template)
 
 ### Step 5: Update Knowledge Index
 
-- Update `//@claude-agents/claude-[domain]/agent-memory-index.md` knowledge directory
+- Update `//@agent-memory/agent-[domain]/agent-memory-index.md` knowledge directory
 - Add entry to knowledge index for discoverability
 - Consider whether new knowledge should be core vs. specialized
 
@@ -73,7 +73,7 @@ Use the [Knowledge File Template](#knowledge-file-template)
 ### Knowledge File Template
 
 ```markdown
-# Claude Agent - [Knowledge Area] - [Date]
+# Agent - [Knowledge Area] - [Date]
 
 ## 📋 **TABLE OF CONTENTS**
 - [Purpose](#purpose)

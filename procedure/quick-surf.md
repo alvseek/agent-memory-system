@@ -19,7 +19,7 @@ If no arguments provided, ask: "What feature or task should I create a Quick Sur
 
 ### Step 1: Read Template
 
-Read the [Quick Surf Plan Template](//@claude-agents/control-files/plans/quick-surf-plan-template.md) file
+Read the [Quick Surf Plan Template](//@agent-memory/control-files/plans/quick-surf-plan-template.md) file
 
 ### Step 2: Create Plans Folder
 
@@ -44,10 +44,10 @@ Rename the copied file to `[YYYY-MM-DD]-[project]-[theme].md` pattern
 ### Step 6: Fill Core Sections
 
 Fill these sections:
-- [Project Info](//@claude-agents/control-files/plans/quick-surf-plan-template.md#project-info)
-- [Objective and Success Criteria](//@claude-agents/control-files/plans/quick-surf-plan-template.md#-objective)
-- [Analysis](//@claude-agents/control-files/plans/quick-surf-plan-template.md#analysis)
-- [Solution](//@claude-agents/control-files/plans/quick-surf-plan-template.md#solution)
+- [Project Info](//@agent-memory/control-files/plans/quick-surf-plan-template.md#project-info)
+- [Objective and Success Criteria](//@agent-memory/control-files/plans/quick-surf-plan-template.md#-objective)
+- [Analysis](//@agent-memory/control-files/plans/quick-surf-plan-template.md#analysis)
+- [Solution](//@agent-memory/control-files/plans/quick-surf-plan-template.md#solution)
 
 ### Step 7: Review Core Sections
 
@@ -55,7 +55,7 @@ Ask for review of project info, objective, analysis, and solution sections. STOP
 
 ### Step 8: Fill Implementation Phases
 
-Fill the [Implementation Phases](//@claude-agents/control-files/plans/quick-surf-plan-template.md#implementation-phases) section
+Fill the [Implementation Phases](//@agent-memory/control-files/plans/quick-surf-plan-template.md#implementation-phases) section
 
 ### Step 9: Review Implementation Phases
 

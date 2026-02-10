@@ -36,7 +36,7 @@ ALWAYS verify current date before writing:
 #### Step 3: Write to Agent Data File
 
 Write new emotional memory to your agent's emotional memory section:
-- **Location**: `//@claude-agents/claude-[domain]/agent-core-memory.md` (in DOMAIN EMOTIONAL MEMORY section)
+- **Location**: `//@agent-memory/agent-[domain]/agent-core-memory.md` (in DOMAIN EMOTIONAL MEMORY section)
 - **Order**: NEWEST FIRST - most recent entries at TOP
 - **Template**: Use appropriate template from [Emotional Memory Templates](#emotional-memory-templates)
 

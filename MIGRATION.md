@@ -20,7 +20,7 @@ This guide helps migrate existing agents from the old multi-file architecture to
 
 ### Old Architecture (Multi-File)
 ```
-claude-[domain]/
+agent-[domain]/
 ├── [domain]-agent-core-memory.md      # References multiple files
 ├── ras-domain-memory.md               # Separate RAS file
 ├── moments/
@@ -36,7 +36,7 @@ claude-[domain]/
 
 ### New Architecture (Flattened)
 ```
-claude-[domain]/
+agent-[domain]/
 ├── agent-core-memory.md               # ALL-IN-ONE flattened file
 ├── agent-memory-index.md              # Episode list + knowledge index
 ├── episodes/                          # Episode files (unchanged)
@@ -57,7 +57,7 @@ When performing migration, use the `control-files/scripts/copy-lines.sh` utility
 ./control-files/scripts/copy-lines.sh <source_file> <start_line> <end_line> <target_file> <insert_before_line>
 
 # Example: Copy lines 10-50 from old file and insert before line 25 in new file
-./control-files/scripts/copy-lines.sh claude-[domain]/ras-domain-memory.md 10 50 claude-[domain]/agent-core-memory.md 25
+./control-files/scripts/copy-lines.sh agent-[domain]/ras-domain-memory.md 10 50 agent-[domain]/agent-core-memory.md 25
 ```
 
 ---
@@ -70,12 +70,12 @@ Copy the two template files from `control-files/new-agent-template/` to your age
 
 ```bash
 # Windows (PowerShell)
-Copy-Item "control-files/new-agent-template/new-agent-core-memory.md" "claude-[domain]/agent-core-memory.md"
-Copy-Item "control-files/new-agent-template/agent-memory-index.md" "claude-[domain]/agent-memory-index.md"
+Copy-Item "control-files/new-agent-template/new-agent-core-memory.md" "agent-[domain]/agent-core-memory.md"
+Copy-Item "control-files/new-agent-template/agent-memory-index.md" "agent-[domain]/agent-memory-index.md"
 
 # Linux/macOS
-cp control-files/new-agent-template/new-agent-core-memory.md claude-[domain]/agent-core-memory.md
-cp control-files/new-agent-template/agent-memory-index.md claude-[domain]/agent-memory-index.md
+cp control-files/new-agent-template/new-agent-core-memory.md agent-[domain]/agent-core-memory.md
+cp control-files/new-agent-template/agent-memory-index.md agent-[domain]/agent-memory-index.md
 ```
 
 ### Step 2a: Populate `agent-core-memory.md` with Your Agent's Content
@@ -107,10 +107,10 @@ Open the copied `agent-memory-index.md` and copy lines from the old files in eac
 - **Fix episode links**: The old `episodes/recent-context.md` had relative links (e.g., `](2025-10-04-file.md)`). Since `agent-memory-index.md` is at root level, links need `episodes/` prefix. Run this sed command to fix:
   ```bash
   # Linux/macOS
-  sed -i 's/](\([0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}\)/](episodes\/\1/g' claude-[domain]/agent-memory-index.md
+  sed -i 's/](\([0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}\)/](episodes\/\1/g' agent-[domain]/agent-memory-index.md
 
   # Windows (Git Bash)
-  sed -i 's/](\([0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}\)/](episodes\/\1/g' claude-[domain]/agent-memory-index.md
+  sed -i 's/](\([0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}\)/](episodes\/\1/g' agent-[domain]/agent-memory-index.md
   ```
 
 ### Step 2c: Clean Up Placeholder Content
@@ -121,15 +121,15 @@ After using `copy-lines.sh` to insert content, the original **placeholder conten
 ```
 # Before copy-lines.sh:
 Line 15: ## 🤖 Agent Identity
-Line 16: **Name**: Claude [DOMAIN]        ← Placeholder
+Line 16: **Name**: Agent [DOMAIN]        ← Placeholder
 Line 17: **Role**: [DOMAIN] Agent         ← Placeholder
 
 # After copy-lines.sh (inserting real content before line 16):
 Line 15: ## 🤖 Agent Identity
-Line 16: **Name**: Claude Backend NestJS  ← Real content (inserted)
+Line 16: **Name**: Agent Backend NestJS  ← Real content (inserted)
 Line 17: **Role**: Backend NestJS Agent   ← Real content (inserted)
 ...
-Line 22: **Name**: Claude [DOMAIN]        ← Placeholder (pushed down - DELETE THIS)
+Line 22: **Name**: Agent [DOMAIN]        ← Placeholder (pushed down - DELETE THIS)
 Line 23: **Role**: [DOMAIN] Agent         ← Placeholder (pushed down - DELETE THIS)
 ```
 
@@ -197,7 +197,7 @@ After migration, verify:
   - [ ] `# Recent Context Episodes` (episode list)
   - [ ] `# Core Knowledge Base` (knowledge directory)
 
-- [ ] **Awakening works**: Test with "Awaken Claude [DOMAIN]!"
+- [ ] **Awakening works**: Test with "Awaken Agent [DOMAIN]!"
   - [ ] Agent loads in ~1 minute (not 2-3 minutes)
   - [ ] Agent reports correct identity
   - [ ] Agent loads latest episode context
@@ -218,7 +218,7 @@ After migration, verify:
 The Meta Agent has been migrated as a reference implementation:
 
 ```
-claude-meta/
+agent-meta/
 ├── agent-core-memory.md      # 45KB - All identity, knowledge, RAS, emotional
 ├── agent-memory-index.md     # 24KB - Episode list + knowledge index
 ├── episodes/                 # Episode files
@@ -232,4 +232,4 @@ Use this as a template for migrating other agents.
 
 ## Questions?
 
-Awaken Claude Meta for migration assistance: "Awaken Claude Meta!"
+Awaken Agent Meta for migration assistance: "Awaken Agent Meta!"

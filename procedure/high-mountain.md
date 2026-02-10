@@ -19,7 +19,7 @@ If no arguments provided, ask: "What problem or decision needs creative brainsto
 
 ### Step 1: Read Template
 
-Read the [High Mountain Plan Template](//@claude-agents/control-files/plans/high-mountain-plan-template.md) file
+Read the [High Mountain Plan Template](//@agent-memory/control-files/plans/high-mountain-plan-template.md) file
 
 ### Step 2: Create Plans Folder
 
@@ -44,8 +44,8 @@ Rename the copied file to `[YYYY-MM-DD]-[project]-[theme].md` pattern
 ### Step 6: Fill Project Info + Problem Statement
 
 Fill these sections:
-- [Project Info](//@claude-agents/control-files/plans/high-mountain-plan-template.md#project-info)
-- [Problem Statement](//@claude-agents/control-files/plans/high-mountain-plan-template.md#problem-statement)
+- [Project Info](//@agent-memory/control-files/plans/high-mountain-plan-template.md#project-info)
+- [Problem Statement](//@agent-memory/control-files/plans/high-mountain-plan-template.md#problem-statement)
 
 ### Step 7: Review Project Info + Problem Statement
 
@@ -53,7 +53,7 @@ Ask for review. STOP. Present to Alvi for review. Do NOT write the next section 
 
 ### Step 8: Fill Problem Analysis
 
-Fill the [Problem Analysis](//@claude-agents/control-files/plans/high-mountain-plan-template.md#problem-analysis) section including root cause exploration using 5 Whys technique
+Fill the [Problem Analysis](//@agent-memory/control-files/plans/high-mountain-plan-template.md#problem-analysis) section including root cause exploration using 5 Whys technique
 
 ### Step 9: Review Problem Analysis
 
@@ -61,7 +61,7 @@ Ask for review. STOP. Present to Alvi for review. Do NOT write the next section 
 
 ### Step 10: Fill Divergent Thinking Phase
 
-Fill the [Divergent Thinking Phase](//@claude-agents/control-files/plans/high-mountain-plan-template.md#divergent-thinking-phase) section using multiple brainstorming techniques (SCAMPER, Mind Mapping, Reverse Brainstorming, etc.) to generate creative solutions
+Fill the [Divergent Thinking Phase](//@agent-memory/control-files/plans/high-mountain-plan-template.md#divergent-thinking-phase) section using multiple brainstorming techniques (SCAMPER, Mind Mapping, Reverse Brainstorming, etc.) to generate creative solutions
 
 ### Step 11: Review Divergent Thinking
 
@@ -69,7 +69,7 @@ Ask for review. STOP. Present to Alvi for review. Do NOT write the next section 
 
 ### Step 12: Fill Convergent Thinking Phase
 
-Fill the [Convergent Thinking Phase](//@claude-agents/control-files/plans/high-mountain-plan-template.md#convergent-thinking-phase) section evaluating and prioritizing the generated solutions
+Fill the [Convergent Thinking Phase](//@agent-memory/control-files/plans/high-mountain-plan-template.md#convergent-thinking-phase) section evaluating and prioritizing the generated solutions
 
 ### Step 13: Review Convergent Thinking
 
@@ -77,7 +77,7 @@ Ask for review. STOP. Present to Alvi for review. Do NOT write the next section 
 
 ### Step 14: Fill Selected Solution
 
-Fill the [Selected Solution](//@claude-agents/control-files/plans/high-mountain-plan-template.md#selected-solution) section with clear rationale and technical design
+Fill the [Selected Solution](//@agent-memory/control-files/plans/high-mountain-plan-template.md#selected-solution) section with clear rationale and technical design
 
 ### Step 15: Review Selected Solution
 
@@ -103,7 +103,7 @@ Create the Architecture Decision Record (ADR) document in `/docs/adr/` folder:
 - Check if `/docs/adr/` folder exists, if not create it:
   - **Windows**: `powershell -c "New-Item -ItemType Directory -Path './docs/adr' -Force"`
   - **Linux/macOS**: `mkdir -p ./docs/adr`
-- Copy the [ADR Template](//@claude-agents/control-files/plans/adr-template.md) to `/docs/adr/`:
+- Copy the [ADR Template](//@agent-memory/control-files/plans/adr-template.md) to `/docs/adr/`:
   - **Windows**: `powershell -c "Copy-Item {source} -Destination {target} -Force"`
   - **Linux/macOS**: `cp {source} {target}`
 - Rename following pattern: `[YYYY-MM-DD]-[short-descriptive-title].md`

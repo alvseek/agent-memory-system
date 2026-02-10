@@ -19,7 +19,7 @@ If no arguments provided, ask: "What bug needs comprehensive investigation?"
 
 ### Step 1: Read Template
 
-Read the [Patching Ship Plan Template](//@claude-agents/control-files/plans/patching-ship-plan-template.md) file
+Read the [Patching Ship Plan Template](//@agent-memory/control-files/plans/patching-ship-plan-template.md) file
 
 ### Step 2: Create Plans Folder
 
@@ -44,8 +44,8 @@ Rename the copied file to `[YYYY-MM-DD]-[project]-[bug-theme]-debug.md` pattern
 ### Step 6: Fill Project Info + Bug Analysis
 
 Fill these sections:
-- [Project Info](//@claude-agents/control-files/plans/patching-ship-plan-template.md#project-info)
-- [Bug Analysis & Context](//@claude-agents/control-files/plans/patching-ship-plan-template.md#bug-analysis--context)
+- [Project Info](//@agent-memory/control-files/plans/patching-ship-plan-template.md#project-info)
+- [Bug Analysis & Context](//@agent-memory/control-files/plans/patching-ship-plan-template.md#bug-analysis--context)
 
 ### Step 7: Review Project Info + Bug Analysis
 
@@ -53,7 +53,7 @@ Ask for review. STOP. Present to Alvi for review. Do NOT write the next section 
 
 ### Step 8: Fill Platform Scaffolding Check
 
-Fill the [Platform Scaffolding Check](//@claude-agents/control-files/plans/patching-ship-plan-template.md#platform-scaffolding-check) section including verification of log locations, debug logging capabilities, database access, monitoring tools, and diagnostic access
+Fill the [Platform Scaffolding Check](//@agent-memory/control-files/plans/patching-ship-plan-template.md#platform-scaffolding-check) section including verification of log locations, debug logging capabilities, database access, monitoring tools, and diagnostic access
 
 ### Step 9: Review Platform Scaffolding Check
 
@@ -61,7 +61,7 @@ Ask for review. STOP. Present to Alvi for review. Do NOT write the next section 
 
 ### Step 10: Fill Issue Replication
 
-Fill the [Issue Replication](//@claude-agents/control-files/plans/patching-ship-plan-template.md#issue-replication) section with detailed reproduction steps, test environment setup, success criteria for reproduction, and edge case identification
+Fill the [Issue Replication](//@agent-memory/control-files/plans/patching-ship-plan-template.md#issue-replication) section with detailed reproduction steps, test environment setup, success criteria for reproduction, and edge case identification
 
 ### Step 11: Review Issue Replication
 
@@ -69,7 +69,7 @@ Ask for review. STOP. Present to Alvi for review. Do NOT write the next section 
 
 ### Step 12: Fill Bug Location
 
-Fill the [Bug Location](//@claude-agents/control-files/plans/patching-ship-plan-template.md#bug-location) section - identify the ACTUAL code producing the bug symptom (factual based on stack traces, logs, or debugger - NOT a guess)
+Fill the [Bug Location](//@agent-memory/control-files/plans/patching-ship-plan-template.md#bug-location) section - identify the ACTUAL code producing the bug symptom (factual based on stack traces, logs, or debugger - NOT a guess)
 
 ### Step 13: Review Bug Location
 
@@ -77,12 +77,12 @@ Ask for review. STOP. Present to Alvi for review. Do NOT write the next section 
 
 ### Step 14: Fill Root Cause Investigation
 
-Fill the [Root Cause Investigation](//@claude-agents/control-files/plans/patching-ship-plan-template.md#root-cause-investigation) section using the hypothesis-driven process:
+Fill the [Root Cause Investigation](//@agent-memory/control-files/plans/patching-ship-plan-template.md#root-cause-investigation) section using the hypothesis-driven process:
 - Fill Log Analysis, Code Flow Analysis, and Database State Examination first (data gathering)
-- Then fill [Hypothesis & Testing](//@claude-agents/control-files/plans/patching-ship-plan-template.md#4-hypothesis--testing) section SEQUENTIALLY:
+- Then fill [Hypothesis & Testing](//@agent-memory/control-files/plans/patching-ship-plan-template.md#4-hypothesis--testing) section SEQUENTIALLY:
   - Create Hypothesis 1 → Test it → Confirmed? → Fill Root Cause Conclusion / Rejected? → Create Hypothesis 2
   - Repeat until hypothesis confirmed
-- Fill [Root Cause Conclusion](//@claude-agents/control-files/plans/patching-ship-plan-template.md#root-cause-conclusion) ONLY after a hypothesis is confirmed
+- Fill [Root Cause Conclusion](//@agent-memory/control-files/plans/patching-ship-plan-template.md#root-cause-conclusion) ONLY after a hypothesis is confirmed
 
 ### Step 15: Review Root Cause Investigation
 
@@ -90,7 +90,7 @@ Ask for review. STOP. Present to Alvi for review. Do NOT write the next section 
 
 ### Step 16: Fill Solution Synthesis
 
-Fill the [Solution Synthesis](//@claude-agents/control-files/plans/patching-ship-plan-template.md#solution-synthesis) section evaluating fix approach options (quick patch vs proper fix), risk assessment, testing strategy, and rollback plan
+Fill the [Solution Synthesis](//@agent-memory/control-files/plans/patching-ship-plan-template.md#solution-synthesis) section evaluating fix approach options (quick patch vs proper fix), risk assessment, testing strategy, and rollback plan
 
 ### Step 17: Review Solution Synthesis
 
@@ -98,7 +98,7 @@ Ask for review. STOP. Present to Alvi for review. Do NOT write the next section 
 
 ### Step 18: Fill Selected Fix
 
-Fill the [Selected Fix](//@claude-agents/control-files/plans/patching-ship-plan-template.md#selected-fix) section with clear rationale, technical implementation details, and implementation phases
+Fill the [Selected Fix](//@agent-memory/control-files/plans/patching-ship-plan-template.md#selected-fix) section with clear rationale, technical implementation details, and implementation phases
 
 ### Step 19: Review Selected Fix
 

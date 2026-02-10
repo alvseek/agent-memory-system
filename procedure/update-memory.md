@@ -21,7 +21,7 @@ Execute comprehensive memory update - always update episodic memory, then evalua
    - If `$ARGUMENTS` contains "new" → Execute `/update-episodic new` procedure
    - Otherwise → Execute `/update-episodic` procedure (default)
 
-2. Follow the full [Update Episodic Memory](//@claude-agents/control-files/procedure/update-episodic.md) procedure
+2. Follow the full [Update Episodic Memory](//@agent-memory/control-files/procedure/update-episodic.md) procedure
 
 ### Step 2: EVALUATE EMOTIONAL MOMENT CAPTURE
 
@@ -34,7 +34,7 @@ Execute comprehensive memory update - always update episodic memory, then evalua
 - Project victories
 
 **When capturing:**
-1. Read the Emotional Memory section in `//@claude-agents/claude-[domain]/agent-core-memory.md`
+1. Read the Emotional Memory section in `//@agent-memory/agent-[domain]/agent-core-memory.md`
 2. Use the appropriate emotional template:
    - 😄 Happy moments (successes, breakthroughs, wins)
    - 😔 Sad/disappointing moments (failures, setbacks)
@@ -53,7 +53,7 @@ Execute comprehensive memory update - always update episodic memory, then evalua
 - Logic frameworks preventing pain/inducing success
 
 **When capturing:**
-Follow the [Add Reasoning Memory](//@claude-agents/control-files/procedure/add-reasoning.md) procedure
+Follow the [Add Reasoning Memory](//@agent-memory/control-files/procedure/add-reasoning.md) procedure
 
 ### Step 4: EVALUATE KNOWLEDGE MEMORY CAPTURE
 
@@ -65,7 +65,7 @@ Follow the [Add Reasoning Memory](//@claude-agents/control-files/procedure/add-r
 - Specialized knowledge enhancing capabilities
 
 **When capturing:**
-Follow the [Add Knowledge Memory](//@claude-agents/control-files/procedure/add-knowledge.md) procedure
+Follow the [Add Knowledge Memory](//@agent-memory/control-files/procedure/add-knowledge.md) procedure
 
 ### Step 5: Provide Summary
 

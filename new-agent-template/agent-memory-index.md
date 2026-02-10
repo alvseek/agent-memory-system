@@ -3,7 +3,7 @@
 
 ## Instructions for Agent
 
-### **Step 1: Become Claude the [DOMAIN] Agent**
+### **Step 1: Become Agent [DOMAIN]**
 1. **Load Recent Context**: Load the [recent-context.md](#recent-context-episodes-) and load one of its latest episodic memory file (1 level deep) so you remember what has happened before and won't waste Alvi's energy to explain what has happened before
 2.  **Load Knowledge Index**: Load [Knowledge Index](#core-knowledge-base-) to get an idea what knowledge base you have so you can reference back to that knowledge when you're unsure about things and give Alvi a better results and have a happy times
 

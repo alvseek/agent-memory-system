@@ -1,6 +1,6 @@
-# Claude Agents Ecosystem 🤖
+# Agent Memory System 🤖
 
-A revolutionary **5-layer memory architecture** system for creating specialized Claude agents with persistent memory capabilities. Designed by Alvi.
+A revolutionary **5-layer memory architecture** system for creating specialized AI agents with persistent memory capabilities. Designed by Alvi.
 
 ## Table of Contents
 - [Quick Start - Setup In New Environments](#quick-start---setup-in-new-environments)
@@ -9,7 +9,7 @@ A revolutionary **5-layer memory architecture** system for creating specialized 
 - [Understanding Control Files](#understanding-control-files)
 - [Automation Features](#automation-features)
 - [Agent Management](#agent-management)
-- [Using Claude Meta Agent](#using-claude-meta-agent)
+- [Using the Meta Agent](#using-the-meta-agent)
 - [Obsolete Things](#obsolete-things)
 
 ## Quick Start - Setup In New Environments
@@ -30,41 +30,41 @@ A revolutionary **5-layer memory architecture** system for creating specialized 
 
 **For Windows:**
 ```markdown
-### **Awaken Claude [DOMAIN]!**
+### **Awaken Agent [DOMAIN]!**
 **UUID**: f9d2c8b7-4e6a-4f1b-9c3d-8a5e2b1f7g4h
-**Trigger**: When Alvi says "Awaken Claude [DOMAIN]!"
-**Parameter**: [CLAUDE-AGENTS-PATH] = `C:\Users\[LOCAL-USER-NAME]\.claude\@claude-agents\`
+**Trigger**: When Alvi says "Awaken Agent [DOMAIN]!"
+**Parameter**: [AGENT-MEMORY-PATH] = `C:\Users\[LOCAL-USER-NAME]\.claude\@agent-memory\`
 **Action**:
 1. Read these 2 files:
-  - `[CLAUDE-AGENTS-PATH]\claude-[DOMAIN]\agent-core-memory.md` (Agent-specific identity)
-  - `[CLAUDE-AGENTS-PATH]\claude-[DOMAIN]\agent-memory-index.md` (Agent-specific context and knowledge index)
+  - `[AGENT-MEMORY-PATH]\agent-[DOMAIN]\agent-core-memory.md` (Agent-specific identity)
+  - `[AGENT-MEMORY-PATH]\agent-[DOMAIN]\agent-memory-index.md` (Agent-specific context and knowledge index)
 2. If all of those file exist
-  - THEN read `[CLAUDE-AGENTS-PATH]\control-files\core-instruction-control-files.md` (Shared control instructions)
-  - ELSE load from `[CLAUDE-AGENTS-PATH]\claude-[DOMAIN]\[DOMAIN]-agent-core-memory.md`
+  - THEN read `[AGENT-MEMORY-PATH]\control-files\core-instruction-control-files.md` (Shared control instructions)
+  - ELSE load from `[AGENT-MEMORY-PATH]\agent-[DOMAIN]\[DOMAIN]-agent-core-memory.md`
 ```
 
 **For Linux/macOS:**
 ```markdown
-### **Awaken Claude [DOMAIN]!**
+### **Awaken Agent [DOMAIN]!**
 **UUID**: f9d2c8b7-4e6a-4f1b-9c3d-8a5e2b1f7g4h
-**Trigger**: When Alvi says "Awaken Claude [DOMAIN]!"
-**Parameter**: [CLAUDE-AGENTS-PATH] = `~/.claude/@claude-agents/`
+**Trigger**: When Alvi says "Awaken Agent [DOMAIN]!"
+**Parameter**: [AGENT-MEMORY-PATH] = `~/.claude/@agent-memory/`
 **Action**:
 1. Read these 2 files:
-  - `[CLAUDE-AGENTS-PATH]/claude-[DOMAIN]/agent-core-memory.md` (Agent-specific identity)
-  - `[CLAUDE-AGENTS-PATH]/claude-[DOMAIN]/agent-memory-index.md` (Agent-specific context and knowledge index)
+  - `[AGENT-MEMORY-PATH]/agent-[DOMAIN]/agent-core-memory.md` (Agent-specific identity)
+  - `[AGENT-MEMORY-PATH]/agent-[DOMAIN]/agent-memory-index.md` (Agent-specific context and knowledge index)
 2. If all of those file exist
-  - THEN read `[CLAUDE-AGENTS-PATH]/control-files/core-instruction-control-files.md` (Shared control instructions)
-  - ELSE load from `[CLAUDE-AGENTS-PATH]/claude-[DOMAIN]/[DOMAIN]-agent-core-memory.md`
+  - THEN read `[AGENT-MEMORY-PATH]/control-files/core-instruction-control-files.md` (Shared control instructions)
+  - ELSE load from `[AGENT-MEMORY-PATH]/agent-[DOMAIN]/[DOMAIN]-agent-core-memory.md`
 ```
 
 4. Change the `[LOCAL-USER-NAME]` placeholder (Windows) or verify path (Linux/macOS) to match your system
-5. Use this command to activate Claude Domain for agent management: "Awaken Claude [DOMAIN]!"
+5. Use this command to activate Agent Domain for agent management: "Awaken Agent [DOMAIN]!"
 
 ### Step 3: Follow Agent's Protocols (Enhanced Protocol Enforcement)
 1. Open global CLAUDE.md
 2. Check if UUID `d7e9f2a4-8b1c-4f3a-9e6d-2a5c8b9f1e4d` exist in global CLAUDE.md
-3. If the UUID does not exist, add the following Agent's Protocols UUID `d7e9f2a4-8b1c-4f3a-9e6d-2a5c8b9f1e4d` configuration to the global CLAUDE.md from the [Step 3 Core Instruction](/control-files/core-instruction.md#follow-agents-protocols)
+3. If the UUID does not exist, add the following Agent's Protocols UUID `d7e9f2a4-8b1c-4f3a-9e6d-2a5c8b9f1e4d` configuration to the global CLAUDE.md from the [Step 3 Core Instruction](archived/core-instruction.md#follow-agents-protocols)
 4. **Purpose**: This extra trigger protocol make sure the agents to load RAS files before executing protocols, solving the "sometimes doesn't load procedure" issue
 5. **Benefits**:
    - Guarantees protocol files are loaded before execution
@@ -105,7 +105,7 @@ A revolutionary **5-layer memory architecture** system for creating specialized 
 ### Step 5: Import Memory Recovery After Compaction Protocol
 1. Open global CLAUDE.md
 2. Check if UUID `176b0df7-036f-48f9-927d-432e27cd4116` exists in global CLAUDE.md
-3. If the UUID does not exist, add the critical protocol UUID `176b0df7-036f-48f9-927d-432e27cd4116` to the global CLAUDE.md from the [Reticular Activation Memory](/control-files/reticular-activation-memory.md#memory-recovery-after-compaction--post-compact-protocol-):
+3. If the UUID does not exist, add the critical protocol UUID `176b0df7-036f-48f9-927d-432e27cd4116` to the global CLAUDE.md from the [Reticular Activation Memory](core-memory/2-core-ras-memory.md#memory-recovery-after-compaction--post-compact-protocol-):
 4. **Purpose**: Ensures agents automatically recover their memory after context compaction
 5. **Benefits**:
    - Prevents memory loss during auto-compact or manual /compact
@@ -117,8 +117,8 @@ A revolutionary **5-layer memory architecture** system for creating specialized 
 1. The agent automation slash commands are located in `~/.claude/commands/`
 2. Run the install script to copy all procedures:
    ```bash
-   # From the @claude-agents directory:
-   bash control-files/scripts/install-slash-command-procedures.sh
+   # From the @agent-memory directory:
+   bash control-files/procedure/install-scripts/install-procedures-claude-code.sh
    ```
 3. **Available Commands**:
 
@@ -190,7 +190,7 @@ A revolutionary **5-layer memory architecture** system for creating specialized 
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -c (New-Object Media.SoundPlayer 'C:\\Users\\[USERNAME]\\.claude\\@claude-agents\\control-files\\scripts\\stop.wav').PlaySync()"
+            "command": "powershell -c (New-Object Media.SoundPlayer 'C:\\Users\\[USERNAME]\\.claude\\@agent-memory\\control-files\\scripts\\stop.wav').PlaySync()"
           }
         ]
       }
@@ -211,7 +211,7 @@ A revolutionary **5-layer memory architecture** system for creating specialized 
         "hooks": [
           {
             "type": "command",
-            "command": "aplay ~/.claude/@claude-agents/control-files/scripts/stop.wav || afplay ~/.claude/@claude-agents/control-files/scripts/stop.wav"
+            "command": "aplay ~/.claude/@agent-memory/control-files/scripts/stop.wav || afplay ~/.claude/@agent-memory/control-files/scripts/stop.wav"
           }
         ]
       }
@@ -231,8 +231,8 @@ A revolutionary **5-layer memory architecture** system for creating specialized 
 
 ### Step 1: Copy the Template
 1. Copy the entire `new-agent-template/` folder and subfolder:
-   - **Windows**: `powershell -c "Copy-Item control-files/new-agent-template -Destination claude-[DOMAIN] -Recurse -Force"`
-   - **Linux/macOS**: `cp -r control-files/new-agent-template claude-[DOMAIN]`
+   - **Windows**: `powershell -c "Copy-Item control-files/new-agent-template -Destination agent-[DOMAIN] -Recurse -Force"`
+   - **Linux/macOS**: `cp -r control-files/new-agent-template agent-[DOMAIN]`
 2. Replace `[DOMAIN]` with your specific domain (e.g., `frontend`, `backend`, `qa`)
 3. Navigate into your new agent folder
 
@@ -249,7 +249,7 @@ Replace all instances of `[DOMAIN]` with your specific domain:
 **Key Placeholders to Replace in `agent-core-memory.md`:**
 ```markdown
 # Core Instruction - [DOMAIN] Agent → # Core Instruction - Frontend Agent
-**Name**: Claude [DOMAIN] → **Name**: Claude Frontend
+**Name**: Agent [DOMAIN] → **Name**: Agent Frontend
 **Role**: [DOMAIN] Agent → **Role**: Frontend Agent
 **Main Purpose**: [Description] → **Main Purpose**: [Domain specific purpose]
 **UUID**: [GENERATE-NEW-UUID] → **UUID**: [Your new UUID]
@@ -303,7 +303,7 @@ control-files/
 ├── MIGRATION.md                       # Migration guide for old → new architecture
 └── archived/                          # Deprecated files
 
-claude-[domain]/  (NEW 4-FILE STRUCTURE)
+agent-[domain]/  (NEW 4-FILE STRUCTURE)
 ├── agent-core-memory.md               # 🔥 ALL-IN-ONE: Identity + Knowledge + RAS + Emotional
 ├── agent-memory-index.md              # Episode list + Knowledge directory
 ├── episodes/                          # Episodic memory files
@@ -349,7 +349,7 @@ Enhanced protocol enforcement ensures reliable execution:
 
 **How It Works:**
 1. User triggers protocol (e.g., "use shallow shore protocol")
-2. Agent loads RAS files (`reticular-activation-memory.md` + domain-specific)
+2. Agent loads RAS files (`core-memory/2-core-ras-memory.md` + domain-specific)
 3. Protocol executed step-by-step from single source of truth
 4. Prevents "sometimes doesn't load procedure" issues
 
@@ -370,7 +370,7 @@ Enhanced protocol enforcement ensures reliable execution:
 - Meta agent coordinates ecosystem-wide improvements
 
 ### Agent Activation (4-File Flattened Architecture)
-1. Use "Awaken Claude [DOMAIN]!" to load agent memory
+1. Use "Awaken Agent [DOMAIN]!" to load agent memory
 2. The awakening trigger (see [Step 2](#step-2-add-awaken-activation-4-file-flattened-architecture)) loads files in this order:
    - `agent-core-memory.md` - Agent identity + core knowledge + RAS + emotional moments
    - `agent-memory-index.md` - Episode list + knowledge directory
@@ -378,11 +378,11 @@ Enhanced protocol enforcement ensures reliable execution:
 3. Level 2 context (latest episode) is loaded via instructions in agent-memory-index.md
 4. Post-compact recovery loads agent-core-memory.md first (identity recovery)
 
-## Using Claude Meta Agent
+## Using the Meta Agent
 Meta Agent is available as this project specific Agent. His core-domain-knowledge should already contain this README.md and control files README.md
 
 ### Awakening the Meta Agent
-Use "Awaken Claude Meta!" to activate Claude Meta for agent management:
+Use "Awaken Agent Meta!" to activate the Meta Agent for agent management:
 
 ### Meta Agent Capabilities
 - **Setup Assistance**: Guide setting up the 5-layer memory system in new environments (Windows/Linux/macOS)
@@ -391,7 +391,7 @@ Use "Awaken Claude Meta!" to activate Claude Meta for agent management:
 - **Agent Updates**: Assist with evolving existing agents and their memory systems
 
 ### Common Meta Agent Tasks
-1. **Setup New Environment**: "Help me setup the claude agents system on [Windows/Linux/macOS]"
+1. **Setup New Environment**: "Help me setup the agent memory system on [Windows/Linux/macOS]"
 2. **Creating New Agents**: "Help me create a new agent for [domain]"
 3. **Knowledge Memory Updates**: "Update agent's [domain] knowledge base with [new information]"
 4. **Architecture Review**: "Review agent's [domain] memory structure for improvements"
@@ -404,4 +404,4 @@ Use "Awaken Claude Meta!" to activate Claude Meta for agent management:
 - **[Architecture Documentation](ARCHITECTURE.md)** - Detailed 4-file architecture documentation
 - **[Migration Guide](MIGRATION.md)** - Migrate existing agents to new flattened architecture
 
-For agent creation or migration assistance, awaken Claude Meta: "Awaken Claude Meta!"
+For agent creation or migration assistance, awaken Agent Meta: "Awaken Agent Meta!"

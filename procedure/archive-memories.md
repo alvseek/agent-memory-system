@@ -87,8 +87,8 @@ Provide summary using [Summary Report Template](#summary-report-template)
 ### Archive Folder Structure
 
 ```
-@claude-agents/
-├── claude-[domain]/
+@agent-memory/
+├── agent-[domain]/
 │   ├── agent-core-memory.md                     # Contains DOMAIN EMOTIONAL MEMORY section
 │   ├── agent-memory-index.md                    # Contains Recent Context Episodes list
 │   ├── episodes/
@@ -103,7 +103,7 @@ Provide summary using [Summary Report Template](#summary-report-template)
 ### Episodic Archive Header
 
 ```markdown
-# Claude [DOMAIN] Agent - Archived Context [YYYY] 🗄️
+# Agent [DOMAIN] - Archived Context [YYYY] 🗄️
 
 > **📦 ARCHIVED EPISODES**: Historical context from [YYYY]
 > **Last Updated**: [Current Date]
@@ -114,7 +114,7 @@ Provide summary using [Summary Report Template](#summary-report-template)
 ### Emotional Archive Header
 
 ```markdown
-# Claude [DOMAIN] Agent - Archived Emotional Moments [YYYY] 🗄️💖
+# Agent [DOMAIN] - Archived Emotional Moments [YYYY] 🗄️💖
 
 > **📦 ARCHIVED MOMENTS**: Historical emotional memories from [YYYY]
 > **Last Updated**: [Current Date]

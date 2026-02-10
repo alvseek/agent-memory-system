@@ -19,7 +19,7 @@ If no arguments provided, ask: "What feature or task should I create a High Wiza
 
 ### Step 1: Read Template
 
-Read the [High Wizard Plan Template](//@claude-agents/control-files/plans/high-wizard-plan-template.md) file
+Read the [High Wizard Plan Template](//@agent-memory/control-files/plans/high-wizard-plan-template.md) file
 
 ### Step 2: Check Date
 
@@ -35,7 +35,7 @@ Copy the template file to the `/plans` folder with the final name:
 
 ### Step 4: Fill Project Info
 
-Fill the [Project Info](//@claude-agents/control-files/plans/high-wizard-plan-template.md#project-info) section only (Project, Date, Agent, Theme)
+Fill the [Project Info](//@agent-memory/control-files/plans/high-wizard-plan-template.md#project-info) section only (Project, Date, Agent, Theme)
 
 ### Step 5: Investigate and Collect Decisions
 
@@ -76,15 +76,15 @@ If Alvi changes a foundational decision that affects downstream decisions, re-ev
 
 ### Step 8: Fill Objectives + Success Criteria
 
-Fill the [Objectives](//@claude-agents/control-files/plans/high-wizard-plan-template.md#objectives) and [Success Criteria](//@claude-agents/control-files/plans/high-wizard-plan-template.md#success-criteria) sections
+Fill the [Objectives](//@agent-memory/control-files/plans/high-wizard-plan-template.md#objectives) and [Success Criteria](//@agent-memory/control-files/plans/high-wizard-plan-template.md#success-criteria) sections
 
 ### Step 9: Fill Scope
 
-Fill the [Scope](//@claude-agents/control-files/plans/high-wizard-plan-template.md#scope) section (In Scope / Out of Scope)
+Fill the [Scope](//@agent-memory/control-files/plans/high-wizard-plan-template.md#scope) section (In Scope / Out of Scope)
 
 ### Step 10: Fill Confirmed Decisions
 
-Record all confirmed decisions (with any changes Alvi made) in the [Confirmed Decisions](//@claude-agents/control-files/plans/high-wizard-plan-template.md#confirmed-decisions) section. Include the meaningful reasons - this IS the analysis record.
+Record all confirmed decisions (with any changes Alvi made) in the [Confirmed Decisions](//@agent-memory/control-files/plans/high-wizard-plan-template.md#confirmed-decisions) section. Include the meaningful reasons - this IS the analysis record.
 
 ### Step 11: Early Review
 
@@ -92,13 +92,13 @@ Present objectives, scope, and confirmed decisions to Alvi. STOP. Present to Alv
 
 ### Step 12: Fill Solution
 
-Fill the [Solution](//@claude-agents/control-files/plans/high-wizard-plan-template.md#solution) section. Build directly from confirmed decisions.
+Fill the [Solution](//@agent-memory/control-files/plans/high-wizard-plan-template.md#solution) section. Build directly from confirmed decisions.
 
 **CRITICAL**: If any NEW decision is discovered during writing that was not covered in Step 7, STOP immediately. Present the new decision to Alvi with the same format (options + confidence + reason) before continuing. Do NOT write ahead on assumptions.
 
 ### Step 13: Fill Implementation Phases
 
-Fill the [Implementation Phases](//@claude-agents/control-files/plans/high-wizard-plan-template.md#implementation-phases) section.
+Fill the [Implementation Phases](//@agent-memory/control-files/plans/high-wizard-plan-template.md#implementation-phases) section.
 
 **CRITICAL**: Same rule - if any NEW decision is discovered during writing, STOP immediately and present it before continuing.
 

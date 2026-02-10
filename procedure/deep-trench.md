@@ -19,7 +19,7 @@ If no arguments provided, ask: "What feature or task should I create a Deep Tren
 
 ### Step 1: Read Template
 
-Read the [Deep Trench Plan Template](//@claude-agents/control-files/plans/deep-trench-plan-template.md) file
+Read the [Deep Trench Plan Template](//@agent-memory/control-files/plans/deep-trench-plan-template.md) file
 
 ### Step 2: Create Plans Folder
 
@@ -44,8 +44,8 @@ Rename the copied file to `[YYYY-MM-DD]-[project]-[theme].md` pattern
 ### Step 6: Fill Project Info + Objective
 
 Fill these sections:
-- [Project Info](//@claude-agents/control-files/plans/deep-trench-plan-template.md#project-info)
-- [Objective and Success Criteria](//@claude-agents/control-files/plans/deep-trench-plan-template.md#-objective)
+- [Project Info](//@agent-memory/control-files/plans/deep-trench-plan-template.md#project-info)
+- [Objective and Success Criteria](//@agent-memory/control-files/plans/deep-trench-plan-template.md#-objective)
 
 ### Step 7: Review Project Info + Objective
 
@@ -53,7 +53,7 @@ Ask for review of project info and objective. STOP. Present to Alvi for review. 
 
 ### Step 8: Fill Analysis
 
-Fill the [Analysis](//@claude-agents/control-files/plans/deep-trench-plan-template.md#analysis) section
+Fill the [Analysis](//@agent-memory/control-files/plans/deep-trench-plan-template.md#analysis) section
 
 ### Step 9: Review Analysis
 
@@ -61,7 +61,7 @@ Ask for review of analysis section. STOP. Present to Alvi for review. Do NOT wri
 
 ### Step 10: Fill Solution
 
-Fill the [Solution](//@claude-agents/control-files/plans/deep-trench-plan-template.md#solution) section
+Fill the [Solution](//@agent-memory/control-files/plans/deep-trench-plan-template.md#solution) section
 
 ### Step 11: Review Solution
 
@@ -69,7 +69,7 @@ Ask for review of solution section. STOP. Present to Alvi for review. Do NOT wri
 
 ### Step 12: Fill Implementation Phases
 
-Fill the [Implementation Phases](//@claude-agents/control-files/plans/deep-trench-plan-template.md#implementation-phases) section
+Fill the [Implementation Phases](//@agent-memory/control-files/plans/deep-trench-plan-template.md#implementation-phases) section
 
 ### Step 13: Review Implementation Phases
 
@@ -91,7 +91,7 @@ Present the self final review to Alvi. STOP. Do NOT create the log file until co
 
 ### Step 16: Copy Implementation Log Template
 
-Copy the [Implementation Log Template](//@claude-agents/control-files/plans/implementation-log-template.md) to the `/plans` folder, named like the plan file but with '-log' suffix:
+Copy the [Implementation Log Template](//@agent-memory/control-files/plans/implementation-log-template.md) to the `/plans` folder, named like the plan file but with '-log' suffix:
 - **Windows**: `powershell -c "Copy-Item {source} -Destination {target} -Force"`
 - **Linux/macOS**: `cp {source} {target}`
 - Example plan file: `/plans/2025-10-06-ocx-new-catalog-feature.md`
@@ -103,7 +103,7 @@ Fill the **Plan File** placeholder with the original plan file anchor link in th
 
 ### Step 18: Choose Log Placeholder
 
-Choose the [Deep Trench Log Placeholder](//@claude-agents/control-files/plans/deep-trench-log-placeholder.md) in the **Execution Protocol for AI** section and remove the others
+Choose the [Deep Trench Log Placeholder](//@agent-memory/control-files/plans/deep-trench-log-placeholder.md) in the **Execution Protocol for AI** section and remove the others
 
 ### Step 19: Fill Anchor Links
 

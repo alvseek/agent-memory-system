@@ -19,7 +19,7 @@ If no arguments provided, ask: "What bug needs a quick fix?"
 
 ### Step 1: Read Template
 
-Read the [Fixing Rod Plan Template](//@claude-agents/control-files/plans/fixing-rod-plan-template.md) file
+Read the [Fixing Rod Plan Template](//@agent-memory/control-files/plans/fixing-rod-plan-template.md) file
 
 ### Step 2: Create Plans Folder
 
@@ -44,16 +44,16 @@ Rename the copied file to `[YYYY-MM-DD]-[project]-[bug-theme]-fix.md` pattern
 ### Step 6: Fill Sections (Hypothesis-Driven)
 
 Fill sections in order following the hypothesis-driven process:
-- [Bug Info](//@claude-agents/control-files/plans/fixing-rod-plan-template.md#bug-info) - What's broken, where, and impact
-- [Quick Scaffolding Check](//@claude-agents/control-files/plans/fixing-rod-plan-template.md#quick-scaffolding-check) - Verify debugging access
-- [Bug Location](//@claude-agents/control-files/plans/fixing-rod-plan-template.md#bug-location) - Find the ACTUAL code producing the bug symptom (factual, not a guess)
-- [Hypothesis & Testing](//@claude-agents/control-files/plans/fixing-rod-plan-template.md#hypothesis--testing) - Sequential hypothesis testing:
+- [Bug Info](//@agent-memory/control-files/plans/fixing-rod-plan-template.md#bug-info) - What's broken, where, and impact
+- [Quick Scaffolding Check](//@agent-memory/control-files/plans/fixing-rod-plan-template.md#quick-scaffolding-check) - Verify debugging access
+- [Bug Location](//@agent-memory/control-files/plans/fixing-rod-plan-template.md#bug-location) - Find the ACTUAL code producing the bug symptom (factual, not a guess)
+- [Hypothesis & Testing](//@agent-memory/control-files/plans/fixing-rod-plan-template.md#hypothesis--testing) - Sequential hypothesis testing:
   - Create Hypothesis 1 → Test it → Confirmed? → Fill Root Cause / Rejected? → Create Hypothesis 2
   - Repeat until hypothesis confirmed or escalate to Patching Ship after 3 failed hypotheses
-- [Root Cause](//@claude-agents/control-files/plans/fixing-rod-plan-template.md#root-cause) - Fill ONLY after hypothesis is confirmed
-- [Fix Solution](//@claude-agents/control-files/plans/fixing-rod-plan-template.md#fix-solution) - What to change and why it fixes the root cause
-- [Implementation Phases](//@claude-agents/control-files/plans/fixing-rod-plan-template.md#implementation-phases) - Step-by-step fix implementation
-- [Testing Checklist](//@claude-agents/control-files/plans/fixing-rod-plan-template.md#testing-checklist) - Verify fix works
+- [Root Cause](//@agent-memory/control-files/plans/fixing-rod-plan-template.md#root-cause) - Fill ONLY after hypothesis is confirmed
+- [Fix Solution](//@agent-memory/control-files/plans/fixing-rod-plan-template.md#fix-solution) - What to change and why it fixes the root cause
+- [Implementation Phases](//@agent-memory/control-files/plans/fixing-rod-plan-template.md#implementation-phases) - Step-by-step fix implementation
+- [Testing Checklist](//@agent-memory/control-files/plans/fixing-rod-plan-template.md#testing-checklist) - Verify fix works
 
 ### Step 7: Quick Self Review
 

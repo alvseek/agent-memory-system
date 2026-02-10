@@ -1,8 +1,8 @@
-# Claude Agent Control Files 🎛️
+# Agent Memory Control Files 🎛️
 
 ## Overview
 
-The Control Files system provides the **shared memory infrastructure** for all Claude agents. It implements a **5-layer memory architecture** that gives agents persistent, structured memory capabilities.
+The Control Files system provides the **shared memory infrastructure** for all agents. It implements a **5-layer memory architecture** that gives agents persistent, structured memory capabilities.
 
 ## Table of Contents
 - [Architecture Overview](#architecture-overview)
@@ -74,7 +74,7 @@ control-files/
 
 ### Agent Directory Structure
 ```
-claude-[domain]/
+agent-[domain]/
 ├── agent-core-memory.md       # Agent identity + knowledge + RAS + emotional
 ├── agent-memory-index.md      # Episode list + knowledge directory
 ├── episodes/                  # Episodic memory files
@@ -104,7 +104,7 @@ The global CLAUDE.md is built using the **core-memory compilation system** (see 
 ### Awakening Flow
 
 ```
-User: "Awaken Claude [DOMAIN]!"
+User: "Awaken Agent [DOMAIN]!"
          │
          ▼
 ┌─────────────────────────────────────┐
@@ -203,7 +203,7 @@ These triggers work without any agent loaded:
 
 | Trigger | UUID | Purpose |
 |---------|------|---------|
-| Awaken Claude [DOMAIN]! | `f9d2c8b7` | Load agent memory files |
+| Awaken Agent [DOMAIN]! | `f9d2c8b7` | Load agent memory files |
 | Post-Compact Recovery | `176b0df7` | Recover memory after compaction |
 | Memory Update | `f207fcdf` | Comprehensive memory update |
 | Episodic Update | `3bedbcdb` | Episodic memory only |

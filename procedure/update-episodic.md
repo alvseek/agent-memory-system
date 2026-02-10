@@ -27,9 +27,9 @@ ALWAYS CHECK DATE TIME FIRST for file naming:
 
 #### Step 2: Copy Template
 
-Copy the [Episodic Memory Template](//@claude-agents/control-files/templates/episodic-memory-template.md) file to the `//@claude-agents/claude-[domain]/episodes/` folder with the final name `[YYYY-MM-DD]-[hh.mm]-[project-name]-[context-theme].md`:
-- **Windows**: `powershell -c "Copy-Item {source} -Destination //@claude-agents/claude-[domain]/episodes/[YYYY-MM-DD]-[hh.mm]-[project-name]-[context-theme].md -Force"`
-- **Linux/macOS**: `cp {source} //@claude-agents/claude-[domain]/episodes/[YYYY-MM-DD]-[hh.mm]-[project-name]-[context-theme].md`
+Copy the [Episodic Memory Template](//@agent-memory/control-files/templates/episodic-memory-template.md) file to the `//@agent-memory/agent-[domain]/episodes/` folder with the final name `[YYYY-MM-DD]-[hh.mm]-[project-name]-[context-theme].md`:
+- **Windows**: `powershell -c "Copy-Item {source} -Destination //@agent-memory/agent-[domain]/episodes/[YYYY-MM-DD]-[hh.mm]-[project-name]-[context-theme].md -Force"`
+- **Linux/macOS**: `cp {source} //@agent-memory/agent-[domain]/episodes/[YYYY-MM-DD]-[hh.mm]-[project-name]-[context-theme].md`
 
 #### Step 3: Add Entry
 
@@ -37,7 +37,7 @@ Add new entry using [Detailed Entry Template](#detailed-entry-template)
 
 #### Step 4: Update Index
 
-Add reference links in `//@claude-agents/claude-[domain]/agent-memory-index.md` by chronological order (newest at the top). Add one-line summary of what it contains.
+Add reference links in `//@agent-memory/agent-[domain]/agent-memory-index.md` by chronological order (newest at the top). Add one-line summary of what it contains.
 
 ---
 
@@ -45,7 +45,7 @@ Add reference links in `//@claude-agents/claude-[domain]/agent-memory-index.md` 
 
 #### Step 1: Get Latest Context
 
-Get the latest Recent Context from `//@claude-agents/claude-[domain]/agent-memory-index.md` referenced file
+Get the latest Recent Context from `//@agent-memory/agent-[domain]/agent-memory-index.md` referenced file
 
 #### Step 2: Check Theme Relation
 

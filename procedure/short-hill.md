@@ -19,7 +19,7 @@ If no arguments provided, ask: "What decision needs quick brainstorming?"
 
 ### Step 1: Read Template
 
-Read the [Short Hill Plan Template](//@claude-agents/control-files/plans/short-hill-plan-template.md) file
+Read the [Short Hill Plan Template](//@agent-memory/control-files/plans/short-hill-plan-template.md) file
 
 ### Step 2: Create Plans Folder
 
@@ -44,8 +44,8 @@ Rename the copied file to `[YYYY-MM-DD]-[project]-[decision-name]-shorthill.md` 
 ### Step 6: Fill Project Info + Problem
 
 Fill these sections:
-- [Project Info](//@claude-agents/control-files/plans/short-hill-plan-template.md#project-info)
-- [Problem](//@claude-agents/control-files/plans/short-hill-plan-template.md#problem)
+- [Project Info](//@agent-memory/control-files/plans/short-hill-plan-template.md#project-info)
+- [Problem](//@agent-memory/control-files/plans/short-hill-plan-template.md#problem)
 
 ### Step 7: Review Project Info + Problem
 
@@ -53,7 +53,7 @@ Ask for review. STOP. Present to Alvi for review. Do NOT write the next section 
 
 ### Step 8: Fill Current State Analysis
 
-Fill the [Current State Analysis](//@claude-agents/control-files/plans/short-hill-plan-template.md#current-state-analysis) section - brief analysis of what exists now
+Fill the [Current State Analysis](//@agent-memory/control-files/plans/short-hill-plan-template.md#current-state-analysis) section - brief analysis of what exists now
 
 ### Step 9: Review Current State Analysis
 
@@ -61,7 +61,7 @@ Ask for review. STOP. Present to Alvi for review. Do NOT write the next section 
 
 ### Step 10: Fill Quick Solution Generation
 
-Fill the [Quick Solution Generation](//@claude-agents/control-files/plans/short-hill-plan-template.md#quick-solution-generation) section - use ONE rapid technique to generate 5-8 solution options
+Fill the [Quick Solution Generation](//@agent-memory/control-files/plans/short-hill-plan-template.md#quick-solution-generation) section - use ONE rapid technique to generate 5-8 solution options
 
 ### Step 11: Review Generated Solutions
 
@@ -69,7 +69,7 @@ Ask for review and if user needs more options. STOP. Present to Alvi for review.
 
 ### Step 12: Fill Quick Evaluation
 
-Fill the [Quick Evaluation](//@claude-agents/control-files/plans/short-hill-plan-template.md#quick-evaluation) section - simple Pros/Cons comparison of the 5-8 options
+Fill the [Quick Evaluation](//@agent-memory/control-files/plans/short-hill-plan-template.md#quick-evaluation) section - simple Pros/Cons comparison of the 5-8 options
 
 ### Step 13: Review Evaluation + Offer Multi-Agent Voting
 
@@ -84,7 +84,7 @@ Ask for review, AND proactively ask: "Do you want multi-agent voting? (5 AI agen
 
 ### Step 14: Fill Selected Solution
 
-Fill the [Selected Solution](//@claude-agents/control-files/plans/short-hill-plan-template.md#selected-solution) section with decision and rationale
+Fill the [Selected Solution](//@agent-memory/control-files/plans/short-hill-plan-template.md#selected-solution) section with decision and rationale
 
 ### Step 15: Review Selected Solution
 
@@ -96,7 +96,7 @@ Create the Architecture Decision Record (ADR) document in `/docs/adr/` folder:
 - Check if `/docs/adr/` folder exists, if not create it:
   - **Windows**: `powershell -c "New-Item -ItemType Directory -Path './docs/adr' -Force"`
   - **Linux/macOS**: `mkdir -p ./docs/adr`
-- Copy the [ADR Template](//@claude-agents/control-files/plans/adr-template.md) to `/docs/adr/`:
+- Copy the [ADR Template](//@agent-memory/control-files/plans/adr-template.md) to `/docs/adr/`:
   - **Windows**: `powershell -c "Copy-Item {source} -Destination {target} -Force"`
   - **Linux/macOS**: `cp {source} {target}`
 - Rename following pattern: `[YYYY-MM-DD]-[short-descriptive-title].md`

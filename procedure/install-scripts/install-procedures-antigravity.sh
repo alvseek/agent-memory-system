@@ -1,15 +1,15 @@
 #!/bin/bash
-# install-slash-command-procedures.sh - Copy all procedures to ~/.claude/commands/ for slash command access
+# install-slash-command-procedures-antigravity.sh - Copy all procedures to .agent/workflows/ for slash command access in Antigravity
 #
-# Usage: ./control-files/scripts/install-slash-command-procedures.sh
-#        bash control-files/scripts/install-slash-command-procedures.sh
+# Usage: ./control-files/procedure/install-scripts/install-procedures-antigravity.sh
+#        bash control-files/procedure/install-scripts/install-procedures-antigravity.sh
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CLAUDE_AGENTS_DIR="$(dirname "$SCRIPT_DIR")"
-SOURCE_DIR="$CLAUDE_AGENTS_DIR/procedure"
-TARGET_DIR="$HOME/.claude/commands"
+AGENT_MEMORY_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"
+SOURCE_DIR="$(dirname "$SCRIPT_DIR")"
+TARGET_DIR="$HOME/.gemini/workflows"
 
-echo "=== Install Procedures as Slash Commands ==="
+echo "=== Install Procedures as Antigravity Workflows ==="
 echo ""
 echo "Source: $SOURCE_DIR"
 echo "Target: $TARGET_DIR"
@@ -41,9 +41,9 @@ cp "$SOURCE_DIR"/*.md "$TARGET_DIR/"
 
 if [ $? -eq 0 ]; then
     echo ""
-    echo "✓ Successfully installed $FILE_COUNT procedures!"
+    echo "✓ Successfully installed $FILE_COUNT procedures as workflows!"
     echo ""
-    echo "Installed commands:"
+    echo "Installed workflows:"
     ls -1 "$TARGET_DIR"/*.md | xargs -I {} basename {} .md | sed 's/^/  \//'
 else
     echo "❌ Error: Failed to copy files"
