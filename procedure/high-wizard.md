@@ -123,4 +123,12 @@ Present the complete plan file link to Alvi for final review. STOP. Wait for ins
 
 After Alvi instructs to start implementing, start implementing following the **Execution Protocol for AI** from the plan file.
 
+### Step 17: Move Plan to Completed
+
+After all implementation phases are done and logged, move the plan file to `/plans/completed/`:
+- **Windows**: `powershell -c "if (!(Test-Path './plans/completed')) { New-Item -ItemType Directory -Path './plans/completed' -Force }; Move-Item './plans/[plan-file].md' './plans/completed/[plan-file].md' -Force"`
+- **Linux/macOS**: `mkdir -p ./plans/completed && mv ./plans/[plan-file].md ./plans/completed/[plan-file].md`
+
+**Note**: Episodic memory links to the plan will break after moving. This is accepted — completed plans are archival.
+
 ---
