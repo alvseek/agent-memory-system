@@ -68,8 +68,7 @@ control-files/
 ├── plans/                             # Planning templates (used by procedures)
 │   └── [templates: *-template.md]
 ├── templates/                         # Output templates (used by procedures)
-├── MIGRATION.md                       # Guide for migrating old agents
-└── archived/                          # Deprecated files
+└── MIGRATION.md                       # Guide for migrating old agents
 ```
 
 ### Agent Directory Structure

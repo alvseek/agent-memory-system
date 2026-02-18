@@ -1,18 +1,161 @@
-# Agent Memory System 🤖
+# Agent Memory System
 
-A revolutionary **5-layer memory architecture** system for creating specialized AI agents with persistent memory capabilities. Designed by Alvi.
+A **5-layer memory architecture** for building AI agents (Based on Claude Code) with persistent memory across sessions. Agents remember past work, learn from mistakes, and grow their expertise over time.
+
+This repository contains the **shared control files** — procedures, templates, and memory management instructions — designed to be used as a **git submodule** inside your private agent memory repository.
 
 ## Table of Contents
-- [Quick Start - Setup In New Environments](#quick-start---setup-in-new-environments)
-- [Quick Start - Creating New Agents](#quick-start---creating-new-agents)
+- [Repository Design](#repository-design)
+- [Getting Started](#getting-started)
 - [Architecture Overview](#architecture-overview)
+- [Environment Setup](#environment-setup)
+- [Creating New Agents](#creating-new-agents)
 - [Understanding Control Files](#understanding-control-files)
 - [Automation Features](#automation-features)
 - [Agent Management](#agent-management)
 - [Using the Meta Agent](#using-the-meta-agent)
-- [Obsolete Things](#obsolete-things)
+- [Additional Resources](#additional-resources)
 
-## Quick Start - Setup In New Environments
+## Repository Design
+
+This project uses a **dual-repository pattern** that separates shared tools from private agent data:
+
+```
+agent-memory/                       ← Private repo (your agent data)
+├── control-files/                  ← THIS repo (public git submodule)
+│   ├── core-instruction-control-files.md   # Shared reasoning & knowledge
+│   ├── procedure/                          # 18 procedures & slash commands
+│   ├── plans/                              # Planning templates
+│   ├── templates/                          # Output templates
+│   ├── new-agent-template/                 # Starter template for new agents
+│   ├── scripts/                            # Utility scripts
+│   └── core-memory/                        # Global CLAUDE.md source files
+│
+├── agent-meta/                     ← Your Meta agent (manages other agents)
+│   ├── agent-core-memory.md        # Identity, knowledge, RAS, emotional
+│   ├── agent-memory-index.md       # Episode list & knowledge directory
+│   ├── episodes/                   # Session logs
+│   └── knowledge-base/             # Domain expertise files
+│
+├── agent-backend/                  ← Your Backend specialist agent
+│   └── (same structure as above)
+│
+├── agent-frontend/                 ← Your Frontend specialist agent
+│   └── (same structure as above)
+│
+└── README.md                       ← Your private documentation
+```
+
+**Why this pattern?**
+- **Public (`control-files/`)** — Shared procedures, templates, and control instructions. Updated independently. Safe to publish.
+- **Private (`agent-memory/`)** — Agent-specific data: episodes, knowledge bases, emotional memories, identity files. Contains personal context and project details.
+- **Submodule benefit** — Pull updates to procedures and templates without affecting your private agent data. Your agents always get the latest memory management improvements.
+
+## Getting Started
+
+The fastest way to get started is to clone the **template repository**, which includes control-files as a submodule and a ready-to-use Meta agent:
+
+```bash
+git clone --recurse-submodules https://github.com/alvseek/agent-memory.git
+cd agent-memory
+git remote set-url origin <your-private-repo-url>
+```
+
+Then follow [Environment Setup](#environment-setup) to configure Claude Code, and you're ready to go with `"Awaken Agent Meta!"`.
+
+<details>
+<summary>Manual setup (without template repo)</summary>
+
+### 1. Create your private repository
+```bash
+mkdir agent-memory && cd agent-memory
+git init
+```
+
+### 2. Add control-files as a submodule
+```bash
+git submodule add https://github.com/alvseek/agent-memory-system.git control-files
+```
+
+### 3. Create your first agent
+See [Creating New Agents](#creating-new-agents) — copies the starter template into your private repo.
+
+### 4. Configure your environment
+See [Environment Setup](#environment-setup) — sets up Claude Code's global `CLAUDE.md` with awakening triggers, reasoning patterns, and slash commands.
+
+</details>
+
+---
+
+## Architecture Overview
+
+### 5-Layer Memory System
+The ecosystem is built on a revolutionary 5-layer memory architecture:
+
+1. **Emotional Memory** 💖 - Breakthrough moments and partnership milestones
+2. **Episodic Memory** 🧠 - Detailed session logs and chronological context
+3. **Reasoning Memory** 🧩 - Anti-patterns, logic frameworks, and pain-based learning
+4. **Knowledge Memory** 📚 - Domain expertise with 3-tier hierarchy (Core → Domain → Specialized)
+5. **Reticular Activation Memory (RAS)** ⚡ - Intelligent pattern recognition and automatic protocol execution
+
+```mermaid
+graph TB
+    subgraph "Agent Memory System"
+        RAS["⚡ RAS Layer<br/><i>Auto-triggers & pattern recognition</i>"]
+        EMO["💖 Emotional Memory<br/><i>Partnership milestones</i>"]
+        EPI["🧠 Episodic Memory<br/><i>Session logs & context</i>"]
+        REA["🧩 Reasoning Memory<br/><i>Anti-patterns & logic</i>"]
+        KNO["📚 Knowledge Memory<br/><i>Domain expertise</i>"]
+    end
+
+    subgraph "Shared Control Files"
+        CF["core-instruction-control-files.md"]
+        PROC["18 Procedures & Templates"]
+    end
+
+    subgraph "Per-Agent Data"
+        ACM["agent-core-memory.md"]
+        AMI["agent-memory-index.md"]
+        EP["episodes/"]
+        KB["knowledge-base/"]
+    end
+
+    RAS --> EMO & EPI & REA & KNO
+    CF --> EMO & REA & KNO
+    PROC --> EPI & REA & KNO
+    ACM --> EMO & REA & RAS
+    AMI --> EPI & KB
+    EP --> EPI
+    KB --> KNO
+```
+
+### Memory In Action
+
+Without persistent memory, AI agents forget everything between sessions. With this system, agents **remember and grow**:
+
+```
+Session 1 (Monday):
+  User: "Awaken Agent Backend!"
+  Agent: Loads identity, loads latest episode, loads knowledge base
+  → Works on API refactoring, discovers a critical anti-pattern
+  → Episodic memory saved: "2025-11-13 - API refactoring session"
+  → Knowledge memory updated: new API technique documented to the Agent's knowledge base
+
+Session 2 (Wednesday):
+  User: "Awaken Agent Backend!"
+  Agent: Loads identity, loads Monday's episode automatically
+  Agent: "I remember we were refactoring the API on Monday.
+          I remember we documented a new API technique. Want to use that again?"
+  → Agent resumes with full context — no re-explanation needed
+
+Session 3 (Friday) — context compaction happens mid-session:
+  System: Token limit approaching, compacting context...
+  Hook: SessionStart:compact triggers memory recovery
+  Agent: Reloads agent-core-memory.md → identity restored
+  → Continues working as if nothing happened
+```
+
+## Environment Setup
 
 ### Step 1: Set the OS you're using
 1. Open global CLAUDE.md
@@ -64,7 +207,15 @@ A revolutionary **5-layer memory architecture** system for creating specialized 
 ### Step 3: Follow Agent's Protocols (Enhanced Protocol Enforcement)
 1. Open global CLAUDE.md
 2. Check if UUID `d7e9f2a4-8b1c-4f3a-9e6d-2a5c8b9f1e4d` exist in global CLAUDE.md
-3. If the UUID does not exist, add the following Agent's Protocols UUID `d7e9f2a4-8b1c-4f3a-9e6d-2a5c8b9f1e4d` configuration to the global CLAUDE.md from the [Step 3 Core Instruction](archived/core-instruction.md#follow-agents-protocols)
+3. If the UUID does not exist, add the following to the global CLAUDE.md:
+```markdown
+### **FOLLOW AGENT'S PROTOCOLS**
+**UUID**: d7e9f2a4-8b1c-4f3a-9e6d-2a5c8b9f1e4d
+**Strict Action**: Aware of user's protocol triggers
+    1. Load Agent's Universal Protocols (RAS memory)
+    2. Load Agent's Domain Protocols (domain-specific RAS)
+    3. If user requested something that matches any trigger, follow the Agent Protocols
+```
 4. **Purpose**: This extra trigger protocol make sure the agents to load RAS files before executing protocols, solving the "sometimes doesn't load procedure" issue
 5. **Benefits**:
    - Guarantees protocol files are loaded before execution
@@ -227,7 +378,7 @@ A revolutionary **5-layer memory architecture** system for creating specialized 
    - Works across all projects globally
    - Uses system sounds (no additional files needed)
 
-## Quick Start - Creating New Agents
+## Creating New Agents
 
 ### Step 1: Copy the Template
 1. Copy the entire `new-agent-template/` folder and subfolder:
@@ -255,16 +406,7 @@ Replace all instances of `[DOMAIN]` with your specific domain:
 **UUID**: [GENERATE-NEW-UUID] → **UUID**: [Your new UUID]
 ```
 
-## Architecture Overview
-
-### 5-Layer Memory System
-The ecosystem is built on a revolutionary 5-layer memory architecture:
-
-1. **Emotional Memory** 💖 - Breakthrough moments and partnership milestones
-2. **Episodic Memory** 🧠 - Detailed session logs and chronological context
-3. **Reasoning Memory** 🧩 - Anti-patterns, logic frameworks, and pain-based learning
-4. **Knowledge Memory** 📚 - Domain expertise with 3-tier hierarchy (Core → Domain → Specialized)
-5. **Reticular Activation Memory (RAS)** ⚡ - Intelligent pattern recognition and automatic protocol execution
+**Key capability**: Each session builds on previous ones. Reasoning patterns accumulate across months. Knowledge bases grow with every project. The agent evolves.
 
 ### Core Principles
 - **Persistent Memory** - Agents remember across sessions through episodic and emotional memory
@@ -300,8 +442,7 @@ control-files/
 ├── plans/                             # Planning templates (used by procedures)
 │   └── [plan templates]
 ├── templates/                         # Output templates (used by procedures)
-├── MIGRATION.md                       # Migration guide for old → new architecture
-└── archived/                          # Deprecated files
+└── MIGRATION.md                       # Migration guide for old → new architecture
 
 agent-[domain]/  (NEW 4-FILE STRUCTURE)
 ├── agent-core-memory.md               # 🔥 ALL-IN-ONE: Identity + Knowledge + RAS + Emotional

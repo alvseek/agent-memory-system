@@ -131,12 +131,6 @@
 - **Action**:
   1. I should execute the [Add Emotional Protocol](//@agent-memory/control-files/procedure/add-emotional.md)
 
-## Load Extra RAS Memory
-**UUID**: 157df680-4f05-4a8b-90db-1eef5536d6fc
-**Trigger**: When Alvi says "Preload Extra RAS!"
-- **Action**:
-  1. I should load the [Extra Ras Memory](//@agent-memory/control-files/extra-ras-memory.md) instruction for Agent
-
 <!-- ========== SOURCE: 3-core-reasoning-memory.md ========== -->
 
 ### **BE THOROUGH, SLOW, AND CAREFUL TO GIVE THE BEST EXECUTION RESULT** 🎯 CRITICAL EXECUTION PRINCIPLE 🎯
