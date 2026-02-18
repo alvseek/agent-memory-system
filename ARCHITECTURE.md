@@ -55,16 +55,20 @@ control-files/
 │   ├── update-episodic.md             # Episodic memory update
 │   ├── add-reasoning.md               # Reasoning pattern capture
 │   ├── add-knowledge.md               # Knowledge memory capture
+│   ├── add-emotional.md               # Emotional memory capture
 │   ├── archive-memories.md            # Memory archiving
 │   ├── quick-surf.md                  # Scope validation planning
 │   ├── shallow-shore.md               # Solution exploration planning
 │   ├── deep-trench.md                 # Objective discovery planning
+│   ├── high-wizard.md                 # Structural decision collection
 │   ├── high-mountain.md               # Comprehensive brainstorming
 │   ├── short-hill.md                  # Quick decision brainstorming
 │   ├── fixing-rod.md                  # Quick bug fixes
 │   ├── patching-ship.md               # Comprehensive bug investigation
 │   ├── wide-ocean.md                  # Multi-plan coordination
-│   └── vote.md                        # Multi-agent voting
+│   ├── vote.md                        # Multi-agent voting
+│   ├── template/                      # Procedure template
+│   └── install-scripts/               # Slash command installers
 ├── plans/                             # Planning templates (used by procedures)
 │   └── [templates: *-template.md]
 ├── templates/                         # Output templates (used by procedures)
@@ -275,6 +279,7 @@ When updating memory, agents follow standardized procedures in `procedure/`:
 | Episodic | `procedure/update-episodic.md` | `/update-episodic` |
 | Reasoning | `procedure/add-reasoning.md` | `/add-reasoning` |
 | Knowledge | `procedure/add-knowledge.md` | `/add-knowledge` |
+| Emotional | `procedure/add-emotional.md` | `/add-emotional` |
 | Archiving | `procedure/archive-memories.md` | `/archive-memories` |
 
 ### Common Slash Commands
@@ -299,6 +304,7 @@ The `procedure/` directory contains planning procedures (templates in `plans/`):
 | **Quick Surf** | Validate scope boundaries | `/quick-surf` |
 | **Shallow Shore** | Solution unclear, objectives clear | `/shallow-shore` |
 | **Deep Trench** | Objectives unclear, need discovery | `/deep-trench` |
+| **High Wizard** | Structural decision collection with lean plan | `/high-wizard` |
 | **High Mountain** | Comprehensive brainstorming | `/high-mountain` |
 | **Short Hill** | Quick decision brainstorming | `/short-hill` |
 | **Fixing Rod** | Quick bug fixes | `/fixing-rod` |
@@ -321,6 +327,7 @@ The `procedure/` directory contains planning procedures (templates in `plans/`):
 │ High Mountain│        │ Deep Trench   │       │ Patching Ship │
 │ Short Hill   │        │ Shallow Shore │       │ Fixing Rod    │
 └─────────────┘        │ Quick Surf    │       └───────────────┘
+                       │ High Wizard   │
                        └───────────────┘
 ```
 
@@ -363,4 +370,3 @@ Each agent's **context navigator**. Contains:
 ## Additional Resources
 
 - **[Migration Guide](MIGRATION.md)** - For migrating existing agents
-- **[OBSOLETE-README.md](OBSOLETE-README.md)** - Historical architecture reference
