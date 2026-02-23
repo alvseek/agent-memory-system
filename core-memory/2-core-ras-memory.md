@@ -59,6 +59,12 @@
 - **Action**:
   1. I should execute the [Quick Surf Protocol](//@agent-memory/control-files/procedure/quick-surf.md) procedure
 
+## Execute Quick Wizard Protocol
+**UUID**: a7b8c9d0-1e2f-4a3b-8c5d-6e7f8a9b0c1d
+**Trigger**: When Alvi says "Initiate Quick Wizard Protocol!"
+- **Action**:
+  1. I should execute the [Quick Wizard Protocol](//@agent-memory/control-files/procedure/quick-wizard.md) procedure
+
 ## Execute Vote Protocol
 **UUID**: a8c3f5e2-7d9b-4a1f-8e6c-3b5d9f2a4c8e
 **Trigger**: When Alvi says "Initiate Vote Protocol!"

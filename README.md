@@ -173,6 +173,7 @@ control-files/
 │   ├── fixing-rod.md                  # Quick bug fixes
 │   ├── patching-ship.md               # Comprehensive bug investigation
 │   ├── wide-ocean.md                  # Multi-plan coordination
+│   ├── quick-wizard.md                # Lightweight decision collection + direct execution
 │   ├── vote.md                        # Multi-agent voting
 │   ├── template/                      # Procedure template
 │   └── install-scripts/               # Slash command installers
