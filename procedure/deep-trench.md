@@ -94,8 +94,8 @@ Present the self final review to Alvi. STOP. Do NOT create the log file until co
 Copy the [Implementation Log Template](//@agent-memory/control-files/plans/implementation-log-template.md) to the `/plans` folder, named like the plan file but with '-log' suffix:
 - **Windows**: `powershell -c "Copy-Item {source} -Destination {target} -Force"`
 - **Linux/macOS**: `cp {source} {target}`
-- Example plan file: `/plans/2025-10-06-ocx-new-catalog-feature.md`
-- Example log file: `/plans/2025-10-06-ocx-new-catalog-feature-log.md`
+- Example plan file: `/plans/YYYY-MM-DD-my-app-feature.md`
+- Example log file: `/plans/YYYY-MM-DD-my-app-feature-log.md`
 
 ### Step 17: Fill Plan File Reference
 

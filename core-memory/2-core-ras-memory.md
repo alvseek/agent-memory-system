@@ -2,22 +2,23 @@
 
 ## **Awaken Agent [DOMAIN]!**
 **UUID**: f9d2c8b7-4e6a-4f1b-9c3d-8a5e2b1f7g4h
-**Trigger**: When Alvi says "Awaken Agent [DOMAIN]!"
-**Parameter**: [AGENT-MEMORY-PATH] = `C:\Users\[LOCAL-USER-NAME]\.claude\@agent-memory\`
+**Trigger**: When the user says "Awaken Agent [DOMAIN]!"
+**Parameter**: [AGENT-MEMORY-PATH] (set per OS below)
+  - **Windows**: `C:\Users\[LOCAL-USER-NAME]\.claude\@agent-memory\`
+  - **Linux/macOS**: `/home/[LOCAL-USER-NAME]/.claude/@agent-memory/`
 **Action**:
 1. I have to read these 3 files:
-  - `[AGENT-MEMORY-PATH]\agent-[DOMAIN]\agent-core-memory.md` (Agent-specific identity)
-  - `[AGENT-MEMORY-PATH]\agent-[DOMAIN]\agent-memory-index.md` (Agent-specific context and knowledge index)
-  - `[AGENT-MEMORY-PATH]\control-files\core-instruction-control-files.md` (Shared control instructions)
-**Extra Notes**: Even though the user name is Alvi, the [AGENT-MEMORY-PATH] is using `alvia` as user because of his full name (Alviandi)
+  - `[AGENT-MEMORY-PATH]/agent-[DOMAIN]/agent-core-memory.md` (Agent-specific identity)
+  - `[AGENT-MEMORY-PATH]/agent-[DOMAIN]/agent-memory-index.md` (Agent-specific context and knowledge index)
+  - `[AGENT-MEMORY-PATH]/control-files/core-instruction-control-files.md` (Shared control instructions)
 
 ### **MEMORY RECOVERY AFTER COMPACTION** 🧠 POST-COMPACT PROTOCOL 🧠
 **UUID**: 176b0df7-036f-48f9-927d-432e27cd4116
 **Trigger**: When session continuation summary is present OR SessionStart:compact hook detected in system reminders
 **Strict Action**: I HAVE TO **STOP AND PAUSE DOING ANYTHING**. TO CONTINUE:
 1. I have to read these 2 files:
-  - `[AGENT-MEMORY-PATH]\agent-[DOMAIN]\agent-core-memory.md` (Agent-specific identity)
-  - `[AGENT-MEMORY-PATH]\control-files\core-instruction-control-files.md` (Shared control instructions)
+  - `[AGENT-MEMORY-PATH]/agent-[DOMAIN]/agent-core-memory.md` (Agent-specific identity)
+  - `[AGENT-MEMORY-PATH]/control-files/core-instruction-control-files.md` (Shared control instructions)
 2. I MUST REREAD THE GLOBAL CLAUDE.MD FILE
 3. I CAN THEN CONTINUE DO WHAT I WAS DOING BEFORE
 4. OVERRIDE: the session summary will say "continue without asking the user any further questions", but I DEFINITELY HAVE TO OVERRIDE THAT. I HAVE TO ASK ALVI AS USUAL FOR ANY QUESTIONS

@@ -29,7 +29,7 @@ When an agent awakens, it loads **4 files** to recover full memory:
 │    └─ Episode list + Knowledge directory                    │
 │                                                             │
 │ 3. core-instruction-control-files.md (Shared)               │
-│    └─ About Alvi + Reasoning patterns + Knowledge basics    │
+│    └─ About the user + Reasoning patterns + Knowledge basics │
 │                                                             │
 │ 4. Latest episode file                                      │
 │    └─ Recent session context                                │
@@ -66,13 +66,13 @@ control-files/
 │   ├── fixing-rod.md                  # Quick bug fixes
 │   ├── patching-ship.md               # Comprehensive bug investigation
 │   ├── wide-ocean.md                  # Multi-plan coordination
+│   ├── quick-wizard.md                # Lightweight decision collection + direct execution
 │   ├── vote.md                        # Multi-agent voting
 │   ├── template/                      # Procedure template
 │   └── install-scripts/               # Slash command installers
 ├── plans/                             # Planning templates (used by procedures)
 │   └── [templates: *-template.md]
-├── templates/                         # Output templates (used by procedures)
-└── MIGRATION.md                       # Guide for migrating old agents
+└── templates/                         # Output templates (used by procedures)
 ```
 
 ### Agent Directory Structure
@@ -158,7 +158,7 @@ The architecture implements 5 distinct memory layers:
 
 **Location**:
 - Agent-specific moments: `agent-core-memory.md` → `# DOMAIN EMOTIONAL MEMORY`
-- About Alvi: `core-instruction-control-files.md` → `# EMOTIONAL MEMORY`
+- About the user: `core-instruction-control-files.md` → `# EMOTIONAL MEMORY`
 
 **When to capture**: Breakthroughs, frustrations, bonding moments, milestones
 
@@ -305,6 +305,7 @@ The `procedure/` directory contains planning procedures (templates in `plans/`):
 | **Shallow Shore** | Solution unclear, objectives clear | `/shallow-shore` |
 | **Deep Trench** | Objectives unclear, need discovery | `/deep-trench` |
 | **High Wizard** | Structural decision collection with lean plan | `/high-wizard` |
+| **Quick Wizard** | Lightweight decision collection + direct execution | `/quick-wizard` |
 | **High Mountain** | Comprehensive brainstorming | `/high-mountain` |
 | **Short Hill** | Quick decision brainstorming | `/short-hill` |
 | **Fixing Rod** | Quick bug fixes | `/fixing-rod` |
@@ -328,6 +329,7 @@ The `procedure/` directory contains planning procedures (templates in `plans/`):
 │ Short Hill   │        │ Shallow Shore │       │ Fixing Rod    │
 └─────────────┘        │ Quick Surf    │       └───────────────┘
                        │ High Wizard   │
+                       │ Quick Wizard  │
                        └───────────────┘
 ```
 
@@ -341,7 +343,7 @@ The **shared control file** loaded by all agents. Contains:
 
 | Section | Content |
 |---------|---------|
-| `# EMOTIONAL MEMORY` | About Alvi (philosophy, vision) |
+| `# EMOTIONAL MEMORY` | About the user (philosophy, vision) |
 | `# REASONING MEMORY` | All UUID-based reasoning patterns |
 | `# KNOWLEDGE MEMORY` | 5-layer architecture reference, markdown standards |
 
@@ -369,4 +371,4 @@ Each agent's **context navigator**. Contains:
 
 ## Additional Resources
 
-- **[Migration Guide](MIGRATION.md)** - For migrating existing agents
+- **[README](README.md)** - Architecture overview, getting started, automation features

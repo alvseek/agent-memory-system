@@ -22,7 +22,7 @@ This project uses a **dual-repository pattern** that separates shared tools from
 agent-memory/                       ← Private repo (your agent data)
 ├── control-files/                  ← THIS repo (public git submodule)
 │   ├── core-instruction-control-files.md   # Shared reasoning & knowledge
-│   ├── procedure/                          # 18 procedures & slash commands
+│   ├── procedure/                          # 17 procedures & slash commands
 │   ├── plans/                              # Planning templates
 │   ├── templates/                          # Output templates
 │   ├── new-agent-template/                 # Starter template for new agents
@@ -102,7 +102,7 @@ graph TB
 
     subgraph "Shared Control Files"
         CF["core-instruction-control-files.md"]
-        PROC["16 Procedures & Templates"]
+        PROC["17 Procedures & Templates"]
     end
 
     subgraph "Per-Agent Data"
@@ -179,8 +179,7 @@ control-files/
 │   └── install-scripts/               # Slash command installers
 ├── plans/                             # Planning templates (used by procedures)
 │   └── [plan templates]
-├── templates/                         # Output templates (used by procedures)
-└── MIGRATION.md                       # Migration guide for old → new architecture
+└── templates/                         # Output templates (used by procedures)
 
 agent-[domain]/  (NEW 4-FILE STRUCTURE)
 ├── agent-core-memory.md               # 🔥 ALL-IN-ONE: Identity + Knowledge + RAS + Emotional
@@ -237,6 +236,11 @@ Enhanced protocol enforcement ensures reliable execution:
 - Quick Surf Planning Protocol
 - Shallow Shore Planning Protocol
 - Deep Trench Planning Protocol
+- High Wizard / Quick Wizard Decision Collection
+- High Mountain / Short Hill Brainstorming
+- Fixing Rod / Patching Ship Bug Fixing
+- Wide Ocean Multi-Plan Coordination
+- Vote Multi-Agent Voting
 - Memory Archiving Protocol
 - Agent-specific domain protocols
 
@@ -281,6 +285,5 @@ Use "Awaken Agent Meta!" to activate the Meta Agent for agent management:
 ## Additional Resources
 
 - **[Architecture Documentation](ARCHITECTURE.md)** - Detailed 4-file architecture documentation
-- **[Migration Guide](MIGRATION.md)** - Migrate existing agents to new flattened architecture
 
 For agent creation or migration assistance, awaken Agent Meta: "Awaken Agent Meta!"

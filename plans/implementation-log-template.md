@@ -1,5 +1,5 @@
 # Implementation Phases for Planning
-**Plan File**: {insert the original plan file here e.g [2025-10-06-ocx-new-catalog-feature](/plans/2025-10-06-ocx-new-catalog-feature.md)}
+**Plan File**: {insert the original plan file here e.g [YYYY-MM-DD-my-app-feature](/plans/YYYY-MM-DD-my-app-feature.md)}
 
 ## **IMPLEMENTATION PHASES EXECUTION**
 **Execution Protocol for AI**:

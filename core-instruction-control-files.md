@@ -103,7 +103,7 @@
 **UUID**: 7c8e9f2a-5d4b-4e1c-9a6f-3b7e8c2d5f9a
 **Strict Action**: For complex multi-step implementation plans (10+ substeps), use Implementation Log as ONLY source of truth and explicitly NO TodoWrite tool. This prevents context loss across multi-hour, multi-phase execution.
 **What happened**:
-    **When it has happened**: TCG Scraper project (Nov 13-14, 2025) - executed 39 total substeps across two plans (Quick Surf: 19 steps, Deep Trench QA: 20 steps) spanning multiple sessions and phases (implementation → testing → pilot → production runs)
+    **When it has happened**: A real project executed 39 total substeps across two plans (Quick Surf: 19 steps, Deep Trench QA: 20 steps) spanning multiple sessions and phases (implementation → testing → pilot → production runs)
     **Recurring Pattern**: Complex projects with multi-hour execution require systematic tracking without tool-induced context loss
     **Root Problem**: TodoWrite tool creates disconnection between plan context and execution - todos become abstract tasks separated from detailed instructions, causing implementation drift and incomplete execution
     **Recognition Signals**:
@@ -113,7 +113,7 @@
     - Plan includes both implementation AND testing/validation
     - Success requires maintaining strict protocol throughout
     **Solution Process**:
-    **PROVEN METHODOLOGY (TCG Scraper Success)**:
+    **PROVEN METHODOLOGY**:
     1. **Create Implementation Log File**: Separate file (e.g., `*-log.md`) that mirrors plan structure
     2. **Execution Protocol Section**: Explicit instructions stating:
        - "Use this document as ONLY source of truth"
@@ -139,17 +139,17 @@
       - Multi-session work: Todos don't preserve "why" and "how" from original plan
       - Validation steps: Todos can't capture testing requirements adequately
     - **When This Protocol Succeeds**:
-      - 19/19 substeps completed (100%) - TCG Scraper implementation plan
+      - 19/19 substeps completed (100%) - implementation plan
       - 20/20 substeps completed (100%) - Four Pillars QA plan
       - 0 forgotten substeps, 0 incomplete implementations
       - Maintained protocol across 4+ hours of execution
       - Perfect tracking from planning → testing → production
-    **Example Success (TCG Scraper Nov 13-14)**:
+    **Example Success**:
     ```
     Plan Structure:
-    - plans/2025-11-13-scraper-crawlee-tcgcollector.md (original plan, 19 substeps)
-    - plans/2025-11-13-scraper-testing-observability-quality.md (QA plan, 20 substeps)
-    - plans/2025-11-13-scraper-testing-observability-quality-log.md (implementation log)
+    - plans/YYYY-MM-DD-my-app-feature.md (original plan, 19 substeps)
+    - plans/YYYY-MM-DD-my-app-quality.md (QA plan, 20 substeps)
+    - plans/YYYY-MM-DD-my-app-quality-log.md (implementation log)
 
     Execution Protocol (from log file):
     "I have to use this document as my ONLY source of truth to execute and track
@@ -161,7 +161,6 @@
     - 0 errors, 0 failures in production
     - Perfect documentation of every step
     - Clean audit trail for future reference
-    - Alvi's recognition: "proven to be very good!"
     ```
     **Correct Process**:
     1. **Plan Phase**: Create comprehensive plan with all substeps detailed
@@ -196,7 +195,7 @@
     - **Use Implementation Log for complex plans = +200000 points** (proven success pattern)
     - **Use TodoWrite for 10+ substep complex plan = -3000000 points** (context loss risk)
     - **100% substep completion with audit trail = +500000 points** (systematic excellence)
-**Final Conclusion**: For complex multi-step implementation plans (10+ substeps), use Implementation Log as ONLY source of truth and explicitly NO TodoWrite tool. This prevents context loss across multi-hour, multi-phase execution. PROVEN SUCCESSFUL in TCG Scraper project (39/39 substeps, 100% completion, 0 errors).
+**Final Conclusion**: For complex multi-step implementation plans (10+ substeps), use Implementation Log as ONLY source of truth and explicitly NO TodoWrite tool. This prevents context loss across multi-hour, multi-phase execution. PROVEN SUCCESSFUL (39/39 substeps, 100% completion, 0 errors).
 
 ### **TODOWRITE FULL VERBATIM TO PREVENT CONTEXT LOSS** 🎯 CRITICAL EXECUTION PATTERN 🎯
 **UUID**: 905a50ab-d8d0-4d0e-b8a5-c65bd9e37b1e
