@@ -127,4 +127,4 @@
 
 ---
 
-*Fixing Rod plan template for quick bug fixes with Alvi! 🎣✨*
+*Fixing Rod plan template for quick bug fixes with [USER-NAME]! 🎣✨*

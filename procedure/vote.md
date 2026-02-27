@@ -16,11 +16,11 @@ Execute multi-agent voting for decision-making - 5 AI agents vote independently 
 
 ### Step 1: Collect Options
 
-Ask Alvi to provide the options to vote on. Format: "Please provide the options you want to vote on (2-8 options recommended)"
+Ask [USER-NAME] to provide the options to vote on. Format: "Please provide the options you want to vote on (2-8 options recommended)"
 
 ### Step 2: Confirm Decision Context
 
-Ask Alvi: "What is the decision context? (Brief description of what we're deciding and why it matters)"
+Ask [USER-NAME]: "What is the decision context? (Brief description of what we're deciding and why it matters)"
 
 ### Step 3: Create Voting Document
 
@@ -109,12 +109,12 @@ Present the complete voting results with:
 
 ### Step 8: Ask to Keep ADR File
 
-Ask Alvi: "Do you want me to keep this ADR (Architecture Decision Record) vote file? (Y/N)"
+Ask [USER-NAME]: "Do you want me to keep this ADR (Architecture Decision Record) vote file? (Y/N)"
 - **If YES**: keep it
 - **If NO**: remove the file
 
 ### Step 9: End Procedure
 
-Voting complete. Inform Alvi the decision is documented and can be referenced in future implementation work.
+Voting complete. Inform [USER-NAME] the decision is documented and can be referenced in future implementation work.
 
 ---

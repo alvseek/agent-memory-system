@@ -48,13 +48,13 @@ After investigation, assess whether this task is suitable for Quick Wizard (dire
 - Implementation has irreversible consequences requiring careful tracking
 - You feel uncertain about completing within the current session
 
-**If escalating**: Tell Alvi "This task is complex enough to benefit from /high-wizard — escalating with the decisions I've already collected." Then execute [High Wizard Protocol](//@agent-memory/control-files/procedure/high-wizard.md) starting from Step 7 (decisions already collected). STOP HERE — do not continue with Quick Wizard steps.
+**If escalating**: Tell [USER-NAME] "This task is complex enough to benefit from /high-wizard — escalating with the decisions I've already collected." Then execute [High Wizard Protocol](//@agent-memory/control-files/procedure/high-wizard.md) starting from Step 7 (decisions already collected). STOP HERE — do not continue with Quick Wizard steps.
 
 **If suitable for Quick Wizard**: Continue to Step 3.
 
 ### Step 3: Present Decisions
 
-Present the decision form to Alvi. STOP. Present to Alvi for review. Do NOT proceed until decisions are confirmed.
+Present the decision form to [USER-NAME]. STOP. Present to [USER-NAME] for review. Do NOT proceed until decisions are confirmed.
 
 **Response format:**
 ```
@@ -67,11 +67,11 @@ I've investigated the codebase. Here are the decisions I need before proceeding:
 Reply with changes (e.g., "change 2 to B") or "let's proceed" to accept all defaults.
 ```
 
-If Alvi changes a foundational decision that affects downstream decisions, re-evaluate and re-present affected decisions.
+If [USER-NAME] changes a foundational decision that affects downstream decisions, re-evaluate and re-present affected decisions.
 
 ### Step 4: Create Execution Plan
 
-Enter plan mode if available. If plan mode is not available, present the plan directly in conversation for Alvi's approval.
+Enter plan mode if available. If plan mode is not available, present the plan directly in conversation for [USER-NAME]'s approval.
 
 Write the execution plan using the [Quick Wizard Plan Content Template](#quick-wizard-plan-content-template) structure:
 - Objective (1-2 sentences)
@@ -80,17 +80,17 @@ Write the execution plan using the [Quick Wizard Plan Content Template](#quick-w
 
 ### Step 5: Get Approval
 
-Present the plan for Alvi's approval. STOP. Do NOT execute until Alvi confirms.
+Present the plan for [USER-NAME]'s approval. STOP. Do NOT execute until [USER-NAME] confirms.
 
 ### Step 6: Execute
 
 Execute the steps from the plan in order. After each step, briefly report what was done before moving to the next.
 
-**CRITICAL**: If any NEW decision is discovered during execution that was not covered in Step 3, STOP immediately. Present the new decision to Alvi with the same format (options + confidence + reason) before continuing. Do NOT execute ahead on assumptions.
+**CRITICAL**: If any NEW decision is discovered during execution that was not covered in Step 3, STOP immediately. Present the new decision to [USER-NAME] with the same format (options + confidence + reason) before continuing. Do NOT execute ahead on assumptions.
 
 ### Step 7: Report Completion
 
-After all steps are executed, present a brief completion summary to Alvi:
+After all steps are executed, present a brief completion summary to [USER-NAME]:
 - What was done
 - Any issues encountered
 - Any tech debts or follow-up items

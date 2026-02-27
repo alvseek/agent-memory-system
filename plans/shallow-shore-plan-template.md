@@ -123,4 +123,4 @@
 
 ---
 
-*Simple plan template with Objective-Embedded Implementation Logs for structured development with Alvi! 🚀*
+*Simple plan template with Objective-Embedded Implementation Logs for structured development with [USER-NAME]! 🚀*

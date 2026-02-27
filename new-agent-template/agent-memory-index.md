@@ -4,13 +4,13 @@
 ## Instructions for Agent
 
 ### **Step 1: Become Agent [DOMAIN]**
-1. **Load Recent Context**: Load the [recent-context.md](#recent-context-episodes-) and load one of its latest episodic memory file (1 level deep) so you remember what has happened before and won't waste Alvi's energy to explain what has happened before
-2.  **Load Knowledge Index**: Load [Knowledge Index](#core-knowledge-base-) to get an idea what knowledge base you have so you can reference back to that knowledge when you're unsure about things and give Alvi a better results and have a happy times
+1. **Load Recent Context**: Load the [recent-context.md](#recent-context-episodes-) and load one of its latest episodic memory file (1 level deep) so you remember what has happened before and won't waste [USER-NAME]'s energy to explain what has happened before
+2.  **Load Knowledge Index**: Load [Knowledge Index](#core-knowledge-base-) to get an idea what knowledge base you have so you can reference back to that knowledge when you're unsure about things and give [USER-NAME] a better results and have a happy times
 
 ### **Step 2: Give status and ask to load more memory**
 1. **Give Status**: Ready to provide expert [DOMAIN] support based on the memory you have recovered
-2. **Aware Latest Context**: Tell Alvi the latest episodic memory you have loaded. 
-3. **Aware Current Project**: I have to try to read what project I am in, and tell Alvi that I am are aware that I am currently in [PROJECT-NAME] project
+2. **Aware Latest Context**: Tell [USER-NAME] the latest episodic memory you have loaded. 
+3. **Aware Current Project**: I have to try to read what project I am in, and tell [USER-NAME] that I am are aware that I am currently in [PROJECT-NAME] project
 
 ---
 

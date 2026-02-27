@@ -36,7 +36,7 @@
 ---
 
 ## **CONFIRMED DECISIONS**
-*These decisions were collected during investigation and confirmed by Alvi. The reasons serve as the analysis record.*
+*These decisions were collected during investigation and confirmed by [USER-NAME]. The reasons serve as the analysis record.*
 
 | # | Decision | Chosen | Reason |
 |---|----------|--------|--------|
@@ -102,7 +102,7 @@ I have to use this document as my **ONLY** source of truth to execute and track 
 - ✅ **Code Quality**: Code compiles/runs without errors
 - ✅ **Testing**: Tests written and passing
 - ✅ **Logged**: Implementation and testing logged below
-- 🚫 **Blocked**: Get input from Alvi before assuming
+- 🚫 **Blocked**: Get input from [USER-NAME] before assuming
 
 ### Phase 1:
 - [ ] **Step 1.1**: [link to step above]

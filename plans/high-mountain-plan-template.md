@@ -340,4 +340,4 @@ Implementation Planning:
 
 ---
 
-*High Mountain plan template for systematic creative problem-solving with Alvi! 🏔️✨*
+*High Mountain plan template for systematic creative problem-solving with [USER-NAME]! 🏔️✨*

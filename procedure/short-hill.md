@@ -49,7 +49,7 @@ Fill these sections:
 
 ### Step 7: Review Project Info + Problem
 
-Ask for review. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 8: Fill Current State Analysis
 
@@ -57,7 +57,7 @@ Fill the [Current State Analysis](//@agent-memory/control-files/plans/short-hill
 
 ### Step 9: Review Current State Analysis
 
-Ask for review. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 10: Fill Quick Solution Generation
 
@@ -65,7 +65,7 @@ Fill the [Quick Solution Generation](//@agent-memory/control-files/plans/short-h
 
 ### Step 11: Review Generated Solutions
 
-Ask for review and if user needs more options. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review and if user needs more options. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 12: Fill Quick Evaluation
 
@@ -79,7 +79,7 @@ Ask for review, AND proactively ask: "Do you want multi-agent voting? (5 AI agen
   - 13a. Fill my own Quick Evaluation assessment + vote for one option, add "### Evaluator 1: [Agent Name] ([Model])" section with my assessment and vote
   - 13b. Spawn 4 Haiku agents in parallel using Task tool with `model: "haiku"`: each agent reads the Short Hill document, independently evaluates all options, adds their assessment in "### Evaluator [2-5]: Haiku Agent [1-4]" section, and votes for one option
   - 13c. After all agents complete, update the Vote Summary table with all 5 votes
-  - 13d. Calculate Final Tally and present results to Alvi for review before moving to Selected Solution
+  - 13d. Calculate Final Tally and present results to [USER-NAME] for review before moving to Selected Solution
 - **If NO to multi-agent voting**, proceed directly to step 14
 
 ### Step 14: Fill Selected Solution
@@ -88,7 +88,7 @@ Fill the [Selected Solution](//@agent-memory/control-files/plans/short-hill-plan
 
 ### Step 15: Review Selected Solution
 
-Ask for review. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 16: Create ADR Folder and Copy Template
 
@@ -114,16 +114,16 @@ Fill the ADR document sections:
 
 ### Step 18: Review ADR
 
-Ask Alvi to review the ADR document. STOP. Do NOT proceed until confirmed to avoid rework when ADR need adjustment.
+Ask [USER-NAME] to review the ADR document. STOP. Do NOT proceed until confirmed to avoid rework when ADR need adjustment.
 
 ### Step 19: Present Documents
 
-Present both documents to Alvi:
+Present both documents to [USER-NAME]:
 - Quick brainstorming document: `/plans/[date]-[project]-[decision]-shorthill.md`
 - Decision summary (ADR): `/docs/adr/[date]-[title].md`
 
 ### Step 20: Inform Next Steps
 
-Inform Alvi that the ADR document should be used as "Related Documents" reference when continuing the main implementation plan (Shallow Shore/Deep Trench/Quick Surf)
+Inform [USER-NAME] that the ADR document should be used as "Related Documents" reference when continuing the main implementation plan (Shallow Shore/Deep Trench/Quick Surf)
 
 ---

@@ -583,4 +583,4 @@ sequenceDiagram
 
 ---
 
-*Patching Ship plan template for systematic bug investigation and root cause analysis with Alvi! 🚢🔧*
+*Patching Ship plan template for systematic bug investigation and root cause analysis with [USER-NAME]! 🚢🔧*

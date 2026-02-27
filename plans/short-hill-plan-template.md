@@ -169,4 +169,4 @@ After completing this Short Hill brainstorming process, an **Architecture Decisi
 
 ---
 
-*Short Hill plan template for quick decision-making with Alvi! 🏕️⚡*
+*Short Hill plan template for quick decision-making with [USER-NAME]! 🏕️⚡*

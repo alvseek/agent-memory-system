@@ -127,7 +127,7 @@ I have to use this document as my **ONLY** source of truth to execute and track 
 - ✅ **Code Quality**: Code compiles/runs without errors or warnings
 - ✅ **Testing**: All tests written and passing (unit, integration as applicable)
 - ✅ **Logged**: Both Implementation Log and Testing Log has been filled
-- 🚫 *Notes**: When found a substep that results in 🚫, I need to get an input confirmation to Alvi on what to do so I won't assume things and get lost
+- 🚫 *Notes**: When found a substep that results in 🚫, I need to get an input confirmation to [USER-NAME] on what to do so I won't assume things and get lost
 
 ### Implement Phase 1:
 - [ ] **Step 1.1**: {add reference to the original Step 1.1 plan section using anchor link}

@@ -49,7 +49,7 @@ Fill these sections:
 
 ### Step 7: Review Project Info + Objective
 
-Ask for review of project info and objective. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review of project info and objective. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 8: Fill Analysis
 
@@ -57,7 +57,7 @@ Fill the [Analysis](//@agent-memory/control-files/plans/deep-trench-plan-templat
 
 ### Step 9: Review Analysis
 
-Ask for review of analysis section. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review of analysis section. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 10: Fill Solution
 
@@ -65,7 +65,7 @@ Fill the [Solution](//@agent-memory/control-files/plans/deep-trench-plan-templat
 
 ### Step 11: Review Solution
 
-Ask for review of solution section. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review of solution section. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 12: Fill Implementation Phases
 
@@ -73,7 +73,7 @@ Fill the [Implementation Phases](//@agent-memory/control-files/plans/deep-trench
 
 ### Step 13: Review Implementation Phases
 
-Ask for review of implementation phases. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review of implementation phases. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 14: Self Final Review
 
@@ -87,7 +87,7 @@ Do a self final review by thinking critically, very hard and very carefully, as 
 
 ### Step 15: Present Self Review
 
-Present the self final review to Alvi. STOP. Do NOT create the log file until confirmed to avoid rework when review findings need adjustment.
+Present the self final review to [USER-NAME]. STOP. Do NOT create the log file until confirmed to avoid rework when review findings need adjustment.
 
 ### Step 16: Copy Implementation Log Template
 
@@ -111,10 +111,10 @@ Fill the `{add reference to the original Step *.* plan section using anchor link
 
 ### Step 20: Present Log File
 
-Present the Implementation Log file link to Alvi and wait for instruction
+Present the Implementation Log file link to [USER-NAME] and wait for instruction
 
 ### Step 21: Start Implementation
 
-After Alvi instructs to start implementing, start implementing following the **Execution Protocol for AI** in the newly created Implementation Log file
+After [USER-NAME] instructs to start implementing, start implementing following the **Execution Protocol for AI** in the newly created Implementation Log file
 
 ---

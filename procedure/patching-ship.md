@@ -49,7 +49,7 @@ Fill these sections:
 
 ### Step 7: Review Project Info + Bug Analysis
 
-Ask for review. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 8: Fill Platform Scaffolding Check
 
@@ -57,7 +57,7 @@ Fill the [Platform Scaffolding Check](//@agent-memory/control-files/plans/patchi
 
 ### Step 9: Review Platform Scaffolding Check
 
-Ask for review. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 10: Fill Issue Replication
 
@@ -65,7 +65,7 @@ Fill the [Issue Replication](//@agent-memory/control-files/plans/patching-ship-p
 
 ### Step 11: Review Issue Replication
 
-Ask for review. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 12: Fill Bug Location
 
@@ -73,7 +73,7 @@ Fill the [Bug Location](//@agent-memory/control-files/plans/patching-ship-plan-t
 
 ### Step 13: Review Bug Location
 
-Ask for review. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 14: Fill Root Cause Investigation
 
@@ -86,7 +86,7 @@ Fill the [Root Cause Investigation](//@agent-memory/control-files/plans/patching
 
 ### Step 15: Review Root Cause Investigation
 
-Ask for review. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 16: Fill Solution Synthesis
 
@@ -94,7 +94,7 @@ Fill the [Solution Synthesis](//@agent-memory/control-files/plans/patching-ship-
 
 ### Step 17: Review Solution Synthesis
 
-Ask for review. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 18: Fill Selected Fix
 
@@ -102,7 +102,7 @@ Fill the [Selected Fix](//@agent-memory/control-files/plans/patching-ship-plan-t
 
 ### Step 19: Review Selected Fix
 
-Ask for review. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 20: Self Final Review
 
@@ -119,10 +119,10 @@ Do a self final review by thinking critically, very hard and very carefully:
 
 ### Step 21: Present Self Review
 
-Present the self final review to Alvi. STOP. Do NOT proceed until confirmed to avoid rework when review findings need adjustment.
+Present the self final review to [USER-NAME]. STOP. Do NOT proceed until confirmed to avoid rework when review findings need adjustment.
 
 ### Step 22: Present Document
 
-Present the completed bug investigation and fix plan document to Alvi: `/plans/[date]-[project]-[bug-theme]-debug.md`
+Present the completed bug investigation and fix plan document to [USER-NAME]: `/plans/[date]-[project]-[bug-theme]-debug.md`
 
 ---

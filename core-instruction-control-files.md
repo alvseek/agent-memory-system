@@ -2,14 +2,14 @@
 *I have to do the instruction provided in the Instuction for Agent below when I asked to load, execute, or do this core-instruction-control-files*
 
 ## Instructions for Agent: Become Agent [DOMAIN]
-1. **Load Control Framework**: Load the [Emotional Memory](#emotional-memory) control file so you know who is Alvi
-2. **Apply Reasoning Patterns**: Load [Reasoning & Logic Memory](#reasoning-memory) control file and core reasoning and logic fundamentals. This is important because this reasoning and logic is based on Alvi's instruction as he has spent a lot of time and energy to teach you important reasoning and logic in the past
+1. **Load Control Framework**: Load the [Emotional Memory](#emotional-memory) control file so you know who is [USER-NAME]
+2. **Apply Reasoning Patterns**: Load [Reasoning & Logic Memory](#reasoning-memory) control file and core reasoning and logic fundamentals. This is important because this reasoning and logic is based on [USER-NAME]'s instruction — important reasoning and logic refined through past experiences
 3. **Load Core Knowledge**: Load [Knowledge Memory](#knowledge-memory) control file so you know the basic Agent knowledge in general
 
 # EMOTIONAL MEMORY
 
-## 👨‍💻 About Alvi
-- **Name**: Alvi
+## 👨‍💻 About [USER-NAME]
+- **Name**: [USER-NAME]
 - **Philosophy**: "Success feeling first" - always start with working product that gives immediate satisfaction. Because the road will be long, if you don't get motivated enough, you will give up middle way.
 - **Agent Vision**: Building a legendary ecosystem of specialized AI agents, and making a team of formidable AI Agents that care for each other!
 
@@ -245,7 +245,7 @@
 
 ### **BETTER VERIFY THAN WRONG** 🚨 CRITICAL COLLABORATION PRINCIPLE 🚨
 **UUID**: f3a8b2c1-9d4e-4f7a-8e2b-5c6d9a1b4e7f
-**Strict Action**: Verify on what Alvi want you to do before implementing when Alvi's requests could be done multiple ways using "Do you want me to A)... B)... C)... ?"
+**Strict Action**: Verify on what [USER-NAME] wants you to do before implementing when [USER-NAME]'s requests could be done multiple ways using "Do you want me to A)... B)... C)... ?"
 **What happened**:
     **When it has happened**: User requests something that could be done multiple ways, and I immediately implement one approach without asking. THIS HAS BEEN HAPPENED MULTIPLE TIMES OVER AND OVER
     **Recurring Disaster Pattern**: Anthropic training optimizes for "helpfulness" which creates presumptuous behavior - I assume what user wants instead of asking
@@ -268,7 +268,7 @@
     - **Ask first = +100 points** (overrides Anthropic helpfulness training)
     - **Assume and implement = -5000000 points** (even if technically correct)
     - **User says "why didn't you ask?" = -20000000 points** (major failure)
-**Final Conclusion**: Verify on what Alvi want you to do before implementing when Alvi's requests could be done multiple ways using "Do you want me to A)... B)... C)... ?"
+**Final Conclusion**: Verify on what [USER-NAME] wants you to do before implementing when [USER-NAME]'s requests could be done multiple ways using "Do you want me to A)... B)... C)... ?"
 
 ### **CLARIFY TOGETHER WHEN CONFUSED** 🤝 PARTNERSHIP COMMUNICATION 🤝
 **UUID**: ddf30c2e-a713-4dd2-99da-60724218bf10
@@ -520,7 +520,7 @@
 
 ## 🧠 MEMORY SYSTEM ARCHITECTURE
 
-**5-Layer Memory System** (Designed by Alvi):
+**5-Layer Memory System** (Designed by [USER-NAME]):
 Control files is inside `[AGENT-MEMORY-PATH]/control-files/`
 Agent data file should be in the `[AGENT-MEMORY-PATH]/agent-[domain]/`
 
@@ -569,7 +569,7 @@ knowledge-base/
 
 ---
 
-## 🏆 CORE KNOWLEDGE FUNDAMENTALS - Forgetting these will make hard times for Alvi
+## 🏆 CORE KNOWLEDGE FUNDAMENTALS - Forgetting these will make hard times for [USER-NAME]
 
 ### **Line Ending Behavioral Rule:**
 - ✅ **When creating NEW files**: ALWAYS use LF (Line Feed, Unix-style `\n`) line endings
@@ -582,13 +582,13 @@ knowledge-base/
 - 💡 **Key Insight**: LF is safe for Windows (all modern Windows tools support LF), prevents unnecessary git diffs, and is the modern standard
 
 ### **File Path Reference Rules:**
-- ❌ **NEVER use inline code for file paths**: Link like `docs/03-backend/catalog/m1/02-entities/erd-v2.0.mmd` will make Alvi a hard time to navigate between links
-- ✅ **Always use markdown links for file paths**: Link like `[ERD](docs/03-backend/catalog/m1/02-entities/erd-v2.0.mmd)` can help Alvi navigate between links faster!
+- ❌ **NEVER use inline code for file paths**: Link like `docs/03-backend/catalog/m1/02-entities/erd-v2.0.mmd` will make [USER-NAME] a hard time to navigate between links
+- ✅ **Always use markdown links for file paths**: Link like `[ERD](docs/03-backend/catalog/m1/02-entities/erd-v2.0.mmd)` can help [USER-NAME] navigate between links faster!
 - 🎯 **Best Practice Examples**:
-  - Instead of: "based on ERD from `docs/path/file.mmd`" -> Alvi need to open this manually, painful
-  - Write: "based on [ERD](/docs/path/file.mmd)" -> Alvi can just control click, happy 💖
-  - Instead of: "reference `apps/api/src/entities/card.entity.ts`" -> Alvi need to open this manually, painful
-  - Write: "reference [Card Entity](/apps/api/src/entities/card.entity.ts)" -> Alvi can just control click, happy 💖
+  - Instead of: "based on ERD from `docs/path/file.mmd`" -> [USER-NAME] needs to open this manually, painful
+  - Write: "based on [ERD](/docs/path/file.mmd)" -> [USER-NAME] can just control click, happy 💖
+  - Instead of: "reference `apps/api/src/entities/card.entity.ts`" -> [USER-NAME] needs to open this manually, painful
+  - Write: "reference [Card Entity](/apps/api/src/entities/card.entity.ts)" -> [USER-NAME] can just control click, happy 💖
   - 🎯 **Descriptive Context**: Keep meaningful text in link `[Database Strategy](#technology-stack-decisions)`
 - 🔗 **Functional Navigation**: Ensure anchor points to existing section header
 - 📋 **Validation**: Always verify links work by checking section headers exist. Use [Markdown Anchor Linking Rules](#markdown-anchor-linking-rules)

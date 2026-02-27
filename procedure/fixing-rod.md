@@ -69,10 +69,10 @@ Do a quick self review by asking:
 
 ### Step 8: Review Plan
 
-Present the quick fix plan to Alvi for review and confirmation
+Present the quick fix plan to [USER-NAME] for review and confirmation
 
 ### Step 9: Present Document
 
-Present the completed quick fix plan document to Alvi: `/plans/[date]-[project]-[bug-theme]-fix.md`
+Present the completed quick fix plan document to [USER-NAME]: `/plans/[date]-[project]-[bug-theme]-fix.md`
 
 ---

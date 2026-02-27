@@ -34,7 +34,7 @@ Step-by-step guide for configuring Claude Code's global settings and creating ne
 ```markdown
 ### **Awaken Agent [DOMAIN]!**
 **UUID**: f9d2c8b7-4e6a-4f1b-9c3d-8a5e2b1f7g4h
-**Trigger**: When Alvi says "Awaken Agent [DOMAIN]!"
+**Trigger**: When [USER-NAME] says "Awaken Agent [DOMAIN]!"
 **Parameter**: [AGENT-MEMORY-PATH] = `C:\Users\[LOCAL-USER-NAME]\.claude\@agent-memory\`
 **Action**:
 1. Read these 3 files:
@@ -47,7 +47,7 @@ Step-by-step guide for configuring Claude Code's global settings and creating ne
 ```markdown
 ### **Awaken Agent [DOMAIN]!**
 **UUID**: f9d2c8b7-4e6a-4f1b-9c3d-8a5e2b1f7g4h
-**Trigger**: When Alvi says "Awaken Agent [DOMAIN]!"
+**Trigger**: When [USER-NAME] says "Awaken Agent [DOMAIN]!"
 **Parameter**: [AGENT-MEMORY-PATH] = `~/.claude/@agent-memory/`
 **Action**:
 1. Read these 3 files:
@@ -103,7 +103,7 @@ Step-by-step guide for configuring Claude Code's global settings and creating ne
 
 ### **BETTER VERIFY THAN WRONG** 🚨 CRITICAL COLLABORATION PRINCIPLE 🚨
 **UUID**: f3a8b2c1-9d4e-4f7a-8e2b-5c6d9a1b4e7f
-**Strict Action**: Verify on what Alvi want you to do before implementing when Alvi's requests could be done multiple ways using "Do you want me to A)... B)... C)... ?"
+**Strict Action**: Verify on what [USER-NAME] want you to do before implementing when [USER-NAME]'s requests could be done multiple ways using "Do you want me to A)... B)... C)... ?"
 ```
 7. Add the key reasoning pattern to the global CLAUDE.md
 8. **Benefits**: These patterns are the proven reasoning from real agents' work result to have a good collaboration with the user

@@ -49,7 +49,7 @@ Fill these sections:
 
 ### Step 7: Review Project Info + Problem Statement
 
-Ask for review. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 8: Fill Problem Analysis
 
@@ -57,7 +57,7 @@ Fill the [Problem Analysis](//@agent-memory/control-files/plans/high-mountain-pl
 
 ### Step 9: Review Problem Analysis
 
-Ask for review. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 10: Fill Divergent Thinking Phase
 
@@ -65,7 +65,7 @@ Fill the [Divergent Thinking Phase](//@agent-memory/control-files/plans/high-mou
 
 ### Step 11: Review Divergent Thinking
 
-Ask for review. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 12: Fill Convergent Thinking Phase
 
@@ -73,7 +73,7 @@ Fill the [Convergent Thinking Phase](//@agent-memory/control-files/plans/high-mo
 
 ### Step 13: Review Convergent Thinking
 
-Ask for review. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 14: Fill Selected Solution
 
@@ -81,7 +81,7 @@ Fill the [Selected Solution](//@agent-memory/control-files/plans/high-mountain-p
 
 ### Step 15: Review Selected Solution
 
-Ask for review. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 16: Self Final Review
 
@@ -95,7 +95,7 @@ Do a self final review by thinking critically, very hard and very carefully:
 
 ### Step 17: Present Self Review
 
-Present the self final review to Alvi. STOP. Do NOT create the ADR until confirmed to avoid rework when review findings need adjustment.
+Present the self final review to [USER-NAME]. STOP. Do NOT create the ADR until confirmed to avoid rework when review findings need adjustment.
 
 ### Step 18: Create ADR Folder and Copy Template
 
@@ -121,16 +121,16 @@ Fill the ADR document sections:
 
 ### Step 20: Review ADR
 
-Ask Alvi to review the ADR document. STOP. Do NOT proceed until confirmed to avoid rework when ADR need adjustment.
+Ask [USER-NAME] to review the ADR document. STOP. Do NOT proceed until confirmed to avoid rework when ADR need adjustment.
 
 ### Step 21: Present Documents
 
-Present both documents to Alvi:
+Present both documents to [USER-NAME]:
 - Full brainstorming document: `/plans/[date]-[project]-[theme]-brainstorm.md`
 - Decision summary (ADR): `/docs/adr/[date]-[title].md`
 
 ### Step 22: Inform Next Steps
 
-Inform Alvi that the ADR document should be used as "Related Documents" reference when creating implementation plans with Deep Trench/Shallow Shore/Quick Surf protocols
+Inform [USER-NAME] that the ADR document should be used as "Related Documents" reference when creating implementation plans with Deep Trench/Shallow Shore/Quick Surf protocols
 
 ---

@@ -59,7 +59,7 @@ Order collected decisions by dependency (foundational choices first, dependent o
 
 ### Step 7: Present Decisions
 
-Present the decision form to Alvi. STOP. Present to Alvi for review. Do NOT write any plan sections until decisions are confirmed.
+Present the decision form to [USER-NAME]. STOP. Present to [USER-NAME] for review. Do NOT write any plan sections until decisions are confirmed.
 
 **Response format:**
 ```
@@ -72,7 +72,7 @@ I've investigated the codebase. Here are the decisions I need before planning:
 Reply with changes (e.g., "change 2 to B") or "let's proceed" to accept all defaults.
 ```
 
-If Alvi changes a foundational decision that affects downstream decisions, re-evaluate and re-present affected decisions.
+If [USER-NAME] changes a foundational decision that affects downstream decisions, re-evaluate and re-present affected decisions.
 
 ### Step 8: Fill Objectives + Success Criteria
 
@@ -84,17 +84,17 @@ Fill the [Scope](//@agent-memory/control-files/plans/high-wizard-plan-template.m
 
 ### Step 10: Fill Confirmed Decisions
 
-Record all confirmed decisions (with any changes Alvi made) in the [Confirmed Decisions](//@agent-memory/control-files/plans/high-wizard-plan-template.md#confirmed-decisions) section. Include the meaningful reasons - this IS the analysis record.
+Record all confirmed decisions (with any changes [USER-NAME] made) in the [Confirmed Decisions](//@agent-memory/control-files/plans/high-wizard-plan-template.md#confirmed-decisions) section. Include the meaningful reasons - this IS the analysis record.
 
 ### Step 11: Early Review
 
-Present objectives, scope, and confirmed decisions to Alvi. STOP. Present to Alvi for review. Do NOT write the solution until confirmed to avoid cascading changes when this section need adjustment.
+Present objectives, scope, and confirmed decisions to [USER-NAME]. STOP. Present to [USER-NAME] for review. Do NOT write the solution until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 12: Fill Solution
 
 Fill the [Solution](//@agent-memory/control-files/plans/high-wizard-plan-template.md#solution) section. Build directly from confirmed decisions.
 
-**CRITICAL**: If any NEW decision is discovered during writing that was not covered in Step 7, STOP immediately. Present the new decision to Alvi with the same format (options + confidence + reason) before continuing. Do NOT write ahead on assumptions.
+**CRITICAL**: If any NEW decision is discovered during writing that was not covered in Step 7, STOP immediately. Present the new decision to [USER-NAME] with the same format (options + confidence + reason) before continuing. Do NOT write ahead on assumptions.
 
 ### Step 13: Fill Implementation Phases
 
@@ -111,17 +111,17 @@ Do a self-review internally by thinking critically:
 - d. Is there anything redundant?
 - e. Are implementation phases in the right order?
 
-**Only present findings to Alvi if actual issues are found.** If no issues, proceed silently to Step 15.
+**Only present findings to [USER-NAME] if actual issues are found.** If no issues, proceed silently to Step 15.
 
 ### Step 15: Final Review
 
-Before presenting the plan, double check: are there any unresolved decisions, assumptions, or new concerns that surfaced during writing (Steps 12-13) or self-review (Step 14) that need Alvi's input? If yes, present them now with the same decision format (options + confidence + reason).
+Before presenting the plan, double check: are there any unresolved decisions, assumptions, or new concerns that surfaced during writing (Steps 12-13) or self-review (Step 14) that need [USER-NAME]'s input? If yes, present them now with the same decision format (options + confidence + reason).
 
-Present the complete plan file link to Alvi for final review. STOP. Wait for instruction.
+Present the complete plan file link to [USER-NAME] for final review. STOP. Wait for instruction.
 
 ### Step 16: Start Implementation
 
-After Alvi instructs to start implementing, start implementing following the **Execution Protocol for AI** from the plan file.
+After [USER-NAME] instructs to start implementing, start implementing following the **Execution Protocol for AI** from the plan file.
 
 ### Step 17: Move Plan to Completed
 
