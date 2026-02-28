@@ -4,12 +4,12 @@
 >
 > **How to Use**:
 > 1. Fill this master plan to define the overall feature scope and sub-plans
-> 2. Execute each sub-plan using its own protocol (Deep Trench, Shallow Shore, etc.)
+> 2. Execute each sub-plan using its own protocol (High Wizard, Quick Wizard)
 > 3. Return here after each sub-plan to update status and proceed to the next
 >
 > **When to Use**: Feature requires 3-5 sub-plans, multi-agent coordination needed, feature-level visibility required
 >
-> **When NOT to Use**: Single plan sufficient → use Deep Trench/Shallow Shore/Quick Surf directly
+> **When NOT to Use**: Single plan sufficient → use High Wizard or Quick Wizard directly
 
 ---
 
@@ -79,9 +79,8 @@ Based on analysis: [Brief statement of approach]
 > **How to fill**: List 3-5 sub-plans that make up this feature. Each will be executed using its own protocol.
 >
 > **Protocol Types**:
-> - **Brainstorming**: High Mountain (comprehensive), Short Hill (quick)
-> - **Implementation**: Deep Trench (complex), Shallow Shore (medium), Quick Surf (simple)
-> - **Bug Fixing**: Patching Ship (complex), Fixing Rod (quick)
+> - **File-based planning**: High Wizard (any complexity — dynamically adapts sections based on task context)
+> - **Direct execution**: Quick Wizard (lightweight tasks — decision collection + direct execution)
 
 | # | Plan Name | Protocol Type | Description | File Path |
 |---|-----------|---------------|-------------|-----------|

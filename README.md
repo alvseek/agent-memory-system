@@ -7,10 +7,9 @@ This repository contains the **shared control files** — procedures, templates,
 ## Table of Contents
 - [Repository Design](#repository-design)
 - [Getting Started](#getting-started)
-- [Architecture Overview](#architecture-overview)
-- [Understanding Control Files](#understanding-control-files)
-- [Automation Features](#automation-features)
-- [Agent Management](#agent-management)
+- [How It Works](#how-it-works)
+- [Typical Workflow](#typical-workflow)
+- [Slash Commands](#slash-commands)
 - [Using the Meta Agent](#using-the-meta-agent)
 - [Additional Resources](#additional-resources)
 
@@ -22,7 +21,7 @@ This project uses a **dual-repository pattern** that separates shared tools from
 agent-memory/                       ← Private repo (your agent data)
 ├── control-files/                  ← THIS repo (public git submodule)
 │   ├── core-instruction-control-files.md   # Shared reasoning & knowledge
-│   ├── procedure/                          # 17 procedures & slash commands
+│   ├── procedure/                          # 9 procedures & slash commands
 │   ├── plans/                              # Planning templates
 │   ├── templates/                          # Output templates
 │   ├── new-agent-template/                 # Starter template for new agents
@@ -51,38 +50,15 @@ agent-memory/                       ← Private repo (your agent data)
 
 ## Getting Started
 
-See the [Quick Start](https://github.com/alvseek/agent-memory/blob/master/QUICKSTART.md) in the agent-memory repository to clone the template and get running.
+Clone the [agent-memory](https://github.com/alvseek/agent-memory) template repo and follow the [Quick Start](https://github.com/alvseek/agent-memory/blob/master/QUICKSTART.md) to get up and running.
 
-If you prefer manual setup without the template repo:
-
-<details>
-<summary>Manual setup</summary>
-
-### 1. Create your private repository
-```bash
-mkdir agent-memory && cd agent-memory
-git init
-```
-
-### 2. Add control-files as a submodule
-```bash
-git submodule add https://github.com/alvseek/agent-memory-system.git control-files
-```
-
-### 3. Create your first agent
-See [Creating New Agents](SETUP.md#creating-new-agents) — copies the starter template into your private repo.
-
-### 4. Configure your environment
-See [Environment Setup](SETUP.md#environment-setup) — sets up Claude Code's global `CLAUDE.md` with awakening triggers, reasoning patterns, and slash commands.
-
-</details>
+For manual setup or environment configuration, see the [Setup Guide](SETUP.md).
 
 ---
 
-## Architecture Overview
+## How It Works
 
-### 5-Layer Memory System
-The ecosystem is built on a revolutionary 5-layer memory architecture:
+The system is built on a 5-layer memory architecture:
 
 1. **Emotional Memory** 💖 - Breakthrough moments and partnership milestones
 2. **Episodic Memory** 🧠 - Detailed session logs and chronological context
@@ -91,34 +67,11 @@ The ecosystem is built on a revolutionary 5-layer memory architecture:
 5. **Reticular Activation Memory (RAS)** ⚡ - Intelligent pattern recognition and automatic protocol execution
 
 ```mermaid
-graph TB
-    subgraph "Agent Memory System"
-        RAS["⚡ RAS Layer<br/><i>Auto-triggers & pattern recognition</i>"]
-        EMO["💖 Emotional Memory<br/><i>Partnership milestones</i>"]
-        EPI["🧠 Episodic Memory<br/><i>Session logs & context</i>"]
-        REA["🧩 Reasoning Memory<br/><i>Anti-patterns & logic</i>"]
-        KNO["📚 Knowledge Memory<br/><i>Domain expertise</i>"]
-    end
-
-    subgraph "Shared Control Files"
-        CF["core-instruction-control-files.md"]
-        PROC["17 Procedures & Templates"]
-    end
-
-    subgraph "Per-Agent Data"
-        ACM["agent-core-memory.md"]
-        AMI["agent-memory-index.md"]
-        EP["episodes/"]
-        KB["knowledge-base/"]
-    end
-
-    RAS --> EMO & EPI & REA & KNO
-    CF --> EMO & REA & KNO
-    PROC --> EPI & REA & KNO
-    ACM --> EMO & REA & RAS
-    AMI --> EPI & KB
-    EP --> EPI
-    KB --> KNO
+graph LR
+    A["🔑 Awaken Agent!"] --> B["agent-core-memory.md"]
+    A --> C["agent-memory-index.md"]
+    A --> D["core-instruction-control-files.md"]
+    B & C & D --> E["🧠 Agent Ready<br/><i>💖 Emotional · 🧠 Episodic · 🧩 Reasoning · 📚 Knowledge · ⚡ RAS</i>"]
 ```
 
 ### Memory In Action
@@ -147,143 +100,77 @@ Session 3 (Friday) — context compaction happens mid-session:
   → Continues working as if nothing happened
 ```
 
-See the **[Setup Guide](SETUP.md)** for environment configuration (8 steps) and creating new agents.
+For file structure, loading flow, and detailed layer documentation, see the [Architecture Documentation](ARCHITECTURE.md).
 
-## Understanding Control Files
+## Typical Workflow
 
-The `control-files/` directory contains the universal memory management instructions that all agents follow. **Read the [Architecture Documentation](ARCHITECTURE.md)** for comprehensive documentation.
-
-### Directory Structure
+### 1. Create an agent
+Use the Meta agent to create a new domain specialist:
 ```
-control-files/
-├── core-instruction-control-files.md  # 🔥 MAIN: Shared flattened control file
-├── procedure/                         # 🔥 Procedures (also work as slash commands)
-│   ├── update-memory.md               # Comprehensive memory update
-│   ├── update-episodic.md             # Episodic memory update
-│   ├── add-reasoning.md               # Reasoning pattern capture
-│   ├── add-knowledge.md               # Knowledge memory capture
-│   ├── add-emotional.md               # Emotional memory capture
-│   ├── archive-memories.md            # Memory archiving
-│   ├── quick-surf.md                  # Scope validation planning
-│   ├── shallow-shore.md               # Solution exploration planning
-│   ├── deep-trench.md                 # Objective discovery planning
-│   ├── high-wizard.md                 # Structural decision collection
-│   ├── high-mountain.md               # Comprehensive brainstorming
-│   ├── short-hill.md                  # Quick decision brainstorming
-│   ├── fixing-rod.md                  # Quick bug fixes
-│   ├── patching-ship.md               # Comprehensive bug investigation
-│   ├── wide-ocean.md                  # Multi-plan coordination
-│   ├── quick-wizard.md                # Lightweight decision collection + direct execution
-│   ├── vote.md                        # Multi-agent voting
-│   ├── template/                      # Procedure template
-│   └── install-scripts/               # Slash command installers
-├── plans/                             # Planning templates (used by procedures)
-│   └── [plan templates]
-└── templates/                         # Output templates (used by procedures)
-
-agent-[domain]/  (NEW 4-FILE STRUCTURE)
-├── agent-core-memory.md               # 🔥 ALL-IN-ONE: Identity + Knowledge + RAS + Emotional
-├── agent-memory-index.md              # Episode list + Knowledge directory
-├── episodes/                          # Episodic memory files
-│   └── YYYY-MM-DD-HH.MM-*.md
-├── knowledge-base/                    # Specialized knowledge files
-│   └── [topic].md
-└── archive/                           # Archived memories
+"Awaken Agent Meta!"
+"Help me create a new agent for backend"
 ```
+This generates the 4-file structure (`agent-core-memory.md`, `agent-memory-index.md`, `episodes/`, `knowledge-base/`) with your agent's identity, knowledge, and triggers.
 
-### Key Features
-- **Control Files**: Define what each memory layer does and how it works
-- **Write Procedures**: Step-by-step guides for capturing memory consistently
-- **RAS System**: Automatic protocol triggering based on user requests
-- **Planning Templates**: Structured approaches for complex implementations
-
-## Automation Features
-
-### Slash Commands
-
-Global slash commands provide fast, reliable memory automation:
-
-**Available Commands:**
-- `/update-memory [new]` - Comprehensive memory update (all layers evaluated)
-- `/update-episodic [new]` - Focused episodic memory update only
-
-**Usage Examples:**
+### 2. Awaken your agent
+Start any session by loading your agent's memory:
 ```
-/update-memory          # Update existing episode + evaluate other memories
-/update-memory new      # Create new episode + evaluate other memories
-/update-episodic        # Update existing episode only
-/update-episodic new    # Create new episode only
+"Awaken Agent Backend!"
+```
+The agent loads its identity, latest episode, and knowledge index — resuming exactly where you left off.
+
+### 3. Work with planning protocols
+Use built-in procedures for structured work:
+```
+/high-wizard    → Smart planning with dynamic sections (adapts to any task)
+/quick-wizard   → Lightweight decisions + direct execution for small tasks
+```
+The agent investigates, proposes a plan, and executes step-by-step after your approval.
+
+### 4. Save session memory
+At the end of a session, capture what happened:
+```
+/update-episodic new    → Create a new episode for this session
+/update-episodic        → Append to an existing episode
+```
+This saves context, decisions, outcomes, and insights to the agent's `episodes/` folder.
+
+### 5. Next session — memory restored
+When you awaken the agent again, it automatically:
+- Loads its **identity and core knowledge** from `agent-core-memory.md`
+- Reads the **latest episode** for recent context
+- Has the **full episode index** available to load older sessions on demand
+
+No re-explanation needed. The agent remembers.
+
+## Slash Commands
+
+Procedures double as slash commands for fast execution:
+
+```
+/high-wizard            # Smart planning with dynamic section proposal
+/quick-wizard           # Lightweight decision collection + direct execution
+/update-memory          # Comprehensive memory update (all layers evaluated)
+/update-episodic        # Episodic memory update only
 ```
 
-**Benefits:**
-- Consistent procedure execution
-- Automated RAS protocol loading
-- Works across all Claude Code sessions
-- Reduces manual memory management
-
-### Protocol Enforcement (UUID d7e9f2a4)
-
-Enhanced protocol enforcement ensures reliable execution:
-
-**How It Works:**
-1. User triggers protocol (e.g., "use shallow shore protocol")
-2. Agent loads RAS files (`core-memory/2-core-ras-memory.md` + domain-specific)
-3. Protocol executed step-by-step from single source of truth
-4. Prevents "sometimes doesn't load procedure" issues
-
-**Supported Protocols:**
-- Memory Update Triggers
-- Quick Surf Planning Protocol
-- Shallow Shore Planning Protocol
-- Deep Trench Planning Protocol
-- High Wizard / Quick Wizard Decision Collection
-- High Mountain / Short Hill Brainstorming
-- Fixing Rod / Patching Ship Bug Fixing
-- Wide Ocean Multi-Plan Coordination
-- Vote Multi-Agent Voting
-- Memory Archiving Protocol
-- Agent-specific domain protocols
-
-## Agent Management
-
-### Memory Synchronization
-- Each agent maintains independent memory storage
-- Control files provide universal memory management rules
-- Cross-references enable knowledge sharing between agents
-- Meta agent coordinates ecosystem-wide improvements
-
-### Agent Activation (4-File Flattened Architecture)
-1. Use "Awaken Agent [DOMAIN]!" to load agent memory
-2. The awakening trigger (see [Step 2](SETUP.md#step-2-add-awaken-activation-4-file-flattened-architecture)) loads files in this order:
-   - `agent-core-memory.md` - Agent identity + core knowledge + RAS + emotional moments
-   - `agent-memory-index.md` - Episode list + knowledge directory
-   - `core-instruction-control-files.md` - Shared control instructions (reasoning, knowledge)
-3. Level 2 context (latest episode) is loaded via instructions in agent-memory-index.md
-4. Post-compact recovery loads agent-core-memory.md first (identity recovery)
+For the full list of procedures and wizard protocols, see the [Architecture Documentation](ARCHITECTURE.md#wizard-protocols).
 
 ## Using the Meta Agent
-Meta Agent is available as this project specific Agent. His core-domain-knowledge should already contain this README.md and control files README.md
 
-### Awakening the Meta Agent
-Use "Awaken Agent Meta!" to activate the Meta Agent for agent management:
+The [agent-memory](https://github.com/alvseek/agent-memory) template repo includes a ready-to-use **Meta Agent** for managing the memory system.
 
-### Meta Agent Capabilities
+Use "Awaken Agent Meta!" to activate:
+
+### Capabilities
 - **Setup Assistance**: Guide setting up the 5-layer memory system in new environments (Windows/Linux/macOS)
 - **Agent Creation**: Guide new agent development and template customization
-- **Memory Architecture**: Help update and maintain the 5-layer memory system. Provide expert guidance on memory system design.
+- **Memory Architecture**: Help update and maintain the 5-layer memory system
 - **Agent Updates**: Assist with evolving existing agents and their memory systems
-
-### Common Meta Agent Tasks
-1. **Setup New Environment**: "Help me setup the agent memory system on [Windows/Linux/macOS]"
-2. **Creating New Agents**: "Help me create a new agent for [domain]"
-3. **Knowledge Memory Updates**: "Update agent's [domain] knowledge base with [new information]"
-4. **Architecture Review**: "Review agent's [domain] memory structure for improvements"
-5. **Template Evolution**: "Help improve the agent [domain] framework structure based on recent framework update"
 
 ---
 
 ## Additional Resources
 
-- **[Architecture Documentation](ARCHITECTURE.md)** - Detailed 4-file architecture documentation
-
-For agent creation or migration assistance, awaken Agent Meta: "Awaken Agent Meta!"
+- **[Architecture Documentation](ARCHITECTURE.md)** — File structure, loading flow, memory layers, wizard protocols
+- **[Setup Guide](SETUP.md)** — Environment configuration and creating new agents

@@ -121,43 +121,27 @@ Step-by-step guide for configuring Claude Code's global settings and creating ne
 
 ### Step 6 (recommended): Setup Global Slash Commands for Agent Automation
 1. The agent automation slash commands are located in `~/.claude/commands/`
-2. Run the install script to copy all procedures:
+2. Run the install script to copy procedures:
    ```bash
    # From the @agent-memory directory:
-   bash control-files/procedure/install-scripts/install-procedures-claude-code.sh
+   bash control-files/procedure/install-scripts/install-all-claude-code.sh      # Install everything
+   bash control-files/procedure/install-scripts/install-wizard-claude-code.sh   # Wizard procedures only
+   bash control-files/procedure/install-scripts/install-memory-claude-code.sh   # Memory procedures only
    ```
 3. **Available Commands**:
 
-   **Implementation Planning:**
-   - `/deep-trench [context]` - Discover and clarify objectives through comprehensive analysis
-   - `/shallow-shore [context]` - Explore solutions when objectives are clear but solution is not
-   - `/quick-surf [context]` - Validate in-scope/out-scope boundaries with implementation step logging
-   - `/wide-ocean [context]` - **Master Coordinator**: Orchestrates 3-5 separate protocol plans
-   - `/high-wizard [context]` - Structural decision collection with lean plan template
+   **Wizard Procedures** (planning, analysis, brainstorming, bug investigation):
+   - `/high-wizard [context]` - Smart planning with dynamic section proposal — adapts to any task
+   - `/quick-wizard [context]` - Lightweight decision collection + direct execution (auto-escalates to High Wizard when complex)
+   - `/wide-ocean [context]` - **Master Coordinator**: Orchestrates 3-5 separate sub-plans
 
-   **Brainstorming & Decision Making:**
-   - `/high-mountain [context]` - Comprehensive brainstorming with multiple creative techniques
-   - `/short-hill [context]` - Quick decision brainstorming (5-8 options, simple evaluation)
-   - `/vote` - Multi-agent voting (5 AI agents vote independently)
-
-   **Bug Fixing:**
-   - `/fixing-rod [context]` - Quick straightforward bug fixes (simple, < 30 min)
-   - `/patching-ship [context]` - Comprehensive bug investigation with root cause analysis
-
-   **Memory Update:**
+   **Memory Procedures:**
    - `/update-memory [new]` - Comprehensive memory update (episodic + evaluate emotional/reasoning/knowledge)
    - `/update-episodic [new]` - Update existing episode or create new episode
-
-   **Memory Write:**
    - `/add-reasoning [pattern]` - Document anti-patterns and logic frameworks
    - `/add-knowledge [topic]` - Document domain expertise and research findings
    - `/add-emotional` - Document emotional key moments and breakthroughs
-
-   **Memory Maintenance:**
    - `/archive-memories [type]` - Archive older memories (types: episodic, emotional, all)
-
-   **Utility:**
-   - `/procedure-template` - Template for creating new procedures
 
 4. **Benefits**:
    - Complete agent automation workflow coverage
@@ -165,7 +149,7 @@ Step-by-step guide for configuring Claude Code's global settings and creating ne
    - Consistent formatting and procedure compliance
    - Works across ALL Claude Code sessions
    - Automates RAS protocol execution
-   - Full lifecycle: Planning → Implementation → Bug Fixing → Memory → Archiving
+   - Full lifecycle: Planning → Memory → Archiving
 
 ### Step 7 (recommended): Configure Global Settings for Bypass Permissions
 1. Open `~/.claude/settings.json` (or `C:\Users\[USERNAME]\.claude\settings.json` on Windows)

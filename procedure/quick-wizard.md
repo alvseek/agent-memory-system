@@ -47,6 +47,9 @@ After investigation, assess whether this task is suitable for Quick Wizard (dire
 - Task requires production deployment with audit trail
 - Implementation has irreversible consequences requiring careful tracking
 - You feel uncertain about completing within the current session
+- Task involves bug investigation requiring hypothesis-driven debugging (high-wizard section E)
+- Task requires evaluating multiple solution approaches with formal comparison (high-wizard section F)
+- Task produces an architecture decision record (high-wizard sections F+G)
 
 **If escalating**: Tell [USER-NAME] "This task is complex enough to benefit from /high-wizard — escalating with the decisions I've already collected." Then execute [High Wizard Protocol](//@agent-memory/control-files/procedure/high-wizard.md) starting from Step 7 (decisions already collected). STOP HERE — do not continue with Quick Wizard steps.
 

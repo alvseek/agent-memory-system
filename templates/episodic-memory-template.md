@@ -8,7 +8,7 @@
 > - **Windows**: `powershell -c "Get-Date -Format 'yyyy-MM-dd HH:mm'"`
 > - **Linux/macOS**: `date '+%Y-%m-%d %H:%M'`
 >
-> **3. TEMPLATE FORMAT**: Template format is in [Detailed Entry Template](@agent-memory/control-files/procedure/update-episodic.md#detailed-entry-template)
+> **3. TEMPLATE FORMAT**: Template format is in [Detailed Entry Template](@agent-memory/control-files/procedure/memory/update-episodic.md#detailed-entry-template)
 
 ## 📅 Interactions List
 📂 YYYY-MM-DD hh.mm:

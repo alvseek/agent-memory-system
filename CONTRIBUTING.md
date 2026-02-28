@@ -2,6 +2,12 @@
 
 Thank you for your interest in the Agent Memory System! This project is a methodology framework for building AI agents with persistent memory, and contributions of all kinds are welcome.
 
+## Table of Contents
+- [Ways to Contribute](#ways-to-contribute)
+- [Guidelines](#guidelines)
+- [Scope](#scope)
+- [License](#license)
+
 ## Ways to Contribute
 
 ### Suggest Improvements

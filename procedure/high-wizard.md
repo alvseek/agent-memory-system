@@ -88,11 +88,46 @@ Record all confirmed decisions (with any changes [USER-NAME] made) in the [Confi
 
 ### Step 11: Early Review
 
-Present objectives, scope, and confirmed decisions to [USER-NAME]. STOP. Present to [USER-NAME] for review. Do NOT write the solution until confirmed to avoid cascading changes when this section need adjustment.
+Present objectives, scope, and confirmed decisions to [USER-NAME]. Then propose which optional plan sections to include based on investigation findings.
+
+**Optional sections (lettered)** — propose based on task context:
+- **A) Integration Architecture** — Propose when: multi-system changes, multiple components interacting
+- **B) System Flow Diagrams** — Propose when: changing data/process flow, API changes, sequence changes
+- **C) Technical Considerations** — Propose when: significant technical constraints, limitations, or dependencies exist
+- **D) Detailed Analysis** — Propose when: investigation/analysis-focused tasks, unclear objectives needing deep examination
+- **E) Bug Investigation** — Propose when: bug fix, debugging, error investigation, unexpected behavior analysis
+- **F) Solution Options & Evaluation** — Propose when: brainstorming/decision tasks, multiple viable approaches need evaluation, architecture decisions
+- **G) ADR Output** — Propose when: F is included AND the decision has architectural significance worth documenting separately
+
+**Response format:**
+```
+[Present objectives, scope, and confirmed decisions as before]
+
+Based on the task, I'll include these optional plan sections:
+[x] A) Integration Architecture (reason: ...)
+[ ] B) System Flow Diagrams (reason: not needed because ...)
+[x] C) Technical Considerations (reason: ...)
+[ ] D) Detailed Analysis (reason: not needed because ...)
+[ ] E) Bug Investigation (reason: not needed because ...)
+[ ] F) Solution Options & Evaluation (reason: not needed because ...)
+[ ] G) ADR Output (reason: not needed because ...)
+
+Add or remove any? Or proceed.
+```
+
+STOP. Present to [USER-NAME] for review. Do NOT write the solution until confirmed to avoid cascading changes when this section needs adjustment.
 
 ### Step 12: Fill Solution
 
 Fill the [Solution](//@agent-memory/control-files/plans/high-wizard-plan-template.md#solution) section. Build directly from confirmed decisions.
+
+**Optional sections**: Only fill the optional sections (A-G) that were confirmed in Step 11. Remove unconfirmed optional section markers and their placeholder content from the plan file — do not leave empty optional sections.
+
+**ADR file creation**: If section G is confirmed, after filling all plan sections:
+1. Copy the [ADR Template](//@agent-memory/control-files/templates/adr-template.md) to the project's ADR location
+2. Fill it using content from section F (Solution Options & Evaluation) and the Confirmed Decisions table
+3. Link the ADR back to this plan file
+4. Update the plan's section G with the ADR file path
 
 **CRITICAL**: If any NEW decision is discovered during writing that was not covered in Step 7, STOP immediately. Present the new decision to [USER-NAME] with the same format (options + confidence + reason) before continuing. Do NOT write ahead on assumptions.
 
