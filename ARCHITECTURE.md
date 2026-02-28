@@ -206,10 +206,11 @@ These triggers work without any agent loaded:
 | Memory Update | `f207fcdf` | Comprehensive memory update |
 | Episodic Update | `3bedbcdb` | Episodic memory only |
 | Wide Ocean Protocol | `b4f7a2e9` | Master coordinator for 3-5 sub-plans |
-| Deep Trench Protocol | `e2709f48` | Comprehensive planning |
-| Shallow Shore Protocol | `27602fae` | Quick planning |
-| Quick Surf Protocol | `6e1343e7` | Scope validation |
-| Vote Protocol | `a8c3f5e2` | Multi-agent voting |
+| Quick Wizard Protocol | `a7b8c9d0` | Lightweight planning + direct execution |
+| Archive Memories | `a3b4c5d6` | Memory archiving |
+| Add Reasoning | `b4c5d6e7` | Reasoning pattern capture |
+| Add Knowledge | `c5d6e7f8` | Knowledge memory capture |
+| Add Emotional | `d6e7f8a9` | Emotional memory capture |
 
 #### The Core Memory Compilation System
 
