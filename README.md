@@ -281,6 +281,7 @@ Use "Awaken Agent Meta!" to activate the Meta Agent for agent management:
 ## Additional Resources
 
 - **[Architecture Documentation](ARCHITECTURE.md)** - Detailed 4-file architecture documentation
+- **[MCP Setup Guide](MCP.md)** - Connect agents to databases, APIs, and tools via MCP
 - **[Migration Guide](MIGRATION.md)** - Migrate existing agents to new flattened architecture
 
 For agent creation or migration assistance, awaken Agent Meta: "Awaken Agent Meta!"
