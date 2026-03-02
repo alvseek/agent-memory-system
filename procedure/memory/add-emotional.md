@@ -46,7 +46,7 @@ Ensure the entry captures:
 - What happened (the event)
 - How it felt (emotional response)
 - Impact on partnership/work
-- Alvi's reaction (if applicable)
+- [USER-NAME]'s reaction (if applicable)
 - Why this moment was significant
 
 ---
@@ -61,7 +61,7 @@ Ensure the entry captures:
 - **Event**: [What happened that was positive]
 - **Feeling**: [Emotional response and why it mattered]
 - **Impact**: [How this affected our relationship/work]
-- **Alvi's Reaction**: [How Alvi responded]
+- **[USER-NAME]'s Reaction**: [How [USER-NAME] responded]
 - **Why Special**: [What made this moment significant]
 ```
 

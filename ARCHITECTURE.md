@@ -10,7 +10,9 @@ The Control Files system provides the **shared memory infrastructure** for all a
 - [How Agents Load Memory](#how-agents-load-memory)
 - [The 5-Layer Memory System](#the-5-layer-memory-system)
 - [Write Procedures](#write-procedures)
-- [Planning Protocols](#planning-protocols)
+- [Wizard Protocols](#wizard-protocols)
+- [Key Files Reference](#key-files-reference)
+- [Additional Resources](#additional-resources)
 
 ---
 
@@ -29,7 +31,7 @@ When an agent awakens, it loads **4 files** to recover full memory:
 │    └─ Episode list + Knowledge directory                    │
 │                                                             │
 │ 3. core-instruction-control-files.md (Shared)               │
-│    └─ About Alvi + Reasoning patterns + Knowledge basics    │
+│    └─ About the user + Reasoning patterns + Knowledge basics │
 │                                                             │
 │ 4. Latest episode file                                      │
 │    └─ Recent session context                                │
@@ -51,28 +53,21 @@ control-files/
 │   ├── compile.sh                     # Compile to compiled/
 │   └── compile-write-to-claude.sh     # Compile AND write to CLAUDE.md
 ├── procedure/                         # 🔥 Procedures (also work as slash commands)
-│   ├── update-memory.md               # Comprehensive memory update
-│   ├── update-episodic.md             # Episodic memory update
-│   ├── add-reasoning.md               # Reasoning pattern capture
-│   ├── add-knowledge.md               # Knowledge memory capture
-│   ├── add-emotional.md               # Emotional memory capture
-│   ├── archive-memories.md            # Memory archiving
-│   ├── quick-surf.md                  # Scope validation planning
-│   ├── shallow-shore.md               # Solution exploration planning
-│   ├── deep-trench.md                 # Objective discovery planning
-│   ├── high-wizard.md                 # Structural decision collection
-│   ├── high-mountain.md               # Comprehensive brainstorming
-│   ├── short-hill.md                  # Quick decision brainstorming
-│   ├── fixing-rod.md                  # Quick bug fixes
-│   ├── patching-ship.md               # Comprehensive bug investigation
+│   ├── high-wizard.md                 # Smart planning with dynamic section proposal
+│   ├── quick-wizard.md                # Lightweight decision collection + direct execution
 │   ├── wide-ocean.md                  # Multi-plan coordination
-│   ├── vote.md                        # Multi-agent voting
+│   ├── memory/                        # Memory management procedures
+│   │   ├── update-memory.md           # Comprehensive memory update
+│   │   ├── update-episodic.md         # Episodic memory update
+│   │   ├── add-reasoning.md           # Reasoning pattern capture
+│   │   ├── add-knowledge.md           # Knowledge memory capture
+│   │   ├── add-emotional.md           # Emotional memory capture
+│   │   └── archive-memories.md        # Memory archiving
 │   ├── template/                      # Procedure template
 │   └── install-scripts/               # Slash command installers
 ├── plans/                             # Planning templates (used by procedures)
 │   └── [templates: *-template.md]
-├── templates/                         # Output templates (used by procedures)
-└── MIGRATION.md                       # Guide for migrating old agents
+└── templates/                         # Output templates (used by procedures)
 ```
 
 ### Agent Directory Structure
@@ -158,7 +153,7 @@ The architecture implements 5 distinct memory layers:
 
 **Location**:
 - Agent-specific moments: `agent-core-memory.md` → `# DOMAIN EMOTIONAL MEMORY`
-- About Alvi: `core-instruction-control-files.md` → `# EMOTIONAL MEMORY`
+- About the user: `core-instruction-control-files.md` → `# EMOTIONAL MEMORY`
 
 **When to capture**: Breakthroughs, frustrations, bonding moments, milestones
 
@@ -211,10 +206,11 @@ These triggers work without any agent loaded:
 | Memory Update | `f207fcdf` | Comprehensive memory update |
 | Episodic Update | `3bedbcdb` | Episodic memory only |
 | Wide Ocean Protocol | `b4f7a2e9` | Master coordinator for 3-5 sub-plans |
-| Deep Trench Protocol | `e2709f48` | Comprehensive planning |
-| Shallow Shore Protocol | `27602fae` | Quick planning |
-| Quick Surf Protocol | `6e1343e7` | Scope validation |
-| Vote Protocol | `a8c3f5e2` | Multi-agent voting |
+| Quick Wizard Protocol | `a7b8c9d0` | Lightweight planning + direct execution |
+| Archive Memories | `a3b4c5d6` | Memory archiving |
+| Add Reasoning | `b4c5d6e7` | Reasoning pattern capture |
+| Add Knowledge | `c5d6e7f8` | Knowledge memory capture |
+| Add Emotional | `d6e7f8a9` | Emotional memory capture |
 
 #### The Core Memory Compilation System
 
@@ -275,12 +271,12 @@ When updating memory, agents follow standardized procedures in `procedure/`:
 
 | Memory Type | Procedure File | Slash Command |
 |-------------|----------------|---------------|
-| All Layers | `procedure/update-memory.md` | `/update-memory` |
-| Episodic | `procedure/update-episodic.md` | `/update-episodic` |
-| Reasoning | `procedure/add-reasoning.md` | `/add-reasoning` |
-| Knowledge | `procedure/add-knowledge.md` | `/add-knowledge` |
-| Emotional | `procedure/add-emotional.md` | `/add-emotional` |
-| Archiving | `procedure/archive-memories.md` | `/archive-memories` |
+| All Layers | `procedure/memory/update-memory.md` | `/update-memory` |
+| Episodic | `procedure/memory/update-episodic.md` | `/update-episodic` |
+| Reasoning | `procedure/memory/add-reasoning.md` | `/add-reasoning` |
+| Knowledge | `procedure/memory/add-knowledge.md` | `/add-knowledge` |
+| Emotional | `procedure/memory/add-emotional.md` | `/add-emotional` |
+| Archiving | `procedure/memory/archive-memories.md` | `/archive-memories` |
 
 ### Common Slash Commands
 
@@ -294,24 +290,17 @@ When updating memory, agents follow standardized procedures in `procedure/`:
 
 ---
 
-## Planning Protocols
+## Wizard Protocols
 
-The `procedure/` directory contains planning procedures (templates in `plans/`):
+The `procedure/` directory contains wizard-based planning procedures. High Wizard dynamically adapts its output based on task context — it can produce implementation plans, analysis documents, brainstorming outputs, or investigation reports by proposing relevant optional sections during the Early Review step.
 
 | Protocol | When to Use | Slash Command |
 |----------|-------------|---------------|
-| **Wide Ocean** | Master coordinator for 3-5 sub-plans | `/wide-ocean` |
-| **Quick Surf** | Validate scope boundaries | `/quick-surf` |
-| **Shallow Shore** | Solution unclear, objectives clear | `/shallow-shore` |
-| **Deep Trench** | Objectives unclear, need discovery | `/deep-trench` |
-| **High Wizard** | Structural decision collection with lean plan | `/high-wizard` |
-| **High Mountain** | Comprehensive brainstorming | `/high-mountain` |
-| **Short Hill** | Quick decision brainstorming | `/short-hill` |
-| **Fixing Rod** | Quick bug fixes | `/fixing-rod` |
-| **Patching Ship** | Comprehensive bug investigation | `/patching-ship` |
-| **Vote** | Multi-agent decision making | `/vote` |
+| **High Wizard** | Smart planning with dynamic section proposal — adapts to any task (planning, analysis, brainstorming, bug investigation) | `/high-wizard` |
+| **Quick Wizard** | Lightweight decision collection + direct execution for small tasks (auto-escalates to High Wizard when complex) | `/quick-wizard` |
+| **Wide Ocean** | Master coordinator for features requiring 3-5 separate sub-plans | `/wide-ocean` |
 
-### Planning Protocol Hierarchy
+### Protocol Hierarchy
 
 ```
                     ┌─────────────────────┐
@@ -320,15 +309,14 @@ The `procedure/` directory contains planning procedures (templates in `plans/`):
                     │    sub-plans        │
                     └──────────┬──────────┘
                                │
-       ┌───────────────────────┼───────────────────────┐
-       │                       │                       │
-┌──────▼──────┐        ┌───────▼───────┐       ┌───────▼───────┐
-│ BRAINSTORM  │        │IMPLEMENTATION │       │  BUG FIXING   │
-│ High Mountain│        │ Deep Trench   │       │ Patching Ship │
-│ Short Hill   │        │ Shallow Shore │       │ Fixing Rod    │
-└─────────────┘        │ Quick Surf    │       └───────────────┘
-                       │ High Wizard   │
-                       └───────────────┘
+              ┌────────────────┴────────────────┐
+              │                                 │
+      ┌───────▼───────┐                ┌────────▼────────┐
+      │  HIGH WIZARD  │                │  QUICK WIZARD   │
+      │ Smart planning │                │ Small tasks     │
+      │ with dynamic   │  ◄─escalates── │ Direct execution│
+      │ section proposal│                └─────────────────┘
+      └────────────────┘
 ```
 
 ---
@@ -341,7 +329,7 @@ The **shared control file** loaded by all agents. Contains:
 
 | Section | Content |
 |---------|---------|
-| `# EMOTIONAL MEMORY` | About Alvi (philosophy, vision) |
+| `# EMOTIONAL MEMORY` | About the user (philosophy, vision) |
 | `# REASONING MEMORY` | All UUID-based reasoning patterns |
 | `# KNOWLEDGE MEMORY` | 5-layer architecture reference, markdown standards |
 
@@ -369,4 +357,4 @@ Each agent's **context navigator**. Contains:
 
 ## Additional Resources
 
-- **[Migration Guide](MIGRATION.md)** - For migrating existing agents
+- **[README](README.md)** - Architecture overview, getting started, automation features

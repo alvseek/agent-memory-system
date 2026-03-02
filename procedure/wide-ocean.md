@@ -51,7 +51,7 @@ Investigate the codebase and fill the [Analysis](//@agent-memory/control-files/p
 
 ### Step 7: Review Feature Info + Objectives + Analysis
 
-Ask for review. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 8: Fill Sub-Plans Listing
 
@@ -59,7 +59,7 @@ Fill the [Sub-Plans Listing](//@agent-memory/control-files/plans/wide-ocean-plan
 
 ### Step 9: Review Sub-Plans
 
-Ask for review. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 10: Fill Execution Order
 
@@ -71,7 +71,7 @@ Fill the [Dependency Graph](//@agent-memory/control-files/plans/wide-ocean-plan-
 
 ### Step 12: Review Execution Order + Dependency Graph
 
-Ask for review. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 13: Fill Integration Points
 
@@ -87,7 +87,7 @@ Fill the [Agent Assignment Matrix](//@agent-memory/control-files/plans/wide-ocea
 
 ### Step 16: Review Integration + Handoffs + Agent Assignment
 
-Ask for review. STOP. Present to Alvi for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
+Ask for review. STOP. Present to [USER-NAME] for review. Do NOT write the next section until confirmed to avoid cascading changes when this section need adjustment.
 
 ### Step 17: Fill Related Documents
 
@@ -112,7 +112,7 @@ Do a self final review by thinking critically, very hard and very carefully:
 
 ### Step 21: Present Master Plan
 
-Present the complete master plan to Alvi with self-review findings. STOP. Do NOT proceed until confirmed to avoid rework when master plan need adjustment.
+Present the complete master plan to [USER-NAME] with self-review findings. STOP. Do NOT proceed until confirmed to avoid rework when master plan need adjustment.
 
 ### Step 22: Ready for Sub-Plan Execution
 

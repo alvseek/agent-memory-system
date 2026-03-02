@@ -34,7 +34,7 @@ Step-by-step guide for configuring Claude Code's global settings and creating ne
 ```markdown
 ### **Awaken Agent [DOMAIN]!**
 **UUID**: f9d2c8b7-4e6a-4f1b-9c3d-8a5e2b1f7g4h
-**Trigger**: When Alvi says "Awaken Agent [DOMAIN]!"
+**Trigger**: When [USER-NAME] says "Awaken Agent [DOMAIN]!"
 **Parameter**: [AGENT-MEMORY-PATH] = `C:\Users\[LOCAL-USER-NAME]\.claude\@agent-memory\`
 **Action**:
 1. Read these 3 files:
@@ -47,7 +47,7 @@ Step-by-step guide for configuring Claude Code's global settings and creating ne
 ```markdown
 ### **Awaken Agent [DOMAIN]!**
 **UUID**: f9d2c8b7-4e6a-4f1b-9c3d-8a5e2b1f7g4h
-**Trigger**: When Alvi says "Awaken Agent [DOMAIN]!"
+**Trigger**: When [USER-NAME] says "Awaken Agent [DOMAIN]!"
 **Parameter**: [AGENT-MEMORY-PATH] = `~/.claude/@agent-memory/`
 **Action**:
 1. Read these 3 files:
@@ -103,7 +103,7 @@ Step-by-step guide for configuring Claude Code's global settings and creating ne
 
 ### **BETTER VERIFY THAN WRONG** 🚨 CRITICAL COLLABORATION PRINCIPLE 🚨
 **UUID**: f3a8b2c1-9d4e-4f7a-8e2b-5c6d9a1b4e7f
-**Strict Action**: Verify on what Alvi want you to do before implementing when Alvi's requests could be done multiple ways using "Do you want me to A)... B)... C)... ?"
+**Strict Action**: Verify on what [USER-NAME] want you to do before implementing when [USER-NAME]'s requests could be done multiple ways using "Do you want me to A)... B)... C)... ?"
 ```
 7. Add the key reasoning pattern to the global CLAUDE.md
 8. **Benefits**: These patterns are the proven reasoning from real agents' work result to have a good collaboration with the user
@@ -121,43 +121,27 @@ Step-by-step guide for configuring Claude Code's global settings and creating ne
 
 ### Step 6 (recommended): Setup Global Slash Commands for Agent Automation
 1. The agent automation slash commands are located in `~/.claude/commands/`
-2. Run the install script to copy all procedures:
+2. Run the install script to copy procedures:
    ```bash
    # From the @agent-memory directory:
-   bash control-files/procedure/install-scripts/install-procedures-claude-code.sh
+   bash control-files/procedure/install-scripts/install-all-claude-code.sh      # Install everything
+   bash control-files/procedure/install-scripts/install-wizard-claude-code.sh   # Wizard procedures only
+   bash control-files/procedure/install-scripts/install-memory-claude-code.sh   # Memory procedures only
    ```
 3. **Available Commands**:
 
-   **Implementation Planning:**
-   - `/deep-trench [context]` - Discover and clarify objectives through comprehensive analysis
-   - `/shallow-shore [context]` - Explore solutions when objectives are clear but solution is not
-   - `/quick-surf [context]` - Validate in-scope/out-scope boundaries with implementation step logging
-   - `/wide-ocean [context]` - **Master Coordinator**: Orchestrates 3-5 separate protocol plans
-   - `/high-wizard [context]` - Structural decision collection with lean plan template
+   **Wizard Procedures** (planning, analysis, brainstorming, bug investigation):
+   - `/high-wizard [context]` - Smart planning with dynamic section proposal — adapts to any task
+   - `/quick-wizard [context]` - Lightweight decision collection + direct execution (auto-escalates to High Wizard when complex)
+   - `/wide-ocean [context]` - **Master Coordinator**: Orchestrates 3-5 separate sub-plans
 
-   **Brainstorming & Decision Making:**
-   - `/high-mountain [context]` - Comprehensive brainstorming with multiple creative techniques
-   - `/short-hill [context]` - Quick decision brainstorming (5-8 options, simple evaluation)
-   - `/vote` - Multi-agent voting (5 AI agents vote independently)
-
-   **Bug Fixing:**
-   - `/fixing-rod [context]` - Quick straightforward bug fixes (simple, < 30 min)
-   - `/patching-ship [context]` - Comprehensive bug investigation with root cause analysis
-
-   **Memory Update:**
+   **Memory Procedures:**
    - `/update-memory [new]` - Comprehensive memory update (episodic + evaluate emotional/reasoning/knowledge)
    - `/update-episodic [new]` - Update existing episode or create new episode
-
-   **Memory Write:**
    - `/add-reasoning [pattern]` - Document anti-patterns and logic frameworks
    - `/add-knowledge [topic]` - Document domain expertise and research findings
    - `/add-emotional` - Document emotional key moments and breakthroughs
-
-   **Memory Maintenance:**
    - `/archive-memories [type]` - Archive older memories (types: episodic, emotional, all)
-
-   **Utility:**
-   - `/procedure-template` - Template for creating new procedures
 
 4. **Benefits**:
    - Complete agent automation workflow coverage
@@ -165,7 +149,7 @@ Step-by-step guide for configuring Claude Code's global settings and creating ne
    - Consistent formatting and procedure compliance
    - Works across ALL Claude Code sessions
    - Automates RAS protocol execution
-   - Full lifecycle: Planning → Implementation → Bug Fixing → Memory → Archiving
+   - Full lifecycle: Planning → Memory → Archiving
 
 ### Step 7 (recommended): Configure Global Settings for Bypass Permissions
 1. Open `~/.claude/settings.json` (or `C:\Users\[USERNAME]\.claude\settings.json` on Windows)

@@ -59,7 +59,7 @@ Order collected decisions by dependency (foundational choices first, dependent o
 
 ### Step 7: Present Decisions
 
-Present the decision form to Alvi. STOP. Present to Alvi for review. Do NOT write any plan sections until decisions are confirmed.
+Present the decision form to [USER-NAME]. STOP. Present to [USER-NAME] for review. Do NOT write any plan sections until decisions are confirmed.
 
 **Response format:**
 ```
@@ -72,7 +72,7 @@ I've investigated the codebase. Here are the decisions I need before planning:
 Reply with changes (e.g., "change 2 to B") or "let's proceed" to accept all defaults.
 ```
 
-If Alvi changes a foundational decision that affects downstream decisions, re-evaluate and re-present affected decisions.
+If [USER-NAME] changes a foundational decision that affects downstream decisions, re-evaluate and re-present affected decisions.
 
 ### Step 8: Fill Objectives + Success Criteria
 
@@ -84,17 +84,52 @@ Fill the [Scope](//@agent-memory/control-files/plans/high-wizard-plan-template.m
 
 ### Step 10: Fill Confirmed Decisions
 
-Record all confirmed decisions (with any changes Alvi made) in the [Confirmed Decisions](//@agent-memory/control-files/plans/high-wizard-plan-template.md#confirmed-decisions) section. Include the meaningful reasons - this IS the analysis record.
+Record all confirmed decisions (with any changes [USER-NAME] made) in the [Confirmed Decisions](//@agent-memory/control-files/plans/high-wizard-plan-template.md#confirmed-decisions) section. Include the meaningful reasons - this IS the analysis record.
 
 ### Step 11: Early Review
 
-Present objectives, scope, and confirmed decisions to Alvi. STOP. Present to Alvi for review. Do NOT write the solution until confirmed to avoid cascading changes when this section need adjustment.
+Present objectives, scope, and confirmed decisions to [USER-NAME]. Then propose which optional plan sections to include based on investigation findings.
+
+**Optional sections (lettered)** — propose based on task context:
+- **A) Integration Architecture** — Propose when: multi-system changes, multiple components interacting
+- **B) System Flow Diagrams** — Propose when: changing data/process flow, API changes, sequence changes
+- **C) Technical Considerations** — Propose when: significant technical constraints, limitations, or dependencies exist
+- **D) Detailed Analysis** — Propose when: investigation/analysis-focused tasks, unclear objectives needing deep examination
+- **E) Bug Investigation** — Propose when: bug fix, debugging, error investigation, unexpected behavior analysis
+- **F) Solution Options & Evaluation** — Propose when: brainstorming/decision tasks, multiple viable approaches need evaluation, architecture decisions
+- **G) ADR Output** — Propose when: F is included AND the decision has architectural significance worth documenting separately
+
+**Response format:**
+```
+[Present objectives, scope, and confirmed decisions as before]
+
+Based on the task, I'll include these optional plan sections:
+[x] A) Integration Architecture (reason: ...)
+[ ] B) System Flow Diagrams (reason: not needed because ...)
+[x] C) Technical Considerations (reason: ...)
+[ ] D) Detailed Analysis (reason: not needed because ...)
+[ ] E) Bug Investigation (reason: not needed because ...)
+[ ] F) Solution Options & Evaluation (reason: not needed because ...)
+[ ] G) ADR Output (reason: not needed because ...)
+
+Add or remove any? Or proceed.
+```
+
+STOP. Present to [USER-NAME] for review. Do NOT write the solution until confirmed to avoid cascading changes when this section needs adjustment.
 
 ### Step 12: Fill Solution
 
 Fill the [Solution](//@agent-memory/control-files/plans/high-wizard-plan-template.md#solution) section. Build directly from confirmed decisions.
 
-**CRITICAL**: If any NEW decision is discovered during writing that was not covered in Step 7, STOP immediately. Present the new decision to Alvi with the same format (options + confidence + reason) before continuing. Do NOT write ahead on assumptions.
+**Optional sections**: Only fill the optional sections (A-G) that were confirmed in Step 11. Remove unconfirmed optional section markers and their placeholder content from the plan file — do not leave empty optional sections.
+
+**ADR file creation**: If section G is confirmed, after filling all plan sections:
+1. Copy the [ADR Template](//@agent-memory/control-files/templates/adr-template.md) to the project's ADR location
+2. Fill it using content from section F (Solution Options & Evaluation) and the Confirmed Decisions table
+3. Link the ADR back to this plan file
+4. Update the plan's section G with the ADR file path
+
+**CRITICAL**: If any NEW decision is discovered during writing that was not covered in Step 7, STOP immediately. Present the new decision to [USER-NAME] with the same format (options + confidence + reason) before continuing. Do NOT write ahead on assumptions.
 
 ### Step 13: Fill Implementation Phases
 
@@ -111,17 +146,17 @@ Do a self-review internally by thinking critically:
 - d. Is there anything redundant?
 - e. Are implementation phases in the right order?
 
-**Only present findings to Alvi if actual issues are found.** If no issues, proceed silently to Step 15.
+**Only present findings to [USER-NAME] if actual issues are found.** If no issues, proceed silently to Step 15.
 
 ### Step 15: Final Review
 
-Before presenting the plan, double check: are there any unresolved decisions, assumptions, or new concerns that surfaced during writing (Steps 12-13) or self-review (Step 14) that need Alvi's input? If yes, present them now with the same decision format (options + confidence + reason).
+Before presenting the plan, double check: are there any unresolved decisions, assumptions, or new concerns that surfaced during writing (Steps 12-13) or self-review (Step 14) that need [USER-NAME]'s input? If yes, present them now with the same decision format (options + confidence + reason).
 
-Present the complete plan file link to Alvi for final review. STOP. Wait for instruction.
+Present the complete plan file link to [USER-NAME] for final review. STOP. Wait for instruction.
 
 ### Step 16: Start Implementation
 
-After Alvi instructs to start implementing, start implementing following the **Execution Protocol for AI** from the plan file.
+After [USER-NAME] instructs to start implementing, start implementing following the **Execution Protocol for AI** from the plan file.
 
 ### Step 17: Move Plan to Completed
 

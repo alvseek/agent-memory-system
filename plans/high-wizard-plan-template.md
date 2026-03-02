@@ -36,7 +36,7 @@
 ---
 
 ## **CONFIRMED DECISIONS**
-*These decisions were collected during investigation and confirmed by Alvi. The reasons serve as the analysis record.*
+*These decisions were collected during investigation and confirmed by [USER-NAME]. The reasons serve as the analysis record.*
 
 | # | Decision | Chosen | Reason |
 |---|----------|--------|--------|
@@ -58,9 +58,117 @@
 - **Purpose**: [What problem it solves]
 - **Key Files**: [Files to create/modify]
 
+<!-- OPTIONAL SECTION A: Include when multi-system changes, multiple components interacting -->
+### Integration Architecture
+[Table or diagram showing how all components integrate together]
+
+| Component | Integrates With | Data Flow | Dependencies |
+|-----------|----------------|-----------|--------------|
+| [Component 1] | [Other components] | [Input → Processing → Output] | [Required components] |
+| [Component 2] | [Other components] | [Input → Processing → Output] | [Required components] |
+
+<!-- OPTIONAL SECTION B: Include when changing data/process flow, API changes -->
+### System Flow Diagrams
+
+**Current State:**
 ```mermaid
-[System flow diagram if applicable]
+[Sequence diagram showing current system flow and component interactions]
 ```
+
+**End Result:**
+```mermaid
+[Sequence diagram showing system flow after changes are applied]
+```
+
+<!-- OPTIONAL SECTION C: Include when significant technical constraints exist -->
+### Technical Considerations
+[Constraints, limitations, dependencies, and technical challenges]
+
+- **Consideration 1**: [Description]
+  - [Sub-detail]
+  - [Sub-detail]
+- **Consideration 2**: [Description]
+  - [Sub-detail]
+
+<!-- OPTIONAL SECTION D: Include for investigation/analysis-focused tasks -->
+### Detailed Analysis
+
+#### Objective Analysis
+[What does the objective really want? Break down requirements and specifications]
+
+- **Requirement 1**: [Analysis]
+- **Requirement 2**: [Analysis]
+
+#### Current State Analysis
+[What is our current state? Existing code, systems, capabilities, constraints]
+
+- **Existing Systems**: [Current technology stack and architecture]
+- **Current Capabilities**: [What we can do now]
+- **Known Limitations**: [Current constraints and bottlenecks]
+
+<!-- OPTIONAL SECTION E: Include for bug investigation/fix tasks -->
+### Bug Investigation
+
+#### Bug Information
+- **Bug Report**: [What was reported / what's the symptom]
+- **Context**: [When does it occur? What conditions trigger it?]
+- **Severity**: [Impact on users/system]
+
+#### Scaffolding Check
+- **Existing Tests**: [What test coverage exists around the bug area?]
+- **Debugging Tools**: [What logging/debugging infrastructure is available?]
+- **Reproduction**: [Can the bug be reliably reproduced? Steps to reproduce.]
+
+#### Bug Location
+- **Suspected Area**: [Files/modules/functions where the bug likely lives]
+- **Evidence**: [What points to this location?]
+
+#### Hypothesis Testing
+*Test hypotheses sequentially. Each must be tested before moving to the next.*
+
+| # | Hypothesis | Test | Result | Confirmed? |
+|---|-----------|------|--------|------------|
+| 1 | [What might be causing the bug] | [How to verify] | [What happened] | Yes/No |
+| 2 | [Next hypothesis if #1 rejected] | [How to verify] | [What happened] | Yes/No |
+| 3 | [Next hypothesis if #2 rejected] | [How to verify] | [What happened] | Yes/No |
+
+#### Root Cause
+- **Confirmed Cause**: [The verified root cause of the bug]
+- **Evidence**: [What test/evidence confirmed this?]
+
+<!-- OPTIONAL SECTION F: Include for brainstorming/decision tasks, multiple viable approaches -->
+### Solution Options & Evaluation
+
+#### Solution Options
+*List 5-8 potential solutions. Brief description for each.*
+
+| # | Solution | Description |
+|---|----------|-------------|
+| 1 | [Name] | [Brief description of approach] |
+| 2 | [Name] | [Brief description of approach] |
+| 3 | [Name] | [Brief description of approach] |
+| 4 | [Name] | [Brief description of approach] |
+| 5 | [Name] | [Brief description of approach] |
+
+#### Evaluation
+*Evaluate top candidates with pros/cons.*
+
+| Solution | Pros | Cons |
+|----------|------|------|
+| [Name] | [Advantages] | [Disadvantages] |
+| [Name] | [Advantages] | [Disadvantages] |
+| [Name] | [Advantages] | [Disadvantages] |
+
+#### Selected Approach
+- **Chosen**: [Solution name]
+- **Rationale**: [Why this solution wins — connects evidence from evaluation]
+
+<!-- OPTIONAL SECTION G: Include when task produces an architecture decision record -->
+### ADR Output
+*When this section is confirmed, the procedure creates a separate ADR file using the [ADR Template](../templates/adr-template.md).*
+
+- **ADR File**: [Path to created ADR file, filled by procedure Step 12]
+- **Decision Summary**: [1-sentence summary of the decision made in section F]
 
 ---
 
@@ -102,7 +210,7 @@ I have to use this document as my **ONLY** source of truth to execute and track 
 - ✅ **Code Quality**: Code compiles/runs without errors
 - ✅ **Testing**: Tests written and passing
 - ✅ **Logged**: Implementation and testing logged below
-- 🚫 **Blocked**: Get input from Alvi before assuming
+- 🚫 **Blocked**: Get input from [USER-NAME] before assuming
 
 ### Phase 1:
 - [ ] **Step 1.1**: [link to step above]

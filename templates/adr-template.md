@@ -50,10 +50,10 @@
 
 ---
 
-**Full brainstorming context**: [Link to High Mountain plan file](../../plans/[date]-[project]-[theme]-brainstorm.md)
+**Full context**: [Link to High Wizard plan file](../../plans/[date]-[project]-[theme].md)
 
 ---
 
-**ADR Template for High Mountain Protocol** 🏔️
+**ADR Template for Architecture Decision Records**
 
-*This document serves as a SPECIFICATION that tells implementation agents WHAT to build. The implementation protocol (Deep Trench/Shallow Shore/Quick Surf) will figure out HOW to build it.*
+*This document serves as a SPECIFICATION that tells implementation agents WHAT to build. The implementation protocol (High Wizard/Quick Wizard) will figure out HOW to build it.*
