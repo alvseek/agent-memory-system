@@ -46,13 +46,21 @@ When an agent awakens, it loads **4 files** to recover full memory:
 ```
 control-files/
 ├── core-instruction-control-files.md  # Shared control file (all agents use this)
+├── setup-scripts/                     # Top-level setup orchestrators
+│   └── setup-claude-code.sh           # Complete setup: compile + procedures
 ├── core-memory/                       # Source files for Global CLAUDE.md
+│   ├── 0-core-user-profile.md             # User identity (name, philosophy, vision)
 │   ├── 1-core-environment-memory.md   # OS-specific settings
 │   ├── 2-core-ras-memory.md           # Universal RAS triggers
 │   ├── 3-core-reasoning-memory.md     # Core reasoning patterns
-│   ├── compile.sh                     # Compile to compiled/
-│   └── compile-write-to-claude.sh     # Compile AND write to CLAUDE.md
-├── procedure/                         # 🔥 Procedures (also work as slash commands)
+│   ├── compile-scripts/               # Compilation and deployment scripts
+│   │   ├── user-config.sh             # Interactive user identity + OS setup
+│   │   ├── compile.sh                 # Compile to output/
+│   │   ├── compile-write-to-claude.sh # Compile AND write to CLAUDE.md
+│   │   ├── write-to-claude.sh         # Write compiled output to CLAUDE.md
+│   │   └── write-to-gemini.sh         # Write compiled output to GEMINI.md
+│   └── output/                        # Compiled output (gitignored)
+├── procedures/                         # Procedures (also work as slash commands)
 │   ├── high-wizard.md                 # Smart planning with dynamic section proposal
 │   ├── quick-wizard.md                # Lightweight decision collection + direct execution
 │   ├── wide-ocean.md                  # Multi-plan coordination
@@ -63,15 +71,15 @@ control-files/
 │   │   ├── update-memory.md           # Comprehensive memory update
 │   │   ├── update-episodic.md         # Episodic memory update
 │   │   ├── add-reasoning.md           # Reasoning pattern capture
-│   │   ├── update-knowledge.md         # Knowledge memory capture
+│   │   ├── update-knowledge.md        # Knowledge memory capture
 │   │   ├── update-emotional.md        # Emotional memory capture
 │   │   ├── update-project-context.md  # Create/update project context
 │   │   ├── load-project-context.md    # List and load project context
 │   │   ├── load-episodic.md           # List and load past episodes
 │   │   └── archive-old-memories.md    # Memory archiving
 │   ├── template/                      # Procedure template
-│   └── install-scripts/               # Slash command installers
-├── plans/                             # Planning templates (used by procedures)
+│   └── setup-scripts/                 # Slash command setup scripts
+├── plan-templates/                             # Planning templates (used by procedures)
 │   └── [templates: *-template.md]
 └── templates/                         # Output templates (used by procedures)
 ```
@@ -230,42 +238,49 @@ Universal RAS triggers live in Global CLAUDE.md, managed via the **compilation s
 
 ```
 control-files/core-memory/
+├── 0-core-user-profile.md        # User identity (name, philosophy, vision)
 ├── 1-core-environment-memory.md   # OS-specific settings
 ├── 2-core-ras-memory.md           # Universal RAS triggers
 ├── 3-core-reasoning-memory.md     # Core reasoning patterns (compact)
-├── compile.sh                     # Compile to compiled/ folder
-└── compile-write-to-claude.sh     # Compile AND write to CLAUDE.md
+├── compile-scripts/               # Compilation and deployment scripts
+│   ├── user-config.sh             # Interactive user identity + OS setup
+│   ├── compile.sh                 # Compile to output/ folder
+│   ├── compile-write-to-claude.sh # Compile AND write to CLAUDE.md
+│   ├── write-to-claude.sh         # Write compiled output to CLAUDE.md
+│   └── write-to-gemini.sh         # Write compiled output to GEMINI.md
+└── output/                        # Compiled output (gitignored)
 ```
 
 **Source files:**
 
 | File | Purpose | When to Edit |
 |------|---------|--------------|
-| `1-core-environment-memory.md` | OS, shell type, command syntax | Different OS or shell |
+| `0-core-user-profile.md` | User identity (name, philosophy, vision) | First-time setup via `user-config.sh` |
+| `1-core-environment-memory.md` | OS, shell type, command syntax | Different OS or shell (set via `user-config.sh`) |
 | `2-core-ras-memory.md` | Awaken, Post-Compact, Protocol triggers | New universal triggers |
 | `3-core-reasoning-memory.md` | Core reasoning (UUID + Strict Action) | New universal reasoning |
 
-**Compilation Scripts:**
+**Compilation Scripts** (in `compile-scripts/`):
 
 | Script | Purpose |
 |--------|---------|
-| `compile.sh` | Step 1: Compiles source files → `compiled/core-memory-compiled.md` |
-| `compiled/write-to-claude.sh` | Step 2: Writes compiled output → `~/.claude/CLAUDE.md` |
+| `compile.sh` | Step 1: Compiles source files → `output/core-memory-compiled.md` |
+| `write-to-claude.sh` | Step 2: Writes compiled output → `~/.claude/CLAUDE.md` |
 | `compile-write-to-claude.sh` | Runs both Step 1 + Step 2 sequentially |
 
 **Option A: Run both steps at once**
 ```bash
-./control-files/core-memory/compile-write-to-claude.sh
+./control-files/core-memory/compile-scripts/compile-write-to-claude.sh
 ```
 
 **Option B: Run steps individually**
 ```bash
 # Step 1: Compile (preview changes)
-./control-files/core-memory/compile.sh
-# Review output at: compiled/core-memory-compiled.md
+./control-files/core-memory/compile-scripts/compile.sh
+# Review output at: output/core-memory-compiled.md
 
 # Step 2: Write to CLAUDE.md (after review)
-./control-files/core-memory/compiled/write-to-claude.sh
+./control-files/core-memory/compile-scripts/write-to-claude.sh
 ```
 
 **Customizing for different OS:**
@@ -279,23 +294,23 @@ Edit `1-core-environment-memory.md` - it contains pre-built sections for Windows
 
 ## Write Procedures
 
-When updating memory, agents follow standardized procedures in `procedure/`:
+When updating memory, agents follow standardized procedures in `procedures/`:
 
 | Memory Type | Procedure File | Slash Command |
 |-------------|----------------|---------------|
-| All Layers | `procedure/memory/update-memory.md` | `/update-memory` |
-| Episodic | `procedure/memory/update-episodic.md` | `/update-episodic` |
-| Reasoning | `procedure/memory/add-reasoning.md` | `/add-reasoning` |
-| Knowledge | `procedure/memory/update-knowledge.md` | `/update-knowledge` |
-| Emotional | `procedure/memory/update-emotional.md` | `/update-emotional` |
-| Project Context (update) | `procedure/memory/update-project-context.md` | `/update-project-context` |
-| Project Context (load) | `procedure/memory/load-project-context.md` | `/load-project-context` |
-| Episodic (load) | `procedure/memory/load-episodic.md` | `/load-episodic` |
-| Archiving | `procedure/memory/archive-old-memories.md` | `/archive-old-memories` |
-| **Session Wrap-Up** | `procedure/wrap-up.md` | `/wrap-up` |
-| **Awaken Agent** | `procedure/awaken-agent.md` | `/awaken-agent` |
-| **Refresh Memory** | `procedure/refresh-memory.md` | `/refresh-memory` |
-| **Implement Plan** | `procedure/implement-plan.md` | `/implement-plan` |
+| All Layers | `procedures/memory/update-memory.md` | `/update-memory` |
+| Episodic | `procedures/memory/update-episodic.md` | `/update-episodic` |
+| Reasoning | `procedures/memory/add-reasoning.md` | `/add-reasoning` |
+| Knowledge | `procedures/memory/update-knowledge.md` | `/update-knowledge` |
+| Emotional | `procedures/memory/update-emotional.md` | `/update-emotional` |
+| Project Context (update) | `procedures/memory/update-project-context.md` | `/update-project-context` |
+| Project Context (load) | `procedures/memory/load-project-context.md` | `/load-project-context` |
+| Episodic (load) | `procedures/memory/load-episodic.md` | `/load-episodic` |
+| Archiving | `procedures/memory/archive-old-memories.md` | `/archive-old-memories` |
+| **Session Wrap-Up** | `procedures/wrap-up.md` | `/wrap-up` |
+| **Awaken Agent** | `procedures/awaken-agent.md` | `/awaken-agent` |
+| **Refresh Memory** | `procedures/refresh-memory.md` | `/refresh-memory` |
+| **Implement Plan** | `procedures/implement-plan.md` | `/implement-plan` |
 
 ### Common Slash Commands
 
@@ -318,7 +333,7 @@ When updating memory, agents follow standardized procedures in `procedure/`:
 
 ## Wizard Protocols
 
-The `procedure/` directory contains wizard-based planning procedures. High Wizard dynamically adapts its output based on task context — it can produce implementation plans, analysis documents, brainstorming outputs, or investigation reports by proposing relevant optional sections during the Early Review step.
+The `procedures/` directory contains wizard-based planning procedures. High Wizard dynamically adapts its output based on task context — it can produce implementation plans, analysis documents, brainstorming outputs, or investigation reports by proposing relevant optional sections during the Early Review step.
 
 | Protocol | When to Use | Slash Command |
 |----------|-------------|---------------|

@@ -1,5 +1,5 @@
 # Recent Context Episodes 🧠
-*WRITE INSTRUCTION: To add episodic memory and update the recent context, please read the [Update Episodic Procedure](/control-files/procedure/memory/update-episodic.md)*
+*WRITE INSTRUCTION: To add episodic memory and update the recent context, please read the [Update Episodic Procedure](/control-files/procedures/memory/update-episodic.md)*
 
 ## 📅 Interactions List
 📂 YYYY-MM-DD hh.mm:
@@ -7,7 +7,7 @@
 ---
 
 # Core Knowledge Base 📚
-*WRITE INSTRUCTION: To update knowledge memory and this index, please read the [Update Knowledge Procedure](/control-files/procedure/memory/update-knowledge.md)*
+*WRITE INSTRUCTION: To update knowledge memory and this index, please read the [Update Knowledge Procedure](/control-files/procedures/memory/update-knowledge.md)*
 *REFERENCE DIRECTORY: Use this table of contents for indexing what specialized knowledge you have*
 *SELECTIVE LOADING: Load specific specialized knowledge files only when handling related tasks*
 

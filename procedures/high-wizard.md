@@ -19,7 +19,7 @@ If no arguments provided, ask: "What feature or task should I create a High Wiza
 
 ### Step 1: Read Template
 
-Read the [High Wizard Plan Template](//@agent-memory/control-files/plans/high-wizard-plan-template.md) file
+Read the [High Wizard Plan Template](//@agent-memory/control-files/plan-templates/high-wizard-plan-template.md) file
 
 ### Step 2: Check Date
 
@@ -35,7 +35,7 @@ Copy the template file to the `/plans` folder with the final name:
 
 ### Step 4: Fill Project Info
 
-Fill the [Project Info](//@agent-memory/control-files/plans/high-wizard-plan-template.md#project-info) section only (Project, Date, Agent, Theme)
+Fill the [Project Info](//@agent-memory/control-files/plan-templates/high-wizard-plan-template.md#project-info) section only (Project, Date, Agent, Theme)
 
 ### Step 5: Investigate and Collect Decisions
 
@@ -76,15 +76,15 @@ If [USER-NAME] changes a foundational decision that affects downstream decisions
 
 ### Step 8: Fill Objectives + Success Criteria
 
-Fill the [Objectives](//@agent-memory/control-files/plans/high-wizard-plan-template.md#objectives) and [Success Criteria](//@agent-memory/control-files/plans/high-wizard-plan-template.md#success-criteria) sections
+Fill the [Objectives](//@agent-memory/control-files/plan-templates/high-wizard-plan-template.md#objectives) and [Success Criteria](//@agent-memory/control-files/plan-templates/high-wizard-plan-template.md#success-criteria) sections
 
 ### Step 9: Fill Scope
 
-Fill the [Scope](//@agent-memory/control-files/plans/high-wizard-plan-template.md#scope) section (In Scope / Out of Scope)
+Fill the [Scope](//@agent-memory/control-files/plan-templates/high-wizard-plan-template.md#scope) section (In Scope / Out of Scope)
 
 ### Step 10: Fill Confirmed Decisions
 
-Record all confirmed decisions (with any changes [USER-NAME] made) in the [Confirmed Decisions](//@agent-memory/control-files/plans/high-wizard-plan-template.md#confirmed-decisions) section. Include the meaningful reasons - this IS the analysis record.
+Record all confirmed decisions (with any changes [USER-NAME] made) in the [Confirmed Decisions](//@agent-memory/control-files/plan-templates/high-wizard-plan-template.md#confirmed-decisions) section. Include the meaningful reasons - this IS the analysis record.
 
 ### Step 11: Early Review
 
@@ -119,7 +119,7 @@ STOP. Present to [USER-NAME] for review. Do NOT write the solution until confirm
 
 ### Step 12: Fill Solution
 
-Fill the [Solution](//@agent-memory/control-files/plans/high-wizard-plan-template.md#solution) section. Build directly from confirmed decisions.
+Fill the [Solution](//@agent-memory/control-files/plan-templates/high-wizard-plan-template.md#solution) section. Build directly from confirmed decisions.
 
 **Optional sections**: Only fill the optional sections (A-G) that were confirmed in Step 11. Remove unconfirmed optional section markers and their placeholder content from the plan file — do not leave empty optional sections.
 
@@ -133,7 +133,7 @@ Fill the [Solution](//@agent-memory/control-files/plans/high-wizard-plan-templat
 
 ### Step 13: Fill Implementation Phases
 
-Fill the [Implementation Phases](//@agent-memory/control-files/plans/high-wizard-plan-template.md#implementation-phases) section.
+Fill the [Implementation Phases](//@agent-memory/control-files/plan-templates/high-wizard-plan-template.md#implementation-phases) section.
 
 **CRITICAL**: Same rule - if any NEW decision is discovered during writing, STOP immediately and present it before continuing.
 

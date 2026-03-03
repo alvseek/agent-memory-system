@@ -4,7 +4,8 @@
 # Note: HTML comments (<!-- -->) are stripped from source files
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-OUTPUT_FILE="$SCRIPT_DIR/compiled/core-memory-compiled.md"
+CORE_MEMORY_DIR="$SCRIPT_DIR/.."
+OUTPUT_FILE="$CORE_MEMORY_DIR/output/core-memory-compiled.md"
 
 echo "Compiling core memory files..."
 
@@ -25,7 +26,7 @@ strip_comments() {
 }
 
 # Combine files in order
-for file in "$SCRIPT_DIR"/[0-9]-*.md; do
+for file in "$CORE_MEMORY_DIR"/[0-9]-*.md; do
     if [ -f "$file" ]; then
         filename=$(basename "$file")
         echo "  Adding: $filename"

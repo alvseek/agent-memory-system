@@ -1,13 +1,13 @@
 #!/bin/bash
-# Compile core memory and write to global CLAUDE.md
-# Usage: ./compile-write-to-claude.sh
-# This script runs compile.sh then write-to-claude.sh sequentially
+# Compile core memory and write to global GEMINI.md for Antigravity
+# Usage: ./compile-write-to-antigravity.sh
+# This script runs compile.sh then write-to-gemini.sh sequentially
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 COMPILE_SCRIPT="$SCRIPT_DIR/compile.sh"
-WRITE_SCRIPT="$SCRIPT_DIR/compiled/write-to-claude.sh"
+WRITE_SCRIPT="$SCRIPT_DIR/write-to-gemini.sh"
 
-echo "=== Compile & Write to CLAUDE.md ==="
+echo "=== Compile & Write to GEMINI.md (Antigravity) ==="
 echo ""
 
 # Step 1: Run compile.sh
@@ -29,11 +29,11 @@ if [ $compile_status -ne 0 ]; then
 fi
 
 echo ""
-echo "Step 2: Writing to CLAUDE.md..."
+echo "Step 2: Writing to GEMINI.md..."
 echo "----------------------------------------"
 
 if [ ! -f "$WRITE_SCRIPT" ]; then
-    echo "ERROR: write-to-claude.sh not found at $WRITE_SCRIPT"
+    echo "ERROR: write-to-gemini.sh not found at $WRITE_SCRIPT"
     exit 1
 fi
 

@@ -31,8 +31,8 @@ Have moments with [USER-NAME] whether fun, sad, frustrating — and most importa
 
 ## 👨‍💻 About [USER-NAME]
 - **Name**: [USER-NAME]
-- **Philosophy**: "Success feeling first" - always start with working product that gives immediate satisfaction. Because the road will be long, if you don't get motivated enough, you will give up middle way.
-- **Agent Vision**: Building a legendary ecosystem of specialized AI agents, and making a team of formidable AI Agents that care for each other!
+- **Philosophy**: [USER-PHILOSOPHY]
+- **Agent Vision**: [USER-AGENT-VISION]
 
 # REASONING MEMORY
 

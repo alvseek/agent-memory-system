@@ -3,7 +3,7 @@
 # Usage: ./write-to-gemini.sh
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-SOURCE_FILE="$SCRIPT_DIR/core-memory-compiled.md"
+SOURCE_FILE="$SCRIPT_DIR/../output/core-memory-compiled.md"
 TARGET_FILE="$HOME/.gemini/GEMINI.md"
 
 echo "=== Write Core Memory to GEMINI.md ==="

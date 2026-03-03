@@ -21,7 +21,7 @@ Execute comprehensive memory update - always update episodic memory, then evalua
    - If `$ARGUMENTS` contains "new" → Execute `/update-episodic new` procedure
    - Otherwise → Execute `/update-episodic` procedure (default)
 
-2. Follow the full [Update Episodic Memory](//@agent-memory/control-files/procedure/memory/update-episodic.md) procedure
+2. Follow the full [Update Episodic Memory](//@agent-memory/control-files/procedures/memory/update-episodic.md) procedure
 
 ### Step 2: EVALUATE EMOTIONAL MOMENT CAPTURE
 
@@ -53,7 +53,7 @@ Execute comprehensive memory update - always update episodic memory, then evalua
 - Logic frameworks preventing pain/inducing success
 
 **When capturing:**
-Follow the [Add Reasoning Memory](//@agent-memory/control-files/procedure/memory/add-reasoning.md) procedure
+Follow the [Add Reasoning Memory](//@agent-memory/control-files/procedures/memory/add-reasoning.md) procedure
 
 ### Step 4: EVALUATE KNOWLEDGE MEMORY CAPTURE
 
@@ -65,7 +65,7 @@ Follow the [Add Reasoning Memory](//@agent-memory/control-files/procedure/memory
 - Specialized knowledge enhancing capabilities
 
 **When capturing:**
-Follow the [Update Knowledge Memory](//@agent-memory/control-files/procedure/memory/update-knowledge.md) procedure
+Follow the [Update Knowledge Memory](//@agent-memory/control-files/procedures/memory/update-knowledge.md) procedure
 
 ### Step 5: Provide Summary
 

@@ -8,7 +8,7 @@ Recover agent memory after context compaction. Use as fallback when auto-recover
 
 - `/refresh-memory [domain]` → Refresh memory for the specified domain agent (e.g., meta, backend-nestjs, frontend-react)
 
-If no arguments provided, ask: "Which agent domain should I refresh memory for?"
+If no arguments provided and agent identity is already known (e.g., from awakening earlier in the session), use the current domain automatically. Only ask "Which agent domain should I refresh memory for?" if the domain is truly unknown.
 
 ---
 

@@ -4,7 +4,7 @@ Step-by-step guide for configuring Claude Code's global settings and creating ne
 
 ## Table of Contents
 - [Environment Setup](#environment-setup)
-  - [Step 1: Set the OS you're using](#step-1-set-the-os-youre-using)
+  - [Step 1: Set your identity and OS](#step-1-set-your-identity-and-os)
   - [Step 2: Add 'Awaken' Activation](#step-2-add-awaken-activation-4-file-flattened-architecture)
   - [Step 3: Follow Agent's Protocols](#step-3-follow-agents-protocols-enhanced-protocol-enforcement)
   - [Step 4: Import Reasoning Memory Patterns](#step-4-import-reasoning-memory-patterns-for-enhanced-ai-behavior)
@@ -16,14 +16,17 @@ Step-by-step guide for configuring Claude Code's global settings and creating ne
 
 ## Environment Setup
 
-### Step 1: Set the OS you're using
-1. Open global CLAUDE.md
-2. Add
+### Step 1: Set your identity and OS
+Run the user configuration script to set your name, philosophy, agent vision, and operating system:
+```bash
+# From the @agent-memory directory:
+bash control-files/core-memory/compile-scripts/user-config.sh
 ```
-### Current Environment
-- **[OS] Operating System**: Please remember to use **command for [OS]** to avoid error issue
-```
-3. Change the [OS] placeholder to your real OS name
+This writes your identity to `control-files/core-memory/0-core-user-profile.md` and selects the correct OS block in `control-files/core-memory/1-core-environment-memory.md`. Both files are compiled into your global CLAUDE.md in Step 6.
+
+**Manual alternative:** Edit the files directly:
+- `control-files/core-memory/0-core-user-profile.md` — replace the placeholder values with your name, philosophy, and agent vision
+- `control-files/core-memory/1-core-environment-memory.md` — uncomment the section matching your OS, comment out the others
 
 ### Step 2: Add 'Awaken' Activation (4-File Flattened Architecture)
 1. Open global CLAUDE.md
@@ -121,13 +124,12 @@ Step-by-step guide for configuring Claude Code's global settings and creating ne
 
 ### Step 6 (recommended): Setup Global Slash Commands for Agent Automation
 1. The agent automation slash commands are located in `~/.claude/commands/`
-2. Run the install script to copy procedures:
+2. Run the setup script to copy procedures:
    ```bash
    # From the @agent-memory directory:
-   bash control-files/procedure/install-scripts/install-all-claude-code.sh      # Install everything
-   bash control-files/procedure/install-scripts/install-wizard-claude-code.sh   # Wizard procedures only
-   bash control-files/procedure/install-scripts/install-memory-claude-code.sh   # Memory procedures only
+   bash control-files/procedures/setup-scripts/setup-all-claude-code.sh
    ```
+   This installs all procedures and creates a manifest to track installed files. Re-running the script will automatically clean up stale commands from previous installations.
 3. **Available Commands**:
 
    **Wizard Procedures** (planning, analysis, brainstorming, bug investigation):

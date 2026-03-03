@@ -1,15 +1,15 @@
 #!/bin/bash
-# install-all-claude-code.sh - Install all procedures (wizard + memory) to ~/.claude/commands/
+# setup-all-antigravity.sh - Setup all procedures (wizard + memory) to ~/.gemini/workflows/
 #
-# Usage: ./control-files/procedure/install-scripts/install-all-claude-code.sh
-#        bash control-files/procedure/install-scripts/install-all-claude-code.sh
+# Usage: ./control-files/procedures/setup-scripts/setup-all-antigravity.sh
+#        bash control-files/procedures/setup-scripts/setup-all-antigravity.sh
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SOURCE_DIR="$(dirname "$SCRIPT_DIR")"
 MEMORY_DIR="$SOURCE_DIR/memory"
-TARGET_DIR="$HOME/.claude/commands"
+TARGET_DIR="$HOME/.gemini/workflows"
 
-echo "=== Install All Procedures as Slash Commands ==="
+echo "=== Install All Procedures as Antigravity Workflows ==="
 echo ""
 echo "Source (wizard): $SOURCE_DIR"
 echo "Source (memory): $MEMORY_DIR"
@@ -53,9 +53,9 @@ cp "$MEMORY_DIR"/*.md "$TARGET_DIR/"
 
 if [ $? -eq 0 ]; then
     echo ""
-    echo "Successfully installed $TOTAL_COUNT procedures!"
+    echo "Successfully installed $TOTAL_COUNT procedures as workflows!"
     echo ""
-    echo "Installed commands:"
+    echo "Installed workflows:"
     ls -1 "$TARGET_DIR"/*.md 2>/dev/null | xargs -I {} basename {} .md | sed 's/^/  \//'
 else
     echo "Error: Failed to copy files"
