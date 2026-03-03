@@ -24,14 +24,14 @@ When an agent awakens, it loads **4 files** to recover full memory:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│ 1. agent-core-memory.md (Agent-specific)                    │
+│ 1. core-instruction-control-files.md (Shared)               │
+│    └─ User profile + Reasoning patterns + Knowledge basics   │
+│                                                             │
+│ 2. agent-core-memory.md (Agent-specific)                    │
 │    └─ Identity + Core Knowledge + RAS Triggers + Emotional  │
 │                                                             │
-│ 2. agent-memory-index.md (Agent-specific)                   │
+│ 3. agent-memory-index.md (Agent-specific)                   │
 │    └─ Episode list + Knowledge directory                    │
-│                                                             │
-│ 3. core-instruction-control-files.md (Shared)               │
-│    └─ About the user + Reasoning patterns + Knowledge basics │
 │                                                             │
 │ 4. Latest episode file                                      │
 │    └─ Recent session context                                │
@@ -56,6 +56,8 @@ control-files/
 │   ├── high-wizard.md                 # Smart planning with dynamic section proposal
 │   ├── quick-wizard.md                # Lightweight decision collection + direct execution
 │   ├── wide-ocean.md                  # Multi-plan coordination
+│   ├── awaken-agent.md                # Load agent memory and activate domain agent
+│   ├── refresh-memory.md              # Recover agent memory after context compaction
 │   ├── memory/                        # Memory management procedures
 │   │   ├── update-memory.md           # Comprehensive memory update
 │   │   ├── update-episodic.md         # Episodic memory update
@@ -116,15 +118,17 @@ User: "Awaken Agent [DOMAIN]!"
          │
          ▼
 ┌─────────────────────────────────────┐
-│ 1. Load agent-core-memory.md        │
+│ 1. Load core-instruction-control-   │
+│    files.md (shared)                │
+│    → Awakening instructions,        │
+│      user profile, reasoning,       │
+│      shared knowledge               │
+│                                     │
+│ 2. Load agent-core-memory.md        │
 │    → Identity, knowledge, RAS       │
 │                                     │
-│ 2. Load agent-memory-index.md       │
+│ 3. Load agent-memory-index.md       │
 │    → Episode list, knowledge index  │
-│                                     │
-│ 3. Load core-instruction-control-   │
-│    files.md (shared)                │
-│    → Reasoning patterns, basics     │
 │                                     │
 │ 4. Load latest episode              │
 │    → Recent context                 │
@@ -141,8 +145,8 @@ User: "Awaken Agent [DOMAIN]!"
 ### Post-Compact Recovery
 
 After context compaction, agents recover using UUID `176b0df7` (from Global CLAUDE.md):
-1. Load `agent-core-memory.md` (identity recovery)
-2. Load `core-instruction-control-files.md` (reasoning patterns)
+1. Load `core-instruction-control-files.md` (shared foundations + awakening instructions)
+2. Load `agent-core-memory.md` (identity recovery)
 3. Reread global CLAUDE.md
 4. Continue work
 
@@ -156,8 +160,7 @@ The architecture implements 5 distinct memory layers:
 **Purpose**: Relationship building and breakthrough moments
 
 **Location**:
-- Agent-specific moments: `agent-core-memory.md` → `# DOMAIN EMOTIONAL MEMORY`
-- About the user: `core-instruction-control-files.md` → `# EMOTIONAL MEMORY`
+- Agent-specific moments: `agent-core-memory.md` → `# DOMAIN EMOTIONAL MEMORY` (private per-agent)
 
 **When to capture**: Breakthroughs, frustrations, bonding moments, milestones
 
@@ -286,10 +289,16 @@ When updating memory, agents follow standardized procedures in `procedure/`:
 | Project Context (update) | `procedure/memory/update-project-context.md` | `/update-project-context` |
 | Project Context (load) | `procedure/memory/load-project-context.md` | `/load-project-context` |
 | Archiving | `procedure/memory/archive-old-memories.md` | `/archive-old-memories` |
+| **Session Wrap-Up** | `procedure/wrap-up.md` | `/wrap-up` |
+| **Awaken Agent** | `procedure/awaken-agent.md` | `/awaken-agent` |
+| **Refresh Memory** | `procedure/refresh-memory.md` | `/refresh-memory` |
 
 ### Common Slash Commands
 
 ```
+/awaken-agent [domain]   # Load agent memory and activate domain agent
+/refresh-memory [domain] # Recover agent memory after context compaction
+/wrap-up                 # End-of-session: save episodic + auto-detect project context + push all
 /update-memory [new]     # Comprehensive update (all layers evaluated)
 /update-episodic [new]   # Episodic only
 /add-reasoning           # Add reasoning pattern
@@ -340,7 +349,7 @@ The **shared control file** loaded by all agents. Contains:
 
 | Section | Content |
 |---------|---------|
-| `# EMOTIONAL MEMORY` | About the user (philosophy, vision) |
+| `# USER PROFILE` | About the user (philosophy, vision) |
 | `# REASONING MEMORY` | All UUID-based reasoning patterns |
 | `# KNOWLEDGE MEMORY` | 5-layer architecture reference, markdown standards |
 

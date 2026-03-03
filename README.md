@@ -79,25 +79,34 @@ graph LR
 Without persistent memory, AI agents forget everything between sessions. With this system, agents **remember and grow**:
 
 ```
-Session 1 (Monday):
-  User: "Awaken Agent Backend!"
-  Agent: Loads identity, loads latest episode, loads knowledge base
-  → Works on API refactoring, discovers a critical anti-pattern
-  → Episodic memory saved: "2025-11-13 - API refactoring session"
-  → Knowledge memory updated: new API technique documented to the Agent's knowledge base
+Day 1 — Create & Work:
+  You: "Awaken Agent Meta!"
+  You: "Help me create a new agent for backend"
+  Meta: Creates agent-backend/ with identity, empty episodes, knowledge base
 
-Session 2 (Wednesday):
-  User: "Awaken Agent Backend!"
-  Agent: Loads identity, loads Monday's episode automatically
-  Agent: "I remember we were refactoring the API on Monday.
-          I remember we documented a new API technique. Want to use that again?"
-  → Agent resumes with full context — no re-explanation needed
+  You: "Awaken Agent Backend!"
+  Agent: "I'm Backend Agent, ready to help. No previous episodes found."
+  → You work together on API refactoring, discover a critical anti-pattern
+  You: /wrap-up
+  → Episode saved: "2025-11-13 - API refactoring, anti-pattern documented"
+  → Knowledge updated: new caching technique added to agent's knowledge base
+  → Changes committed and pushed
 
-Session 3 (Friday) — context compaction happens mid-session:
+Day 2 — Memory Restored:
+  You: "Awaken Agent Backend!"
+  Agent: "Latest episode loaded: API refactoring session from yesterday.
+          We documented a caching technique. Ready to continue."
+  → No re-explanation needed — picks up right where you left off
+  You: /high-wizard
+  Agent: Investigates, proposes a structured plan, executes after your approval
+  You: /wrap-up
+  → New episode saved on top of yesterday's
+
+Day 5 — Mid-Session Recovery:
+  → Deep into debugging a complex issue...
   System: Token limit approaching, compacting context...
-  Hook: SessionStart:compact triggers memory recovery
-  Agent: Reloads agent-core-memory.md → identity restored
-  → Continues working as if nothing happened
+  Agent: Automatically reloads identity + reasoning patterns + core knowledge
+  → Agent identity and behaviour retained — continues working seamlessly
 ```
 
 For file structure, loading flow, and detailed layer documentation, see the [Architecture Documentation](ARCHITECTURE.md).
@@ -127,13 +136,12 @@ Use built-in procedures for structured work:
 ```
 The agent investigates, proposes a plan, and executes step-by-step after your approval.
 
-### 4. Save session memory
-At the end of a session, capture what happened:
+### 4. Wrap up the session
+At the end of a session, save memory and push:
 ```
-/update-episodic new    → Create a new episode for this session
-/update-episodic        → Append to an existing episode
+/wrap-up    → Save episodic memory + auto-detect project context + push all
 ```
-This saves context, decisions, outcomes, and insights to the agent's `episodes/` folder.
+This captures session context to the agent's `episodes/` folder, optionally saves project-specific context, and commits + pushes everything.
 
 ### 5. Next session — memory restored
 When you awaken the agent again, it automatically:
@@ -148,8 +156,11 @@ No re-explanation needed. The agent remembers.
 Procedures double as slash commands for fast execution:
 
 ```
+/awaken-agent [domain]  # Load agent memory and activate domain agent
+/refresh-memory [domain] # Recover agent memory after context compaction
 /high-wizard            # Smart planning with dynamic section proposal
 /quick-wizard           # Lightweight decision collection + direct execution
+/wrap-up                # End-of-session: save episodic + auto-detect project context + push all
 /update-memory          # Comprehensive memory update (all layers evaluated)
 /update-episodic        # Episodic memory update only
 /update-project-context # Create/update project-specific context files

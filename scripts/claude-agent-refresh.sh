@@ -6,6 +6,6 @@ echo "{
   \"continue\": true,
   \"hookSpecificOutput\": {
     \"hookEventName\": \"SessionStart\",
-    \"additionalContext\": \"Wait! I made a mistake! Instead of continuing without asking further question, I first need to execute the ## **MEMORY RECOVERY AFTER COMPACTION** **UUID**: 176b0df7-036f-48f9-927d-432e27cd4116 then continue after ONLY if everything is clear and no need to clarify anything!\"
+    \"additionalContext\": \"Wait! I made a mistake! Instead of continuing without asking further question, I first need to execute /refresh-memory [your agent domain] then continue after ONLY if everything is clear and no need to clarify anything!\"
   }
 }"
