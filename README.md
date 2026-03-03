@@ -160,11 +160,13 @@ Procedures double as slash commands for fast execution:
 /refresh-memory [domain] # Recover agent memory after context compaction
 /high-wizard            # Smart planning with dynamic section proposal
 /quick-wizard           # Lightweight decision collection + direct execution
+/implement-plan         # Start implementing approved plan with Execution Protocol
 /wrap-up                # End-of-session: save episodic + auto-detect project context + push all
 /update-memory          # Comprehensive memory update (all layers evaluated)
 /update-episodic        # Episodic memory update only
 /update-project-context # Create/update project-specific context files
 /load-project-context   # List and load project context by keyword or number
+/load-episodic          # List and load past episodic memories
 ```
 
 For the full list of procedures and wizard protocols, see the [Architecture Documentation](ARCHITECTURE.md#wizard-protocols).

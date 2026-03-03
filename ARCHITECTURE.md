@@ -58,6 +58,7 @@ control-files/
 │   ├── wide-ocean.md                  # Multi-plan coordination
 │   ├── awaken-agent.md                # Load agent memory and activate domain agent
 │   ├── refresh-memory.md              # Recover agent memory after context compaction
+│   ├── implement-plan.md             # Start implementing approved plan with Execution Protocol
 │   ├── memory/                        # Memory management procedures
 │   │   ├── update-memory.md           # Comprehensive memory update
 │   │   ├── update-episodic.md         # Episodic memory update
@@ -66,6 +67,7 @@ control-files/
 │   │   ├── update-emotional.md        # Emotional memory capture
 │   │   ├── update-project-context.md  # Create/update project context
 │   │   ├── load-project-context.md    # List and load project context
+│   │   ├── load-episodic.md           # List and load past episodes
 │   │   └── archive-old-memories.md    # Memory archiving
 │   ├── template/                      # Procedure template
 │   └── install-scripts/               # Slash command installers
@@ -288,16 +290,19 @@ When updating memory, agents follow standardized procedures in `procedure/`:
 | Emotional | `procedure/memory/update-emotional.md` | `/update-emotional` |
 | Project Context (update) | `procedure/memory/update-project-context.md` | `/update-project-context` |
 | Project Context (load) | `procedure/memory/load-project-context.md` | `/load-project-context` |
+| Episodic (load) | `procedure/memory/load-episodic.md` | `/load-episodic` |
 | Archiving | `procedure/memory/archive-old-memories.md` | `/archive-old-memories` |
 | **Session Wrap-Up** | `procedure/wrap-up.md` | `/wrap-up` |
 | **Awaken Agent** | `procedure/awaken-agent.md` | `/awaken-agent` |
 | **Refresh Memory** | `procedure/refresh-memory.md` | `/refresh-memory` |
+| **Implement Plan** | `procedure/implement-plan.md` | `/implement-plan` |
 
 ### Common Slash Commands
 
 ```
 /awaken-agent [domain]   # Load agent memory and activate domain agent
 /refresh-memory [domain] # Recover agent memory after context compaction
+/implement-plan          # Start implementing approved plan with Execution Protocol
 /wrap-up                 # End-of-session: save episodic + auto-detect project context + push all
 /update-memory [new]     # Comprehensive update (all layers evaluated)
 /update-episodic [new]   # Episodic only
@@ -305,6 +310,7 @@ When updating memory, agents follow standardized procedures in `procedure/`:
 /update-knowledge        # Update knowledge entry
 /update-project-context  # Create/update project-specific context
 /load-project-context    # List and load project context files
+/load-episodic           # List and load past episodic memories
 /archive-old-memories    # Archive old memories
 ```
 
