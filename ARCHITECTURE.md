@@ -60,9 +60,11 @@ control-files/
 │   │   ├── update-memory.md           # Comprehensive memory update
 │   │   ├── update-episodic.md         # Episodic memory update
 │   │   ├── add-reasoning.md           # Reasoning pattern capture
-│   │   ├── add-knowledge.md           # Knowledge memory capture
-│   │   ├── add-emotional.md           # Emotional memory capture
-│   │   └── archive-memories.md        # Memory archiving
+│   │   ├── update-knowledge.md         # Knowledge memory capture
+│   │   ├── update-emotional.md        # Emotional memory capture
+│   │   ├── update-project-context.md  # Create/update project context
+│   │   ├── load-project-context.md    # List and load project context
+│   │   └── archive-old-memories.md    # Memory archiving
 │   ├── template/                      # Procedure template
 │   └── install-scripts/               # Slash command installers
 ├── plans/                             # Planning templates (used by procedures)
@@ -78,7 +80,9 @@ agent-[domain]/
 ├── episodes/                  # Episodic memory files
 │   └── YYYY-MM-DD-HH.MM-*.md
 ├── knowledge-base/            # Specialized knowledge files
-│   └── [topic].md
+│   ├── [topic].md             # Domain knowledge
+│   └── [project-name]/        # Project-specific context (per-agent, private)
+│       └── [theme].md         # Context files with YAML frontmatter tags
 └── archive/                   # Archived memories
 ```
 
@@ -187,6 +191,9 @@ The architecture implements 5 distinct memory layers:
 - Core knowledge: `agent-core-memory.md` → `# DOMAIN CORE KNOWLEDGE`
 - Knowledge index: `agent-memory-index.md` → `# Core Knowledge Base`
 - Specialized files: `knowledge-base/[topic].md`
+- Project context: `knowledge-base/[project-name]/[theme].md`
+
+**Project Context**: Agent-specific operational knowledge for projects (VM access, environment setup, deployment procedures, feature conventions). Each agent maintains its own project context — private and scoped to what that agent needs. Files use YAML frontmatter with tags for selective loading via `/load-project-context`. See `/update-project-context` to create and `/load-project-context` to retrieve.
 
 ### 5. Reticular Activation Memory (RAS) ⚡
 **Purpose**: Intelligent pattern recognition and automatic protocol triggers
@@ -274,9 +281,11 @@ When updating memory, agents follow standardized procedures in `procedure/`:
 | All Layers | `procedure/memory/update-memory.md` | `/update-memory` |
 | Episodic | `procedure/memory/update-episodic.md` | `/update-episodic` |
 | Reasoning | `procedure/memory/add-reasoning.md` | `/add-reasoning` |
-| Knowledge | `procedure/memory/add-knowledge.md` | `/add-knowledge` |
-| Emotional | `procedure/memory/add-emotional.md` | `/add-emotional` |
-| Archiving | `procedure/memory/archive-memories.md` | `/archive-memories` |
+| Knowledge | `procedure/memory/update-knowledge.md` | `/update-knowledge` |
+| Emotional | `procedure/memory/update-emotional.md` | `/update-emotional` |
+| Project Context (update) | `procedure/memory/update-project-context.md` | `/update-project-context` |
+| Project Context (load) | `procedure/memory/load-project-context.md` | `/load-project-context` |
+| Archiving | `procedure/memory/archive-old-memories.md` | `/archive-old-memories` |
 
 ### Common Slash Commands
 
@@ -284,8 +293,10 @@ When updating memory, agents follow standardized procedures in `procedure/`:
 /update-memory [new]     # Comprehensive update (all layers evaluated)
 /update-episodic [new]   # Episodic only
 /add-reasoning           # Add reasoning pattern
-/add-knowledge           # Add knowledge entry
-/archive-memories        # Archive old memories
+/update-knowledge        # Update knowledge entry
+/update-project-context  # Create/update project-specific context
+/load-project-context    # List and load project context files
+/archive-old-memories    # Archive old memories
 ```
 
 ---

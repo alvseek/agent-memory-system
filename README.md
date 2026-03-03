@@ -152,6 +152,8 @@ Procedures double as slash commands for fast execution:
 /quick-wizard           # Lightweight decision collection + direct execution
 /update-memory          # Comprehensive memory update (all layers evaluated)
 /update-episodic        # Episodic memory update only
+/update-project-context # Create/update project-specific context files
+/load-project-context   # List and load project context by keyword or number
 ```
 
 For the full list of procedures and wizard protocols, see the [Architecture Documentation](ARCHITECTURE.md#wizard-protocols).

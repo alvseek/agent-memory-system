@@ -526,7 +526,7 @@ Agent data file should be in the `[AGENT-MEMORY-PATH]/agent-[domain]/`
 
 ### **1. Emotional Memory** 💖
 **Included in**: This file (`core-instruction-control-files.md`) → `# EMOTIONAL MEMORY` section
-**Write Procedure**: `procedure/memory/add-emotional.md`
+**Write Procedure**: `procedure/memory/update-emotional.md`
 **Agent Data File**: `agent-core-memory.md` → `# DOMAIN EMOTIONAL MEMORY` section
 
 ### **2. Episodic Memory** 🧠
@@ -542,7 +542,7 @@ Agent data file should be in the `[AGENT-MEMORY-PATH]/agent-[domain]/`
 
 ### **4. Knowledge Memory** 📚
 **Included in**: This file (`core-instruction-control-files.md`) → `# KNOWLEDGE MEMORY` section
-**Write Procedure**: `procedure/memory/add-knowledge.md`
+**Write Procedure**: `procedure/memory/update-knowledge.md`
 **Agent Data Files**:
 - `knowledge-base/` folder structure
 - `knowledge-base/core-domain-knowledge.md` most important core domain file, the core of the Agent itself

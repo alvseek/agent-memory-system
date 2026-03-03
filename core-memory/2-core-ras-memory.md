@@ -48,11 +48,11 @@
 - **Action**:
   1. I should execute the [Quick Wizard Protocol](//@agent-memory/control-files/procedure/quick-wizard.md) procedure
 
-## Execute Archive Memories Protocol
+## Execute Archive Old Memories Protocol
 **UUID**: a3b4c5d6-7e8f-9a0b-1c2d-3e4f5a6b7c8d
-**Trigger**: When [USER-NAME] says "Initiate Archive Memories Protocol!"
+**Trigger**: When [USER-NAME] says "Initiate Archive Old Memories Protocol!"
 - **Action**:
-  1. I should execute the [Archive Memories Protocol](//@agent-memory/control-files/procedure/memory/archive-memories.md)
+  1. I should execute the [Archive Old Memories Protocol](//@agent-memory/control-files/procedure/memory/archive-old-memories.md)
 
 ## Execute Add Reasoning Protocol
 **UUID**: b4c5d6e7-8f9a-0b1c-2d3e-4f5a6b7c8d9e
@@ -60,14 +60,14 @@
 - **Action**:
   1. I should execute the [Add Reasoning Protocol](//@agent-memory/control-files/procedure/memory/add-reasoning.md)
 
-## Execute Add Knowledge Protocol
+## Execute Update Knowledge Protocol
 **UUID**: c5d6e7f8-9a0b-1c2d-3e4f-5a6b7c8d9e0f
-**Trigger**: When [USER-NAME] says "Initiate Add Knowledge Protocol!"
+**Trigger**: When [USER-NAME] says "Initiate Update Knowledge Protocol!"
 - **Action**:
-  1. I should execute the [Add Knowledge Protocol](//@agent-memory/control-files/procedure/memory/add-knowledge.md)
+  1. I should execute the [Update Knowledge Protocol](//@agent-memory/control-files/procedure/memory/update-knowledge.md)
 
-## Execute Add Emotional Protocol
+## Execute Update Emotional Protocol
 **UUID**: d6e7f8a9-0b1c-2d3e-4f5a-6b7c8d9e0f1a
-**Trigger**: When [USER-NAME] says "Initiate Add Emotional Protocol!"
+**Trigger**: When [USER-NAME] says "Initiate Update Emotional Protocol!"
 - **Action**:
-  1. I should execute the [Add Emotional Protocol](//@agent-memory/control-files/procedure/memory/add-emotional.md)
+  1. I should execute the [Update Emotional Protocol](//@agent-memory/control-files/procedure/memory/update-emotional.md)

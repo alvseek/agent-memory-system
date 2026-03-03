@@ -1,4 +1,4 @@
-# Add Knowledge Memory Protocol
+# Update Knowledge Memory Protocol
 
 Capture domain expertise, technical patterns, research findings, and best practices that enhance agent capabilities.
 
@@ -6,8 +6,8 @@ Capture domain expertise, technical patterns, research findings, and best practi
 
 `$ARGUMENTS`
 
-- `/add-knowledge [context]` → Document the knowledge described in context
-- `/add-knowledge` → Will ask for context
+- `/update-knowledge [context]` → Document the knowledge described in context
+- `/update-knowledge` → Will ask for context
 
 If no arguments provided, ask: "What knowledge or domain expertise should I document?"
 

@@ -139,9 +139,9 @@ Step-by-step guide for configuring Claude Code's global settings and creating ne
    - `/update-memory [new]` - Comprehensive memory update (episodic + evaluate emotional/reasoning/knowledge)
    - `/update-episodic [new]` - Update existing episode or create new episode
    - `/add-reasoning [pattern]` - Document anti-patterns and logic frameworks
-   - `/add-knowledge [topic]` - Document domain expertise and research findings
-   - `/add-emotional` - Document emotional key moments and breakthroughs
-   - `/archive-memories [type]` - Archive older memories (types: episodic, emotional, all)
+   - `/update-knowledge [topic]` - Document domain expertise and research findings
+   - `/update-emotional` - Document emotional key moments and breakthroughs
+   - `/archive-old-memories [type]` - Archive older memories (types: episodic, emotional, all)
 
 4. **Benefits**:
    - Complete agent automation workflow coverage

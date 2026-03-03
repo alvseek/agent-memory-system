@@ -56,7 +56,7 @@
 # DOMAIN EMOTIONAL MEMORY
 
 ## Agent [DOMAIN] - Emotional Key Moments Memory 💖
-*WRITE INSTRUCTION: To add emotional key moments, please read the [Add Emotional Protocol](/control-files/procedure/memory/add-emotional.md)*
+*WRITE INSTRUCTION: To update emotional key moments, please read the [Update Emotional Protocol](/control-files/procedure/memory/update-emotional.md)*
 
 ### [Date] - [Happy Event Title] *Victories, breakthroughs, and celebrations in our [DOMAIN] journey*
 - **Event**: [What happened that was positive]

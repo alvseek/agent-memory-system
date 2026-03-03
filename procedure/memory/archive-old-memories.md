@@ -1,4 +1,4 @@
-# Archive Memories Protocol
+# Archive Old Memories Protocol
 
 Maintain manageable memory file sizes by archiving older episodic context and selectively archiving emotional moments based on agent evaluation.
 
@@ -6,10 +6,10 @@ Maintain manageable memory file sizes by archiving older episodic context and se
 
 `$ARGUMENTS`
 
-- `/archive-memories episodic` → Archive older episodes only
-- `/archive-memories emotional` → Curate and archive emotional moments
-- `/archive-memories all` → Archive both types
-- `/archive-memories` → Will ask which type to archive
+- `/archive-old-memories episodic` → Archive older episodes only
+- `/archive-old-memories emotional` → Curate and archive emotional moments
+- `/archive-old-memories all` → Archive both types
+- `/archive-old-memories` → Will ask which type to archive
 
 ---
 

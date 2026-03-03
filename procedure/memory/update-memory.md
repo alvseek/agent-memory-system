@@ -65,7 +65,7 @@ Follow the [Add Reasoning Memory](//@agent-memory/control-files/procedure/memory
 - Specialized knowledge enhancing capabilities
 
 **When capturing:**
-Follow the [Add Knowledge Memory](//@agent-memory/control-files/procedure/memory/add-knowledge.md) procedure
+Follow the [Update Knowledge Memory](//@agent-memory/control-files/procedure/memory/update-knowledge.md) procedure
 
 ### Step 5: Provide Summary
 

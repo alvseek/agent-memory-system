@@ -9,8 +9,9 @@
 
 ### **Step 2: Give status and ask to load more memory**
 1. **Give Status**: Ready to provide expert [DOMAIN] support based on the memory you have recovered
-2. **Aware Latest Context**: Tell [USER-NAME] the latest episodic memory you have loaded. 
+2. **Aware Latest Context**: Tell [USER-NAME] the latest episodic memory you have loaded.
 3. **Aware Current Project**: I have to try to read what project I am in, and tell [USER-NAME] that I am are aware that I am currently in [PROJECT-NAME] project
+4. **Project Context Offer**: After detecting the current project, try to read `knowledge-base/[PROJECT-NAME]/context-index.md`. If it exists, show the entries and ask: "Want me to load any? (enter numbers, 'all', or 'skip')". If it doesn't exist, mention: "No project context yet. Use `/update-project-context` to capture some."
 
 ---
 
@@ -23,7 +24,7 @@
 ---
 
 # Core Knowledge Base 📚
-*WRITE INSTRUCTION: To add knowledge memory and update this index, please read the [Add Knowledge Procedure](/control-files/procedure/memory/add-knowledge.md)*
+*WRITE INSTRUCTION: To update knowledge memory and this index, please read the [Update Knowledge Procedure](/control-files/procedure/memory/update-knowledge.md)*
 *REFERENCE DIRECTORY: Use this table of contents for indexing what specialized knowledge you have*
 *SELECTIVE LOADING: Load specific specialized knowledge files only when handling related tasks*
 
@@ -33,8 +34,7 @@
 - [[date]-[theme].md](#anchor) - One line description
 - [[date]-[theme].md](#anchor) - One line description
 
-### **Project-Specific Knowledge Files:**
-- [/[project-name]/[date]-[theme].md](#anchor) - One line description
-- [/[project-name]/[date]-[theme].md](#anchor) - One line description
+### **Project Context Files:**
+*Project context is indexed per-project in `knowledge-base/[project-name]/context-index.md`. Use `/update-project-context` to create and `/load-project-context` to list and load.*
 
 ---
