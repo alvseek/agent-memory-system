@@ -34,8 +34,8 @@ If no arguments provided, ask: "What knowledge or domain expertise should I docu
 
 ### Step 2: Choose Location
 
-- **Project-Specific**: Create in `knowledge-base/[project-folder]/` (project context)
-- **Research/Domain**: Create in `knowledge-base/research/` (specialized expertise)
+- Create in `knowledge-base/research/` (domain expertise and research)
+- **Note**: For project-specific context (VM access, deploy procedures, conventions), use `/update-project-context` instead
 
 ### Step 3: Name File
 
@@ -43,7 +43,6 @@ If no arguments provided, ask: "What knowledge or domain expertise should I docu
 - **Examples**:
   - `2025-09-11-nestjs-patterns.md` (dated research)
   - `typescript-best-practices.md` (timeless domain knowledge)
-  - `project-alpha-architecture.md` (project-specific)
 
 ### Step 4: Create File with Structure
 

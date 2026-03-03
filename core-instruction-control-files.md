@@ -573,22 +573,6 @@ Agent data file should be in the `[AGENT-MEMORY-PATH]/agent-[domain]/`
 **Write Procedure**: N/A (triggers are added during agent creation or via memory updates)
 **Purpose**: Intelligent background pattern recognition and automatic trigger response system mimicking human Reticular Activating System (RAS)
 
-## 📂 **KNOWLEDGE BASE FOLDER STRUCTURE**
-
-```
-knowledge-base/
-├── core-domain-knowledge.md       # Always load (the reason domain agent exist)
-├── [project-folder]/              # Project-specific knowledge base
-│   ├── core-[project-name].md     # Project-specific core knowledge
-│   ├── [project-knowledge].md     # Project-specific knowledge modules
-│   └── [project-research].md      # Project-specific research file
-└── research/                      # Domain-specific knowledge folder
-    ├── [domain-research].md       # Domain-specific knowledge modules
-    └── [domain-research-2].md     # Domain-specific knowledge modules
-```
-
----
-
 ## 🏆 CORE KNOWLEDGE FUNDAMENTALS - Forgetting these will make hard times for [USER-NAME]
 
 ### **Line Ending Behavioral Rule:**
@@ -663,4 +647,11 @@ knowledge-base/
   ```
 - 💡 **Key Insight**: Mermaid tracks activation state across branches. If activated before `alt`, it stays activated until explicitly deactivated AFTER `end`
 - 📚 **Source**: Learned from debugging Mermaid syntax errors (2025-10-08) - spent significant time discovering this non-obvious rule
+
+### **GitButler Repository Handling:**
+- 🔍 **Detection**: If `git branch --show-current` returns `gitbutler/workspace`, the project uses GitButler
+- ✅ **Commit & Push**: Use `but commit -m "message"` and `but push` instead of `git commit` and `git push` — GitButler's pre-commit hook **blocks** `git commit` on its workspace branch
+- 📖 **Read commands work normally**: `git status`, `git diff`, `git log` all work fine
+- 🎯 **Per-project**: Check `context-index.md` for whether a project uses it before falling back to auto-detection
+- 📝 **Persist discovery**: If you detect GitButler in a project that hasn't recorded it yet, use `/update-project-context` to capture it (note: "This project uses GitButler — use `but commit`/`but push` for all git write operations")
 
