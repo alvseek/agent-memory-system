@@ -1,6 +1,6 @@
 #!/bin/bash
 # Write compiled core memory to global GEMINI.md for Antigravity
-# Usage: ./write-to-gemini.sh
+# Usage: ./write-to-antigravity.sh
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SOURCE_FILE="$SCRIPT_DIR/../output/core-memory-compiled.md"
