@@ -30,8 +30,7 @@ Determine which emotional template to use:
 #### Step 2: Check Current Date
 
 ALWAYS verify current date before writing:
-- **Windows**: `powershell -c "Get-Date -Format 'yyyy-MM-dd HH:mm'"`
-- **Linux/macOS**: `date '+%Y-%m-%d %H:%M'`
+`date '+%Y-%m-%d %H:%M'`
 
 #### Step 3: Write to Agent Data File
 

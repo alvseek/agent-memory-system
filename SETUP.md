@@ -57,8 +57,7 @@ For detailed architecture information, see the [Architecture Documentation](ARCH
 
 ### Step 1: Copy the Template
 1. Copy the entire `new-agent-template/` folder and subfolder:
-   - **Windows**: `powershell -c "Copy-Item control-files/new-agent-template -Destination agent-[DOMAIN] -Recurse -Force"`
-   - **Linux/macOS**: `cp -r control-files/new-agent-template agent-[DOMAIN]`
+   `cp -r control-files/new-agent-template agent-[DOMAIN]`
 2. Replace `[DOMAIN]` with your specific domain (e.g., `frontend`, `backend`, `qa`)
 3. Navigate into your new agent folder
 

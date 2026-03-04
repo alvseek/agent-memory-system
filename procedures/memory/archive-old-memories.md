@@ -20,8 +20,7 @@ Maintain manageable memory file sizes by archiving older episodic context and se
 ### Step 1: Verify Current Date
 
 Always check current date before archiving:
-- **Windows**: `powershell -c "Get-Date -Format 'yyyy-MM-dd HH:mm'"`
-- **Linux/macOS**: `date '+%Y-%m-%d %H:%M'`
+`date '+%Y-%m-%d %H:%M'`
 
 ### Step 2: Archive Recent Context (Episodic Memory)
 

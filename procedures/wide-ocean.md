@@ -25,17 +25,14 @@ Read the [Wide Ocean Plan Template](//@agent-memory/control-files/plan-templates
 
 Create plan folder with naming: `plans/[YYYY-MM-DD]-[feature-name]/`
 - Get current date:
-  - **Windows**: `powershell -c "Get-Date -Format 'yyyy-MM-dd'"`
-  - **Linux/macOS**: `date '+%Y-%m-%d'`
+  `date '+%Y-%m-%d'`
 - Create folder:
-  - **Windows**: `powershell -c "New-Item -ItemType Directory -Force -Path 'plans/[YYYY-MM-DD]-[feature-name]'"`
-  - **Linux/macOS**: `mkdir -p plans/[YYYY-MM-DD]-[feature-name]`
+  `mkdir -p plans/[YYYY-MM-DD]-[feature-name]`
 
 ### Step 3: Copy Template
 
 Copy the template file to the new folder as `master.md`:
-- **Windows**: `powershell -c "Copy-Item {source} -Destination {target}/master.md -Force"`
-- **Linux/macOS**: `cp {source} {target}/master.md`
+`cp {source} {target}/master.md`
 
 ### Step 4: Fill Feature Info
 

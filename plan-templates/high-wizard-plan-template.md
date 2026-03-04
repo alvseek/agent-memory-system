@@ -241,5 +241,4 @@ I have to use this document as my **ONLY** source of truth to execute and track 
 
 ## **POST-COMPLETION**
 After all phases are executed and logged, move this plan to `plans/completed/`:
-- **Windows**: `powershell -c "if (!(Test-Path './plans/completed')) { New-Item -ItemType Directory -Path './plans/completed' -Force }; Move-Item './plans/[this-file].md' './plans/completed/[this-file].md' -Force"`
-- **Linux/macOS**: `mkdir -p ./plans/completed && mv ./plans/[this-file].md ./plans/completed/[this-file].md`
+`mkdir -p ./plans/completed && mv ./plans/[this-file].md ./plans/completed/[this-file].md`

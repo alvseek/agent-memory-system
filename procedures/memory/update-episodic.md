@@ -22,14 +22,12 @@ If updating and theme is unrelated to latest context, will automatically create 
 #### Step 1: Check Date
 
 ALWAYS CHECK DATE TIME FIRST for file naming:
-- **Windows**: `powershell -c "Get-Date -Format 'yyyy-MM-dd HH:mm'"`
-- **Linux/macOS**: `date '+%Y-%m-%d %H:%M'`
+`date '+%Y-%m-%d %H:%M'`
 
 #### Step 2: Copy Template
 
 Copy the [Episodic Memory Template](//@agent-memory/control-files/templates/episodic-memory-template.md) file to the `//@agent-memory/agent-[domain]/episodes/` folder with the final name `[YYYY-MM-DD]-[hh.mm]-[project-name]-[context-theme].md`:
-- **Windows**: `powershell -c "Copy-Item {source} -Destination //@agent-memory/agent-[domain]/episodes/[YYYY-MM-DD]-[hh.mm]-[project-name]-[context-theme].md -Force"`
-- **Linux/macOS**: `cp {source} //@agent-memory/agent-[domain]/episodes/[YYYY-MM-DD]-[hh.mm]-[project-name]-[context-theme].md`
+`cp {source} //@agent-memory/agent-[domain]/episodes/[YYYY-MM-DD]-[hh.mm]-[project-name]-[context-theme].md`
 
 #### Step 3: Add Entry
 

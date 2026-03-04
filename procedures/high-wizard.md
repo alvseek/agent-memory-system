@@ -24,14 +24,12 @@ Read the [High Wizard Plan Template](//@agent-memory/control-files/plan-template
 ### Step 2: Check Date
 
 Get current date for file naming:
-- **Windows**: `powershell -c "Get-Date -Format 'yyyy-MM-dd HH:mm'"`
-- **Linux/macOS**: `date '+%Y-%m-%d %H:%M'`
+`date '+%Y-%m-%d %H:%M'`
 
 ### Step 3: Copy Template
 
 Copy the template file to the `/plans` folder with the final name:
-- **Windows**: `powershell -c "Copy-Item {source} -Destination ./plans/[YYYY-MM-DD]-[project]-[theme].md -Force"`
-- **Linux/macOS**: `cp {source} ./plans/[YYYY-MM-DD]-[project]-[theme].md`
+`cp {source} ./plans/[YYYY-MM-DD]-[project]-[theme].md`
 
 ### Step 4: Fill Project Info
 
@@ -161,8 +159,7 @@ After [USER-NAME] instructs to start implementing, start implementing following 
 ### Step 17: Move Plan to Completed
 
 After all implementation phases are done and logged, move the plan file to `/plans/completed/`:
-- **Windows**: `powershell -c "if (!(Test-Path './plans/completed')) { New-Item -ItemType Directory -Path './plans/completed' -Force }; Move-Item './plans/[plan-file].md' './plans/completed/[plan-file].md' -Force"`
-- **Linux/macOS**: `mkdir -p ./plans/completed && mv ./plans/[plan-file].md ./plans/completed/[plan-file].md`
+`mkdir -p ./plans/completed && mv ./plans/[plan-file].md ./plans/completed/[plan-file].md`
 
 **Note**: Episodic memory links to the plan will break after moving. This is accepted — completed plans are archival.
 

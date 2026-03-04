@@ -29,8 +29,7 @@ Identify the project this context belongs to:
 Check if `knowledge-base/[project-name]/` folder exists in `//@agent-memory/agent-[domain]/`:
 - **If exists**: Proceed to Step 3
 - **If not exists**: Create the folder:
-  - **Windows**: `powershell -c "New-Item -ItemType Directory -Path '//@agent-memory/agent-[domain]/knowledge-base/[project-name]' -Force"`
-  - **Linux/macOS**: `mkdir -p //@agent-memory/agent-[domain]/knowledge-base/[project-name]`
+  `mkdir -p //@agent-memory/agent-[domain]/knowledge-base/[project-name]`
 
 ### Step 3: Determine Theme and Check Existing Files
 
@@ -43,8 +42,7 @@ Scan existing files in `knowledge-base/[project-name]/` to check if a file alrea
 ### Step 4A: Create New Context File
 
 1. Copy the [Project Context Template](//@agent-memory/control-files/templates/project-context-template.md) to `knowledge-base/[project-name]/[theme].md`
-   - **Windows**: `powershell -c "Copy-Item {source} -Destination //@agent-memory/agent-[domain]/knowledge-base/[project-name]/[theme].md -Force"`
-   - **Linux/macOS**: `cp {source} //@agent-memory/agent-[domain]/knowledge-base/[project-name]/[theme].md`
+   `cp {source} //@agent-memory/agent-[domain]/knowledge-base/[project-name]/[theme].md`
 2. Fill the YAML frontmatter:
    - `project`: the project name from Step 1
    - `tags`: relevant feature/module tags for selective loading (e.g., `[environment, setup, vm, gcloud]`)
