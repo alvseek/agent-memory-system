@@ -26,6 +26,20 @@
 
 ---
 
+## Table of Contents
+
+- [What Is This?](#what-is-this)
+- [How Do I Set It Up?](#how-do-i-set-it-up)
+- [How Do I Use It?](#how-do-i-use-it)
+- [How Does It Work Inside?](#how-does-it-work-inside)
+- [How Is It Deployed?](#how-is-it-deployed)
+- [What Decisions Were Made?](#what-decisions-were-made)
+- [What's Broken / Known Debts?](#whats-broken--known-debts)
+
+<!-- tip: Remove entries for sections you delete. -->
+
+---
+
 ## What Is This?
 
 <!-- tip: A new person should understand this project's reason to exist within 30 seconds.
