@@ -47,7 +47,7 @@ When an agent awakens, it loads **4 files** to recover full memory:
 control-files/
 ├── core-instruction-control-files.md  # Shared control file (all agents use this)
 ├── setup-scripts/                     # Top-level setup orchestrators
-│   └── setup-claude-code.sh           # Complete setup: compile + procedures
+│   └── setup-claude-code.sh           # Complete setup: compile + procedures + settings
 ├── core-memory/                       # Source files for Global CLAUDE.md
 │   ├── 0-core-user-profile.md             # User identity (name, philosophy, vision)
 │   ├── 1-core-environment-memory.md   # OS-specific settings
@@ -79,7 +79,13 @@ control-files/
 │   │   └── archive-old-memories.md    # Memory archiving
 │   ├── template/                      # Procedure template
 │   └── setup-scripts/                 # Slash command setup scripts
-├── plan-templates/                             # Planning templates (used by procedures)
+├── scripts/                           # Utility scripts
+│   ├── claude-agent-refresh.sh        # Hook: memory refresh after compaction
+│   ├── copy-lines.sh                  # Utility: copy lines between files
+│   ├── stop.wav                       # Hook: audio notification sound
+│   └── setup-scripts/                 # Settings setup scripts
+│       └── setup-settings-claude-code.sh  # Configure hooks + bypass permissions
+├── plan-templates/                    # Planning templates (used by procedures)
 │   └── [templates: *-template.md]
 └── templates/                         # Output templates (used by procedures)
 ```
