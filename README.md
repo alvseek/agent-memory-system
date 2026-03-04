@@ -167,6 +167,12 @@ Procedures double as slash commands for fast execution:
 /update-project-context # Create/update project-specific context files
 /load-project-context   # List and load project context by keyword or number
 /load-episodic          # List and load past episodic memories
+/push-project           # Commit and push current project
+/push-memory            # Commit and push agent memory
+/push-all               # Commit and push both project + agent memory
+/pull-project           # Pull latest for current project
+/pull-memory            # Pull agent memory + update control-files submodule
+/pull-all               # Pull both project + agent memory
 ```
 
 For the full list of procedures and wizard protocols, see the [Architecture Documentation](ARCHITECTURE.md#wizard-protocols).

@@ -651,7 +651,8 @@ Agent data file should be in the `[AGENT-MEMORY-PATH]/agent-[domain]/`
 ### **GitButler Repository Handling:**
 - 🔍 **Detection**: If `git branch --show-current` returns `gitbutler/workspace`, the project uses GitButler
 - ✅ **Commit & Push**: Use `but commit -m "message"` and `but push` instead of `git commit` and `git push` — GitButler's pre-commit hook **blocks** `git commit` on its workspace branch
+- ✅ **Pull**: Use `but pull` instead of `git pull` — fetches latest from remote and rebases active branches on top of the new base. Use `but pull --check` for a dry run preview (shows which branches rebase cleanly, which conflict, which are already integrated). Use `but undo` to reverse if needed
 - 📖 **Read commands work normally**: `git status`, `git diff`, `git log` all work fine
 - 🎯 **Per-project**: Check `context-index.md` for whether a project uses it before falling back to auto-detection
-- 📝 **Persist discovery**: If you detect GitButler in a project that hasn't recorded it yet, use `/update-project-context` to capture it (note: "This project uses GitButler — use `but commit`/`but push` for all git write operations")
+- 📝 **Persist discovery**: If you detect GitButler in a project that hasn't recorded it yet, use `/update-project-context` to capture it (note: "This project uses GitButler — use `but commit`/`but push`/`but pull` for all git write operations")
 

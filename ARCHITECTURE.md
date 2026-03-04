@@ -317,6 +317,12 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 | **Awaken Agent** | `procedures/awaken-agent.md` | `/awaken-agent` |
 | **Refresh Memory** | `procedures/refresh-memory.md` | `/refresh-memory` |
 | **Implement Plan** | `procedures/implement-plan.md` | `/implement-plan` |
+| **Push Project** | `procedures/push-project.md` | `/push-project` |
+| **Push Memory** | `procedures/push-memory.md` | `/push-memory` |
+| **Push All** | `procedures/push-all.md` | `/push-all` |
+| **Pull Project** | `procedures/pull-project.md` | `/pull-project` |
+| **Pull Memory** | `procedures/pull-memory.md` | `/pull-memory` |
+| **Pull All** | `procedures/pull-all.md` | `/pull-all` |
 
 ### Common Slash Commands
 
@@ -333,6 +339,12 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 /load-project-context    # List and load project context files
 /load-episodic           # List and load past episodic memories
 /archive-old-memories    # Archive old memories
+/push-project            # Commit and push current project
+/push-memory             # Commit and push agent memory
+/push-all                # Commit and push both project + agent memory
+/pull-project            # Pull latest for current project
+/pull-memory             # Pull agent memory + update control-files submodule
+/pull-all                # Pull both project + agent memory
 ```
 
 ---
