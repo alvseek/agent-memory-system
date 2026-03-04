@@ -1,7 +1,7 @@
 # [Project Name]
 
 <!-- ============================================================
-  README TEMPLATE — Based on the 7 Questions Framework
+  7Q README TEMPLATE — 7 Questions Framework README
 
   HOW TO USE:
   1. Copy this file into your project as README.md (or docs/README.md)
@@ -13,7 +13,7 @@
 
 > **Documentation Convention** *(delete this section after reading)*
 >
-> This project follows the **7 Questions** documentation standard with these conventions:
+> This project follows the **7Q README** (7 Questions Framework README) documentation standard with these conventions:
 >
 > **Fractal docs**: Every buildable unit (service, app, module) can have its own README following this same template. A root README covers the whole project; a module README covers just that module.
 >

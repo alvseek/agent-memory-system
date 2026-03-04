@@ -1,6 +1,6 @@
-# Generate README
+# Generate README (7Q README)
 
-Generate a README document by copying the 7 Questions Framework template into a project, investigating the relevant scope, and filling each section from code.
+Generate a **7Q README** (full name: **7 Questions Framework README**) by copying the template into a project, investigating the relevant scope, and filling each section from code.
 
 ## Arguments
 
