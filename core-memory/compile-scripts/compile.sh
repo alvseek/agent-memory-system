@@ -9,6 +9,9 @@ OUTPUT_FILE="$CORE_MEMORY_DIR/output/core-memory-compiled.md"
 
 echo "Compiling core memory files..."
 
+# Ensure output directory exists
+mkdir -p "$(dirname "$OUTPUT_FILE")"
+
 # Create header
 cat > "$OUTPUT_FILE" << 'EOF'
 <!-- COMPILED CORE MEMORY FILE -->
