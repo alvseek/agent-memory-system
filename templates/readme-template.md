@@ -4,7 +4,7 @@
   7Q README TEMPLATE — 7 Questions Framework README
 
   HOW TO USE:
-  1. Copy this file into your project as README.md (or docs/README.md)
+  1. Copy this file into your project as README.md (or docs/readme/README.md for large projects)
   2. Read the Documentation Convention section below, then delete it
   3. Fill each section — delete the HTML comments as you go
   4. Delete sections that don't apply (e.g., Q5 for a library with no deployment), but DO NOT DELETE section that's empty
@@ -18,9 +18,9 @@
 > **Fractal docs**: Every buildable unit (service, app, module) can have its own README following this same template. A root README covers the whole project; a module README covers just that module.
 >
 > **Doc locations**:
-> - Root documentation lives in `/docs/README.md` (or just `/README.md` for small projects)
-> - Module-specific documentation lives in `/{module}/docs/README.md`
-> - Convention: if a module has its own docs, they're always at `{module}/docs/README.md` — no need to maintain a central link list
+> - Small projects: `README.md` at project root. Cross-cutting docs in `/docs/` (e.g., `docs/README-deployment.md`)
+> - Large projects: Brief `README.md` at root linking to `/docs/readme/README.md` (full project 7Q README)
+> - Module-specific: each buildable unit can have its own `README.md` — no need to maintain a central link list
 >
 > **Cross-referencing**: When describing architecture in Q1 below, naturally mention modules that have their own README. Example: *"Order processing lives in `business/orders` — see its README for internals."* This gives discoverability without maintaining fragile link lists.
 
@@ -52,6 +52,9 @@
 <!-- tip: Show how the major pieces connect. If this project has modules with their own
      READMEs, mention them here naturally — this is how readers discover child docs.
      Example: "Order processing lives in business/orders — see its README for internals." -->
+
+<!-- tip: If this project follows an architecture pattern (e.g., A-Boxed L1), mention it here.
+     This helps readers understand the structural conventions used throughout the project. -->
 
 ```
 [Diagram or ASCII art showing major components and their relationships]
@@ -276,27 +279,43 @@
 ---
 
 <!-- ============================================================
-  SCALING GUIDE — When to split this README
+  SCALING GUIDE — Fractal scaling for 7Q READMEs
 
   Single README: When all 7 sections fit in one readable file (~500 lines).
   Most small projects and individual modules.
 
-  Multiple documents: When the README would exceed ~500 lines. Split into:
+  Too big? Use FRACTAL scaling — push detail into child unit READMEs:
+  Each buildable unit (service, module, package) gets its own complete
+  7Q README at its scope. The parent README stays high-level and
+  naturally references child READMEs in Q1 Architecture.
 
-  docs/
-  ├── README.md              → Q1: What Is This (+ links to others)
-  ├── SETUP.md               → Q2: How Do I Set It Up
-  ├── USAGE.md               → Q3: How Do I Use It
-  ├── ARCHITECTURE.md        → Q4: How Does It Work Inside
-  ├── DEPLOYMENT.md          → Q5: How Is It Deployed
-  ├── decisions/             → Q6: What Decisions Were Made
-  │   ├── ADR-001-xxx.md
-  │   └── ADR-002-xxx.md
-  └── TECH-DEBTS.md          → Q7: What's Broken / Known Debts
+  DO NOT split one README into section files (SETUP.md, ARCHITECTURE.md...)
+  — that's decomposition, not fractal. Every README*.md is a complete
+  7Q README at its scope.
 
-  The root README always stays as the ENTRY POINT — containing Q1
-  and linking to the rest. Each split file follows the same content
-  guidance as the corresponding section above.
+  Cross-cutting topics that span multiple units get their own docs at
+  the parent level using README-{topic}.md naming:
+
+  Level 1 (small projects):
+  README.md                          ← 7Q README at root
+  /docs/
+  ├── README-architecture.md         ← Cross-cutting 7Q README (optional)
+  ├── README-deployment.md           ← Cross-cutting 7Q README (optional)
+  └── STANDARDS.md                   ← Project standards (optional, not 7Q)
+
+  Level 5 (large projects):
+  README.md                          ← Brief entry point, links to docs/readme/
+  /docs/
+  ├── readme/
+  │   ├── README.md                  ← Full project 7Q README
+  │   ├── README-architecture.md
+  │   └── flow/                      ← Category folders as needed
+  │       ├── README.md              ← Flows overview (7Q)
+  │       └── README-login.md        ← Login flow (7Q)
+  ├── standards/
+  │   ├── STANDARDS.md               ← Standards overview
+  │   └── STANDARDS-logging.md       ← Logging standard
+  └── planning/                      ← PRDs, ADRs, etc.
 
   Delete this comment block when you've decided your approach.
 ============================================================ -->

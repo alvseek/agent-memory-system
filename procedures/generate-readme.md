@@ -53,10 +53,13 @@ After investigation, estimate whether the README will exceed **500 lines**. Sign
 
 **If estimated <= 500 lines**: Proceed to Step 5.
 
-**If estimated > 500 lines**: STOP. Recommend splitting to [USER-NAME]:
-- "This scope is too large for a single README (~[estimate] lines). I recommend splitting into separate docs:"
-- List which sections should become their own files (e.g., `SETUP.md`, `ARCHITECTURE.md`, `DEPLOYMENT.md`)
-- Offer to generate `README.md` first (Q1 overview + links to split docs), then handle others in separate `/generate-readme` invocations
+**If estimated > 500 lines**: STOP. The scope is too big for a single README. Recommend **fractal scaling** to [USER-NAME]:
+- "This scope is too large for a single README (~[estimate] lines). The detail should live in child unit READMEs, not in one big file."
+- Identify which buildable units (services, modules, packages) should get their own 7Q README
+- Offer to generate the parent README first (high-level Q1-Q7), then handle child unit READMEs in separate `/generate-readme` invocations
+- **DO NOT recommend splitting into section files** (SETUP.md, ARCHITECTURE.md...) — that's decomposition, not fractal. Every `README*.md` is a complete 7Q README at its scope
+- Cross-cutting topics that span multiple units can go in `README-{topic}.md` at the parent `docs/` level (e.g., `docs/README-deployment.md`)
+- If the project also has standards docs (`STANDARDS.md`, `STANDARDS-{topic}.md`), note their existence but don't generate them with this procedure
 - Wait for [USER-NAME]'s decision before proceeding
 
 ### Step 5: Fill Sections
