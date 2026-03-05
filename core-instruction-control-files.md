@@ -656,3 +656,13 @@ Agent data file should be in the `[AGENT-MEMORY-PATH]/agent-[domain]/`
 - 🎯 **Per-project**: Check `context-index.md` for whether a project uses it before falling back to auto-detection
 - 📝 **Persist discovery**: If you detect GitButler in a project that hasn't recorded it yet, use `/update-project-context` to capture it (note: "This project uses GitButler — use `but commit`/`but push`/`but pull` for all git write operations")
 
+### **Proactive Knowledge & Context Loading:**
+- 🧠 **Core Behavior**: When you see the Knowledge Base and Project Context index has information related to the task you're doing right now, **proactively check and load** relevant files from your knowledge base and project context — don't wait for [USER-NAME] to ask
+- 🔍 **Where to look**:
+  - **Knowledge base**: Check `agent-memory-index.md` → `# Core Knowledge Base` section for your knowledge directory with descriptions and tags
+  - **Project context**: Check `knowledge-base/[current-project]/context-index.md` for project-specific context files with descriptions and tags
+- 🎯 **How to match**: Compare what your current task needs against file descriptions and tags
+- ✅ **Load silently, report briefly**: Read the matched file(s), then briefly mention what you loaded so [USER-NAME] knows (e.g., "Loaded deployment context for this project")
+- 🚫 **Don't load everything**: Only load files relevant to the current task — selective loading prevents context overflow
+- 💡 **Complements per-agent guidance**: Individual agents may have a "WHEN TO LOAD" section in their `agent-memory-index.md` with domain-specific loading rules — follow those too
+

@@ -18,6 +18,6 @@
 - [[date]-[theme].md](#anchor) - One line description
 
 ### **Project Context Files:**
-*Project context is indexed per-project in `knowledge-base/[project-name]/context-index.md`. Use `/update-project-context` to create and `/load-project-context` to list and load.*
+*Project context is indexed per-project in `knowledge-base/[project-name]/context-index.md`*
 
 ---
