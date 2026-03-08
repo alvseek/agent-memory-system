@@ -167,6 +167,7 @@ Procedures double as slash commands for fast execution:
 /update-project-context # Create/update project-specific context files
 /load-project-context   # List and load project context by keyword or number
 /load-episodic          # List and load past episodic memories
+/load-knowledge         # List and load knowledge files by keyword or letter
 /push-project           # Commit and push current project
 /push-memory            # Commit and push agent memory
 /push-all               # Commit and push both project + agent memory

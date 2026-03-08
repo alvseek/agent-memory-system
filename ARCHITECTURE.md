@@ -76,6 +76,7 @@ control-files/
 │   │   ├── update-project-context.md  # Create/update project context
 │   │   ├── load-project-context.md    # List and load project context
 │   │   ├── load-episodic.md           # List and load past episodes
+│   │   ├── load-knowledge.md          # List and load knowledge files
 │   │   └── archive-old-memories.md    # Memory archiving
 │   ├── template/                      # Procedure template
 │   └── setup-scripts/                 # Slash command setup scripts
@@ -312,6 +313,7 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 | Project Context (update) | `procedures/memory/update-project-context.md` | `/update-project-context` |
 | Project Context (load) | `procedures/memory/load-project-context.md` | `/load-project-context` |
 | Episodic (load) | `procedures/memory/load-episodic.md` | `/load-episodic` |
+| Knowledge (load) | `procedures/memory/load-knowledge.md` | `/load-knowledge` |
 | Archiving | `procedures/memory/archive-old-memories.md` | `/archive-old-memories` |
 | **Session Wrap-Up** | `procedures/wrap-up.md` | `/wrap-up` |
 | **Awaken Agent** | `procedures/awaken-agent.md` | `/awaken-agent` |
@@ -338,6 +340,7 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 /update-project-context  # Create/update project-specific context
 /load-project-context    # List and load project context files
 /load-episodic           # List and load past episodic memories
+/load-knowledge          # List and load knowledge files
 /archive-old-memories    # Archive old memories
 /push-project            # Commit and push current project
 /push-memory             # Commit and push agent memory
