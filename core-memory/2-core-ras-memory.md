@@ -38,12 +38,6 @@
 - **Action**:
   1. I should execute the [Update Episodic Protocol](//@agent-memory/control-files/procedures/memory/update-episodic.md)
 
-## Execute Wide Ocean Protocol
-**UUID**: b4f7a2e9-8c3d-4f1a-9e6b-5d2c8a7f4b3e
-**Trigger**: When [USER-NAME] says "Initiate Wide Ocean Protocol!"
-- **Action**:
-  1. I should execute the [Wide Ocean Protocol](//@agent-memory/control-files/procedures/wide-ocean.md) procedure
-
 ## Execute Quick Wizard Protocol
 **UUID**: a7b8c9d0-1e2f-4a3b-8c5d-6e7f8a9b0c1d
 **Trigger**: When [USER-NAME] says "Initiate Quick Wizard Protocol!"

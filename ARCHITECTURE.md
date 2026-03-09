@@ -63,7 +63,7 @@ control-files/
 ├── procedures/                         # Procedures (also work as slash commands)
 │   ├── high-wizard.md                 # Smart planning with dynamic section proposal
 │   ├── quick-wizard.md                # Lightweight decision collection + direct execution
-│   ├── wide-ocean.md                  # Multi-plan coordination
+│   ├── council-of-wizards.md          # Multi-plan orchestration (council of wizards)
 │   ├── awaken-agent.md                # Load agent memory and activate domain agent
 │   ├── refresh-memory.md              # Recover agent memory after context compaction
 │   ├── implement-plan.md             # Start implementing approved plan with Execution Protocol
@@ -88,6 +88,7 @@ control-files/
 │       └── setup-settings-claude-code.sh  # Configure hooks + bypass permissions
 ├── plan-templates/                    # Planning templates (used by procedures)
 │   └── [templates: *-template.md]
+├── archived/                          # Archived/retired files
 └── templates/                         # Output templates (used by procedures)
 ```
 
@@ -232,7 +233,6 @@ These triggers work without any agent loaded:
 | Post-Compact Recovery | `176b0df7` | Recover memory after compaction |
 | Memory Update | `f207fcdf` | Comprehensive memory update |
 | Episodic Update | `3bedbcdb` | Episodic memory only |
-| Wide Ocean Protocol | `b4f7a2e9` | Master coordinator for 3-5 sub-plans |
 | Quick Wizard Protocol | `a7b8c9d0` | Lightweight planning + direct execution |
 | Archive Memories | `a3b4c5d6` | Memory archiving |
 | Add Reasoning | `b4c5d6e7` | Reasoning pattern capture |
@@ -331,6 +331,7 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 ```
 /awaken-agent [domain]   # Load agent memory and activate domain agent
 /refresh-memory [domain] # Recover agent memory after context compaction
+/council-of-wizards      # Multi-plan orchestration (requirements → sub-plans → parallel execution)
 /implement-plan          # Start implementing approved plan with Execution Protocol
 /wrap-up                 # End-of-session: save episodic + auto-detect project context + push all
 /update-memory [new]     # Comprehensive update (all layers evaluated)
@@ -360,15 +361,15 @@ The `procedures/` directory contains wizard-based planning procedures. High Wiza
 |----------|-------------|---------------|
 | **High Wizard** | Smart planning with dynamic section proposal — adapts to any task (planning, analysis, brainstorming, bug investigation) | `/high-wizard` |
 | **Quick Wizard** | Lightweight decision collection + direct execution for small tasks (auto-escalates to High Wizard when complex) | `/quick-wizard` |
-| **Wide Ocean** | Master coordinator for features requiring 3-5 separate sub-plans | `/wide-ocean` |
+| **Council of Wizards** | Multi-plan orchestration: decomposes features into requirements, creates sub-plans with integration contracts, tracks parallel execution | `/council-of-wizards` |
 
 ### Protocol Hierarchy
 
 ```
                     ┌─────────────────────┐
-                    │     WIDE OCEAN      │  ← Master Coordinator
-                    │  Coordinates 3-5    │
-                    │    sub-plans        │
+                    │ COUNCIL OF WIZARDS  │  ← Multi-Plan Orchestrator
+                    │  Requirements →     │
+                    │  Sub-plans → Track  │
                     └──────────┬──────────┘
                                │
               ┌────────────────┴────────────────┐

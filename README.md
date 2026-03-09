@@ -160,6 +160,7 @@ Procedures double as slash commands for fast execution:
 /refresh-memory [domain] # Recover agent memory after context compaction
 /high-wizard            # Smart planning with dynamic section proposal
 /quick-wizard           # Lightweight decision collection + direct execution
+/council-of-wizards     # Multi-plan orchestration (requirements → sub-plans → parallel execution)
 /implement-plan         # Start implementing approved plan with Execution Protocol
 /wrap-up                # End-of-session: save episodic + auto-detect project context + push all
 /update-memory          # Comprehensive memory update (all layers evaluated)
