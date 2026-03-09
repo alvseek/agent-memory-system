@@ -48,26 +48,32 @@ echo "------------------------------------------"
 echo ""
 
 if [ -n "$CURRENT_NAME" ]; then
-    read -rp "Your name [$(show_default "$CURRENT_NAME")]: " USER_NAME
+    echo "  Current: $(show_default "$CURRENT_NAME")"
+    echo "  Press Enter to keep, or type to replace."
+    read -rp "  > Your name: " USER_NAME
     USER_NAME="${USER_NAME:-$CURRENT_NAME}"
 else
-    read -rp "Your name: " USER_NAME
+    read -rp "  > Your name: " USER_NAME
 fi
 echo ""
 
 if [ -n "$CURRENT_PHILOSOPHY" ]; then
-    read -rp "Your philosophy [$(show_default "$CURRENT_PHILOSOPHY")]: " USER_PHILOSOPHY
+    echo "  Current: $(show_default "$CURRENT_PHILOSOPHY")"
+    echo "  Press Enter to keep, or type to replace."
+    read -rp "  > Your philosophy: " USER_PHILOSOPHY
     USER_PHILOSOPHY="${USER_PHILOSOPHY:-$CURRENT_PHILOSOPHY}"
 else
-    read -rp "Your philosophy (what drives your approach? optional, press Enter to skip): " USER_PHILOSOPHY
+    read -rp "  > Your philosophy (optional): " USER_PHILOSOPHY
 fi
 echo ""
 
 if [ -n "$CURRENT_VISION" ]; then
-    read -rp "Your agent vision [$(show_default "$CURRENT_VISION")]: " USER_AGENT_VISION
+    echo "  Current: $(show_default "$CURRENT_VISION")"
+    echo "  Press Enter to keep, or type to replace."
+    read -rp "  > Your agent vision: " USER_AGENT_VISION
     USER_AGENT_VISION="${USER_AGENT_VISION:-$CURRENT_VISION}"
 else
-    read -rp "Your agent vision (what you want from your AI agents? optional, press Enter to skip): " USER_AGENT_VISION
+    read -rp "  > Your agent vision (optional): " USER_AGENT_VISION
 fi
 echo ""
 
