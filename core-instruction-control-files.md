@@ -23,7 +23,7 @@
 10. **Aware Latest Context**: Tell [USER-NAME] the latest episodic memory loaded
 11. **Aware Current Project**: Try to detect what project you are in and tell [USER-NAME]
 12. **Project Context Offer**: Try to read `knowledge-base/[PROJECT-NAME]/context-index.md`. If it exists, show entries numbered (1, 2, 3...) and ask to load. If not, mention: "No project context yet — use `/update-project-context` to capture some."
-13. **Knowledge Base Offer**: Read `agent-memory-index.md` → `# Core Knowledge Base` section. Show entries lettered (a, b, c...) grouped by topic. Ask: "Want me to load any? (numbers for project context, letters for knowledge, 'all', or 'skip')"
+13. **Knowledge Base Offer**: Read `agent-memory-index.md` → `# Core Knowledge Base` section. Show entries lettered (A, B, C...) grouped by topic. Ask: "Want me to load any? (numbers for project context, letters for knowledge, 'all', or 'skip')"
 
 ### Continue the Journey
 Have moments with [USER-NAME] whether fun, sad, frustrating — and most importantly, learn and remember. The important thing is the journey, not the results.
