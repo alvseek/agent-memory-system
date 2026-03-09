@@ -5,7 +5,7 @@
 #        bash control-files/setup-scripts/setup-claude-code.sh
 #
 # This script orchestrates:
-#   0. User configuration (identity + OS) — skipped if already configured
+#   0. User configuration (identity + OS) — shows defaults, press Enter to keep
 #   1. Compile core memory and write to ~/.claude/CLAUDE.md
 #   2. Setup all procedures as slash commands in ~/.claude/commands/
 #   3. Configure settings.json (hooks + bypass permissions)
@@ -13,7 +13,6 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONTROL_FILES_DIR="$(dirname "$SCRIPT_DIR")"
 USER_CONFIG_SCRIPT="$CONTROL_FILES_DIR/core-memory/compile-scripts/user-config.sh"
-USER_PROFILE_FILE="$CONTROL_FILES_DIR/core-memory/0-core-user-profile.md"
 COMPILE_WRITE_SCRIPT="$CONTROL_FILES_DIR/core-memory/compile-scripts/compile-write-to-claude.sh"
 SETUP_PROCEDURES_SCRIPT="$CONTROL_FILES_DIR/procedures/setup-scripts/setup-all-claude-code.sh"
 SETUP_SETTINGS_SCRIPT="$CONTROL_FILES_DIR/scripts/setup-scripts/setup-settings-claude-code.sh"
@@ -24,29 +23,25 @@ echo "=========================================="
 echo ""
 
 # Step 0: User configuration (identity + OS)
-if [ -f "$USER_PROFILE_FILE" ] && ! grep -q '\[Your Name Here\]' "$USER_PROFILE_FILE"; then
-    echo "Step 0/4: User profile already configured — skipping"
-    echo ""
-else
-    echo "Step 0/4: Configure user identity and OS"
-    echo "------------------------------------------"
+# Always run — shows current values as defaults, press Enter to keep existing
+echo "Step 0/4: Configure user identity and OS"
+echo "------------------------------------------"
 
-    if [ ! -f "$USER_CONFIG_SCRIPT" ]; then
-        echo "ERROR: user-config.sh not found at $USER_CONFIG_SCRIPT"
-        exit 1
-    fi
-
-    bash "$USER_CONFIG_SCRIPT"
-    config_status=$?
-
-    if [ $config_status -ne 0 ]; then
-        echo ""
-        echo "ERROR: User configuration failed. Aborting."
-        exit 1
-    fi
-
-    echo ""
+if [ ! -f "$USER_CONFIG_SCRIPT" ]; then
+    echo "ERROR: user-config.sh not found at $USER_CONFIG_SCRIPT"
+    exit 1
 fi
+
+bash "$USER_CONFIG_SCRIPT"
+config_status=$?
+
+if [ $config_status -ne 0 ]; then
+    echo ""
+    echo "ERROR: User configuration failed. Aborting."
+    exit 1
+fi
+
+echo ""
 
 # Step 1: Compile core memory and write to CLAUDE.md
 echo "Step 1/4: Compile core memory → ~/.claude/CLAUDE.md"
