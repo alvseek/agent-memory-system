@@ -19,12 +19,13 @@ If no arguments provided, ask: "What feature or task should I create a Quick Wiz
 
 ### Step 1: Investigate and Collect Decisions
 
-This is where the thinking happens. Follow the investigation checklist below IN ORDER. Each step from 3-6 produces decision items for the decision form.
+This is where the thinking happens. Follow the investigation checklist below IN ORDER. Each step from 3-6 produces decision items for the WAIT Options form.
 
-**Decision format** - For each decision found:
+**WAIT Options format** (What Am I Thinking? Options) - For each decision found:
 - Provide 2-4 options
 - Mark recommended default with confidence signal: `✓✓` (strong, clear evidence) or `✓?` (uncertain, genuine tradeoff)
 - Include a **meaningful reason** that serves as the analysis record
+- If any questions remain that don't fit into options format, collect them as **open questions** to present alongside decisions
 
 **Investigation checklist (in order):**
 
@@ -55,17 +56,21 @@ After investigation, assess whether this task is suitable for Quick Wizard (dire
 
 **If suitable for Quick Wizard**: Continue to Step 3.
 
-### Step 3: Present Decisions
+### Step 3: Present WAIT Options
 
-Present the decision form to [USER-NAME]. STOP. Present to [USER-NAME] for review. Do NOT proceed until decisions are confirmed.
+Present the WAIT Options form to [USER-NAME]. STOP. Present to [USER-NAME] for review. Do NOT proceed until decisions are confirmed.
 
 **Response format:**
 ```
-I've investigated the codebase. Here are the decisions I need before proceeding:
+I've investigated the codebase. Here are the decisions I need before proceeding (WAIT Options):
 
 1. [Decision topic]:  [A) Option ✓✓]  B) Option  C) Option  (reason with evidence)
 2. [Decision topic]:  [A) Option ✓?]   B) Option             (reason explaining uncertainty)
 3. ...
+
+**Open questions:** (if any)
+- [Question about ambiguous aspect that doesn't fit options]
+- [Question about missing context]
 
 Reply with changes (e.g., "change 2 to B") or "let's proceed" to accept all defaults.
 ```

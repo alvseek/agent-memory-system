@@ -15,7 +15,7 @@ If no arguments provided, ask: "What feature should I create a Council of Wizard
 
 ## Procedure
 
-*This is a Level 2 wizard protocol. It orchestrates multiple Level 1 (`/high-wizard` or `/quick-wizard`) sub-plans. The key flow is: Requirements → Scope Gate → Decompose → Contracts → Dependencies → Execute → Complete.*
+*This is a Level 2 wizard protocol. It orchestrates multiple Level 1 (`/high-wizard` or `/quick-wizard`) sub-plans. The key flow is: WAIT Options → Requirements → Scope Gate → Decompose → Contracts → Dependencies → Execute → Complete.*
 
 ### Step 1: Read Template
 
@@ -26,49 +26,81 @@ Read the [Council of Wizards Plan Template](//@agent-memory/control-files/plan-t
 Get current date for file naming:
 `date '+%Y-%m-%d %H:%M'`
 
-### Step 3: Copy Template
+### Step 3: Create Council Folder + Copy Template
 
-Copy the template file to the `/plans` folder with the final name:
-`cp {source} ./plans/[YYYY-MM-DD]-[project]-[feature].md`
+Create the council plan folder and copy the template as `core-plan.md` inside it:
+```
+mkdir -p ./plans/[YYYY-MM-DD]-[project]-[feature]
+cp {source} ./plans/[YYYY-MM-DD]-[project]-[feature]/core-plan.md
+```
 
 ### Step 4: Fill Feature Info
 
 Fill the [Feature Info](//@agent-memory/control-files/plan-templates/council-of-wizards-plan-template.md#feature-info) section (Project, Date, Agent, Feature description)
 
-### Step 5: Requirements Breakdown
+### Step 5: Investigate Feature + Prepare WAIT Options
 
-Investigate the feature and decompose it into clear, numbered requirements. This happens BEFORE any planning decisions.
+Investigate the feature to understand what [USER-NAME] wants delivered. This happens BEFORE any table filling — the agent must align understanding with [USER-NAME] first using **WAIT Options** (What Am I Thinking? Options).
 
 **Investigation approach:**
 1. **Understand the feature** — What is being asked? What is the end result?
 2. **Identify all parts** — What distinct pieces need to be built? (data models, APIs, UI, infrastructure, migrations, etc.)
-3. **Number each requirement** — R1, R2, R3... with description and priority (Must/Should/Could)
-4. **Be exhaustive** — Missing a requirement here means a missing sub-plan later
+3. **Research context** — Scan relevant codebase, architecture, and existing patterns
 
-Fill the [Requirements Breakdown](//@agent-memory/control-files/plan-templates/council-of-wizards-plan-template.md#requirements-breakdown) table.
+**Prepare WAIT Options** — For each requirement the agent identifies:
+- **Confident items**: State the requirement with `✓✓` — "I'm confident you want this"
+- **Ambiguous items**: Present 2-4 options with confidence signal (`✓✓` or `✓?`) — "Do you want A or B?"
+- **Open questions**: Questions that don't fit options format — things the agent can't determine from investigation alone
 
-### Step 6: Scope Gate
+Be exhaustive — missing a requirement here means a missing sub-plan later.
 
-Evaluate the requirements against the scope gate criteria. Check if this feature truly needs multi-plan orchestration.
+### Step 6: Present Requirements WAIT Options
 
-**Council is needed when ANY of these are true:**
-- Feature has **independently shippable sub-deliverables** that build on each other
-- Feature requires **integration contracts** between parts (one plan produces what another consumes)
-- Scope is **too large for a single `/high-wizard`** to cover without losing detail
+Present the WAIT Options form to [USER-NAME].
 
-Fill the [Scope Gate](//@agent-memory/control-files/plan-templates/council-of-wizards-plan-template.md#scope-gate) section with assessment.
+**Response format:**
+```
+Based on my investigation, here's what I think you want (WAIT Options):
+
+**Requirements I identified:**
+1. [Requirement]:  [A) Scope/interpretation ✓✓]  B) Alternative  (reason with evidence)
+2. [Requirement]:  Included ✓✓  (reason why this is needed)
+3. [Requirement]:  [A) Approach ✓?]  B) Alternative  (reason explaining uncertainty)
+...
+
+**Open questions:**
+- [Question about ambiguous aspect that doesn't fit options]
+- [Question about missing context]
+
+Reply with changes (e.g., "change 1 to B", "remove 3", "add X") or "let's proceed" to accept all.
+```
+
+STOP. Present to [USER-NAME] for review. Do NOT fill any tables or proceed until [USER-NAME] confirms the requirements.
+
+### Step 7: Fill Requirements + Scope Gate
+
+After [USER-NAME] confirms the WAIT Options, fill the formal plan sections:
+
+1. **Fill Requirements Breakdown table** — Convert confirmed WAIT Options into the [Requirements Breakdown](//@agent-memory/control-files/plan-templates/council-of-wizards-plan-template.md#requirements-breakdown) table (R1, R2, R3... with descriptions)
+
+2. **Fill Scope Gate** — Evaluate the confirmed requirements against the scope gate criteria:
+
+   **Council is needed when ANY of these are true:**
+   - Feature has **independently shippable sub-deliverables** that build on each other
+   - Feature requires **integration contracts** between parts (one plan produces what another consumes)
+   - Scope is **too large for a single `/high-wizard`** to cover without losing detail
+
+   Fill the [Scope Gate](//@agent-memory/control-files/plan-templates/council-of-wizards-plan-template.md#scope-gate) section with assessment.
+
+3. **Present both** to [USER-NAME] for review.
+
+STOP. Present to [USER-NAME] for review. Do NOT proceed to sub-plan decomposition until [USER-NAME] confirms the requirements are complete and the scope gate assessment is correct.
 
 **If scope gate fails** (single `/high-wizard` suffices):
 1. Tell [USER-NAME]: "This feature fits a single `/high-wizard`. De-escalating."
 2. Delete the council plan file
-3. Launch `/high-wizard` with the feature context — the requirements gathered in Step 5 carry forward as investigation context
+3. Launch `/high-wizard` with the feature context — the requirements gathered via WAIT Options carry forward as investigation context
 4. STOP this procedure
-
-### Step 7: Present Requirements + Scope Gate
-
-Present the requirements breakdown and scope gate assessment to [USER-NAME].
-
-STOP. Present to [USER-NAME] for review. Do NOT proceed to sub-plan decomposition until [USER-NAME] confirms the requirements are complete and the scope gate assessment is correct.
 
 ### Step 8: Investigate & Collect Decomposition Decisions
 
@@ -81,25 +113,11 @@ Before decomposing into sub-plans, investigate the codebase and feature context 
 4. **Parallel strategy** — Which sub-plans can run concurrently? Any hard sequential dependencies?
 5. **Conflicts and constraints** — Are there requirements that must be in the same sub-plan? Cross-cutting concerns?
 
-**Decision format** — For each decision found:
-- Provide 2-4 options
-- Mark recommended default with confidence signal: `✓✓` (strong, clear evidence) or `✓?` (uncertain, genuine tradeoff)
-- Include a **meaningful reason** that serves as the analysis record
+Prepare collected decisions using the **WAIT Options format** (same as Step 6 — options + defaults + confidence + reasons + open questions).
 
-### Step 9: Present & Confirm Decisions
+### Step 9: Present Decomposition WAIT Options
 
-Present the decomposition decisions to [USER-NAME].
-
-**Response format:**
-```
-I've investigated the codebase. Here are the decomposition decisions I need before breaking into sub-plans:
-
-1. [Decision topic]:  [A) Option ✓✓]  B) Option  C) Option  (reason with evidence)
-2. [Decision topic]:  [A) Option ✓?]   B) Option             (reason explaining uncertainty)
-3. ...
-
-Reply with changes (e.g., "change 2 to B") or "let's proceed" to accept all defaults.
-```
+Present the decomposition decisions to [USER-NAME] using the WAIT Options format. Include open questions if any.
 
 STOP. Present to [USER-NAME] for review. Do NOT proceed to decomposition until decisions are confirmed.
 
@@ -114,7 +132,7 @@ Group the confirmed requirements into sub-plans, **informed by the confirmed dec
 **Guidelines:**
 - Each sub-plan groups related requirements that naturally belong together
 - Choose protocol per sub-plan: `/high-wizard` for complex deliverables, `/quick-wizard` for simple ones
-- Name sub-plan files following standard naming: `plans/YYYY-MM-DD-[feature]-[subplan-name].md`
+- Name sub-plan files inside the council folder: `SP-[N]-[subplan-name].md` (e.g., `SP-1-api-endpoints.md`)
 - Assign IDs: SP-1, SP-2, SP-3...
 
 Fill the [Sub-Plans Table](//@agent-memory/control-files/plan-templates/council-of-wizards-plan-template.md#sub-plans-table).
@@ -131,11 +149,11 @@ Identify what data, interfaces, or outputs flow between sub-plans. For each inte
    - **AsyncAPI** — for event/message contracts
    - **JSON Schema** — for data shape contracts
    - **Other YAML** — for custom contracts (config files, migration scripts, etc.)
-3. **Create contract file** — Write the YAML contract file at `plans/contracts/[feature]-[contract-name].yaml`
+3. **Create contract file** — Write the YAML contract file at `contracts/[contract-name].yaml` inside the council folder
 4. **Fill contracts table** — Link each contract in the [Integration Contracts](//@agent-memory/control-files/plan-templates/council-of-wizards-plan-template.md#integration-contracts) table
 
-Create the contracts directory if needed:
-`mkdir -p ./plans/contracts`
+Create the contracts directory inside the council folder if needed:
+`mkdir -p ./plans/[council-folder]/contracts`
 
 *If no integration contracts are needed (sub-plans are independent), note this in the section and remove the table.*
 
@@ -194,7 +212,7 @@ After [USER-NAME] instructs to start, execute sub-plans following the dependency
 
 **For each sub-plan:**
 1. Check dependency graph — are all prerequisite sub-plans DONE?
-2. If prerequisites met, launch the sub-plan using its designated protocol (`/high-wizard` or `/quick-wizard`)
+2. If prerequisites met, launch the sub-plan using its designated protocol (`/high-wizard` or `/quick-wizard`). **Important**: The sub-plan's plan file must be created at the path specified in the Sub-Plans Table (inside the council folder), overriding the protocol's default `plans/` location.
 3. Update the Execution Log: status → IN PROGRESS, record start date
 4. After sub-plan completes, update: status → DONE, record completion date
 5. If sub-plan is blocked, update: status → BLOCKED, record reason in Notes
@@ -214,10 +232,10 @@ After all sub-plans are DONE:
 2. Verify all integration contracts (check "Verified" column)
 3. Present completion summary to [USER-NAME]
 
-### Step 18: Move Plan to Completed
+### Step 18: Move Council Folder to Completed
 
-After [USER-NAME] confirms feature is complete, move the plan file:
-`mkdir -p ./plans/completed && mv ./plans/[plan-file].md ./plans/completed/[plan-file].md`
+After [USER-NAME] confirms feature is complete, move the entire council folder (core plan + sub-plans + contracts):
+`mkdir -p ./plans/completed && mv ./plans/[council-folder] ./plans/completed/[council-folder]`
 
 **Note**: Episodic memory links to the plan will break after moving. This is accepted — completed plans are archival.
 

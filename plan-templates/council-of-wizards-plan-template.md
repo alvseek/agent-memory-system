@@ -9,13 +9,13 @@
 ---
 
 ## **REQUIREMENTS BREAKDOWN**
-*Decompose the feature into clear, numbered requirements BEFORE any planning. This informs the scope gate and sub-plan decomposition.*
+*Filled AFTER [USER-NAME] confirms the WAIT Options (Step 6). This table is the formal record of confirmed requirements that informs the scope gate and sub-plan decomposition.*
 
-| # | Requirement | Description | Priority |
-|---|-------------|-------------|----------|
-| R1 | [Requirement name] | [What needs to be built/changed] | [Must/Should/Could] |
-| R2 | [Requirement name] | [What needs to be built/changed] | [Must/Should/Could] |
-| R3 | [Requirement name] | [What needs to be built/changed] | [Must/Should/Could] |
+| # | Requirement | Description |
+|---|-------------|-------------|
+| R1 | [Requirement name] | [What needs to be built/changed] |
+| R2 | [Requirement name] | [What needs to be built/changed] |
+| R3 | [Requirement name] | [What needs to be built/changed] |
 
 ---
 
@@ -50,9 +50,9 @@
 
 | ID | Sub-Plan Name | Description | Requirements | Protocol | Plan File | Status |
 |----|--------------|-------------|--------------|----------|-----------|--------|
-| SP-1 | [Name] | [What this sub-plan delivers] | R1, R2 | HW / QW | `plans/YYYY-MM-DD-[feature]-[name].md` | NOT STARTED |
-| SP-2 | [Name] | [What this sub-plan delivers] | R3 | HW / QW | `plans/YYYY-MM-DD-[feature]-[name].md` | NOT STARTED |
-| SP-3 | [Name] | [What this sub-plan delivers] | R4, R5 | HW / QW | `plans/YYYY-MM-DD-[feature]-[name].md` | NOT STARTED |
+| SP-1 | [Name] | [What this sub-plan delivers] | R1, R2 | HW / QW | `SP-1-[name].md` | NOT STARTED |
+| SP-2 | [Name] | [What this sub-plan delivers] | R3 | HW / QW | `SP-2-[name].md` | NOT STARTED |
+| SP-3 | [Name] | [What this sub-plan delivers] | R4, R5 | HW / QW | `SP-3-[name].md` | NOT STARTED |
 
 **How to fill**: Each sub-plan groups related requirements into a coherent deliverable. Protocol column indicates whether to use `/high-wizard` (complex) or `/quick-wizard` (simple). Plan File links to the actual sub-plan file once created. Status tracks: NOT STARTED → IN PROGRESS → DONE.
 
@@ -63,10 +63,10 @@
 
 | Contract ID | Between | Format | File Path | Verified |
 |------------|---------|--------|-----------|----------|
-| C-1 | SP-1 ↔ SP-2 | [OpenAPI / AsyncAPI / JSON Schema / other] | `plans/contracts/[feature]-[contract-name].yaml` | [ ] |
-| C-2 | SP-2 ↔ SP-3 | [OpenAPI / AsyncAPI / JSON Schema / other] | `plans/contracts/[feature]-[contract-name].yaml` | [ ] |
+| C-1 | SP-1 ↔ SP-2 | [OpenAPI / AsyncAPI / JSON Schema / other] | `contracts/[contract-name].yaml` | [ ] |
+| C-2 | SP-2 ↔ SP-3 | [OpenAPI / AsyncAPI / JSON Schema / other] | `contracts/[contract-name].yaml` | [ ] |
 
-**How to fill**: Identify what data/interfaces flow between sub-plans. Create a YAML contract file for each integration point using the appropriate industry standard. The "Verified" column is checked during Feature Completion when both sides of the contract are confirmed working.
+**How to fill**: Identify what data/interfaces flow between sub-plans. Create a YAML contract file for each integration point using the appropriate industry standard. File paths are relative to this plan's folder. The "Verified" column is checked during Feature Completion when both sides of the contract are confirmed working.
 
 *If no integration contracts are needed (sub-plans are independent), write "None — sub-plans have no integration dependencies" and remove the table.*
 
@@ -120,5 +120,5 @@ I have to use this document as my **ONLY** source of truth to track which sub-pl
 ---
 
 ## **POST-COMPLETION**
-After feature is complete and checklist passes, move this plan to `plans/completed/`:
-`mkdir -p ./plans/completed && mv ./plans/[this-file].md ./plans/completed/[this-file].md`
+After feature is complete and checklist passes, move the entire council folder to `plans/completed/`:
+`mkdir -p ./plans/completed && mv ./plans/[this-folder] ./plans/completed/[this-folder]`
