@@ -52,7 +52,7 @@ Investigate to understand what [USER-NAME] wants to build. This happens BEFORE a
 **Prepare WAIT Options** — For each project-level decision the agent identifies:
 - **Confident items**: State the decision with `✓✓` — "I'm confident about this"
 - **Ambiguous items**: Present 2-4 options with confidence signal (`✓✓` or `✓?`) — "Do you want A or B?"
-- **Open questions**: Questions that don't fit options format — things the agent can't determine from investigation alone
+- **Open questions** (OQ1, OQ2, ...): Questions that don't fit options format — things the agent can't determine from investigation alone
 
 Be thorough — these are foundational decisions that shape every phase downstream.
 
@@ -69,10 +69,10 @@ Based on my investigation, here are the project decisions I need before planning
 3. ...
 
 **Open questions:**
-- [Question about ambiguous aspect that doesn't fit options]
-- [Question about missing context]
+- OQ1: [Question about ambiguous aspect that doesn't fit options]
+- OQ2: [Question about missing context]
 
-Reply with changes (e.g., "change 1 to B") or "let's proceed" to accept all defaults.
+Reply with changes (e.g., "change 1 to B", "OQ1: answer") or "let's proceed" to accept all defaults.
 ```
 
 STOP. Present to [USER-NAME] for review. Do NOT fill any tables or proceed until [USER-NAME] confirms the project decisions.
@@ -173,16 +173,18 @@ STOP. Present to [USER-NAME] for review. Do NOT proceed until confirmed. If [USE
 
 Create placeholder rows in the [Execution Log](//@agent-memory/control-files/plan-templates/rite-of-creation-plan-template.md#execution-log) for each included phase from the confirmed Phase Menu. Remove rows for skipped phases.
 
-### Step 13: Silent Self-Review
+### Step 13: Self-Review + Auto-Fix
 
-Do a self-review internally by thinking critically:
+Do a self-review by thinking critically:
 - a. Are all necessary phases included? Any missing?
 - b. Are exit criteria realistic and complete for each phase?
 - c. Do the protocol assignments make sense for each phase's complexity?
 - d. Are dependencies correct? Any missing parallel opportunities?
 - e. Is there any conflict between project decisions and the phase plan?
 
-**Only present findings to [USER-NAME] if actual issues are found.** If no issues, proceed silently to Step 14.
+**If issues are found**: Auto-fix consistency issues (wrong protocol assignments, dependency errors, incomplete exit criteria) directly in the plan file. For issues that require a NEW decision (missing phases, scope changes), STOP and present to [USER-NAME] using the WAIT Options format before continuing.
+
+**Report**: Briefly list any auto-fixes made. If no issues found, proceed silently to Step 14.
 
 ### Step 14: Final Review
 

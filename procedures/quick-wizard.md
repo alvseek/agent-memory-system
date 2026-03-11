@@ -25,7 +25,7 @@ This is where the thinking happens. Follow the investigation checklist below IN 
 - Provide 2-4 options
 - Mark recommended default with confidence signal: `✓✓` (strong, clear evidence) or `✓?` (uncertain, genuine tradeoff)
 - Include a **meaningful reason** that serves as the analysis record
-- If any questions remain that don't fit into options format, collect them as **open questions** to present alongside decisions
+- If any questions remain that don't fit into options format, collect them as **named open questions** (OQ1, OQ2, ...) to present alongside decisions
 
 **Investigation checklist (in order):**
 
@@ -69,10 +69,10 @@ I've investigated the codebase. Here are the decisions I need before proceeding 
 3. ...
 
 **Open questions:** (if any)
-- [Question about ambiguous aspect that doesn't fit options]
-- [Question about missing context]
+- OQ1: [Question about ambiguous aspect that doesn't fit options]
+- OQ2: [Question about missing context]
 
-Reply with changes (e.g., "change 2 to B") or "let's proceed" to accept all defaults.
+Reply with changes (e.g., "change 2 to B", "OQ1: answer") or "let's proceed" to accept all defaults.
 ```
 
 If [USER-NAME] changes a foundational decision that affects downstream decisions, re-evaluate and re-present affected decisions.

@@ -43,7 +43,7 @@ This is where the thinking happens - NOT in the plan document. Follow the invest
 - Provide 2-4 options
 - Mark recommended default with confidence signal: `✓✓` (strong, clear evidence) or `✓?` (uncertain, genuine tradeoff)
 - Include a **meaningful reason** that serves as the analysis record
-- If any questions remain that don't fit into options format, collect them as **open questions** to present alongside decisions
+- If any questions remain that don't fit into options format, collect them as **named open questions** (OQ1, OQ2, ...) to present alongside decisions
 
 **Investigation checklist (in order):**
 
@@ -69,10 +69,10 @@ I've investigated the codebase. Here are the decisions I need before planning (W
 3. ...
 
 **Open questions:** (if any)
-- [Question about ambiguous aspect that doesn't fit options]
-- [Question about missing context]
+- OQ1: [Question about ambiguous aspect that doesn't fit options]
+- OQ2: [Question about missing context]
 
-Reply with changes (e.g., "change 2 to B") or "let's proceed" to accept all defaults.
+Reply with changes (e.g., "change 2 to B", "OQ1: answer") or "let's proceed" to accept all defaults.
 ```
 
 If [USER-NAME] changes a foundational decision that affects downstream decisions, re-evaluate and re-present affected decisions.
@@ -140,16 +140,18 @@ Fill the [Implementation Phases](//@agent-memory/control-files/plan-templates/hi
 
 **CRITICAL**: Same rule - if any NEW decision is discovered during writing, STOP immediately and present it before continuing.
 
-### Step 14: Silent Self-Review
+### Step 14: Self-Review + Auto-Fix
 
-Do a self-review internally by thinking critically:
+Do a self-review by thinking critically:
 - a. Is there anything missing that should be in scope?
 - b. Is there anything that should be out of scope?
 - c. Is there any conflict between confirmed decisions and the solution/implementation?
 - d. Is there anything redundant?
 - e. Are implementation phases in the right order?
 
-**Only present findings to [USER-NAME] if actual issues are found.** If no issues, proceed silently to Step 15.
+**If issues are found**: Auto-fix consistency issues (conflicts, redundancies, ordering) directly in the plan file. For issues that require a NEW decision (scope changes, missing requirements), STOP and present to [USER-NAME] using the WAIT Options format before continuing.
+
+**Report**: Briefly list any auto-fixes made. If no issues found, proceed silently to Step 15.
 
 ### Step 15: Final Review
 

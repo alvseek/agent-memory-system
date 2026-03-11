@@ -50,7 +50,7 @@ Investigate the feature to understand what [USER-NAME] wants delivered. This hap
 **Prepare WAIT Options** — For each requirement the agent identifies:
 - **Confident items**: State the requirement with `✓✓` — "I'm confident you want this"
 - **Ambiguous items**: Present 2-4 options with confidence signal (`✓✓` or `✓?`) — "Do you want A or B?"
-- **Open questions**: Questions that don't fit options format — things the agent can't determine from investigation alone
+- **Open questions** (OQ1, OQ2, ...): Questions that don't fit options format — things the agent can't determine from investigation alone
 
 Be exhaustive — missing a requirement here means a missing sub-plan later.
 
@@ -69,10 +69,10 @@ Based on my investigation, here's what I think you want (WAIT Options):
 ...
 
 **Open questions:**
-- [Question about ambiguous aspect that doesn't fit options]
-- [Question about missing context]
+- OQ1: [Question about ambiguous aspect that doesn't fit options]
+- OQ2: [Question about missing context]
 
-Reply with changes (e.g., "change 1 to B", "remove 3", "add X") or "let's proceed" to accept all.
+Reply with changes (e.g., "change 1 to B", "remove 3", "add X", "OQ1: answer") or "let's proceed" to accept all.
 ```
 
 STOP. Present to [USER-NAME] for review. Do NOT fill any tables or proceed until [USER-NAME] confirms the requirements.
