@@ -64,6 +64,7 @@ control-files/
 │   ├── high-wizard.md                 # Smart planning with dynamic section proposal
 │   ├── quick-wizard.md                # Lightweight decision collection + direct execution
 │   ├── council-of-wizards.md          # Multi-plan orchestration (council of wizards)
+│   ├── rite-of-creation.md            # Full project lifecycle orchestration (scratch to finish)
 │   ├── awaken-agent.md                # Load agent memory and activate domain agent
 │   ├── refresh-memory.md              # Recover agent memory after context compaction
 │   ├── implement-plan.md             # Start implementing approved plan with Execution Protocol
@@ -87,7 +88,9 @@ control-files/
 │   └── setup-scripts/                 # Settings setup scripts
 │       └── setup-settings-claude-code.sh  # Configure hooks + bypass permissions
 ├── plan-templates/                    # Planning templates (used by procedures)
-│   └── [templates: *-template.md]
+│   ├── high-wizard-plan-template.md
+│   ├── council-of-wizards-plan-template.md
+│   └── rite-of-creation-plan-template.md
 ├── archived/                          # Archived/retired files
 └── templates/                         # Output templates (used by procedures)
 ```
@@ -331,6 +334,7 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 ```
 /awaken-agent [domain]   # Load agent memory and activate domain agent
 /refresh-memory [domain] # Recover agent memory after context compaction
+/rite-of-creation        # Full project lifecycle (vision → SDLC phases → exit criteria → execution)
 /council-of-wizards      # Multi-plan orchestration (requirements → sub-plans → parallel execution)
 /implement-plan          # Start implementing approved plan with Execution Protocol
 /wrap-up                 # End-of-session: save episodic + auto-detect project context + push all
@@ -357,29 +361,35 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 
 The `procedures/` directory contains wizard-based planning procedures. High Wizard dynamically adapts its output based on task context — it can produce implementation plans, analysis documents, brainstorming outputs, or investigation reports by proposing relevant optional sections during the Early Review step.
 
-| Protocol | When to Use | Slash Command |
-|----------|-------------|---------------|
-| **High Wizard** | Smart planning with dynamic section proposal — adapts to any task (planning, analysis, brainstorming, bug investigation) | `/high-wizard` |
-| **Quick Wizard** | Lightweight decision collection + direct execution for small tasks (auto-escalates to High Wizard when complex) | `/quick-wizard` |
-| **Council of Wizards** | Multi-plan orchestration: decomposes features into requirements, creates sub-plans with integration contracts, tracks parallel execution | `/council-of-wizards` |
+| Protocol | Level | When to Use | Slash Command |
+|----------|-------|-------------|---------------|
+| **Rite of Creation** | 3 | Full project lifecycle: orchestrates SDLC phases from scratch to working product, assigns protocols and roles per phase, enforces phase exit criteria | `/rite-of-creation` |
+| **Council of Wizards** | 2 | Multi-plan orchestration: decomposes features into requirements, creates sub-plans with integration contracts, tracks parallel execution | `/council-of-wizards` |
+| **High Wizard** | 1 | Smart planning with dynamic section proposal — adapts to any task (planning, analysis, brainstorming, bug investigation) | `/high-wizard` |
+| **Quick Wizard** | 0 | Lightweight decision collection + direct execution for small tasks (auto-escalates to High Wizard when complex) | `/quick-wizard` |
 
 ### Protocol Hierarchy
 
 ```
-                    ┌─────────────────────┐
-                    │ COUNCIL OF WIZARDS  │  ← Multi-Plan Orchestrator
-                    │  Requirements →     │
-                    │  Sub-plans → Track  │
-                    └──────────┬──────────┘
-                               │
-              ┌────────────────┴────────────────┐
-              │                                 │
-      ┌───────▼───────┐                ┌────────▼────────┐
-      │  HIGH WIZARD  │                │  QUICK WIZARD   │
-      │ Smart planning │                │ Small tasks     │
-      │ with dynamic   │  ◄─escalates── │ Direct execution│
-      │ section proposal│                └─────────────────┘
-      └────────────────┘
+              ┌──────────────────────────┐
+              │    RITE OF CREATION       │  ← Level 3: Project Lifecycle
+              │  Vision → SDLC Phases →  │
+              │  Exit Criteria → Track   │
+              └────────────┬─────────────┘
+                           │
+              ┌────────────▼─────────────┐
+              │   COUNCIL OF WIZARDS     │  ← Level 2: Feature Delivery
+              │  Requirements →          │
+              │  Sub-plans → Track       │
+              └────────────┬─────────────┘
+                           │
+          ┌────────────────┴────────────────┐
+          │                                 │
+  ┌───────▼────────┐               ┌───────▼─────────┐
+  │  HIGH WIZARD   │               │  QUICK WIZARD   │  ← Level 0
+  │  Level 1       │  ◄─escalates──│  Small tasks     │
+  │  Smart planning│               │  Direct execution│
+  └────────────────┘               └─────────────────┘
 ```
 
 ---
