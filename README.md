@@ -1,204 +1,210 @@
 # Agent Memory System
 
-A **5-layer memory architecture** for building AI agents (Based on Claude Code) with persistent memory across sessions. Agents remember past work, learn from mistakes, and grow their expertise over time.
-
-This repository contains the **shared control files** — procedures, templates, and memory management instructions — designed to be used as a **git submodule** inside your private [agent-memory](https://github.com/alvseek/agent-memory) repository, which stores your per-agent data (identity, episodes, knowledge bases) and includes a ready-to-use Meta agent for managing the system.
-
-## Table of Contents
-- [Repository Design](#repository-design)
-- [Getting Started](#getting-started)
-- [How It Works](#how-it-works)
-- [Typical Workflow](#typical-workflow)
-- [Slash Commands](#slash-commands)
-- [Using the Meta Agent](#using-the-meta-agent)
-- [Additional Resources](#additional-resources)
-
-## Repository Design
-
-This project uses a **dual-repository pattern** that separates shared tools from private agent data:
-
-```
-agent-memory/                       ← Private repo (your agent data)
-├── control-files/                  ← THIS repo (public git submodule)
-│   ├── core-instruction-control-files.md   # Shared reasoning & knowledge
-│   ├── procedure/                          # 9 procedures & slash commands
-│   ├── plans/                              # Planning templates
-│   ├── templates/                          # Output templates
-│   ├── new-agent-template/                 # Starter template for new agents
-│   ├── scripts/                            # Utility scripts
-│   └── core-memory/                        # Global CLAUDE.md source files
-│
-├── agent-meta/                     ← Your Meta agent (manages other agents)
-│   ├── agent-core-memory.md        # Identity, knowledge, RAS, emotional
-│   ├── agent-memory-index.md       # Episode list & knowledge directory
-│   ├── episodes/                   # Session logs
-│   └── knowledge-base/             # Domain expertise files
-│
-├── agent-backend/                  ← Your Backend specialist agent
-│   └── (same structure as above)
-│
-├── agent-frontend/                 ← Your Frontend specialist agent
-│   └── (same structure as above)
-│
-└── README.md                       ← Your private documentation
-```
-
-**Why this pattern?**
-- **Public (`control-files/`)** — Shared procedures, templates, and control instructions. Updated independently. Safe to publish.
-- **Private (`agent-memory/`)** — Agent-specific data: episodes, knowledge bases, emotional memories, identity files. Contains personal context and project details.
-- **Submodule benefit** — Pull updates to procedures and templates without affecting your private agent data. Your agents always get the latest memory management improvements.
-
-## Getting Started
-
-Clone the [agent-memory](https://github.com/alvseek/agent-memory) template repo and follow the [Quick Start](https://github.com/alvseek/agent-memory/blob/master/QUICKSTART.md) to get up and running.
-
-For manual setup or environment configuration, see the [Setup Guide](SETUP.md).
+The shared control files for the [Agent Memory](https://github.com/alvseek/agent-memory) architecture — procedures, templates, and memory management instructions designed to be used as a **git submodule** inside your private agent-memory repository.
 
 ---
 
-## How It Works
+## Table of Contents
 
-The system is built on a 5-layer memory architecture:
+- [What Is This?](#what-is-this)
+- [How Do I Set It Up?](#how-do-i-set-it-up)
+- [How Do I Use It?](#how-do-i-use-it)
+- [How Does It Work Inside?](#how-does-it-work-inside)
+- [What Decisions Were Made?](#what-decisions-were-made)
 
-1. **Emotional Memory** 💖 - Breakthrough moments and partnership milestones
-2. **Episodic Memory** 🧠 - Detailed session logs and chronological context
-3. **Reasoning Memory** 🧩 - Anti-patterns, logic frameworks, and pain-based learning
-4. **Knowledge Memory** 📚 - Domain expertise with 3-tier hierarchy (Core → Domain → Specialized)
-5. **Reticular Activation Memory (RAS)** ⚡ - Intelligent pattern recognition and automatic protocol execution
+---
 
-```mermaid
-graph LR
-    A["🔑 Awaken Agent!"] --> B["agent-core-memory.md"]
-    A --> C["agent-memory-index.md"]
-    A --> D["core-instruction-control-files.md"]
-    B & C & D --> E["🧠 Agent Ready<br/><i>💖 Emotional · 🧠 Episodic · 🧩 Reasoning · 📚 Knowledge · ⚡ RAS</i>"]
-```
+## What Is This?
 
-### Memory In Action
+This submodule provides the shared infrastructure for the [5-layer agent memory system](https://github.com/alvseek/agent-memory): procedures that teach agents how to manage their own memory, planning protocols for structured work, templates for consistent output, and scripts for setup automation.
 
-Without persistent memory, AI agents forget everything between sessions. With this system, agents **remember and grow**:
+### Architecture
 
 ```
-Day 1 — Create & Work:
-  You: "Awaken Agent Meta!"
-  You: "Help me create a new agent for backend"
-  Meta: Creates agent-backend/ with identity, empty episodes, knowledge base
-
-  You: "Awaken Agent Backend!"
-  Agent: "I'm Backend Agent, ready to help. No previous episodes found."
-  → You work together on API refactoring, discover a critical anti-pattern
-  You: /wrap-up
-  → Episode saved: "2025-11-13 - API refactoring, anti-pattern documented"
-  → Knowledge updated: new caching technique added to agent's knowledge base
-  → Changes committed and pushed
-
-Day 2 — Memory Restored:
-  You: "Awaken Agent Backend!"
-  Agent: "Latest episode loaded: API refactoring session from yesterday.
-          We documented a caching technique. Ready to continue."
-  → No re-explanation needed — picks up right where you left off
-  You: /high-wizard
-  Agent: Investigates, proposes a structured plan, executes after your approval
-  You: /wrap-up
-  → New episode saved on top of yesterday's
-
-Day 5 — Mid-Session Recovery:
-  → Deep into debugging a complex issue...
-  System: Token limit approaching, compacting context...
-  Agent: Automatically reloads identity + reasoning patterns + core knowledge
-  → Agent identity and behaviour retained — continues working seamlessly
+control-files/
+├── core-instruction-control-files.md  # Shared reasoning & knowledge (loaded by all agents)
+├── procedures/                         # 24 procedures (also work as slash commands)
+│   ├── high-wizard.md                 # Smart planning
+│   ├── quick-wizard.md                # Lightweight decisions
+│   ├── council-of-wizards.md          # Multi-plan orchestration
+│   ├── rite-of-creation.md            # Full project lifecycle
+│   ├── awaken-agent.md                # Load agent memory
+│   ├── refresh-memory.md              # Post-compaction recovery
+│   ├── implement-plan.md              # Execute approved plans
+│   ├── wrap-up.md                     # End-of-session save + push
+│   └── memory/                        # Memory management (10 procedures)
+├── plan-templates/                     # Planning templates (used by wizard protocols)
+├── templates/                          # Output templates (readme, etc.)
+├── new-agent-template/                 # Starter template for new agents
+├── core-memory/                        # Source files for Global CLAUDE.md compilation
+├── scripts/                            # Utility scripts (hooks, copy-lines)
+└── setup-scripts/                      # Top-level setup orchestrators
 ```
 
-For file structure, loading flow, and detailed layer documentation, see the [Architecture Documentation](ARCHITECTURE.md).
+For the complete file tree and agent directory structure, see [ARCHITECTURE.md](ARCHITECTURE.md).
 
-## Typical Workflow
+### Tech Stack
 
-### 1. Create an agent
-Use the Meta agent to create a new domain specialist:
-```
-"Awaken Agent Meta!"
-"Help me create a new agent for backend"
-```
-This generates the 4-file structure (`agent-core-memory.md`, `agent-memory-index.md`, `episodes/`, `knowledge-base/`) with your agent's identity, knowledge, and triggers.
+- **Scripts**: Bash (cross-platform via Git Bash on Windows)
+- **Content**: Markdown with YAML frontmatter (for knowledge base tagging)
+- **Integration**: Claude Code slash commands and hooks
 
-### 2. Awaken your agent
-Start any session by loading your agent's memory:
-```
-"Awaken Agent Backend!"
-```
-The agent loads its identity, latest episode, and knowledge index — resuming exactly where you left off.
+---
 
-### 3. Work with planning protocols
-Use built-in procedures for structured work:
-```
-/high-wizard    → Smart planning with dynamic sections (adapts to any task)
-/quick-wizard   → Lightweight decisions + direct execution for small tasks
-```
-The agent investigates, proposes a plan, and executes step-by-step after your approval.
+## How Do I Set It Up?
 
-### 4. Wrap up the session
-At the end of a session, save memory and push:
-```
-/wrap-up    → Save episodic memory + auto-detect project context + push all
-```
-This captures session context to the agent's `episodes/` folder, optionally saves project-specific context, and commits + pushes everything.
+### As Part of Agent Memory
 
-### 5. Next session — memory restored
-When you awaken the agent again, it automatically:
-- Loads its **identity and core knowledge** from `agent-core-memory.md`
-- Reads the **latest episode** for recent context
-- Has the **full episode index** available to load older sessions on demand
+If you cloned the [agent-memory](https://github.com/alvseek/agent-memory) template, the setup script handles everything:
 
-No re-explanation needed. The agent remembers.
-
-## Slash Commands
-
-Procedures double as slash commands for fast execution:
-
-```
-/awaken-agent [domain]  # Load agent memory and activate domain agent
-/refresh-memory [domain] # Recover agent memory after context compaction
-/high-wizard            # Smart planning with dynamic section proposal
-/quick-wizard           # Lightweight decision collection + direct execution
-/council-of-wizards     # Multi-plan orchestration (requirements → sub-plans → parallel execution)
-/rite-of-creation       # Full project lifecycle (vision → SDLC phases → exit criteria → execution)
-/implement-plan         # Start implementing approved plan with Execution Protocol
-/wrap-up                # End-of-session: save episodic + auto-detect project context + push all
-/update-memory          # Comprehensive memory update (all layers evaluated)
-/update-episodic        # Episodic memory update only
-/update-project-context # Create/update project-specific context files
-/load-project-context   # List and load project context by keyword or number
-/load-episodic          # List and load past episodic memories
-/load-knowledge         # List and load knowledge files by keyword or letter
-/push-project           # Commit and push current project
-/push-memory            # Commit and push agent memory
-/push-all               # Commit and push both project + agent memory
-/pull-project           # Pull latest for current project
-/pull-memory            # Pull agent memory + update control-files submodule
-/pull-all               # Pull both project + agent memory
+```bash
+bash control-files/setup-scripts/setup-claude-code.sh
 ```
 
-For the full list of procedures and wizard protocols, see the [Architecture Documentation](ARCHITECTURE.md#wizard-protocols).
+This runs 4 steps: user config → compile CLAUDE.md → install slash commands → configure settings.
 
-## Using the Meta Agent
+For detailed setup options and manual alternatives, see the [Setup Guide](SETUP.md).
 
-The [agent-memory](https://github.com/alvseek/agent-memory) template repo includes a ready-to-use **Meta Agent** for managing the memory system.
+### Updating the Submodule
 
-Use "Awaken Agent Meta!" to activate:
+Pull the latest control-files updates:
 
-### Capabilities
-- **Setup Assistance**: Guide setting up the 5-layer memory system in new environments (Windows/Linux/macOS)
-- **Agent Creation**: Guide new agent development and template customization
-- **Memory Architecture**: Help update and maintain the 5-layer memory system
-- **Agent Updates**: Assist with evolving existing agents and their memory systems
+```bash
+cd control-files && git pull origin master && cd ..
+git add control-files && git commit -m "chore: bump control-files submodule"
+```
+
+Or use the built-in command: `/pull-memory`
+
+---
+
+## How Do I Use It?
+
+### Wizard Protocols
+
+Planning protocols for structured work, from quick decisions to full project lifecycles:
+
+| Protocol | Level | When to Use | Command |
+|----------|-------|-------------|---------|
+| **Quick Wizard** | 0 | Small tasks, lightweight decisions | `/quick-wizard` |
+| **High Wizard** | 1 | Smart planning, adapts to any task | `/high-wizard` |
+| **Council of Wizards** | 2 | Multi-plan orchestration | `/council-of-wizards` |
+| **Rite of Creation** | 3 | Full project lifecycle | `/rite-of-creation` |
+
+Quick Wizard auto-escalates to High Wizard when the task is too complex. Higher-level protocols delegate individual plans to High Wizard or Quick Wizard for execution.
+
+### Memory Procedures
+
+| Command | Purpose |
+|---------|---------|
+| `/update-memory` | Comprehensive update (all layers evaluated) |
+| `/update-episodic` | Session log only |
+| `/add-reasoning` | Reasoning pattern capture |
+| `/update-knowledge` | Knowledge entry capture |
+| `/update-emotional` | Emotional memory capture |
+| `/update-project-context` | Create/update project-specific context |
+| `/load-project-context` | Browse and load project context files |
+| `/load-episodic` | Browse and load past episodic memories |
+| `/load-knowledge` | Browse and load knowledge base files |
+| `/archive-old-memories` | Archive old memories with evaluation |
+
+### Operational Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/awaken-agent [domain]` | Load agent memory and activate |
+| `/refresh-memory [domain]` | Recover memory after context compaction |
+| `/implement-plan` | Start implementing an approved plan |
+| `/wrap-up` | End-of-session: save episodic + auto-detect project context + push all |
+| `/push-project` | Commit and push current project |
+| `/push-memory` | Commit and push agent memory |
+| `/push-all` | Push both project + agent memory |
+| `/pull-project` | Pull latest for current project |
+| `/pull-memory` | Pull agent memory + update submodule |
+| `/pull-all` | Pull both project + agent memory |
+
+### Compilation
+
+Compile core-memory source files into the global CLAUDE.md:
+
+```bash
+# Full compile + write
+bash core-memory/compile-scripts/compile-write-to-claude.sh
+
+# Step by step (preview first)
+bash core-memory/compile-scripts/compile.sh          # Compile to output/
+bash core-memory/compile-scripts/write-to-claude.sh  # Write to ~/.claude/CLAUDE.md
+```
+
+---
+
+## How Does It Work Inside?
+
+### Core Instruction File
+
+`core-instruction-control-files.md` is the shared control file loaded by every agent at awakening. It contains:
+
+| Section | Content |
+|---------|---------|
+| Awakening Instructions | 4-phase protocol for agent startup |
+| User Profile | User identity (name, philosophy, vision) |
+| Reasoning Memory | UUID-based reasoning patterns with emotional anchoring |
+| Knowledge Memory | 5-layer architecture reference, behavioral rules |
+
+### Core Memory Compilation
+
+The Global CLAUDE.md (always loaded before any agent awakens) is built from modular source files:
+
+```
+core-memory/
+├── 0-core-user-profile.md        → User identity
+├── 1-core-environment-memory.md  → OS-specific settings
+├── 2-core-ras-memory.md          → Universal RAS triggers (Awaken, Post-Compact, etc.)
+├── 3-core-reasoning-memory.md    → Core reasoning patterns (compact form)
+└── compile-scripts/              → Build tooling
+```
+
+The compilation system concatenates source files, strips HTML comments, and writes the result to `~/.claude/CLAUDE.md`.
+
+### Procedure Structure
+
+Every procedure follows a consistent format and doubles as a slash command:
+
+1. **Arguments** — What the command accepts (e.g., `[domain]`, `[context]`)
+2. **Procedure** — Step-by-step instructions for the agent to follow
+3. **Templates** — Output format templates (where applicable)
+
+Procedures are installed as slash commands to `~/.claude/commands/` by the setup script.
+
+For the complete loading flow, memory layer details, and wizard protocol hierarchy, see [ARCHITECTURE.md](ARCHITECTURE.md).
+
+---
+
+## What Decisions Were Made?
+
+### Procedures as Slash Commands
+
+**Context**: Memory update procedures needed to be easily executable during sessions without remembering file paths.
+**Decision**: Every procedure file doubles as a slash command — same file, installed to `~/.claude/commands/`.
+**Trade-off**: Procedure files must follow Claude Code's command format, but eliminates duplication between docs and automation.
+
+### Core Memory Compilation
+
+**Context**: Global CLAUDE.md needs to combine user identity, RAS triggers, and reasoning patterns from separate source files for maintainability.
+**Decision**: Modular source files (`0-*.md`, `1-*.md`, etc.) + bash compilation scripts that concatenate and deploy.
+**Trade-off**: Extra build step after editing source files, but enables per-section editing, multi-target output (Claude, Gemini), and clean separation of concerns.
+
+### Wizard Protocol Hierarchy
+
+**Context**: Different tasks need different levels of planning rigor — from quick fixes to full project lifecycles.
+**Decision**: 4-level wizard hierarchy (Quick → High → Council → Rite) with automatic escalation from lower to higher levels.
+**Trade-off**: More procedures to maintain, but each level is focused and appropriately scoped. Quick Wizard handles 80% of tasks; higher levels exist for when they're genuinely needed.
 
 ---
 
 ## Additional Resources
 
-- **[Architecture Documentation](ARCHITECTURE.md)** - Detailed 4-file architecture documentation
-- **[MCP Setup Guide](MCP.md)** - Connect agents to databases, APIs, and tools via MCP
-- **[Migration Guide](MIGRATION.md)** - Migrate existing agents to new flattened architecture
-- **[Setup Guide](SETUP.md)** — Environment configuration and creating new agents
-
-For agent creation or migration assistance, awaken Agent Meta: "Awaken Agent Meta!"
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** — File structure, loading flow, 5-layer memory details, wizard protocol hierarchy
+- **[SETUP.md](SETUP.md)** — Environment configuration and creating new agents
+- **[MCP.md](MCP.md)** — Connect agents to databases, APIs, and tools via MCP
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** — How to contribute to the shared framework
