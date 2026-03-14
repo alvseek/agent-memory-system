@@ -65,6 +65,7 @@ control-files/
 │   ├── quick-wizard.md                # Lightweight decision collection + direct execution
 │   ├── council-of-wizards.md          # Multi-plan orchestration (council of wizards)
 │   ├── rite-of-creation.md            # Full project lifecycle orchestration (scratch to finish)
+│   ├── forge-of-covenant.md           # Project vision + milestone roadmap planning (multi-milestone)
 │   ├── awaken-agent.md                # Load agent memory and activate domain agent
 │   ├── refresh-memory.md              # Recover agent memory after context compaction
 │   ├── implement-plan.md             # Start implementing approved plan with Execution Protocol
@@ -90,7 +91,8 @@ control-files/
 ├── plan-templates/                    # Planning templates (used by procedures)
 │   ├── high-wizard-plan-template.md
 │   ├── council-of-wizards-plan-template.md
-│   └── rite-of-creation-plan-template.md
+│   ├── rite-of-creation-plan-template.md
+│   └── forge-of-covenant-plan-template.md
 ├── archived/                          # Archived/retired files
 └── templates/                         # Output templates (used by procedures)
 ```
@@ -334,6 +336,7 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 ```
 /awaken-agent [domain]   # Load agent memory and activate domain agent
 /refresh-memory [domain] # Recover agent memory after context compaction
+/forge-of-covenant       # Project vision + milestone roadmap (multi-milestone planning + living tracker)
 /rite-of-creation        # Full project lifecycle (vision → SDLC phases → exit criteria → execution)
 /council-of-wizards      # Multi-plan orchestration (requirements → sub-plans → parallel execution)
 /implement-plan          # Start implementing approved plan with Execution Protocol
@@ -363,6 +366,7 @@ The `procedures/` directory contains wizard-based planning procedures. High Wiza
 
 | Protocol | Level | When to Use | Slash Command |
 |----------|-------|-------------|---------------|
+| **Forge of Covenant** | 4 | Project vision + milestone roadmap: facilitates discussion-driven planning across multiple milestones/releases, tracks deferrals, debt, and scope shifts via living grand-plan | `/forge-of-covenant` |
 | **Rite of Creation** | 3 | Full project lifecycle: orchestrates SDLC phases from scratch to working product, assigns protocols and roles per phase, enforces phase exit criteria | `/rite-of-creation` |
 | **Council of Wizards** | 2 | Multi-plan orchestration: decomposes features into requirements, creates sub-plans with integration contracts, tracks parallel execution | `/council-of-wizards` |
 | **High Wizard** | 1 | Smart planning with dynamic section proposal — adapts to any task (planning, analysis, brainstorming, bug investigation) | `/high-wizard` |
@@ -372,6 +376,12 @@ The `procedures/` directory contains wizard-based planning procedures. High Wiza
 
 ```
               ┌──────────────────────────┐
+              │    FORGE OF COVENANT     │  ← Level 4: Project Roadmap
+              │  Vision → Milestones →  │
+              │  Deferrals → Reviews    │
+              └────────────┬─────────────┘
+                           │ per milestone
+              ┌────────────▼─────────────┐
               │    RITE OF CREATION       │  ← Level 3: Project Lifecycle
               │  Vision → SDLC Phases →  │
               │  Exit Criteria → Track   │

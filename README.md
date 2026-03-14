@@ -28,6 +28,7 @@ control-files/
 │   ├── quick-wizard.md                # Lightweight decisions
 │   ├── council-of-wizards.md          # Multi-plan orchestration
 │   ├── rite-of-creation.md            # Full project lifecycle
+│   ├── forge-of-covenant.md           # Project vision + milestone roadmap
 │   ├── awaken-agent.md                # Load agent memory
 │   ├── refresh-memory.md              # Post-compaction recovery
 │   ├── implement-plan.md              # Execute approved plans
@@ -90,6 +91,7 @@ Planning protocols for structured work, from quick decisions to full project lif
 | **High Wizard** | 1 | Smart planning, adapts to any task | `/high-wizard` |
 | **Council of Wizards** | 2 | Multi-plan orchestration | `/council-of-wizards` |
 | **Rite of Creation** | 3 | Full project lifecycle | `/rite-of-creation` |
+| **Forge of Covenant** | 4 | Project vision + milestone roadmap | `/forge-of-covenant` |
 
 Quick Wizard auto-escalates to High Wizard when the task is too complex. Higher-level protocols delegate individual plans to High Wizard or Quick Wizard for execution.
 
