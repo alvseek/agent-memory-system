@@ -5,6 +5,9 @@
 - **Date**: [YYYY-MM-DD]
 - **Agent**: [Agent Name]
 - **Theme**: [Brief description of what we're building]
+- **Source Protocol**: `/high-wizard` — [Procedure](//@agent-memory/control-files/procedures/high-wizard.md)
+
+*To continue this plan: load the source protocol above, then inspect which sections below are filled vs unfilled to infer your current step.*
 
 ---
 
