@@ -69,6 +69,9 @@ control-files/
 │   ├── awaken-agent.md                # Load agent memory and activate domain agent
 │   ├── refresh-memory.md              # Recover agent memory after context compaction
 │   ├── implement-plan.md             # Start implementing approved plan with Execution Protocol
+│   ├── generate-readme.md            # Generate 7Q README from codebase investigation
+│   ├── generate-standard.md          # Generate project quality-standard.md from codebase
+│   ├── analyze-code-quality.md       # Standalone code quality analysis (8 dimensions)
 │   ├── memory/                        # Memory management procedures
 │   │   ├── update-memory.md           # Comprehensive memory update
 │   │   ├── update-episodic.md         # Episodic memory update
@@ -92,9 +95,15 @@ control-files/
 │   ├── high-wizard-plan-template.md
 │   ├── council-of-wizards-plan-template.md
 │   ├── rite-of-creation-plan-template.md
-│   └── forge-of-covenant-plan-template.md
+│   ├── forge-of-covenant-plan-template.md
+│   └── code-quality-analysis-template.md  # 8-dimension QA checklist (used by wizards + /analyze-code-quality)
 ├── archived/                          # Archived/retired files
 └── templates/                         # Output templates (used by procedures)
+    ├── readme-template.md             # 7Q README template (used by /generate-readme)
+    ├── quality-standard-template.md   # 9-dimension quality standard (used by /generate-standard)
+    ├── adr-template.md                # Architecture Decision Record template
+    ├── episodic-memory-template.md    # Episodic memory entry template
+    └── project-context-template.md    # Project context file template
 ```
 
 ### Agent Directory Structure
@@ -330,6 +339,9 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 | **Pull Project** | `procedures/pull-project.md` | `/pull-project` |
 | **Pull Memory** | `procedures/pull-memory.md` | `/pull-memory` |
 | **Pull All** | `procedures/pull-all.md` | `/pull-all` |
+| **Generate README** | `procedures/generate-readme.md` | `/generate-readme` |
+| **Generate Quality Standard** | `procedures/generate-standard.md` | `/generate-standard` |
+| **Analyze Code Quality** | `procedures/analyze-code-quality.md` | `/analyze-code-quality` |
 
 ### Common Slash Commands
 
@@ -350,6 +362,9 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 /load-episodic           # List and load past episodic memories
 /load-knowledge          # List and load knowledge files
 /archive-old-memories    # Archive old memories
+/generate-readme         # Generate 7Q README from codebase investigation
+/generate-standard       # Generate project quality-standard.md from codebase
+/analyze-code-quality    # Standalone code quality analysis (8 dimensions)
 /push-project            # Commit and push current project
 /push-memory             # Commit and push agent memory
 /push-all                # Commit and push both project + agent memory

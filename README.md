@@ -23,7 +23,7 @@ This submodule provides the shared infrastructure for the [5-layer agent memory 
 ```
 control-files/
 ├── core-instruction-control-files.md  # Shared reasoning & knowledge (loaded by all agents)
-├── procedures/                         # 24 procedures (also work as slash commands)
+├── procedures/                         # 28 procedures (also work as slash commands)
 │   ├── high-wizard.md                 # Smart planning
 │   ├── quick-wizard.md                # Lightweight decisions
 │   ├── council-of-wizards.md          # Multi-plan orchestration
@@ -124,6 +124,14 @@ Quick Wizard auto-escalates to High Wizard when the task is too complex. Higher-
 | `/pull-project` | Pull latest for current project |
 | `/pull-memory` | Pull agent memory + update submodule |
 | `/pull-all` | Pull both project + agent memory |
+
+### Generation & Quality Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/generate-readme [path]` | Generate 7Q README from codebase investigation |
+| `/generate-standard [path]` | Generate project `quality-standard.md` from codebase conventions |
+| `/analyze-code-quality [scope]` | Standalone code quality analysis (8 dimensions + project standard) |
 
 ### Compilation
 
