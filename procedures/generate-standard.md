@@ -34,7 +34,7 @@ If no arguments provided, use default: `./docs/quality-standard.md`
 
 ### Step 3: Investigate Project
 
-Scan the codebase to discover existing conventions. Adapt the investigation to what exists — not every project has all of these:
+Scan the codebase to discover existing conventions AND identify what's missing. Adapt the investigation to what exists — not every project has all of these:
 
 **Config files** (look for these first — they encode enforced rules):
 - Linter: `.eslintrc.*`, `eslint.config.*`, `.pylintrc`, `pyproject.toml [tool.ruff]`, `.editorconfig`
@@ -56,22 +56,57 @@ Scan the codebase to discover existing conventions. Adapt the investigation to w
 - `docs/` folder for any standards or conventions documentation
 - Code comments that indicate conventions (e.g., "// All services must...")
 
-### Step 4: Fill Dimensions
+**Gap analysis** (identify what's missing based on the tech stack):
+- For each of the 9 dimensions, compare what was found against what's commonly expected for this tech stack
+- Research best practices if needed (web search encouraged for up-to-date recommendations)
+- Categorize each gap as:
+  - **Recommended**: Strongly advised for this tech stack — most projects benefit
+  - **Optional**: Nice to have, depends on project maturity and team preference
+
+### Step 4: Present WAIT Options
+
+Present the investigation findings to [USER-NAME]. **STOP. Do NOT fill the quality standard until [USER-NAME] confirms.**
+
+**WAIT Options format** (What Am I Thinking? Options):
+
+```
+I've investigated the codebase. Here's what I found and what I recommend (WAIT Options):
+
+**Discovered conventions** (will be written into the standard):
+- Dimension 1: [summary of what was found]
+- Dimension 2: [summary]
+- ...
+- Dimensions with nothing found: [list]
+
+**Recommended additions** (gaps — conventions the project doesn't have yet):
+1. [Gap topic / dimension]: A) [Recommendation ✓✓] B) Skip (reason with evidence)
+2. [Gap topic / dimension]: A) [Recommendation ✓?] B) [Alternative] C) Skip (reason)
+...
+
+OQ1: [Any open question that doesn't fit options format]
+```
+
+- Mark recommended defaults: `✓✓` (strong, clear evidence) or `✓?` (genuine tradeoff)
+- Group gap recommendations by dimension
+- [USER-NAME] confirms, adjusts, or rejects each recommendation before proceeding
+
+### Step 5: Fill Dimensions
 
 Walk through each of the 9 dimensions in the quality standard file. For each dimension:
 
 1. **Extract conventions**: Convert discovered patterns into checkbox items — one convention per checkbox
-2. **Be specific**: Reference actual file names, class names, patterns used — not generic advice
+2. **Add confirmed recommendations**: Include gap recommendations that [USER-NAME] approved in WAIT Options, clearly marked as `[NEW]` so they're distinguishable from existing conventions
+3. **Be specific**: Reference actual file names, class names, patterns used — not generic advice
    - Good: `"All API errors use HttpException from @nestjs/common with ApiError response shape"`
    - Bad: `"Handle errors properly"`
-3. **Use unknown markers** for uncertain discoveries:
+4. **Use unknown markers** for uncertain discoveries:
    - `[CONFIRM: All services seem to use constructor injection — is this a convention?]` — found pattern, unsure if intentional
    - `[TODO: What is the expected test coverage threshold?]` — needs human input
    - `[NOT FOUND: No consistent error response format detected]` — expected but not found
-4. **Mark "Not applicable"** for irrelevant dimensions (e.g., "State Completeness" for backend-only). Keep the section header — a deliberate "not applicable" is documentation.
-5. **Delete HTML comment tips** as you fill each section
+5. **Mark "Not applicable"** for irrelevant dimensions (e.g., "State Completeness" for backend-only). Keep the section header — a deliberate "not applicable" is documentation.
+6. **Delete HTML comment tips** as you fill each section
 
-### Step 5: Present for Review
+### Step 6: Present for Review
 
 Present the completed quality standard to [USER-NAME]:
 
@@ -79,8 +114,9 @@ Present the completed quality standard to [USER-NAME]:
    - **Needs input** (`[TODO]`): Items only a human can provide
    - **Needs confirmation** (`[CONFIRM]`): Patterns found but uncertain if intentional
    - **Not found** (`[NOT FOUND]`): Expected conventions that couldn't be located
-2. **Note "Not applicable" dimensions** — confirm they should be skipped
-3. **Note any sections that were left sparse** and why (e.g., "Dimension 5 Security has only 1 item — couldn't find more security patterns beyond the auth guard")
-4. Ask if anything needs adjustment, addition, or removal
+2. **Highlight `[NEW]` items** — these are the gap recommendations confirmed in WAIT Options, now written into the standard
+3. **Note "Not applicable" dimensions** — confirm they should be skipped
+4. **Note any sections that were left sparse** and why (e.g., "Dimension 5 Security has only 1 item — couldn't find more security patterns beyond the auth guard")
+5. Ask if anything needs adjustment, addition, or removal
 
 ---
