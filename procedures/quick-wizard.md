@@ -35,6 +35,7 @@ This is where the thinking happens. Follow the investigation checklist below IN 
 4. **Reusable components** - Identify existing functions, utilities, patterns that could be leveraged → offer to reuse the related/reusable ones as decisions
 5. **Conflicts and constraints** - Note what could go wrong, what limits exist → if any, offer options based on pros and cons as decisions
 6. **Integration points** - Check what existing code/systems will be affected → if concerning, offer options as decisions
+7. **Quality standard discovery** - Search for `quality-standard.md` in the project via glob (`**/quality-standard.md`). If found, load it as additional implementation criteria to reference during execution. If not found, note it and proceed
 
 Order collected decisions by dependency (foundational choices first, dependent ones after).
 
@@ -96,9 +97,41 @@ Execute the steps from the plan in order. After each step, briefly report what w
 
 **CRITICAL**: If any NEW decision is discovered during execution that was not covered in Step 3, STOP immediately. Present the new decision to [USER-NAME] with the same format (options + confidence + reason) before continuing. Do NOT execute ahead on assumptions.
 
-### Step 7: Report Completion
+### Step 7: Quality Review
 
-After all steps are executed, present a brief completion summary to [USER-NAME]:
+After all steps are executed, review the implementation for craftsmanship quality before reporting completion.
+
+1. **Collect scope**: Identify all files created or modified during execution
+2. **Load quality standard**: If a `quality-standard.md` was found during investigation (Step 1, item 7), re-read it now. If not found, note: *"No quality-standard.md found — reviewing against built-in dimensions only."*
+3. **Read and analyze**: Read all files in scope. Review using the [Code Quality Analysis Template](//@agent-memory/control-files/plan-templates/code-quality-analysis-template.md) as a reference — walk through each quality dimension that applies, check items against the implementation. Do NOT copy the template — use it as a read-only checklist.
+4. **Present findings**: If findings exist, present as WAIT Options grouped by severity:
+
+```
+Quality review for implementation:
+
+**Critical:**
+1. [File:line] [Issue]:  [A) Fix ✓✓]  B) Alternative  (why this matters)
+
+**Medium:**
+2. [File:line] [Issue]:  [A) Fix ✓✓]  B) Alternative  (why this matters)
+
+**Low:**
+3. [File:line] [Issue]:  [A) Fix ✓✓]  B) Skip  (minor polish)
+
+**Summary**: X critical, Y medium, Z low
+
+Reply with changes (e.g., "skip 3", "change 1 to B") or "fix all" to accept defaults, or "ship it" to skip all.
+```
+
+STOP. Wait for [USER-NAME]'s response.
+
+If no findings: report *"Quality looks good — no findings."* and proceed to Step 8.
+
+5. **Fix approved items**: Apply approved fixes in one batch. Briefly report what was changed.
+
+### Step 8: Report Completion
+
+After all steps are executed and quality review is resolved, present a brief completion summary to [USER-NAME]:
 - What was done
 - Any issues encountered
 - Any tech debts or follow-up items

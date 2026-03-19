@@ -53,6 +53,7 @@ This is where the thinking happens - NOT in the plan document. Follow the invest
 4. **Reusable components** - Identify existing functions, utilities, patterns that could be leveraged → offer to reuse the related/reusable ones as decisions
 5. **Conflicts and constraints** - Note what could go wrong, what limits exist → if any, offer options based on pros and cons as decisions
 6. **Integration points** - Check what existing code/systems will be affected → if concerning, offer options as decisions
+7. **Quality standard discovery** - Search for `quality-standard.md` in the project via glob (`**/quality-standard.md`). If found, load it as additional implementation criteria to reference when writing plan steps. If not found, note it and proceed
 
 Order collected decisions by dependency (foundational choices first, dependent ones after).
 
@@ -163,9 +164,41 @@ Present the complete plan file link to [USER-NAME] for final review. STOP. Wait 
 
 After [USER-NAME] instructs to start implementing, start implementing following the **Execution Protocol for AI** from the plan file.
 
-### Step 17: Move Plan to Completed
+### Step 17: Quality Review
 
-After all implementation phases are done and logged, move the plan file to `/plans/completed/`:
+After all implementation phases are done and logged, review the implementation for craftsmanship quality before closing the plan.
+
+1. **Collect scope**: Identify all files created or modified during implementation (from the Execution Log)
+2. **Load quality standard**: If a `quality-standard.md` was found during investigation (Step 5, item 7), re-read it now. If not found, note: *"No quality-standard.md found — reviewing against built-in dimensions only."*
+3. **Read and analyze**: Read all files in scope. Review using the [Code Quality Analysis Template](//@agent-memory/control-files/plan-templates/code-quality-analysis-template.md) as a reference — walk through each quality dimension that applies, check items against the implementation. Do NOT copy the template — use it as a read-only checklist.
+4. **Present findings**: If findings exist, present as WAIT Options grouped by severity:
+
+```
+Quality review for implementation:
+
+**Critical:**
+1. [File:line] [Issue]:  [A) Fix ✓✓]  B) Alternative  (why this matters)
+
+**Medium:**
+2. [File:line] [Issue]:  [A) Fix ✓✓]  B) Alternative  (why this matters)
+
+**Low:**
+3. [File:line] [Issue]:  [A) Fix ✓✓]  B) Skip  (minor polish)
+
+**Summary**: X critical, Y medium, Z low
+
+Reply with changes (e.g., "skip 3", "change 1 to B") or "fix all" to accept defaults, or "ship it" to skip all.
+```
+
+STOP. Wait for [USER-NAME]'s response.
+
+If no findings: report *"Quality looks good — no findings."* and proceed to Step 18.
+
+5. **Fix approved items**: Apply approved fixes in one batch. Briefly report what was changed.
+
+### Step 18: Move Plan to Completed
+
+After all implementation phases are done, logged, and quality review is resolved, move the plan file to `/plans/completed/`:
 `mkdir -p ./plans/completed && mv ./plans/[plan-file].md ./plans/completed/[plan-file].md`
 
 **Note**: Episodic memory links to the plan will break after moving. This is accepted — completed plans are archival.
