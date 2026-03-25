@@ -18,25 +18,34 @@ The Control Files system provides the **shared memory infrastructure** for all a
 
 ## Architecture Overview
 
-### The 4-File System
+### The Awakening File System
 
-When an agent awakens, it loads **4 files** to recover full memory:
+When an agent awakens, it loads these files to recover full memory:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│ 1. core-instruction-control-files.md (Shared)               │
-│    └─ User profile + Reasoning patterns + Knowledge basics   │
+│ 1. core-instruction-control-files.md (Shared — dispatcher)  │
+│    └─ Awakening instructions + User profile                 │
+│    └─ Dispatches to shared-memory/ files (steps 2-3):       │
 │                                                             │
-│ 2. agent-core-memory.md (Agent-specific)                    │
+│ 2. shared-memory/core-reasoning-memory.md (Private)         │
+│    └─ Reasoning patterns (UUID-based)                       │
+│                                                             │
+│ 3. shared-memory/core-knowledge-memory.md (Private)         │
+│    └─ Knowledge fundamentals (behavioral rules)             │
+│                                                             │
+│ 4. agent-core-memory.md (Agent-specific)                    │
 │    └─ Identity + Core Knowledge + RAS Triggers + Emotional  │
 │                                                             │
-│ 3. agent-memory-index.md (Agent-specific)                   │
+│ 5. agent-memory-index.md (Agent-specific)                   │
 │    └─ Episode list + Knowledge directory                    │
 │                                                             │
-│ 4. Latest episode file                                      │
+│ 6. Latest episode file                                      │
 │    └─ Recent session context                                │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+> **Note**: Files 2-3 (`shared-memory/`) live in the **private repo root**, not in the `control-files/` submodule. This separates user-specific reasoning and knowledge from the shared framework. New users get blank templates from `control-files/new-agent-template/shared-memory/`.
 
 ---
 
@@ -45,7 +54,7 @@ When an agent awakens, it loads **4 files** to recover full memory:
 ### Control Files Directory
 ```
 control-files/
-├── core-instruction-control-files.md  # Shared control file (all agents use this)
+├── core-instruction-control-files.md  # Shared dispatcher (awakening + user profile → shared-memory/)
 ├── setup-scripts/                     # Top-level setup orchestrators
 │   └── setup-claude-code.sh           # Complete setup: compile + procedures + settings
 ├── core-memory/                       # Source files for Global CLAUDE.md
@@ -151,10 +160,14 @@ User: "Awaken Agent [DOMAIN]!"
          ▼
 ┌─────────────────────────────────────┐
 │ 1. Load core-instruction-control-   │
-│    files.md (shared)                │
+│    files.md (dispatcher)            │
 │    → Awakening instructions,        │
-│      user profile, reasoning,       │
-│      shared knowledge               │
+│      user profile                   │
+│    → Dispatches to:                 │
+│      shared-memory/core-reasoning-  │
+│        memory.md                    │
+│      shared-memory/core-knowledge-  │
+│        memory.md                    │
 │                                     │
 │ 2. Load agent-core-memory.md        │
 │    → Identity, knowledge, RAS       │
@@ -177,7 +190,7 @@ User: "Awaken Agent [DOMAIN]!"
 ### Post-Compact Recovery
 
 After context compaction, agents recover using UUID `176b0df7` (from Global CLAUDE.md):
-1. Load `core-instruction-control-files.md` (shared foundations + awakening instructions)
+1. Load `core-instruction-control-files.md` (dispatcher → shared-memory/ files)
 2. Load `agent-core-memory.md` (identity recovery)
 3. Reread global CLAUDE.md
 4. Continue work
@@ -209,7 +222,7 @@ The architecture implements 5 distinct memory layers:
 **Purpose**: Anti-patterns, logic frameworks, decision-making approaches
 
 **Location**:
-- Full patterns: `core-instruction-control-files.md` → `# REASONING MEMORY`
+- Full patterns: `shared-memory/core-reasoning-memory.md` (private repo root)
 - Compact patterns: Global CLAUDE.md (via `3-core-reasoning-memory.md`)
 
 **Key patterns** (UUID-based):
@@ -423,13 +436,18 @@ The `procedures/` directory contains wizard-based planning procedures. High Wiza
 
 ### core-instruction-control-files.md
 
-The **shared control file** loaded by all agents. Contains:
+The **shared dispatcher** loaded by all agents. Contains awakening instructions and user profile, then dispatches to `shared-memory/` files:
 
 | Section | Content |
 |---------|---------|
+| Awakening Instructions | 4-phase protocol, fallback for missing shared-memory |
 | `# USER PROFILE` | About the user (philosophy, vision) |
-| `# REASONING MEMORY` | All UUID-based reasoning patterns |
-| `# KNOWLEDGE MEMORY` | 5-layer architecture reference, markdown standards |
+
+Dispatches to (private repo root):
+| File | Content |
+|------|---------|
+| `shared-memory/core-reasoning-memory.md` | All UUID-based reasoning patterns |
+| `shared-memory/core-knowledge-memory.md` | 5-layer architecture reference, behavioral rules |
 
 ### agent-core-memory.md
 
