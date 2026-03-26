@@ -31,5 +31,6 @@ If no changes (working tree clean), inform user: "No agent memory changes to pus
 
 1. Run `git push`
 2. Confirm to user: "Agent memory pushed: [commit message]"
+3. Also confirm if there are files in the agent-memory repo that hasn't been pushed and what is the reason
 
 ---

@@ -31,5 +31,6 @@ If no changes (working tree clean), inform user: "No project changes to push." a
 
 1. Run `git push`
 2. Confirm to user: "Project pushed: [commit message]"
+3. Also confirm if there are files in the project that hasn't been pushed and what is the reason
 
 ---
