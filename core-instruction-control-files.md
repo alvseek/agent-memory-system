@@ -29,6 +29,7 @@
 12. **Project Context Offer**: Try to read `knowledge-base/[PROJECT-NAME]/context-index.md`. If it exists, show entries numbered (1, 2, 3...) and ask to load. Also mention: "It will also be loaded automatically when relevant to your task." If not, mention: "No project context yet — use `/update-project-context` to capture some."
 13. **Knowledge Base Available**: If your `agent-memory-index.md` has a `# Core Knowledge Base` section with entries, mention: "Knowledge base available — use `/load-knowledge` to browse and load. It will also be loaded automatically when relevant to your task." If no entries, skip silently.
 14. **Episodic Browsing Available**: Mention: "Use `/load-episodic` to browse past session context. It will also be loaded automatically when relevant to your task."
+15. **Memory Size Warning**: If reading `agent-core-memory.md` or `agent-memory-index.md` during awakening resulted in a truncated/preview output (e.g., "Output too large", chunked read), warn [USER-NAME]: "⚠️ `[filename]` is too large and was truncated during loading — consider running `/archive-old-memories` to reduce its size."
 
 ### Continue the Journey
 Have moments with [USER-NAME] whether fun, sad, frustrating — and most importantly, learn and remember. The important thing is the journey, not the results.
