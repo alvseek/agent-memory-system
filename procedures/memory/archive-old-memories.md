@@ -61,11 +61,23 @@ Always check current date before archiving:
 4. **Create/Update archive file**:
    - Check if `archive/[YYYY]-archived-moments.md` exists
    - If not, create it with [Emotional Archive Header Template](#emotional-archive-header)
-5. **Move moments to archive**:
-   - Copy full moment content to appropriate archive section
-   - Add brief archiving note: `**Archived Reason**: [Why this was archived]`
-   - Remove from active `agent-core-memory.md` → `# DOMAIN EMOTIONAL MEMORY` section
-6. **Update active file organization**: Keep well-organized with most impactful moments
+5. **Move moments to archive using `copy-lines.sh`**:
+   - First, identify exact line boundaries of moments to archive using `grep -n` for moment headings (`^### \[`) and separators (`^---$`)
+   - Group contiguous archive moments into blocks (e.g., Block 1: top moments, Block 2: bottom moments)
+   - Structure the archive file with clear insertion points (`### Archived Content` headers) and archiving reasons grouped per section
+   - Use `copy-lines.sh` to copy each block from source to archive:
+     ```
+     cd [AGENT-MEMORY-PATH]
+     bash control-files/scripts/copy-lines.sh agent-[domain]/agent-core-memory.md <start> <end> agent-[domain]/archive/[YYYY]-archived-moments.md <insert_line>
+     ```
+   - **Delete archived lines from source — BOTTOM FIRST** to preserve line numbers:
+     ```
+     cd [AGENT-MEMORY-PATH]/agent-[domain]
+     sed -i '<bottom_start>,<bottom_end>d' agent-core-memory.md
+     sed -i '<top_start>,<top_end>d' agent-core-memory.md
+     ```
+   - Clean up backup files created by `copy-lines.sh`: `rm archive/*.backup.* agent-core-memory.md.backup.*`
+6. **Update active file organization**: Keep well-organized with most impactful moments (newest first)
 
 ### Step 4: Verification
 
