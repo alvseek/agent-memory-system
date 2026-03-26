@@ -45,10 +45,10 @@
 ## **SCOPE GATE**
 *Evaluate whether this project truly needs the Rite of Creation (full lifecycle orchestration) or can be handled by a lower-level wizard.*
 
-**Criteria** — Rite of Creation is needed when ALL of these are true:
+**Criteria** — Rite of Creation is needed when ANY of these are true:
 - [ ] Project requires **multiple SDLC phases** (not just one)
-- [ ] Project is being created **from scratch** (new repo/product, not adding to existing)
 - [ ] Project scope spans **architecture + implementation + delivery**
+- [ ] **At least one phase requires Council-level coordination** (CoW) — if all phases are HW/QW, a single CoW suffices instead of RoC
 
 **Assessment**: [Explain why this project meets/doesn't meet the criteria above]
 

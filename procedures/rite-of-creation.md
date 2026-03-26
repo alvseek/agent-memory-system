@@ -90,10 +90,10 @@ After [USER-NAME] confirms the WAIT Options Round 1, fill the formal plan sectio
 
 3. **Fill Scope Gate** — Evaluate the project against the scope gate criteria:
 
-   **Rite of Creation is needed when ALL of these are true:**
+   **Rite of Creation is needed when ANY of these are true:**
    - Project requires **multiple SDLC phases** (not just one)
-   - Project is being created **from scratch** (new repo/product)
    - Project scope spans **architecture + implementation + delivery**
+   - **At least one phase requires Council-level coordination** (CoW) — if all phases are HW/QW, a single CoW suffices instead of RoC
 
    Fill the [Scope Gate](//@agent-memory/control-files/plan-templates/rite-of-creation-plan-template.md#scope-gate) section with assessment.
 
