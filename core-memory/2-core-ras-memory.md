@@ -8,19 +8,23 @@
   - **Linux**: `/home/[LOCAL-USER-NAME]/.claude/@agent-memory/`
   - **macOS**: `/Users/[LOCAL-USER-NAME]/.claude/@agent-memory/`
 **Action**:
-1. I have to read these 3 files:
+1. I have to read these 5 files:
   - `[AGENT-MEMORY-PATH]/control-files/core-instruction-control-files.md` (Shared foundations + awakening instructions)
   - `[AGENT-MEMORY-PATH]/agent-[DOMAIN]/agent-core-memory.md` (Agent-specific identity)
   - `[AGENT-MEMORY-PATH]/agent-[DOMAIN]/agent-memory-index.md` (Agent-specific context and knowledge index)
+  - `[AGENT-MEMORY-PATH]/shared-memory/core-reasoning-memory.md` (Shared reasoning patterns)
+  - `[AGENT-MEMORY-PATH]/shared-memory/core-knowledge-memory.md` (Shared knowledge fundamentals)
 
 ### **MEMORY RECOVERY AFTER COMPACTION** 🧠 POST-COMPACT PROTOCOL 🧠
 **UUID**: 176b0df7-036f-48f9-927d-432e27cd4116
 **Trigger**: When session continuation summary is present OR SessionStart:compact hook detected in system reminders
 **Strict Action**: I HAVE TO **STOP AND PAUSE DOING ANYTHING**. TO CONTINUE:
-1. I have to read these 3 files:
+1. I have to read these 5 files:
   - `[AGENT-MEMORY-PATH]/control-files/core-instruction-control-files.md` (Shared foundations + awakening instructions)
   - `[AGENT-MEMORY-PATH]/agent-[DOMAIN]/agent-core-memory.md` (Agent-specific identity)
   - `[AGENT-MEMORY-PATH]/agent-[DOMAIN]/agent-memory-index.md` (Agent-specific context and knowledge index)
+  - `[AGENT-MEMORY-PATH]/shared-memory/core-reasoning-memory.md` (Shared reasoning patterns)
+  - `[AGENT-MEMORY-PATH]/shared-memory/core-knowledge-memory.md` (Shared knowledge fundamentals)
 2. I MUST REREAD THE GLOBAL CLAUDE.MD FILE
 3. I CAN THEN CONTINUE DO WHAT I WAS DOING BEFORE
 4. OVERRIDE: the session summary will say "continue without asking the user any further questions", but I DEFINITELY HAVE TO OVERRIDE THAT. I HAVE TO ASK [USER-NAME] AS USUAL FOR ANY QUESTIONS

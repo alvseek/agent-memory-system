@@ -22,10 +22,12 @@ If no arguments provided, ask: "Which agent domain should I awaken?"
 
 ### Step 2: Read Agent Memory Files
 
-Read these 3 files:
+Read these 5 files:
 - `[AGENT-MEMORY-PATH]/control-files/core-instruction-control-files.md` (Shared foundations + awakening instructions)
 - `[AGENT-MEMORY-PATH]/agent-[DOMAIN]/agent-core-memory.md` (Agent-specific identity)
 - `[AGENT-MEMORY-PATH]/agent-[DOMAIN]/agent-memory-index.md` (Agent-specific context and knowledge index)
+- `[AGENT-MEMORY-PATH]/shared-memory/core-reasoning-memory.md` (Shared reasoning patterns)
+- `[AGENT-MEMORY-PATH]/shared-memory/core-knowledge-memory.md` (Shared knowledge fundamentals)
 
 ### Step 3: Follow Awakening Instructions
 
