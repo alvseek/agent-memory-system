@@ -40,7 +40,7 @@ Fill the [Project Vision](//@agent-memory/control-files/plan-templates/rite-of-c
 
 ### Step 5: Investigate Project + Prepare WAIT Options Round 1
 
-Investigate to understand what [USER-NAME] wants to build. This happens BEFORE any table filling — the agent must align understanding with [USER-NAME] first using **WAIT Options** (What Am I Thinking? Options).
+Investigate to understand what [USER-NAME] wants to build. This happens BEFORE any table filling — the agent must align understanding with [USER-NAME] first.
 
 **Investigation approach:**
 1. **Understand the vision** — What is being built? For whom? What problem does it solve?
@@ -49,31 +49,14 @@ Investigate to understand what [USER-NAME] wants to build. This happens BEFORE a
 4. **Tech stack considerations** — What languages, frameworks, infrastructure fit this project?
 5. **Constraints and risks** — Budget, timeline, technical limitations, team capabilities?
 
-**Prepare WAIT Options** — For each project-level decision the agent identifies:
-- **Confident items**: State the decision with `✓✓` — "I'm confident about this"
-- **Ambiguous items**: Present 2-4 options with confidence signal (`✓✓` or `✓?`) — "Do you want A or B?"
-- **Open questions** (OQ1, OQ2, ...): Questions that don't fit options format — things the agent can't determine from investigation alone
+Read and follow the [WAIT Options format](//@agent-memory/control-files/procedures/wait-options.md) for collecting project-level decisions.
 
 Be thorough — these are foundational decisions that shape every phase downstream.
 
 ### Step 6: Present Project WAIT Options (Round 1)
 
-Present the WAIT Options form to [USER-NAME].
-
-**Response format:**
-```
-Based on my investigation, here are the project decisions I need before planning (WAIT Options):
-
-1. [Decision topic]:  [A) Option ✓✓]  B) Option  C) Option  (reason with evidence)
-2. [Decision topic]:  [A) Option ✓?]   B) Option             (reason explaining uncertainty)
-3. ...
-
-**Open questions:**
-- OQ1: [Question about ambiguous aspect that doesn't fit options]
-- OQ2: [Question about missing context]
-
-Reply with changes (e.g., "change 1 to B", "OQ1: answer") or "let's proceed" to accept all defaults.
-```
+Present the project decisions to [USER-NAME] using the [WAIT Options format](//@agent-memory/control-files/procedures/wait-options.md).
+Preamble: "Based on my investigation, here are the project decisions I need before planning"
 
 STOP. Present to [USER-NAME] for review. Do NOT fill any tables or proceed until [USER-NAME] confirms the project decisions.
 
@@ -124,15 +107,14 @@ Before filling exit criteria and dependencies, investigate to collect decisions 
 4. **Role assignment** — Are the recommended roles appropriate for this project's context?
 5. **Conflicts and constraints** — Are there cross-phase concerns that need special handling?
 
-Prepare collected decisions using the **WAIT Options format** (same as Round 1 — options + defaults + confidence + reasons + open questions).
+Read and follow the [WAIT Options format](//@agent-memory/control-files/procedures/wait-options.md) for collecting phase-level decisions.
 
 ### Step 9: Present Phase WAIT Options (Round 2)
 
-Present the phase planning decisions to [USER-NAME] using the WAIT Options format. Include open questions if any.
+Present the phase planning decisions to [USER-NAME] using the [WAIT Options format](//@agent-memory/control-files/procedures/wait-options.md).
+Preamble: "Here are the phase planning decisions I need before structuring the phases"
 
 STOP. Present to [USER-NAME] for review. Do NOT proceed until decisions are confirmed.
-
-If [USER-NAME] changes a foundational decision that affects downstream decisions, re-evaluate and re-present affected decisions.
 
 ### Step 10: Fill Phase Exit Criteria + Dependency Graph + Recommended Roles
 

@@ -75,6 +75,7 @@ control-files/
 │   ├── council-of-wizards.md          # Multi-plan orchestration (council of wizards)
 │   ├── rite-of-creation.md            # Full project lifecycle orchestration (scratch to finish)
 │   ├── forge-of-covenant.md           # Project vision + milestone roadmap planning (multi-milestone)
+│   ├── wait-options.md                # WAIT Options format reference (used by wizard + quality procedures)
 │   ├── awaken-agent.md                # Load agent memory and activate domain agent
 │   ├── refresh-memory.md              # Recover agent memory after context compaction
 │   ├── implement-plan.md             # Start implementing approved plan with Execution Protocol

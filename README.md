@@ -29,6 +29,7 @@ control-files/
 │   ├── council-of-wizards.md          # Multi-plan orchestration
 │   ├── rite-of-creation.md            # Full project lifecycle
 │   ├── forge-of-covenant.md           # Project vision + milestone roadmap
+│   ├── wait-options.md                # WAIT Options format reference (shared)
 │   ├── awaken-agent.md                # Load agent memory
 │   ├── refresh-memory.md              # Post-compaction recovery
 │   ├── implement-plan.md              # Execute approved plans

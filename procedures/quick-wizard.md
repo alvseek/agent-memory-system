@@ -21,11 +21,7 @@ If no arguments provided, ask: "What feature or task should I create a Quick Wiz
 
 This is where the thinking happens. Follow the investigation checklist below IN ORDER. Each step from 3-6 produces decision items for the WAIT Options form.
 
-**WAIT Options format** (What Am I Thinking? Options) - For each decision found:
-- Provide 2-4 options
-- Mark recommended default with confidence signal: `✓✓` (strong, clear evidence) or `✓?` (uncertain, genuine tradeoff)
-- Include a **meaningful reason** that serves as the analysis record
-- If any questions remain that don't fit into options format, collect them as **named open questions** (OQ1, OQ2, ...) to present alongside decisions
+Read and follow the [WAIT Options format](//@agent-memory/control-files/procedures/wait-options.md) for collecting decisions.
 
 **Investigation checklist (in order):**
 
@@ -36,8 +32,6 @@ This is where the thinking happens. Follow the investigation checklist below IN 
 5. **Conflicts and constraints** - Note what could go wrong, what limits exist → if any, offer options based on pros and cons as decisions
 6. **Integration points** - Check what existing code/systems will be affected → if concerning, offer options as decisions
 7. **Quality standard discovery** - Search for `quality-standard.md` in the project via glob (`**/quality-standard.md`). If found, load it as additional implementation criteria to reference during execution. If not found, note it and proceed
-
-Order collected decisions by dependency (foundational choices first, dependent ones after).
 
 ### Step 2: Scope Gate Assessment
 
@@ -59,24 +53,10 @@ After investigation, assess whether this task is suitable for Quick Wizard (dire
 
 ### Step 3: Present WAIT Options
 
-Present the WAIT Options form to [USER-NAME]. STOP. Present to [USER-NAME] for review. Do NOT proceed until decisions are confirmed.
+Present the WAIT Options form to [USER-NAME] using the [WAIT Options format](//@agent-memory/control-files/procedures/wait-options.md).
+Preamble: "I've investigated the codebase. Here are the decisions I need before proceeding"
 
-**Response format:**
-```
-I've investigated the codebase. Here are the decisions I need before proceeding (WAIT Options):
-
-1. [Decision topic]:  [A) Option ✓✓]  B) Option  C) Option  (reason with evidence)
-2. [Decision topic]:  [A) Option ✓?]   B) Option             (reason explaining uncertainty)
-3. ...
-
-**Open questions:** (if any)
-- OQ1: [Question about ambiguous aspect that doesn't fit options]
-- OQ2: [Question about missing context]
-
-Reply with changes (e.g., "change 2 to B", "OQ1: answer") or "let's proceed" to accept all defaults.
-```
-
-If [USER-NAME] changes a foundational decision that affects downstream decisions, re-evaluate and re-present affected decisions.
+STOP. Present to [USER-NAME] for review. Do NOT proceed until decisions are confirmed.
 
 ### Step 4: Create Execution Plan
 
@@ -104,28 +84,10 @@ After all steps are executed, review the implementation for craftsmanship qualit
 1. **Collect scope**: Identify all files created or modified during execution
 2. **Load quality standard**: If a `quality-standard.md` was found during investigation (Step 1, item 7), re-read it now. If not found, note: *"No quality-standard.md found — reviewing against built-in dimensions only."*
 3. **Read and analyze**: Read all files in scope. Review using the [Code Quality Analysis Template](//@agent-memory/control-files/plan-templates/code-quality-analysis-template.md) as a reference — walk through each quality dimension that applies, check items against the implementation. Do NOT copy the template — use it as a read-only checklist.
-4. **Present findings**: If findings exist, present as WAIT Options grouped by severity:
-
-```
-Quality review for implementation:
-
-**Critical:**
-1. [File:line] [Issue]:  [A) Fix ✓✓]  B) Alternative  (why this matters)
-
-**Medium:**
-2. [File:line] [Issue]:  [A) Fix ✓✓]  B) Alternative  (why this matters)
-
-**Low:**
-3. [File:line] [Issue]:  [A) Fix ✓✓]  B) Skip  (minor polish)
-
-**Summary**: X critical, Y medium, Z low
-
-Reply with changes (e.g., "skip 3", "change 1 to B") or "fix all" to accept defaults, or "ship it" to skip all.
-```
+4. **Present findings**: If findings exist, present using the [WAIT Options Quality Review variant](//@agent-memory/control-files/procedures/wait-options.md#quality-review-variant).
+Preamble: "Quality review for implementation:"
 
 STOP. Wait for [USER-NAME]'s response.
-
-If no findings: report *"Quality looks good — no findings."* and proceed to Step 8.
 
 5. **Fix approved items**: Apply approved fixes in one batch. Briefly report what was changed.
 

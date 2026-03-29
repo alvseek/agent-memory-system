@@ -40,40 +40,21 @@ Fill the [Feature Info](//@agent-memory/control-files/plan-templates/council-of-
 
 ### Step 5: Investigate Feature + Prepare WAIT Options
 
-Investigate the feature to understand what [USER-NAME] wants delivered. This happens BEFORE any table filling — the agent must align understanding with [USER-NAME] first using **WAIT Options** (What Am I Thinking? Options).
+Investigate the feature to understand what [USER-NAME] wants delivered. This happens BEFORE any table filling — the agent must align understanding with [USER-NAME] first.
 
 **Investigation approach:**
 1. **Understand the feature** — What is being asked? What is the end result?
 2. **Identify all parts** — What distinct pieces need to be built? (data models, APIs, UI, infrastructure, migrations, etc.)
 3. **Research context** — Scan relevant codebase, architecture, and existing patterns
 
-**Prepare WAIT Options** — For each requirement the agent identifies:
-- **Confident items**: State the requirement with `✓✓` — "I'm confident you want this"
-- **Ambiguous items**: Present 2-4 options with confidence signal (`✓✓` or `✓?`) — "Do you want A or B?"
-- **Open questions** (OQ1, OQ2, ...): Questions that don't fit options format — things the agent can't determine from investigation alone
+Read and follow the [WAIT Options format](//@agent-memory/control-files/procedures/wait-options.md) for collecting requirement decisions.
 
 Be exhaustive — missing a requirement here means a missing sub-plan later.
 
 ### Step 6: Present Requirements WAIT Options
 
-Present the WAIT Options form to [USER-NAME].
-
-**Response format:**
-```
-Based on my investigation, here's what I think you want (WAIT Options):
-
-**Requirements I identified:**
-1. [Requirement]:  [A) Scope/interpretation ✓✓]  B) Alternative  (reason with evidence)
-2. [Requirement]:  Included ✓✓  (reason why this is needed)
-3. [Requirement]:  [A) Approach ✓?]  B) Alternative  (reason explaining uncertainty)
-...
-
-**Open questions:**
-- OQ1: [Question about ambiguous aspect that doesn't fit options]
-- OQ2: [Question about missing context]
-
-Reply with changes (e.g., "change 1 to B", "remove 3", "add X", "OQ1: answer") or "let's proceed" to accept all.
-```
+Present the requirements to [USER-NAME] using the [WAIT Options format](//@agent-memory/control-files/procedures/wait-options.md).
+Preamble: "Based on my investigation, here's what I think you want"
 
 STOP. Present to [USER-NAME] for review. Do NOT fill any tables or proceed until [USER-NAME] confirms the requirements.
 
@@ -113,15 +94,14 @@ Before decomposing into sub-plans, investigate the codebase and feature context 
 4. **Parallel strategy** — Which sub-plans can run concurrently? Any hard sequential dependencies?
 5. **Conflicts and constraints** — Are there requirements that must be in the same sub-plan? Cross-cutting concerns?
 
-Prepare collected decisions using the **WAIT Options format** (same as Step 6 — options + defaults + confidence + reasons + open questions).
+Read and follow the [WAIT Options format](//@agent-memory/control-files/procedures/wait-options.md) for collecting decomposition decisions.
 
 ### Step 9: Present Decomposition WAIT Options
 
-Present the decomposition decisions to [USER-NAME] using the WAIT Options format. Include open questions if any.
+Present the decomposition decisions to [USER-NAME] using the [WAIT Options format](//@agent-memory/control-files/procedures/wait-options.md).
+Preamble: "Here are the decomposition decisions I need before breaking this into sub-plans"
 
 STOP. Present to [USER-NAME] for review. Do NOT proceed to decomposition until decisions are confirmed.
-
-If [USER-NAME] changes a foundational decision that affects downstream decisions, re-evaluate and re-present affected decisions.
 
 After confirmation, fill the [Confirmed Decisions](//@agent-memory/control-files/plan-templates/council-of-wizards-plan-template.md#confirmed-decisions) table with all confirmed decisions (with any changes [USER-NAME] made). Include the meaningful reasons — this IS the analysis record.
 

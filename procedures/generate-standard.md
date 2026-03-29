@@ -65,30 +65,12 @@ Scan the codebase to discover existing conventions AND identify what's missing. 
 
 ### Step 4: Present WAIT Options
 
-Present the investigation findings to [USER-NAME]. **STOP. Do NOT fill the quality standard until [USER-NAME] confirms.**
+Present the investigation findings to [USER-NAME] using the [WAIT Options format](//@agent-memory/control-files/procedures/wait-options.md).
+Preamble: "I've investigated the codebase. Here's what I found and what I recommend"
 
-**WAIT Options format** (What Am I Thinking? Options):
+Before the WAIT Options decisions, list **discovered conventions** (will be written into the standard) summarized per dimension. Then present **recommended additions** (gaps) as WAIT Options decisions, grouped by dimension.
 
-```
-I've investigated the codebase. Here's what I found and what I recommend (WAIT Options):
-
-**Discovered conventions** (will be written into the standard):
-- Dimension 1: [summary of what was found]
-- Dimension 2: [summary]
-- ...
-- Dimensions with nothing found: [list]
-
-**Recommended additions** (gaps — conventions the project doesn't have yet):
-1. [Gap topic / dimension]: A) [Recommendation ✓✓] B) Skip (reason with evidence)
-2. [Gap topic / dimension]: A) [Recommendation ✓?] B) [Alternative] C) Skip (reason)
-...
-
-OQ1: [Any open question that doesn't fit options format]
-```
-
-- Mark recommended defaults: `✓✓` (strong, clear evidence) or `✓?` (genuine tradeoff)
-- Group gap recommendations by dimension
-- [USER-NAME] confirms, adjusts, or rejects each recommendation before proceeding
+STOP. Do NOT fill the quality standard until [USER-NAME] confirms.
 
 ### Step 5: Fill Dimensions
 

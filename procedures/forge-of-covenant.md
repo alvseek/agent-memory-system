@@ -106,10 +106,7 @@ This understanding informs the WAIT Options in Step 6.
 
 Based on the exploration discussion (Step 5), prepare concrete decisions that need to be confirmed before planning milestones. These are PROJECT-LEVEL decisions.
 
-**Prepare WAIT Options** — For each project-level decision:
-- **Confident items**: State the decision with `✓✓` — "I'm confident about this"
-- **Ambiguous items**: Present 2-4 options with confidence signal (`✓✓` or `✓?`) — "Do you want A or B?"
-- **Open questions** (OQ1, OQ2, ...): Questions that don't fit options format — things the agent can't determine from exploration alone
+Read and follow the [WAIT Options format](//@agent-memory/control-files/procedures/wait-options.md) for collecting project-level decisions.
 
 **Typical project-level decisions:**
 - Tech stack choices (languages, frameworks, cloud provider)
@@ -121,20 +118,8 @@ Based on the exploration discussion (Step 5), prepare concrete decisions that ne
 - Risk mitigation strategy (for any high-likelihood/high-impact risks identified)
 - Timeline targets (rough dates per milestone)
 
-**Response format:**
-```
-Based on our exploration, here are the project decisions I need to confirm (WAIT Options Round 1):
-
-1. [Decision topic]:  [A) Option ✓✓]  B) Option  C) Option  (reason with evidence)
-2. [Decision topic]:  [A) Option ✓?]   B) Option             (reason explaining uncertainty)
-3. ...
-
-**Open questions:**
-- OQ1: [Question about ambiguous aspect that doesn't fit options]
-- OQ2: [Question about missing context]
-
-Reply with changes (e.g., "change 1 to B", "OQ1: answer") or "let's proceed" to accept all defaults.
-```
+Present the project decisions to [USER-NAME] using the [WAIT Options format](//@agent-memory/control-files/procedures/wait-options.md).
+Preamble: "Based on our exploration, here are the project decisions I need to confirm (WAIT Options Round 1):"
 
 STOP. Present to [USER-NAME] for review. Do NOT fill any tables or proceed until [USER-NAME] confirms the project decisions.
 
@@ -235,33 +220,15 @@ For each milestone in the confirmed roadmap, discuss the detailed scope with [US
 - What protocol level fits? (RoC for complex milestones with multiple SDLC phases, CoW for multi-feature milestones, HW for simple milestones)
 - Any known technical debt that will be created?
 
-**Prepare WAIT Options** — Collect milestone-level decisions using the same format (options + defaults + confidence + reasons + open questions). These are decisions about HOW each milestone will be executed.
+Read and follow the [WAIT Options format](//@agent-memory/control-files/procedures/wait-options.md) for collecting milestone-level decisions. These are decisions about HOW each milestone will be executed. Group decisions by milestone (M1, M2, etc.).
 
 ### Step 12: Present Milestone WAIT Options (Round 3)
 
-Present the milestone planning decisions to [USER-NAME].
-
-**Response format:**
-```
-Here are the milestone-level decisions (WAIT Options Round 3):
-
-**M1 — [Name]:**
-1. [Decision]:  [A) Option ✓✓]  B) Option  (reason)
-2. [Decision]:  [A) Option ✓?]  B) Option  (reason)
-
-**M2 — [Name]:**
-3. [Decision]:  [A) Option ✓✓]  B) Option  (reason)
-...
-
-**Open questions:**
-- OQ1: [Question]
-
-Reply with changes or "let's proceed" to accept all defaults.
-```
+Present the milestone planning decisions to [USER-NAME] using the [WAIT Options format](//@agent-memory/control-files/procedures/wait-options.md).
+Preamble: "Here are the milestone-level decisions (WAIT Options Round 3):"
+Group decisions by milestone (M1, M2, etc.).
 
 STOP. Present to [USER-NAME] for review. Do NOT proceed until [USER-NAME] confirms the milestone decisions.
-
-If [USER-NAME] changes a decision that affects downstream milestones, re-evaluate and re-present affected decisions.
 
 ### Step 13: Fill Tracking Sections
 

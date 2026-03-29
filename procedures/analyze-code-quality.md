@@ -77,24 +77,8 @@ Walk through each quality dimension in the working document. For each dimension:
 
 Fill the **WAIT Options** section in the working document, then present to [USER-NAME].
 
-**If findings exist**, present as WAIT Options grouped by severity:
-
-```
-Code quality review for [scope]:
-
-**Critical:**
-1. [File:line] [Issue]:  [A) Fix ✓✓]  B) Alternative  (why this matters)
-
-**Medium:**
-2. [File:line] [Issue]:  [A) Fix ✓✓]  B) Alternative  (why this matters)
-
-**Low:**
-3. [File:line] [Issue]:  [A) Fix ✓✓]  B) Skip  (minor polish)
-
-**Summary**: X critical, Y medium, Z low
-
-Reply with changes (e.g., "skip 3", "change 1 to B") or "fix all" to accept defaults, or "ship it" to skip all.
-```
+**If findings exist**, present using the [WAIT Options Quality Review variant](//@agent-memory/control-files/procedures/wait-options.md#quality-review-variant).
+Preamble: "Code quality review for [scope]:"
 
 STOP. Wait for [USER-NAME]'s response before fixing anything.
 
