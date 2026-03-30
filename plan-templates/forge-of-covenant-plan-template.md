@@ -9,7 +9,7 @@
 - **Success Feeling**: [What does "done" look like for the user/creator — the motivating end state]
 - **Source Protocol**: `/forge-of-covenant` — [Procedure](//@agent-memory/control-files/procedures/forge-of-covenant.md)
 
-*To continue this plan: load the source protocol above, then inspect which sections below are filled vs unfilled to infer your current step.*
+*CRITICAL INSTRUCTION: To continue this plan: load the source protocol above, then inspect which sections below are filled vs unfilled to infer your current step.*
 
 ---
 

@@ -7,7 +7,7 @@
 - **Feature**: [Brief description of the feature being delivered]
 - **Source Protocol**: `/council-of-wizards` — [Procedure](//@agent-memory/control-files/procedures/council-of-wizards.md)
 
-*To continue this plan: load the source protocol above, then inspect which sections below are filled vs unfilled to infer your current step.*
+*CRITICAL INSTRUCTION: To continue this plan: load the source protocol above, then inspect which sections below are filled vs unfilled to infer your current step.*
 
 ---
 

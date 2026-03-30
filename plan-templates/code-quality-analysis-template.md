@@ -8,6 +8,8 @@
 - **Quality Standard**: [Path to quality-standard.md if found, or "None — freeform analysis"]
 - **Source Protocol**: `/analyze-code-quality` — [Procedure](//@agent-memory/control-files/procedures/analyze-code-quality.md)
 
+*CRITICAL INSTRUCTION: To continue this plan: load the source protocol above, then inspect which sections below are filled vs unfilled to infer your current step.*
+
 ---
 
 ## **QUALITY DIMENSIONS**
