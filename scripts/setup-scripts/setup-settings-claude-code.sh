@@ -1,10 +1,12 @@
 #!/bin/bash
-# setup-settings-claude-code.sh - Configure ~/.claude/settings.json
+# setup-settings-claude-code.sh - Configure ~/.claude/settings.json + ~/.claude.json
 #
 # Configures:
 #   - Stop hook: Audio notification (stop.wav) when Claude finishes responding
 #   - SessionStart:compact hook: Memory refresh after context compaction
 #   - Bypass permissions: Skip permission prompts for tool executions (prompted)
+#   - Disable attribution: Removes Co-Authored-By trailer from commits and PRs
+#   - Read tool token limit: Increases from 10K to 64K in ~/.claude.json Statsig flag
 #
 # Uses Node.js for safe JSON merging (guaranteed available — Claude Code requires it)
 #
@@ -104,6 +106,15 @@ if (enableBypass === 'yes') {
     console.log('  - Bypass permissions declined');
 }
 
+// --- Disable attribution (Co-Authored-By trailer) ---
+if (!settings.attribution || settings.attribution.commit !== '' || settings.attribution.pr !== '') {
+    settings.attribution = { commit: '', pr: '' };
+    console.log('  + Attribution disabled (no Co-Authored-By in commits/PRs)');
+    changed = true;
+} else {
+    console.log('  = Attribution already disabled — skipping');
+}
+
 // --- Stop hook (audio notification with stop.wav) ---
 const hasStopHook = (settings.hooks.Stop || []).some(entry =>
     (entry.hooks || []).some(h => h.command && h.command.includes('stop.wav'))
@@ -165,4 +176,52 @@ if [ $settings_status -ne 0 ]; then
     echo ""
     echo "ERROR: Settings setup failed."
     exit $settings_status
+fi
+
+# --- Read tool token limit (64K) in ~/.claude.json ---
+CLAUDE_JSON_PATH="$(node -e "console.log(require('path').join(require('os').homedir(), '.claude.json'))")"
+
+if [ -f "$CLAUDE_JSON_PATH" ]; then
+    node << 'NODEJS_READ_LIMIT'
+const fs = require('fs');
+const path = require('path');
+const os = require('os');
+
+const claudeJsonPath = path.join(os.homedir(), '.claude.json');
+try {
+    const data = JSON.parse(fs.readFileSync(claudeJsonPath, 'utf8'));
+    const flags = data.statsigValues || data.overrides || {};
+
+    // Find tengu_amber_wren in any nested location
+    function findAndUpdate(obj) {
+        for (const key of Object.keys(obj)) {
+            if (key === 'tengu_amber_wren' && typeof obj[key] === 'object') {
+                if (obj[key].maxTokens && obj[key].maxTokens < 64000) {
+                    obj[key].maxTokens = 64000;
+                    return true;
+                } else if (obj[key].maxTokens >= 64000) {
+                    return false; // already set
+                }
+            }
+            if (typeof obj[key] === 'object' && obj[key] !== null) {
+                if (findAndUpdate(obj[key])) return true;
+            }
+        }
+        return false;
+    }
+
+    if (findAndUpdate(data)) {
+        fs.writeFileSync(claudeJsonPath, JSON.stringify(data, null, 2) + '\n');
+        console.log('  + Read tool token limit set to 64K (tengu_amber_wren in ~/.claude.json)');
+    } else {
+        console.log('  = Read tool token limit already >= 64K — skipping');
+    }
+} catch (e) {
+    console.log('  ! Could not update Read tool limit: ' + e.message);
+    console.log('    Manually edit ~/.claude.json → tengu_amber_wren.maxTokens to 64000');
+}
+NODEJS_READ_LIMIT
+else
+    echo "  ! ~/.claude.json not found — Read tool limit cannot be set before first Claude Code run."
+    echo "    After first run, re-run this script or manually set tengu_amber_wren.maxTokens to 64000."
 fi

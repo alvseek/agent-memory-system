@@ -5,6 +5,7 @@ Step-by-step guide for configuring Claude Code's global settings and creating ne
 ## Table of Contents
 - [Environment Setup](#environment-setup)
 - [What the Script Does](#what-the-script-does)
+- [Read Tool Token Limit](#read-tool-token-limit)
 - [Manual Setup](#manual-setup)
 - [Creating New Agents](#creating-new-agents)
 
@@ -22,7 +23,7 @@ The script runs 4 steps interactively:
 | 0 | **User identity & OS** — name, philosophy, agent vision, operating system | `core-memory/` source files |
 | 1 | **Global CLAUDE.md** — compiles RAS triggers, reasoning patterns, and user profile | `~/.claude/CLAUDE.md` |
 | 2 | **Slash commands** — installs all procedures as global commands | `~/.claude/commands/` |
-| 3 | **Settings** — hooks (audio notification, memory refresh after compaction) + bypass permissions | `~/.claude/settings.json` |
+| 3 | **Settings** — hooks (audio notification, memory refresh after compaction) + bypass permissions + disable attribution + Read tool 64K limit | `~/.claude/settings.json` + `~/.claude.json` |
 
 Steps that are already configured are automatically skipped. Re-running the script is safe — it updates what changed and leaves the rest intact.
 
@@ -40,6 +41,34 @@ For a detailed breakdown of the file structure, compilation system, and memory a
 - **Stop hook** — plays `stop.wav` when Claude finishes responding
 - **SessionStart:compact hook** — triggers memory refresh after context compaction
 - **Bypass permissions** — prompts whether to skip permission prompts for tool executions (recommended)
+- **Disable attribution** — removes the `Co-Authored-By: Claude` trailer from commits and PRs
+- **Read tool 64K limit** — increases `tengu_amber_wren.maxTokens` from 10K to 64K in `~/.claude.json` (requires restart)
+
+## Read Tool Token Limit
+
+Claude Code's Read tool has a default token limit controlled by a Statsig feature flag (`tengu_amber_wren`), which may be as low as 10K tokens. This causes large memory files (like `agent-core-memory.md` or `agent-memory-index.md`) to fail loading during awakening.
+
+**To increase the limit to 64K tokens**, edit `~/.claude.json` and find the `tengu_amber_wren` entry inside the `statsigValues` object:
+
+```json
+"tengu_amber_wren": {
+  "targetedRangeNudge": true,
+  "maxTokens": 10000
+}
+```
+
+Change `maxTokens` to `64000`:
+
+```json
+"tengu_amber_wren": {
+  "targetedRangeNudge": true,
+  "maxTokens": 64000
+}
+```
+
+> **Note**: `~/.claude.json` is Claude Code's internal config (not `settings.json`). This change survives sessions but may be reset by Claude Code updates — re-check after updating CLI versions.
+
+Restart Claude Code for the change to take effect.
 
 ## Manual Setup
 
