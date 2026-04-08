@@ -17,6 +17,14 @@ If no arguments provided, ask: "What feature or task should I create a High Wiza
 
 *IMPORTANT: This procedure structurally enforces UUID f3a8b2c1 (VERIFY FIRST) - the agent MUST collect and confirm decisions BEFORE writing any plan sections. Writing ahead on assumptions is prohibited.*
 
+*This procedure is split into 3 phases. Each phase ends with a STOP gate. Do NOT read ahead into later phases — complete and confirm the current phase before proceeding.*
+
+---
+
+## Phase 1: Discovery & Planning Frame
+
+*Goal: Investigate the task, collect decisions, frame objectives/scope, and get early confirmation before any solution writing.*
+
 ### Step 1: Read Template
 
 Read the [High Wizard Plan Template](//@agent-memory/control-files/plan-templates/high-wizard-plan-template.md) file
@@ -51,26 +59,26 @@ Read and follow the [WAIT Options format](//@agent-memory/control-files/procedur
 6. **Integration points** - Check what existing code/systems will be affected → if concerning, offer options as decisions
 7. **Quality standard discovery** - Search for `quality-standard.md` in the project via glob (`**/quality-standard.md`). If found, load it as additional implementation criteria to reference when writing plan steps. If not found, note it and proceed
 
-### Step 7: Present WAIT Options
+### Step 6: Present WAIT Options
 
 Present the WAIT Options form to [USER-NAME] using the [WAIT Options format](//@agent-memory/control-files/procedures/wait-options.md).
 Preamble: "I've investigated the codebase. Here are the decisions I need before planning"
 
 STOP. Present to [USER-NAME] for review. Do NOT write any plan sections until decisions are confirmed.
 
-### Step 8: Fill Objectives + Success Criteria
+### Step 7: Fill Objectives + Success Criteria
 
 Fill the [Objectives](//@agent-memory/control-files/plan-templates/high-wizard-plan-template.md#objectives) and [Success Criteria](//@agent-memory/control-files/plan-templates/high-wizard-plan-template.md#success-criteria) sections
 
-### Step 9: Fill Scope
+### Step 8: Fill Scope
 
 Fill the [Scope](//@agent-memory/control-files/plan-templates/high-wizard-plan-template.md#scope) section (In Scope / Out of Scope)
 
-### Step 10: Fill Confirmed Decisions
+### Step 9: Fill Confirmed Decisions
 
 Record all confirmed decisions (with any changes [USER-NAME] made) in the [Confirmed Decisions](//@agent-memory/control-files/plan-templates/high-wizard-plan-template.md#confirmed-decisions) section. Include the meaningful reasons - this IS the analysis record.
 
-### Step 11: Early Review
+### Step 10: Early Review
 
 Present objectives, scope, and confirmed decisions to [USER-NAME]. Then propose which optional plan sections to include based on investigation findings.
 
@@ -99,13 +107,25 @@ Based on the task, I'll include these optional plan sections:
 Add or remove any? Or proceed.
 ```
 
-STOP. Present to [USER-NAME] for review. Do NOT write the solution until confirmed to avoid cascading changes when this section needs adjustment.
+### ⛔ END OF PHASE 1
 
-### Step 12: Fill Solution
+STOP. Present Step 10 to [USER-NAME] for review. Do NOT write the solution until confirmed to avoid cascading changes when this section needs adjustment.
+
+**Phase 2 requires [USER-NAME]'s explicit confirmation of the Early Review (objectives, scope, confirmed decisions, and optional sections). Do NOT proceed until confirmed.**
+
+---
+
+## Phase 2: Solution Design
+
+*Goal: Write the solution and implementation phases based on confirmed decisions, then self-review and present for final approval.*
+
+*⛔ Prerequisite: Phase 1 (Early Review) MUST be confirmed by [USER-NAME] before starting this phase.*
+
+### Step 11: Fill Solution
 
 Fill the [Solution](//@agent-memory/control-files/plan-templates/high-wizard-plan-template.md#solution) section. Build directly from confirmed decisions.
 
-**Optional sections**: Only fill the optional sections (A-G) that were confirmed in Step 11. Remove unconfirmed optional section markers and their placeholder content from the plan file — do not leave empty optional sections.
+**Optional sections**: Only fill the optional sections (A-G) that were confirmed in Step 10. Remove unconfirmed optional section markers and their placeholder content from the plan file — do not leave empty optional sections.
 
 **ADR file creation**: If section G is confirmed, after filling all plan sections:
 1. Copy the [ADR Template](//@agent-memory/control-files/templates/adr-template.md) to the project's ADR location
@@ -113,15 +133,15 @@ Fill the [Solution](//@agent-memory/control-files/plan-templates/high-wizard-pla
 3. Link the ADR back to this plan file
 4. Update the plan's section G with the ADR file path
 
-**CRITICAL**: If any NEW decision is discovered during writing that was not covered in Step 7, STOP immediately. Present the new decision to [USER-NAME] with the same format (options + confidence + reason) before continuing. Do NOT write ahead on assumptions.
+**CRITICAL**: If any NEW decision is discovered during writing that was not covered in Step 6, STOP immediately. Present the new decision to [USER-NAME] with the same format (options + confidence + reason) before continuing. Do NOT write ahead on assumptions.
 
-### Step 13: Fill Implementation Phases
+### Step 12: Fill Implementation Phases
 
 Fill the [Implementation Phases](//@agent-memory/control-files/plan-templates/high-wizard-plan-template.md#implementation-phases) section.
 
 **CRITICAL**: Same rule - if any NEW decision is discovered during writing, STOP immediately and present it before continuing.
 
-### Step 14: Self-Review + Auto-Fix
+### Step 13: Self-Review + Auto-Fix
 
 Do a self-review by thinking critically:
 - a. Is there anything missing that should be in scope?
@@ -132,19 +152,33 @@ Do a self-review by thinking critically:
 
 **If issues are found**: Auto-fix consistency issues (conflicts, redundancies, ordering) directly in the plan file. For issues that require a NEW decision (scope changes, missing requirements), STOP and present to [USER-NAME] using the WAIT Options format before continuing.
 
-**Report**: Briefly list any auto-fixes made. If no issues found, proceed silently to Step 15.
+**Report**: Briefly list any auto-fixes made. If no issues found, proceed silently to Step 14.
 
-### Step 15: Final Review
+### Step 14: Final Review
 
-Before presenting the plan, double check: are there any unresolved decisions, assumptions, or new concerns that surfaced during writing (Steps 12-13) or self-review (Step 14) that need [USER-NAME]'s input? If yes, present them now with the same decision format (options + confidence + reason).
+Before presenting the plan, double check: are there any unresolved decisions, assumptions, or new concerns that surfaced during writing (Steps 11-12) or self-review (Step 13) that need [USER-NAME]'s input? If yes, present them now with the same decision format (options + confidence + reason).
 
-Present the complete plan file link to [USER-NAME] for final review. STOP. Wait for instruction.
+Present the complete plan file link to [USER-NAME] for final review.
 
-### Step 16: Start Implementation
+### ⛔ END OF PHASE 2
+
+STOP. Wait for [USER-NAME]'s instruction to proceed to implementation.
+
+**Phase 3 requires [USER-NAME]'s explicit instruction to start implementing. Do NOT proceed until instructed.**
+
+---
+
+## Phase 3: Implementation & Closure
+
+*Goal: Execute the plan, review quality, archive, and wrap up.*
+
+*⛔ Prerequisite: Phase 2 (Final Review) MUST be confirmed by [USER-NAME] before starting this phase.*
+
+### Step 15: Start Implementation
 
 After [USER-NAME] instructs to start implementing, start implementing following the **Execution Protocol for AI** from the plan file.
 
-### Step 17: Quality Review
+### Step 16: Quality Review
 
 After all implementation phases are done and logged, review the implementation for craftsmanship quality before closing the plan.
 
@@ -158,11 +192,24 @@ STOP. Wait for [USER-NAME]'s response.
 
 5. **Fix approved items**: Apply approved fixes in one batch. Briefly report what was changed.
 
-### Step 18: Move Plan to Completed
+### Step 17: Move Plan to Completed
 
 After all implementation phases are done, logged, and quality review is resolved, move the plan file to `/plans/completed/`:
 `mkdir -p ./plans/completed && mv ./plans/[plan-file].md ./plans/completed/[plan-file].md`
 
 **Note**: Episodic memory links to the plan will break after moving. This is accepted — completed plans are archival.
+
+### Step 18: Completion Report
+
+Present a brief completion report to [USER-NAME]:
+- Plan file location (in `/plans/completed/`)
+- Summary of what was implemented
+- Any notes or follow-ups worth mentioning
+
+Then offer: "Would you like me to run `/wrap-up` to close the session?"
+
+### ⛔ END OF PHASE 3
+
+Protocol complete.
 
 ---
