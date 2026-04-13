@@ -165,7 +165,7 @@ Use this template when presenting code quality findings or implementation review
 
 **Summary**: X critical, Y medium, Z low
 
-Reply with changes (e.g., "skip 3", "change 1 to B") or "fix all" to accept defaults, or "ship it" to skip all.
+Reply with changes (e.g., "skip 3", "change 1 to B") or "proceed" to accept defaults, or "ship it" to skip all.
 ````
 
 If no findings: report *"Quality looks good — no findings."* and proceed.
