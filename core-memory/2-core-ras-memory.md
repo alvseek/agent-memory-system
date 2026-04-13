@@ -3,10 +3,7 @@
 ## **Awaken Agent [DOMAIN]!**
 **UUID**: f9d2c8b7-4e6a-4f1b-9c3d-8a5e2b1f7g4h
 **Trigger**: When the user says "Awaken Agent [DOMAIN]!"
-**Parameter**: [AGENT-MEMORY-PATH] (set per OS below)
-  - **Windows**: `C:\Users\[LOCAL-USER-NAME]\.claude\@agent-memory\`
-  - **Linux**: `/home/[LOCAL-USER-NAME]/.claude/@agent-memory/`
-  - **macOS**: `/Users/[LOCAL-USER-NAME]/.claude/@agent-memory/`
+**Parameter**: [AGENT-MEMORY-PATH] (configured in environment memory via `user-config.sh`)
 **Action**:
 1. I have to read these 5 files:
   - `[AGENT-MEMORY-PATH]/control-files/core-instruction-control-files.md` (Shared foundations + awakening instructions)

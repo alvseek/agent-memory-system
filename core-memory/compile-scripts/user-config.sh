@@ -43,7 +43,7 @@ echo ""
 
 # --- Step 1: User Identity ---
 
-echo "Step 1/2: Set your identity"
+echo "Step 1/3: Set your identity"
 echo "------------------------------------------"
 echo ""
 
@@ -91,7 +91,7 @@ echo ""
 
 # --- Step 2: Operating System ---
 
-echo "Step 2/2: Set your operating system"
+echo "Step 2/3: Set your operating system"
 echo "------------------------------------------"
 echo ""
 
@@ -154,6 +154,45 @@ EOF
         exit 1
         ;;
 esac
+
+echo ""
+
+# --- Step 3: Agent Memory Path ---
+
+echo "Step 3/3: Set agent memory path"
+echo "------------------------------------------"
+echo ""
+
+# Auto-detect based on OS choice
+case "$OS_CHOICE" in
+    1) DETECTED_PATH="C:\\Users\\$(whoami)\\.claude\\@agent-memory\\" ;;
+    2) DETECTED_PATH="/home/$(whoami)/.claude/@agent-memory/" ;;
+    3) DETECTED_PATH="/Users/$(whoami)/.claude/@agent-memory/" ;;
+esac
+
+# Read current value if exists
+CURRENT_PATH=$(grep '\[AGENT-MEMORY-PATH\]' "$ENV_FILE" 2>/dev/null | sed 's/.*\*\* = `//;s/`$//')
+
+if [ -n "$CURRENT_PATH" ]; then
+    echo "  Current: $CURRENT_PATH"
+    echo "  Auto-detected: $DETECTED_PATH"
+    echo "  Press Enter to keep current, or type a new path."
+    read -rp "  > Agent memory path: " AGENT_MEMORY_PATH_INPUT
+    AGENT_MEMORY_PATH_INPUT="${AGENT_MEMORY_PATH_INPUT:-$CURRENT_PATH}"
+else
+    echo "  Auto-detected: $DETECTED_PATH"
+    echo "  Press Enter to accept, or type a custom path."
+    read -rp "  > Agent memory path: " AGENT_MEMORY_PATH_INPUT
+    AGENT_MEMORY_PATH_INPUT="${AGENT_MEMORY_PATH_INPUT:-$DETECTED_PATH}"
+fi
+echo ""
+
+# Append agent memory path to environment file
+cat >> "$ENV_FILE" << EOF
+- **[AGENT-MEMORY-PATH]** = \`${AGENT_MEMORY_PATH_INPUT}\`
+EOF
+
+echo "✓ Agent memory path saved"
 
 echo ""
 echo "=========================================="

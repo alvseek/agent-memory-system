@@ -5,3 +5,4 @@
   - Use forward slashes: `/c/Users/username/.claude/` (not `C:\Users\username\.claude\`)
   - Use Unix conditionals: `test -f file && echo "exists"` (not `if exist file`)
   - CMD syntax like `if exist ... (echo) else (echo)` will FAIL
+- **[AGENT-MEMORY-PATH]** = `C:\Users\alvia\.claude\@agent-memory\`

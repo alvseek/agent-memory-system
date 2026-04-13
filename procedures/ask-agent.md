@@ -1,0 +1,55 @@
+# Ask Agent
+
+Send a blocking consultation request to another specialized agent. The target agent awakens (if new) or resumes (if UUID), processes the structured prompt, and returns a response. This procedure is designed for agent-to-agent communication — the calling agent constructs the prompt and sends it without user confirmation.
+
+## Arguments
+
+`$ARGUMENTS`
+
+- `/ask-agent [Name|UUID]` → Construct structured prompt, then send to the target agent
+- `/ask-agent` → Will ask which agent to consult
+
+If no arguments provided, ask: "Which agent do you want to consult? Provide a Name (to awaken) or UUID (to resume)."
+
+---
+
+## Procedure
+
+### Step 1: Resolve Target
+
+Parse the argument:
+- If it looks like a UUID (`xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`), this is a **resume**
+- If it's a name (e.g., "Backend Django", "Software Architect"), this is a **new awakening** — verify the agent folder exists at `[AGENT-MEMORY-PATH]/agent-[folder-name]/`
+
+### Step 2: Construct Structured Prompt
+
+Fill this template based on the current task context. All three fields are required:
+
+```
+## Context
+[What you're working on and why you need this agent's expertise]
+
+## Request
+[Specific question or task — what exactly you need from the target agent]
+
+## Expected Output
+[What format/detail the response should be in]
+```
+
+Do NOT send vague or open-ended prompts. Be specific about what you need and what the response should look like.
+
+### Step 3: Execute
+
+Run the script (blocking):
+
+```bash
+bash "[AGENT-MEMORY-PATH]/control-files/scripts/ask-agent.sh" "[Name|UUID]" "[structured prompt]"
+```
+
+Wait for the response. This blocks until the target agent responds.
+
+### Step 4: Process Response
+
+Use the target agent's response to continue your work. Note the UUID from the script output so you can resume this session later if needed.
+
+---
