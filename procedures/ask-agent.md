@@ -23,9 +23,12 @@ Parse the argument:
 
 ### Step 2: Construct Structured Prompt
 
-Fill this template based on the current task context. All three fields are required:
+Fill this template based on the current task context. All fields are required:
 
 ```
+## Theme
+[Short label for the fleet map — e.g., "user auth patterns", "DB schema review"]
+
 ## Context
 [What you're working on and why you need this agent's expertise]
 
@@ -43,7 +46,7 @@ Do NOT send vague or open-ended prompts. Be specific about what you need and wha
 Run the script (blocking):
 
 ```bash
-bash "[AGENT-MEMORY-PATH]/control-files/scripts/ask-agent.sh" "[Name|UUID]" "[structured prompt]"
+bash "[AGENT-MEMORY-PATH]/control-files/scripts/ask-agent.sh" "[Name|UUID]" "[structured prompt]" "[theme]"
 ```
 
 Wait for the response. This blocks until the target agent responds.

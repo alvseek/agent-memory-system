@@ -23,9 +23,12 @@ Parse the argument:
 
 ### Step 2: Construct Structured Prompt
 
-Fill this template based on the current task context. All five fields are required:
+Fill this template based on the current task context. All fields are required:
 
 ```
+## Theme
+[Short label for the fleet map — e.g., "user auth middleware", "inventory tags UI"]
+
 ## Context
 [What you're working on and why this task needs to be delegated]
 
@@ -49,7 +52,7 @@ Do NOT send vague or open-ended prompts. Be specific about the task, what "done"
 Run the script (background):
 
 ```bash
-bash "[AGENT-MEMORY-PATH]/control-files/scripts/delegate-agent.sh" "[Name|UUID]" "[structured prompt]"
+bash "[AGENT-MEMORY-PATH]/control-files/scripts/delegate-agent.sh" "[Name|UUID]" "[structured prompt]" "[theme]"
 ```
 
 The script returns the UUID immediately. The target agent works in the background.
