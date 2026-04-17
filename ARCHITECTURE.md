@@ -82,6 +82,8 @@ control-files/
 │   ├── generate-readme.md            # Generate 7Q README from codebase investigation
 │   ├── generate-standard.md          # Generate project quality-standard.md from codebase
 │   ├── analyze-code-quality.md       # Standalone code quality analysis (8 dimensions)
+│   ├── pixel-wizard.md               # Visual design-to-implementation wizard (screenshot validation loop)
+│   ├── generate-visual-testing-framework.md  # Set up project-type-aware screenshot tooling
 │   ├── memory/                        # Memory management procedures
 │   │   ├── update-memory.md           # Comprehensive memory update
 │   │   ├── update-episodic.md         # Episodic memory update
@@ -356,6 +358,8 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 | **Generate README** | `procedures/generate-readme.md` | `/generate-readme` |
 | **Generate Quality Standard** | `procedures/generate-standard.md` | `/generate-standard` |
 | **Analyze Code Quality** | `procedures/analyze-code-quality.md` | `/analyze-code-quality` |
+| **Pixel Wizard** | `procedures/pixel-wizard.md` | `/pixel-wizard` |
+| **Generate Visual Testing Framework** | `procedures/generate-visual-testing-framework.md` | `/generate-visual-testing-framework` |
 
 ### Common Slash Commands
 
@@ -379,6 +383,8 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 /generate-readme         # Generate 7Q README from codebase investigation
 /generate-standard       # Generate project quality-standard.md from codebase
 /analyze-code-quality    # Standalone code quality analysis (8 dimensions)
+/pixel-wizard [context]  # Visual design-to-implementation wizard (screenshot validation loop)
+/generate-visual-testing-framework  # Set up project-type-aware screenshot tooling for current project
 /push-project            # Commit and push current project
 /push-memory             # Commit and push agent memory
 /push-all                # Commit and push both project + agent memory
@@ -399,6 +405,7 @@ The `procedures/` directory contains wizard-based planning procedures. High Wiza
 | **Rite of Creation** | 3 | Full project lifecycle: orchestrates SDLC phases from scratch to working product, assigns protocols and roles per phase, enforces phase exit criteria | `/rite-of-creation` |
 | **Council of Wizards** | 2 | Multi-plan orchestration: decomposes features into requirements, creates sub-plans with integration contracts, tracks parallel execution | `/council-of-wizards` |
 | **High Wizard** | 1 | Smart planning with dynamic section proposal — adapts to any task (planning, analysis, brainstorming, bug investigation) | `/high-wizard` |
+| **Pixel Wizard** | 1v | High Wizard variant for visual tasks — same structure + design screenshot, visual framework setup, and screenshot-based validation loop | `/pixel-wizard` |
 | **Quick Wizard** | 0 | Lightweight decision collection + direct execution for small tasks (auto-escalates to High Wizard when complex) | `/quick-wizard` |
 
 ### Protocol Hierarchy
@@ -428,7 +435,14 @@ The `procedures/` directory contains wizard-based planning procedures. High Wiza
   │  HIGH WIZARD   │               │  QUICK WIZARD   │  ← Level 0
   │  Level 1       │  ◄─escalates──│  Small tasks     │
   │  Smart planning│               │  Direct execution│
-  └────────────────┘               └─────────────────┘
+  └───────┬────────┘               └─────────────────┘
+          │ visual variant
+  ┌───────▼────────┐
+  │  PIXEL WIZARD  │  ← Level 1v: Visual Tasks
+  │  Design → Impl │
+  │  + Screenshot  │
+  │  validation    │
+  └────────────────┘
 ```
 
 ---
