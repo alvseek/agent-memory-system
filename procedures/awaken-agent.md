@@ -16,6 +16,6 @@ If no arguments provided, ask: "Which agent domain should I awaken?"
 
 ### Step 1: Trigger Awakening
 
-Execute the `Awaken Agent [DOMAIN]!` trigger defined in the global CLAUDE.md. This is the single source of truth for the awakening protocol — it reads the 5 core files and follows the phased awakening instructions.
+Execute the `Awaken Agent [DOMAIN]!` trigger defined in the global instructions file (`[GLOBAL-INSTRUCTIONS-FILE]`). This is the single source of truth for the awakening protocol — it reads the 5 core files and follows the phased awakening instructions.
 
 ---

@@ -30,7 +30,7 @@ Agent data file should be in the `[AGENT-MEMORY-PATH]/agent-[domain]/`
 - `agent-memory-index.md` → `# Core Knowledge Base` section (knowledge directory)
 
 ### **5. Reticular Activation Memory**
-**Included in**: Global `CLAUDE.md` (universal triggers) + `agent-core-memory.md` → `# DOMAIN RAS` section (domain-specific triggers)
+**Included in**: Global instructions file (for example `AGENTS.md` or `CLAUDE.md`, depending on platform) (universal triggers) + `agent-core-memory.md` → `# DOMAIN RAS` section (domain-specific triggers)
 **Write Procedure**: N/A (triggers are added during agent creation or via memory updates)
 **Purpose**: Intelligent background pattern recognition and automatic trigger response system mimicking human Reticular Activating System (RAS)
 

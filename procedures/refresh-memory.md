@@ -35,7 +35,7 @@ Read these 5 files:
 
 ### Step 4: Reread Global Instructions
 
-Reread the global CLAUDE.MD file.
+Reread the global instructions file (`[GLOBAL-INSTRUCTIONS-FILE]`).
 
 ### Step 5: Continue
 
