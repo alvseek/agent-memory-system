@@ -42,13 +42,11 @@ STOP. Do NOT proceed without a visual reference.
 
 **If `.html` file provided:**
 1. Create `.agent-screenshots/` directory at project root if it does not exist
-2. Detect Chrome executable path by OS:
-   - Windows (Git Bash): `"/c/Program Files/Google/Chrome/Application/chrome.exe"`
-   - macOS: `"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"`
-   - Linux: `google-chrome`
-3. Run: `{CHROME} --headless --screenshot=.agent-screenshots/design.png "file://{absolute-path-to-html-file}"`
-4. Read `.agent-screenshots/design.png` into context — this is the **visual target**
-5. Confirm: "Visual target established from `{filename}` → `.agent-screenshots/design.png`"
+2. Use Playwright MCP to open and screenshot the file:
+   - `mcp__playwright__browser_navigate` → `file://{absolute-path-to-html-file}`
+   - `mcp__playwright__browser_take_screenshot` → save to `.agent-screenshots/design.png`
+3. Read `.agent-screenshots/design.png` into context — this is the **visual target**
+4. Confirm: "Visual target established from `{filename}` → `.agent-screenshots/design.png`"
 
 **If image file provided (`.png`, `.jpg`, `.jpeg`, `.webp`, `.gif`):**
 1. Read the image file directly via the Read tool — this is the **visual target**
@@ -84,7 +82,10 @@ Read and follow the [WAIT Options format](//@agent-memory/control-files/procedur
 5. **Conflicts and constraints** - Note what could go wrong, what limits exist → if any, offer options based on pros and cons as decisions
 6. **Integration points** - Check what existing code/systems will be affected → if concerning, offer options as decisions
 7. **Quality standard discovery** - Search for `quality-standard.md` in the project via glob (`**/quality-standard.md`). If found, load it as additional implementation criteria to reference when writing plan steps. If not found, note it and proceed
-8. **Visual framework check**: Check if visual testing framework is already configured by looking for `SCREENSHOT_CMD` in `.env.local`. If not found, run `/generate-visual-testing-framework` now before Step 7. The framework must be set up before implementation begins.
+8. **Visual framework check**: Check if visual testing framework is already configured by reading `.env.local`:
+   - **Web projects**: look for `SCREENSHOT_URL`
+   - **Mobile projects**: look for `SCREENSHOT_CMD`
+   If not found, run `/generate-visual-testing-framework` now before Step 7. The framework must be set up before implementation begins.
 
 ### Step 7: Present WAIT Options
 
@@ -218,9 +219,16 @@ After all implementation phases are complete:
    - iOS: `xcrun simctl list booted` — if no booted simulator, warn [USER-NAME] similarly
    - Web: `curl -s -o /dev/null -w "%{http_code}" {SCREENSHOT_URL}` — if no response or non-2xx, warn [USER-NAME]: "Dev server not responding at {URL}. Please start your dev server before I can take a screenshot."
 
-2. **Read SCREENSHOT_CMD and SCREENSHOT_URL** from `.env.local`
+2. **Read configuration from `.env.local`**:
+   - **Web**: read `SCREENSHOT_URL`
+   - **Mobile**: read `SCREENSHOT_CMD` (and `SCREENSHOT_URL` if applicable)
 
-3. **Run screenshot**: Execute `SCREENSHOT_CMD` → `.agent-screenshots/result.png`
+3. **Run screenshot**:
+   - **Web**: use Playwright MCP:
+     - `mcp__playwright__browser_navigate` → `{SCREENSHOT_URL}`
+     - (if auth required per Step 4 C2: perform login flow first)
+     - `mcp__playwright__browser_take_screenshot` → `.agent-screenshots/result.png`
+   - **Mobile**: execute `SCREENSHOT_CMD` → `.agent-screenshots/result.png`
 
 4. **Visual comparison**: Read both `.agent-screenshots/design.png` and `.agent-screenshots/result.png` side by side. Describe the visual gaps concisely:
    - Layout differences (spacing, alignment, sizing)
