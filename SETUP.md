@@ -6,7 +6,7 @@ Step-by-step guide for configuring agent-memory with Claude Code or Codex and cr
 - [Environment Setup](#environment-setup)
 - [Claude Code Setup](#claude-code-setup)
 - [Codex Setup](#codex-setup)
-- [Read Tool Token Limit](#read-tool-token-limit)
+- [Tool Output Token Limits](#tool-output-token-limits)
 - [Manual Setup](#manual-setup)
 - [Creating New Agents](#creating-new-agents)
 
@@ -74,9 +74,13 @@ For a detailed breakdown of the file structure, compilation system, and memory a
 
 Codex setup intentionally does not include a settings or hooks step here. Codex hooks are currently experimental, and on Windows they are not a stable equivalent to the Claude Code settings flow.
 
-## Read Tool Token Limit
+## Tool Output Token Limits
 
-Claude Code's Read tool has a default token limit controlled by a Statsig feature flag (`tengu_amber_wren`), which may be as low as 10K tokens. This causes large memory files (like `agent-core-memory.md` or `agent-memory-index.md`) to fail loading during awakening.
+Large memory files (like `agent-core-memory.md` or `agent-memory-index.md`) can fail loading when tool output token limits are too low.
+
+### Claude Code Read Tool Limit
+
+Claude Code's Read tool has a default token limit controlled by a Statsig feature flag (`tengu_amber_wren`), which may be as low as 10K tokens.
 
 **To increase the limit to 64K tokens**, edit `~/.claude.json` and find the `tengu_amber_wren` entry inside the `statsigValues` object:
 
@@ -99,6 +103,20 @@ Change `maxTokens` to `64000`:
 > **Note**: `~/.claude.json` is Claude Code's internal config (not `settings.json`). This change survives sessions but may be reset by Claude Code updates - re-check after updating CLI versions.
 
 Restart Claude Code for the change to take effect.
+
+### Codex Tool Output Token Limit
+
+Codex tool-call output history has a per-tool token budget (`tool_output_token_limit`) in `~/.codex/config.toml`. If it is too low, large file reads can be truncated in context.
+
+**To increase the limit to 64K tokens**, add or update this line in `~/.codex/config.toml`:
+
+```toml
+tool_output_token_limit = 64000
+```
+
+If the key does not exist, add it near the top-level model settings.
+
+> **Note**: This is a Codex config value (not Claude settings). Restart Codex after editing so the new limit is picked up.
 
 ## Manual Setup
 
