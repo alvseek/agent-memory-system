@@ -9,8 +9,21 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CORE_MEMORY_DIR="$(dirname "$SCRIPT_DIR")"
-USER_PROFILE_FILE="$CORE_MEMORY_DIR/0-core-user-profile.md"
-ENV_FILE="$CORE_MEMORY_DIR/1-core-environment-memory.md"
+OUTPUT_DIR="$CORE_MEMORY_DIR/output"
+TEMPLATE_USER_PROFILE_FILE="$CORE_MEMORY_DIR/0-core-user-profile.md"
+TEMPLATE_ENV_FILE="$CORE_MEMORY_DIR/1-core-environment-memory.md"
+USER_PROFILE_FILE="$OUTPUT_DIR/0-core-user-profile.md"
+ENV_FILE="$OUTPUT_DIR/1-core-environment-memory.md"
+
+mkdir -p "$OUTPUT_DIR"
+
+# First run: seed runtime files from templates if missing
+if [ ! -f "$USER_PROFILE_FILE" ] && [ -f "$TEMPLATE_USER_PROFILE_FILE" ]; then
+    cp "$TEMPLATE_USER_PROFILE_FILE" "$USER_PROFILE_FILE"
+fi
+if [ ! -f "$ENV_FILE" ] && [ -f "$TEMPLATE_ENV_FILE" ]; then
+    cp "$TEMPLATE_ENV_FILE" "$ENV_FILE"
+fi
 
 # Read current values from existing files
 CURRENT_NAME=$(grep '\[USER-NAME\]' "$USER_PROFILE_FILE" 2>/dev/null | sed 's/.*\*\* = //')

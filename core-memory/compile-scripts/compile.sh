@@ -6,6 +6,7 @@
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CORE_MEMORY_DIR="$SCRIPT_DIR/.."
 OUTPUT_FILE="$CORE_MEMORY_DIR/output/core-memory-compiled.md"
+RUNTIME_DIR="$CORE_MEMORY_DIR/output"
 
 echo "Compiling core memory files..."
 
@@ -32,12 +33,19 @@ strip_comments() {
 for file in "$CORE_MEMORY_DIR"/[0-9]-*.md; do
     if [ -f "$file" ]; then
         filename=$(basename "$file")
-        echo "  Adding: $filename"
+        runtime_file="$RUNTIME_DIR/$filename"
+        source_file="$file"
+        source_label="template"
+        if [ -f "$runtime_file" ]; then
+            source_file="$runtime_file"
+            source_label="runtime"
+        fi
+        echo "  Adding: $filename ($source_label)"
         echo "" >> "$OUTPUT_FILE"
         echo "<!-- ========== SOURCE: $filename ========== -->" >> "$OUTPUT_FILE"
         echo "" >> "$OUTPUT_FILE"
         # Strip comments before adding to output
-        strip_comments < "$file" >> "$OUTPUT_FILE"
+        strip_comments < "$source_file" >> "$OUTPUT_FILE"
         echo "" >> "$OUTPUT_FILE"
     fi
 done

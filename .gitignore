@@ -1,1 +1,2 @@
-core-memory/output/core-memory-compiled.md
+core-memory/output/*
+!core-memory/output/.gitkeep

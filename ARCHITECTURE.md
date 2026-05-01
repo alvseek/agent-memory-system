@@ -68,7 +68,7 @@ control-files/
 │   │   ├── compile-write-to-claude.sh # Compile AND write to CLAUDE.md
 │   │   ├── write-to-claude.sh         # Write compiled output to CLAUDE.md
 │   │   └── write-to-gemini.sh         # Write compiled output to GEMINI.md
-│   └── output/                        # Compiled output (gitignored)
+│   └── output/                        # Runtime-resolved files + compiled output (gitignored)
 ├── procedures/                         # Procedures (also work as slash commands)
 │   ├── high-wizard.md                 # Smart planning with dynamic section proposal
 │   ├── quick-wizard.md                # Lightweight decision collection + direct execution
@@ -285,15 +285,15 @@ control-files/core-memory/
 │   ├── compile-write-to-claude.sh # Compile AND write to CLAUDE.md
 │   ├── write-to-claude.sh         # Write compiled output to CLAUDE.md
 │   └── write-to-gemini.sh         # Write compiled output to GEMINI.md
-└── output/                        # Compiled output (gitignored)
+└── output/                        # Runtime-resolved files + compiled output (gitignored)
 ```
 
 **Source files:**
 
 | File | Purpose | When to Edit |
 |------|---------|--------------|
-| `0-core-user-profile.md` | User identity (name, philosophy, vision) | First-time setup via `user-config.sh` |
-| `1-core-environment-memory.md` | OS, shell type, command syntax | Different OS or shell (set via `user-config.sh`) |
+| `0-core-user-profile.md` | Template: user identity (name, philosophy, vision) | Update template defaults only |
+| `1-core-environment-memory.md` | Template: OS, shell type, command syntax | Update template defaults only |
 | `2-core-ras-memory.md` | Awaken, Post-Compact, Protocol triggers | New universal triggers |
 | `3-core-reasoning-memory.md` | Core reasoning (UUID + Strict Action) | New universal reasoning |
 
@@ -304,6 +304,8 @@ control-files/core-memory/
 | `compile.sh` | Step 1: Compiles source files → `output/core-memory-compiled.md` |
 | `write-to-claude.sh` | Step 2: Writes compiled output → `~/.claude/CLAUDE.md` |
 | `compile-write-to-claude.sh` | Runs both Step 1 + Step 2 sequentially |
+
+`user-config.sh` writes personalized runtime versions of `0-core-user-profile.md` and `1-core-environment-memory.md` to `core-memory/output/`. `compile.sh` uses runtime files from `output/` first, then falls back to templates when runtime files are missing.
 
 **Option A: Run both steps at once**
 ```bash
@@ -320,12 +322,14 @@ control-files/core-memory/
 ./control-files/core-memory/compile-scripts/write-to-claude.sh
 ```
 
-**Customizing for different OS:**
+**Customizing user identity / OS / agent path:**
 
-Edit `1-core-environment-memory.md` - it contains pre-built sections for Windows, Linux, and macOS. Simply:
-1. Comment out the current OS section
-2. Uncomment the section for your OS
-3. Run the compilation scripts
+Run:
+```bash
+bash control-files/core-memory/compile-scripts/user-config.sh
+```
+
+This updates runtime files in `core-memory/output/` without modifying tracked template files.
 
 ---
 

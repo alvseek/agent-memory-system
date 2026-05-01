@@ -139,8 +139,7 @@ If the key does not exist, add it near the top-level model settings.
 
 If you prefer to configure manually instead of using the script, edit these files directly:
 
-- **User identity**: `control-files/core-memory/0-core-user-profile.md` - replace placeholder values
-- **OS selection**: `control-files/core-memory/1-core-environment-memory.md` - uncomment your OS section
+- **User identity + OS + agent path**: `bash control-files/core-memory/compile-scripts/user-config.sh` (writes runtime-resolved files to `control-files/core-memory/output/`)
 - **Compile CLAUDE.md**: `bash control-files/core-memory/compile-scripts/compile-write-to-claude.sh`
 - **Slash commands**: `bash control-files/procedures/setup-scripts/setup-all-claude-code.sh`
 - **Settings**: `bash control-files/scripts/setup-scripts/setup-settings-claude-code.sh`
