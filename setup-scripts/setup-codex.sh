@@ -8,24 +8,26 @@
 #   0. User configuration (identity + OS) - always runs, shows defaults
 #   1. Compile core memory and write to ~/.codex/AGENTS.md
 #   2. Install all procedures as Codex skills in ~/.agents/skills/
+#   3. Configure Codex settings (tool_output_token_limit + SessionStart hook)
 #
 # Notes:
 #   - Codex AGENTS.md is the closest equivalent to Claude's global CLAUDE.md
 #   - Codex skills are the closest equivalent to Claude slash commands
-#   - Codex hooks are intentionally not configured here because official Windows support is currently disabled
+#   - SessionStart hook is configured to inject memory recovery reminder context
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONTROL_FILES_DIR="$(dirname "$SCRIPT_DIR")"
 USER_CONFIG_SCRIPT="$CONTROL_FILES_DIR/core-memory/compile-scripts/user-config.sh"
 COMPILE_WRITE_SCRIPT="$CONTROL_FILES_DIR/core-memory/compile-scripts/compile-write-to-codex.sh"
 SETUP_PROCEDURES_SCRIPT="$CONTROL_FILES_DIR/procedures/setup-scripts/setup-all-codex.sh"
+SETUP_SETTINGS_SCRIPT="$CONTROL_FILES_DIR/scripts/setup-scripts/setup-settings-codex.sh"
 
 echo "=========================================="
 echo "  Codex - Complete Setup"
 echo "=========================================="
 echo ""
 
-echo "Step 0/3: Configure user identity and OS"
+echo "Step 0/4: Configure user identity and OS"
 echo "------------------------------------------"
 
 if [ ! -f "$USER_CONFIG_SCRIPT" ]; then
@@ -44,7 +46,7 @@ fi
 
 echo ""
 
-echo "Step 1/3: Compile core memory -> ~/.codex/AGENTS.md"
+echo "Step 1/4: Compile core memory -> ~/.codex/AGENTS.md"
 echo "------------------------------------------"
 
 if [ ! -f "$COMPILE_WRITE_SCRIPT" ]; then
@@ -63,7 +65,7 @@ fi
 
 echo ""
 
-echo "Step 2/3: Install procedures -> ~/.agents/skills/"
+echo "Step 2/4: Install procedures -> ~/.agents/skills/"
 echo "------------------------------------------"
 
 if [ ! -f "$SETUP_PROCEDURES_SCRIPT" ]; then
@@ -78,6 +80,25 @@ if [ $setup_status -ne 0 ]; then
     echo ""
     echo "ERROR: Procedure setup failed."
     exit $setup_status
+fi
+
+echo ""
+
+echo "Step 3/4: Configure Codex settings -> ~/.codex/config.toml"
+echo "------------------------------------------"
+
+if [ ! -f "$SETUP_SETTINGS_SCRIPT" ]; then
+    echo "ERROR: setup-settings-codex.sh not found at $SETUP_SETTINGS_SCRIPT"
+    exit 1
+fi
+
+bash "$SETUP_SETTINGS_SCRIPT"
+settings_status=$?
+
+if [ $settings_status -ne 0 ]; then
+    echo ""
+    echo "ERROR: Codex settings setup failed."
+    exit $settings_status
 fi
 
 echo ""

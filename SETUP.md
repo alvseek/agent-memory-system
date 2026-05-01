@@ -14,6 +14,19 @@ Step-by-step guide for configuring agent-memory with Claude Code or Codex and cr
 
 Run the relevant setup script from the `@agent-memory` directory.
 
+### Environment-Based Wrapper Choice
+
+Use the wrapper that matches your execution environment:
+
+- **Git Bash / WSL / Linux / macOS shell**: use `.sh`
+  - `bash control-files/setup-scripts/setup-claude-code.sh`
+  - `bash control-files/setup-scripts/setup-codex.sh`
+- **Windows Command Prompt / double-click flow**: use `.bat` wrapper (calls Git Bash internally)
+  - `control-files\setup-scripts\setup-claude-code.bat`
+  - `control-files\setup-scripts\setup-codex.bat`
+
+The wrapper should follow the environment you are launching from, not just OS type.
+
 ## Claude Code Setup
 
 ```bash
@@ -37,13 +50,14 @@ Steps that are already configured are automatically skipped. Re-running the scri
 bash control-files/setup-scripts/setup-codex.sh
 ```
 
-The Codex setup script runs 3 steps interactively:
+The Codex setup script runs 4 steps interactively:
 
 | Step | What it configures | Target |
 |------|-------------------|--------|
 | 0 | **User identity & OS** - name, philosophy, agent vision, operating system | `core-memory/` source files |
 | 1 | **Global AGENTS.md** - compiles RAS triggers, reasoning patterns, and user profile for Codex | `~/.codex/AGENTS.md` |
 | 2 | **Codex skills** - converts all procedures into reusable Codex user skills | `~/.agents/skills/` |
+| 3 | **Codex settings** - tool output token limit (64K) + SessionStart memory-recovery reminder hook | `~/.codex/config.toml` |
 
 In Codex, `AGENTS.md` is the global instruction layer, and skills are the closest equivalent to Claude slash commands for reusable workflows.
 
@@ -72,7 +86,10 @@ For a detailed breakdown of the file structure, compilation system, and memory a
 
 **Step 2** converts each procedure in `control-files/procedures/` and `control-files/procedures/memory/` into a Codex user skill under `~/.agents/skills/`. Each installed skill wraps the original procedure markdown in a Codex-native `SKILL.md` so it can be invoked explicitly or discovered implicitly by Codex.
 
-Codex setup intentionally does not include a settings or hooks step here. Codex hooks are currently experimental, and on Windows they are not a stable equivalent to the Claude Code settings flow.
+**Step 3** updates `~/.codex/config.toml` to:
+- set `tool_output_token_limit = 64000` for large memory-file workflows
+- enable hooks with `[features] codex_hooks = true`
+- install a `SessionStart` hook (`startup|resume|clear`) that injects memory-recovery reminder context (same intention as Claude's post-compact reminder flow)
 
 ## Tool Output Token Limits
 
