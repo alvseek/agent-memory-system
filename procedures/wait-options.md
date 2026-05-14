@@ -23,6 +23,16 @@ For each decision, provide context so [USER-NAME] can evaluate options without s
 
 Not every decision needs all 4 — a simple naming choice may only need the problem statement, while a model design gap needs all of them.
 
+### Critical Technical Disclosure (Mandatory)
+
+Even when the implementation direction is already clear to the agent, [USER-NAME] still needs visibility into the technical core. For implementation-related decisions, always include the relevant technical points in the decision context:
+
+1. **Main function(s) or module entrypoint(s)** — the primary function/class/module that drives the behavior
+2. **Engine algorithm or core logic pattern** — the key algorithm, transformation flow, or decision mechanism
+3. **Execution flow touchpoints** — critical call path, integration boundary, or state transition that matters for this decision
+
+Do not hide these details just because there is no ambiguity. WAIT Options should surface them so [USER-NAME] can make informed decisions.
+
 ### Concrete Examples & Visualizations
 
 When words alone aren't enough to evaluate options, include a concrete example in the context or within an option. Match the example type to the domain:
@@ -42,6 +52,7 @@ For each decision:
 - Include **per-option analysis** (pros/cons) on indented lines below each option — only when applicable (skip for self-explanatory options)
 - After the options, include a **reason paragraph** explaining the recommendation and tradeoffs
 - If any questions remain that don't fit into options format, collect them as **named open questions** (OQ1, OQ2, ...) to present alongside decisions
+- Include mandatory technical disclosure details in the decision context whenever the decision affects implementation behavior
 
 Order decisions by dependency (foundational choices first, dependent ones after).
 
@@ -78,7 +89,8 @@ Use this template when presenting decisions to [USER-NAME]. Replace `[preamble]`
 **1. [Decision topic]:**
 
 - [Context: problem statement, evidence from codebase, example scenario showing impact.
-  Include as many context depth items as the decision warrants.]
+  Include as many context depth items as the decision warrants. Include critical technical points
+  (main function/module, core algorithm, key execution flow) when implementation behavior is involved.]
 
   > A) [Option] `✓✓`
   > - [Pro/con analysis — only when applicable]
