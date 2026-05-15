@@ -120,6 +120,7 @@ Use this structure when writing the plan in plan mode (or presenting in conversa
 
 ## Success Criteria
 - [ ] [How we know it's done]
+- [ ] Quality review completed (Step 7)
 
 ## Execution Steps
 1. **[Step name]**: [What to do] → [How to verify]
