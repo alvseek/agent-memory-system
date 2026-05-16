@@ -242,6 +242,16 @@ I have to use this document as my **ONLY** source of truth to execute and track 
 
 ---
 
+## **QUALITY REVIEW**
+*Filled by procedure Step 16 after all execution phases are complete.*
+
+- **Scope**: [Files reviewed — from Execution Log]
+- **Quality Standard**: [quality-standard.md found / not found — dimensions applied]
+- **Findings**: [Issues found, or "No findings — implementation meets quality dimensions"]
+- **Fixed**: [What was fixed from approved findings, or "N/A"]
+
+---
+
 ## **POST-COMPLETION**
-After all phases are executed and logged, move this plan to `plans/completed/`:
+After all phases are executed, logged, and quality review is filled, move this plan to `plans/completed/`:
 `mkdir -p ./plans/completed && mv ./plans/[this-file].md ./plans/completed/[this-file].md`
