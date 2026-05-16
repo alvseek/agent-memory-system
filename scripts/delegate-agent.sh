@@ -1,6 +1,11 @@
 #!/bin/bash
-# delegate-agent.sh — Background agent-to-agent delegation
+# delegate-agent.sh — Background agent-to-agent delegation (DEPRECATED)
 # Usage: ./delegate-agent.sh <Name|UUID> "<prompt>" "<theme>" [fleet-map-path] [model]
+#
+# DEPRECATED: The /delegate-agent skill now calls ask-agent.sh directly via
+# Bash run_in_background:true, which gives proper task-notification on completion.
+# This script (which uses `claude &` internally) breaks the notification mechanism.
+# Kept for standalone bash usage; do not call from skills.
 #
 # Name → Full 5-file awakening + prompt (new session, background)
 # UUID → Resume existing session + prompt (background)

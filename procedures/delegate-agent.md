@@ -54,21 +54,25 @@ Do NOT send vague or open-ended prompts. Be specific about the task, what "done"
 
 ### Step 3: Execute
 
-Run the script (background):
+Run `ask-agent.sh` using the Bash tool with **`run_in_background: true`**:
 
 ```bash
-bash "[AGENT-MEMORY-PATH]/control-files/scripts/delegate-agent.sh" "[Name|UUID]" "[structured prompt]" "[theme]" "" "[model]"
+bash "[AGENT-MEMORY-PATH]/control-files/scripts/ask-agent.sh" "[Name|UUID]" "[structured prompt]" "[theme]" "" "[model]"
 ```
 
 Pass empty string for the 4th arg (fleet-map — script auto-resolves it). Pass model as 5th arg; use empty string if no model was specified.
 
-The script returns the UUID immediately. The target agent works in the background.
+The Bash tool returns a **task ID** immediately. Note it — the agent is now working in the background.
 
 ### Step 4: Continue Working
 
-Note the returned UUID for later follow-up. Continue with your own work — do not block waiting for the delegated agent.
+Do not block. Continue your own work.
 
-To check status later: `/ask-agent [UUID]` with a status request.
+**When `<task-notification>` arrives** — the delegated agent has finished:
+- Read the output file path from the notification
+- **Name mode** (new awakening): first line of output file = UUID — save it for future `/ask-agent [UUID]` or `/delegate-agent [UUID]` calls. Remaining lines = agent's full response.
+- **UUID mode** (resume): output file contains the agent's full response only.
+
 To wrap up a completed session: `bash "[AGENT-MEMORY-PATH]/control-files/scripts/wrap-up-agent.sh" [UUID]`
 
 ---

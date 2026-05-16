@@ -55,5 +55,7 @@ else
     add_fleet_entry "$FLEET_MAP" "$TARGET" "$UUID" "$THEME"
     echo -e "${GREEN}[ask-agent] Registered in fleet map${NC}" >&2
 
+    # Print UUID as first stdout line so callers using run_in_background can capture it
+    echo "$UUID"
     claude --print $MODEL_FLAG --session-id "$UUID" "$FULL_PROMPT"
 fi
