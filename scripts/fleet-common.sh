@@ -78,6 +78,30 @@ update_fleet_status() {
     fi
 }
 
+resolve_fleet_agents() {
+    local fleet_map="${1:-}"
+    if [ -n "$fleet_map" ]; then
+        echo "$(dirname "$fleet_map")/fleet-agents.md"
+    else
+        local project_name
+        project_name=$(get_project_name)
+        echo "${AGENT_MEMORY_PATH}/shared-memory/${project_name}/fleet-agents.md"
+    fi
+}
+
+get_agent_model() {
+    local domain="$1"
+    local fleet_agents="$2"
+    [ -f "$fleet_agents" ] || { echo ""; return; }
+    awk -F'|' -v domain="$domain" '
+        {
+            col2 = $2; gsub(/^[[:space:]]+|[[:space:]]+$/, "", col2)
+            col5 = $5; gsub(/^[[:space:]]+|[[:space:]]+$/, "", col5)
+            if (col2 == domain && col5 != "" && col5 !~ /^[-*]/) { print col5; exit }
+        }
+    ' "$fleet_agents"
+}
+
 domain_to_folder() {
     # "Backend Django" → "backend-django"
     echo "$1" | tr '[:upper:]' '[:lower:]' | tr ' ' '-'

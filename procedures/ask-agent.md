@@ -21,6 +21,11 @@ Parse the argument:
 - If it looks like a UUID (`xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`), this is a **resume**
 - If it's a name (e.g., "Backend Django", "Software Architect"), this is a **new awakening** — verify the agent folder exists at `[AGENT-MEMORY-PATH]/agent-[folder-name]/`
 
+Also check if `$ARGUMENTS` contains `--model <value>`. If present, extract `MODEL=<value>` and strip it from the name/UUID portion before resolving the target. Examples:
+- `"Backend Django --model opus"` → TARGET=`Backend Django`, MODEL=`opus`
+- `"3f8a2b1c-... --model sonnet"` → TARGET=`3f8a2b1c-...`, MODEL=`sonnet`
+- `"Backend Django"` → TARGET=`Backend Django`, MODEL=`""`
+
 ### Step 2: Construct Structured Prompt
 
 Fill this template based on the current task context. All fields are required:
@@ -46,8 +51,10 @@ Do NOT send vague or open-ended prompts. Be specific about what you need and wha
 Run the script (blocking):
 
 ```bash
-bash "[AGENT-MEMORY-PATH]/control-files/scripts/ask-agent.sh" "[Name|UUID]" "[structured prompt]" "[theme]"
+bash "[AGENT-MEMORY-PATH]/control-files/scripts/ask-agent.sh" "[Name|UUID]" "[structured prompt]" "[theme]" "" "[model]"
 ```
+
+Pass empty string for the 4th arg (fleet-map — script auto-resolves it). Pass model as 5th arg; use empty string if no model was specified.
 
 Wait for the response. This blocks until the target agent responds.
 

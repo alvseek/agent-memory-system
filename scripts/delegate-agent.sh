@@ -1,6 +1,6 @@
 #!/bin/bash
 # delegate-agent.sh — Background agent-to-agent delegation
-# Usage: ./delegate-agent.sh <Name|UUID> "<prompt>" "<theme>" [fleet-map-path]
+# Usage: ./delegate-agent.sh <Name|UUID> "<prompt>" "<theme>" [fleet-map-path] [model]
 #
 # Name → Full 5-file awakening + prompt (new session, background)
 # UUID → Resume existing session + prompt (background)
@@ -12,7 +12,7 @@ source "$(dirname "$0")/fleet-common.sh"
 
 # --- Usage ---
 if [ "$#" -lt 2 ]; then
-    echo "Usage: $0 <Name|UUID> \"<prompt>\" \"<theme>\" [fleet-map-path]"
+    echo "Usage: $0 <Name|UUID> \"<prompt>\" \"<theme>\" [fleet-map-path] [model]"
     echo ""
     echo "  Name  → Awakens agent with full 5-file protocol + sends prompt (background)"
     echo "  UUID  → Resumes existing session + sends prompt (background)"
@@ -30,11 +30,21 @@ TARGET="$1"
 PROMPT="$2"
 THEME="${3:-}"
 FLEET_MAP=$(resolve_fleet_map "${4:-}")
+MODEL_ARG="${5:-}"
+FLEET_AGENTS=$(resolve_fleet_agents "$FLEET_MAP")
+
+# Resolve model: per-call arg wins; fleet default applies for name mode only
+MODEL="$MODEL_ARG"
+if [ -z "$MODEL" ] && ! is_uuid "$TARGET"; then
+    MODEL=$(get_agent_model "$TARGET" "$FLEET_AGENTS")
+fi
+MODEL_FLAG=""
+[ -n "$MODEL" ] && MODEL_FLAG="--model $MODEL"
 
 if is_uuid "$TARGET"; then
     # --- UUID mode: Resume in background ---
     echo -e "${CYAN}[delegate-agent] Resuming session in background: ${TARGET}${NC}" >&2
-    claude --print --resume "$TARGET" "$PROMPT" &
+    claude --print $MODEL_FLAG --resume "$TARGET" "$PROMPT" &
     echo "$TARGET"
 else
     # --- Name mode: Awaken new session in background ---
@@ -48,6 +58,6 @@ else
     add_fleet_entry "$FLEET_MAP" "$TARGET" "$UUID" "$THEME"
     echo -e "${GREEN}[delegate-agent] Registered in fleet map${NC}" >&2
 
-    claude --print --session-id "$UUID" "$FULL_PROMPT" &
+    claude --print $MODEL_FLAG --session-id "$UUID" "$FULL_PROMPT" &
     echo "$UUID"
 fi

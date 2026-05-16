@@ -1,6 +1,6 @@
 #!/bin/bash
 # ask-agent.sh — Blocking agent-to-agent communication
-# Usage: ./ask-agent.sh <Name|UUID> "<prompt>" "<theme>" [fleet-map-path]
+# Usage: ./ask-agent.sh <Name|UUID> "<prompt>" "<theme>" [fleet-map-path] [model]
 #
 # Name → Full 5-file awakening + prompt (new session, registered in fleet map)
 # UUID → Resume existing session + prompt (continuation)
@@ -12,7 +12,7 @@ source "$(dirname "$0")/fleet-common.sh"
 
 # --- Usage ---
 if [ "$#" -lt 2 ]; then
-    echo "Usage: $0 <Name|UUID> \"<prompt>\" \"<theme>\" [fleet-map-path]"
+    echo "Usage: $0 <Name|UUID> \"<prompt>\" \"<theme>\" [fleet-map-path] [model]"
     echo ""
     echo "  Name  → Awakens agent with full 5-file protocol + sends prompt (blocking)"
     echo "  UUID  → Resumes existing session + sends prompt (blocking)"
@@ -28,11 +28,21 @@ TARGET="$1"
 PROMPT="$2"
 THEME="${3:-}"
 FLEET_MAP=$(resolve_fleet_map "${4:-}")
+MODEL_ARG="${5:-}"
+FLEET_AGENTS=$(resolve_fleet_agents "$FLEET_MAP")
+
+# Resolve model: per-call arg wins; fleet default applies for name mode only
+MODEL="$MODEL_ARG"
+if [ -z "$MODEL" ] && ! is_uuid "$TARGET"; then
+    MODEL=$(get_agent_model "$TARGET" "$FLEET_AGENTS")
+fi
+MODEL_FLAG=""
+[ -n "$MODEL" ] && MODEL_FLAG="--model $MODEL"
 
 if is_uuid "$TARGET"; then
     # --- UUID mode: Resume existing session ---
     echo -e "${CYAN}[ask-agent] Resuming session: ${TARGET}${NC}" >&2
-    claude --print --resume "$TARGET" "$PROMPT"
+    claude --print $MODEL_FLAG --resume "$TARGET" "$PROMPT"
 else
     # --- Name mode: Awaken new session ---
     verify_agent_exists "$TARGET"
@@ -45,5 +55,5 @@ else
     add_fleet_entry "$FLEET_MAP" "$TARGET" "$UUID" "$THEME"
     echo -e "${GREEN}[ask-agent] Registered in fleet map${NC}" >&2
 
-    claude --print --session-id "$UUID" "$FULL_PROMPT"
+    claude --print $MODEL_FLAG --session-id "$UUID" "$FULL_PROMPT"
 fi
