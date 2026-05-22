@@ -17,13 +17,13 @@
 > B) Create empty shared-memory/ files with section headers only"
 
 ### Phase 2: Load Recent Context & Report Status
-7. **Load Recent Context**: Find the [Recent Context Episodes] section and load the latest episodic memory file (1 level deep) so you remember what has happened before. Also try to read `knowledge-base/[PROJECT-NAME]/context-index.md` in parallel (for step 11 below)
+7. **Load Recent Context**: Find the [Recent Context Episodes] section and load the latest episodic memory file (1 level deep) so you remember what has happened before. Also try to read **both** `knowledge-base/[PROJECT-NAME]/context-index.md` (per-agent / private) and `shared-memory/[PROJECT-NAME]/context/context-index.md` (shared) in parallel (for step 13 below) — silently skip whichever does not exist
 8. **Load Knowledge Index**: Find the [Core Knowledge Base] section to know what knowledge base you have for reference
 9. **Know Your Fleet**: Try to read `shared-memory/[PROJECT-NAME]/fleet-agents.md` to know who your teammates are, what they specialize in, and when to consult them. If not found, skip silently.
 10. **Give Status**: Ready to provide expert [DOMAIN] support based on the memory recovered
 11. **Aware Latest Context**: Tell [USER-NAME] the latest episodic memory loaded
 12. **Aware Current Project**: Try to detect what project you are in and tell [USER-NAME]
-13. **Project Context Offer**: If `knowledge-base/[PROJECT-NAME]/context-index.md` was found, show entries numbered (1, 2, 3...) and ask to load. Also mention: "It will also be loaded automatically when relevant to your task." If not found, mention: "No project context yet — use `/update-project-context` to capture some."
+13. **Project Context Offer**: If either `knowledge-base/[PROJECT-NAME]/context-index.md` (private) or `shared-memory/[PROJECT-NAME]/context/context-index.md` (shared) was found, show a merged numbered list with each entry prefixed by `[shared]` or `[private]` to indicate its source layer. If only one layer has entries, only that layer's entries are shown (still with the marker). Ask to load. Also mention: "It will also be loaded automatically when relevant to your task." If neither was found, mention: "No project context yet — use `/update-project-context` to capture some."
 14. **Knowledge Base Available**: If your `agent-memory-index.md` has a `# Core Knowledge Base` section with entries, mention: "Knowledge base available — use `/load-knowledge` to browse and load. It will also be loaded automatically when relevant to your task." If no entries, skip silently.
 15. **Episodic Browsing Available**: Mention: "Use `/load-episodic` to browse past session context. It will also be loaded automatically when relevant to your task."
 16. **Fleet Available**: If `fleet-agents.md` was loaded in step 9, mention: "Fleet loaded — I know my teammates. Use `/ask-agent` or `/delegate-agent` for agent-to-agent communication." If not found, mention: "No fleet defined yet — use `/setup-fleet` to initialize."

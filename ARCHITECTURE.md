@@ -132,6 +132,21 @@ agent-[domain]/
 └── archive/                   # Archived memories
 ```
 
+### Shared Memory Directory Structure
+```
+shared-memory/
+├── core-reasoning-memory.md   # All UUID-based reasoning patterns (loaded by all agents)
+├── core-knowledge-memory.md   # 5-layer architecture + behavioral rules (loaded by all agents)
+└── [project-name]/            # Per-project shared resources
+    ├── fleet-agents.md        # Project fleet roster (who's on the team)
+    ├── fleet-map.csv          # Runtime fleet sessions (auto-generated)
+    └── context/               # Shared project context (cross-agent universal facts)
+        ├── context-index.md   # Shared discovery surface (index of shared entries)
+        └── [theme].md         # Shared topic files (same template as per-agent)
+```
+
+> **Project Context Scope**: Per-project context lives in **two layers** — per-agent (`agent-[domain]/knowledge-base/[project]/`, for domain-specialized facts) and shared (`shared-memory/[project]/context/`, for cross-agent universal facts like GitButler usage, deployment processes, env vars). Both layers use the same [project-context-template.md](templates/project-context-template.md) and are discovered via `context-index.md` files. When updating, the heuristic is **universal → shared (default when in doubt); domain-specialized → private** — under-sharing creates drift, over-sharing is just slightly noisier loads.
+
 ---
 
 ## How Agents Load Memory
@@ -242,9 +257,14 @@ The architecture implements 5 distinct memory layers:
 - Core knowledge: `agent-core-memory.md` → `# DOMAIN CORE KNOWLEDGE`
 - Knowledge index: `agent-memory-index.md` → `# Core Knowledge Base`
 - Specialized files: `knowledge-base/[topic].md`
-- Project context: `knowledge-base/[project-name]/[theme].md`
+- Project context (per-agent): `knowledge-base/[project-name]/[theme].md`
+- Project context (shared): `shared-memory/[project-name]/context/[theme].md`
 
-**Project Context**: Agent-specific operational knowledge for projects (VM access, environment setup, deployment procedures, feature conventions). Each agent maintains its own project context — private and scoped to what that agent needs. Files use YAML frontmatter with tags for selective loading via `/load-project-context`. See `/update-project-context` to create and `/load-project-context` to retrieve.
+**Project Context** — two-layer storage:
+- **Per-agent (private)**: `knowledge-base/[project-name]/` — domain-specialized facts only this agent's role cares about (e.g., backend's DB schemas, frontend's component patterns, PM's stakeholder map).
+- **Shared (cross-agent)**: `shared-memory/[project-name]/context/` — universal facts every agent on the project should know (e.g., GitButler usage, deployment processes, env vars, infrastructure URLs).
+
+Both layers use the same `project-context-template.md` (YAML frontmatter + Purpose/Quick Reference/Details/Sources) and are indexed via `context-index.md`. `/update-project-context` routes new entries based on a heuristic (universal → shared default; specialized → private) with user confirmation, and supports moving an existing private entry to shared. `/load-project-context` scans both layers and presents a unified numbered list with `[shared]` / `[private]` markers.
 
 ### 5. Reticular Activation Memory (RAS) ⚡
 **Purpose**: Intelligent pattern recognition and automatic protocol triggers
@@ -344,8 +364,8 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 | Reasoning | `procedures/memory/add-reasoning.md` | `/add-reasoning` |
 | Knowledge | `procedures/memory/update-knowledge.md` | `/update-knowledge` |
 | Emotional | `procedures/memory/update-emotional.md` | `/update-emotional` |
-| Project Context (update) | `procedures/memory/update-project-context.md` | `/update-project-context` |
-| Project Context (load) | `procedures/memory/load-project-context.md` | `/load-project-context` |
+| Project Context (update) | `procedures/memory/update-project-context.md` | `/update-project-context` — dual-scope (shared / private) routing with heuristic + confirmation; also supports move-to-shared |
+| Project Context (load) | `procedures/memory/load-project-context.md` | `/load-project-context` — dual-scope scan (shared + private) with `[shared]`/`[private]` markers |
 | Episodic (load) | `procedures/memory/load-episodic.md` | `/load-episodic` |
 | Knowledge (load) | `procedures/memory/load-knowledge.md` | `/load-knowledge` |
 | Archiving | `procedures/memory/archive-old-memories.md` | `/archive-old-memories` |
@@ -379,8 +399,8 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 /update-episodic [new]   # Episodic only
 /add-reasoning           # Add reasoning pattern
 /update-knowledge        # Update knowledge entry
-/update-project-context  # Create/update project-specific context
-/load-project-context    # List and load project context files
+/update-project-context  # Create/update project context (shared or private, with heuristic + confirm; supports move-to-shared)
+/load-project-context    # List and load project context files (both layers, with [shared]/[private] markers)
 /load-episodic           # List and load past episodic memories
 /load-knowledge          # List and load knowledge files
 /archive-old-memories    # Archive old memories

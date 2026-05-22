@@ -1,13 +1,13 @@
 # Load Project Context Protocol
 
-Load project-specific context files from the agent's `knowledge-base/[project]/` folder into working memory. Supports listing all available context or loading specific files by keyword.
+Load project-specific context files from **both** the per-agent layer (`agent-[domain]/knowledge-base/[project]/`) and the shared layer (`shared-memory/[project]/context/`) into working memory. Supports listing all available context or loading specific files by keyword. Entries are presented with `[shared]` / `[private]` markers so the source layer is always visible.
 
 ## Arguments
 
 `$ARGUMENTS`
 
-- `/load-project-context` → List all project context files with numbers, user selects which to load
-- `/load-project-context [keyword]` → Auto-match files by keyword against tags and file names, load matches directly. Falls back to list mode if no match found
+- `/load-project-context` → List all project context files (both layers) with numbers, user selects which to load
+- `/load-project-context [keyword]` → Auto-match files by keyword against tags and file names across both layers, load matches directly. Falls back to list mode if no match found
 
 ---
 
@@ -17,11 +17,19 @@ Load project-specific context files from the agent's `knowledge-base/[project]/`
 
 ### Step 1: Scan Available Project Context
 
-Scan `//@agent-memory/agent-[domain]/knowledge-base/` for project subfolders (exclude `research/` folder — that's domain knowledge, not project context).
+Scan **both** locations for project context files:
 
-For each project subfolder found, read its `context-index.md` to get the list of available context files with descriptions and tags.
+1. **Per-agent (private) layer**: Scan `//@agent-memory/agent-[domain]/knowledge-base/` for project subfolders (exclude `research/` folder — that's domain knowledge, not project context). For each project subfolder, read its `context-index.md`.
 
-If no project subfolders or context-index files are found, inform the user: "No project context files found. Use `/update-project-context` to create your first one."
+2. **Shared layer**: Scan `//@agent-memory/shared-memory/` for project subfolders. For each project subfolder, check if `context/context-index.md` exists, and if so read it.
+
+**Silent skip**: If either folder is missing or empty for a given project, skip it without error. Only present what exists.
+
+For each entry found, retain its **scope marker**:
+- Entry from `agent-[domain]/knowledge-base/[project]/` → marker `[private]`
+- Entry from `shared-memory/[project]/context/` → marker `[shared]`
+
+If no context files are found in either layer, inform the user: "No project context files found. Use `/update-project-context` to create your first one."
 
 ### Step 2: Parse Arguments
 
@@ -31,27 +39,30 @@ Check if arguments were provided:
 
 ### Step 3: List Mode
 
-Present all project context files as a numbered list grouped by project:
+Present all project context files as a numbered list grouped by project, with the scope marker prefixed on each entry:
 
 **Format:**
 ```
 Project context files available:
 
 [project-name-1]
-  1. [theme].md — [description] (tags: tag1, tag2)
-  2. [theme].md — [description] (tags: tag1, tag2)
+  1. [shared] [theme].md — [description] (tags: tag1, tag2)
+  2. [private] [theme].md — [description] (tags: tag1, tag2)
 
 [project-name-2]
-  3. [theme].md — [description] (tags: tag1, tag2)
+  3. [shared] [theme].md — [description] (tags: tag1, tag2)
+  4. [private] [theme].md — [description] (tags: tag1, tag2)
 
 Enter number(s) to load (e.g., "1", "1,3", "all"), or "cancel":
 ```
+
+If a project has entries in only one layer, only that layer's entries are listed (no empty "shared" or "private" sub-list).
 
 Wait for user selection, then go to Step 5.
 
 ### Step 4: Match Mode
 
-Search for the keyword(s) from arguments against:
+Search for the keyword(s) from arguments across **both layers** against:
 1. **Tags**: Match against `tags: [...]` in YAML frontmatter
 2. **File names**: Match against the file name (e.g., keyword "deploy" matches `deployment.md`)
 3. **Project names**: Match against project folder names
@@ -59,8 +70,8 @@ Search for the keyword(s) from arguments against:
 **If matches found**: Show what will be loaded and proceed to Step 5:
 ```
 Found [N] matching context file(s) for "[keyword]":
-  1. [project]/[theme].md — [description]
-  2. [project]/[theme].md — [description]
+  1. [shared] [project]/[theme].md — [description]
+  2. [private] [project]/[theme].md — [description]
 
 Loading...
 ```
@@ -72,12 +83,15 @@ No context files matching "[keyword]" found. Showing all available:
 
 ### Step 5: Load Selected Files
 
-Read the selected file(s) into agent context using the Read tool.
+Read the selected file(s) into agent context using the Read tool. Each file is loaded from its source-layer path:
+- Shared entries: `//@agent-memory/shared-memory/[project]/context/[theme].md`
+- Private entries: `//@agent-memory/agent-[domain]/knowledge-base/[project]/[theme].md`
 
-After loading, confirm to the user:
+After loading, confirm to the user with the scope marker for each file:
 ```
 Loaded [N] project context file(s):
-  - [project]/[theme].md (tags: tag1, tag2)
+  - [shared] [project]/[theme].md (tags: tag1, tag2)
+  - [private] [project]/[theme].md (tags: tag1, tag2)
 ```
 
 ---
