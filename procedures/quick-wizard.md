@@ -114,6 +114,8 @@ Use this structure when writing the plan in plan mode (or presenting in conversa
 [1-2 sentence description of what we're doing and why]
 
 ## Confirmed Decisions
+*Both asked-and-confirmed by [USER-NAME] AND written-through (Zone A/B decisions with reasoning) — see [What to Surface](wait-options.md#what-to-surface).*
+
 | # | Decision | Chosen | Reason |
 |---|----------|--------|--------|
 | 1 | [Topic] | [Choice] | [Why] |

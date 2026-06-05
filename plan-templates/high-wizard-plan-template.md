@@ -39,7 +39,7 @@
 ---
 
 ## **CONFIRMED DECISIONS**
-*These decisions were collected during investigation and confirmed by [USER-NAME]. The reasons serve as the analysis record.*
+*These decisions were collected during investigation — both **asked-and-confirmed** by [USER-NAME] AND **written-through** (Zone A/B decisions made by the agent with reasoning, per [What to Surface](../procedures/wait-options.md#what-to-surface)). The reasons serve as the analysis record.*
 
 | # | Decision | Chosen | Reason |
 |---|----------|--------|--------|

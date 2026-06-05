@@ -6,6 +6,33 @@ This file is the single source of truth. Procedures reference it instead of defi
 
 ---
 
+## What to Surface
+
+Not every decision warrants WAIT Options. Use this taxonomy to decide which decisions to surface and which to write directly into the plan.
+
+### Zone Taxonomy
+
+| Zone | What | Action |
+|------|------|--------|
+| **A — Mechanical/Obvious** | One real choice, no judgment call (e.g. reuse the only existing `UserService`) | Write to plan. No surface. |
+| **B — Technical Core** | Main function/algorithm/touchpoints driving the behavior | Write to plan **AND** disclose in WAIT (visibility, not decision) |
+| **C — Genuine Uncertainty** | Agent honestly does not know which option is right | Surface in WAIT. Options + confidence + reason. |
+| **D — Value-Loaded Tradeoff** | Both options valid; answer depends on [USER-NAME]'s priorities (time horizon, tech debt tolerance, risk appetite). "Quick fix vs long-term fix" lives here. | Surface in WAIT. Options + tradeoff dimensions. |
+| **E — Risky/Irreversible** | Even when judgment is clear, cost of being wrong is high (data migration, destructive op, API contract change, security boundary) | Surface in WAIT even when confident. Cost asymmetry justifies the question. |
+
+### How to Apply
+
+- **Default to writing through (Zone A)** when the choice is genuinely mechanical. Over-asking trains [USER-NAME] to skim — silent decisions for non-decisions.
+- **Always disclose technical core (Zone B)** even when the implementation direction is clear. The agent should never quietly make architectural commitments — surface the main function/module entrypoints, core algorithm, and critical execution flow.
+- **Ask Zone C and D** because the agent shouldn't decide alone — C because correctness is uncertain, D because the answer depends on [USER-NAME]'s priorities the agent cannot know.
+- **Always ask Zone E** even when the answer feels clear. Reversal cost asymmetry is the trigger, not uncertainty.
+
+### Capturing Written-Through Decisions
+
+Decisions in Zone A and Zone B (written through, not asked) still belong in the *Confirmed Decisions* table of the plan. [USER-NAME] can spot-check during plan review without round-tripping each decision. The discipline is: *did you write the reasoning down?* — not *did you ask?*
+
+---
+
 ## Core Format
 
 ### Context Grouping
