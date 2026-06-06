@@ -1,6 +1,6 @@
 # Wrap Up Session
 
-End-of-session orchestrator: comprehensive memory update + push + surface open items. Three active steps + summary.
+End-of-session orchestrator: comprehensive memory update + orientation map refresh + push + surface open items. Four active steps + summary.
 
 ## Arguments
 
@@ -20,11 +20,27 @@ Execute the [Update Memory Protocol](//@agent-memory/control-files/procedures/me
 - Episodic capture via `/update-episodic` (populates promotion markers in the sub-episode)
 - Emotional auto-capture if the 5-criteria gate passes (silent skip otherwise)
 
-### Step 2: Push Everything
+### Step 2: Refresh Orientation Map
+
+If the session touched any orientation docs (READMEs, architecture docs, flow diagrams, ADRs), call:
+
+```
+/map-orientation --session-touched [path1,path2,...]
+```
+
+Pass the paths of orientation docs that this session created, edited, verified, or determined to be stale/obsolete. The skill updates affected entries' `last_verified` date, status, and `verified_by` based on session knowledge.
+
+**Silent no-op cases**:
+- Orientation map doesn't exist for the current project (user hasn't run `/map-orientation create` yet)
+- Session touched no orientation docs (typical for pure discussion sessions, focused implementation work in already-mapped scope)
+
+> **Why this step exists**: orientation docs change as projects evolve. Sessions that touch them should update the map so future awakenings load current information. Per the framework's automatic-vs-explicit split, this is a recurring write op invoked explicitly at wrap-up time — not a surprise scan.
+
+### Step 3: Push Everything
 
 Execute the [Push All Protocol](//@agent-memory/control-files/procedures/push-all.md) to commit and push both the current project and agent-memory repositories.
 
-### Step 3: Surface Open Items
+### Step 4: Surface Open Items
 
 Read the just-written episodic sub-episode (newest H3 block at the top of the episodic file written in Step 1). Extract the `Tech Debts` and `Next Steps` fields from its Outcomes section.
 
@@ -48,12 +64,13 @@ If both Tech Debts and Next Steps are absent or empty in the episodic entry → 
 
 > **Why this step exists**: per UUID a1b2c3d4 (NO TODOS LEFT BEHIND), open items must never be silent. The episodic entry has the fields; this step ensures they're surfaced at wrap-up so [USER-NAME] sees them, and they're preserved in episodic for next-session awakening to recall.
 
-### Step 4: Summary
+### Step 5: Summary
 
 Report what was done:
 ```
 Wrap-up complete:
   - Memory update: [see /update-memory summary block above for full breakdown]
+  - Orientation map: [refreshed N entries / no-op: no map / no-op: no orientation docs touched]
   - Push: [project: pushed/no changes] [agent memory: pushed/no changes]
   - Open items: [N tech debts, M next steps surfaced / no open items]
 ```
