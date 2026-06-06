@@ -123,8 +123,9 @@ control-files/
 agent-[domain]/
 ├── agent-core-memory.md       # Agent identity + knowledge + RAS + emotional
 ├── agent-memory-index.md      # Episode list + knowledge directory
-├── episodes/                  # Episodic memory files
-│   └── YYYY-MM-DD-HH.MM-*.md
+├── episodes/                  # Episodic memory files (rolling per theme)
+│   ├── [project-name]-[context-theme].md  # Current convention (no date prefix)
+│   └── YYYY-MM-DD-HH.MM-*.md              # Legacy dated files (lazy migration)
 ├── knowledge-base/            # Specialized knowledge files
 │   ├── [topic].md             # Domain knowledge
 │   └── [project-name]/        # Project-specific context (per-agent, private)
@@ -232,7 +233,7 @@ The architecture implements 5 distinct memory layers:
 
 **Location**:
 - Episode index: `agent-memory-index.md` → `# Recent Context Episodes`
-- Episode files: `episodes/YYYY-MM-DD-HH.MM-*.md`
+- Episode files: `episodes/[project-name]-[context-theme].md` (rolling per theme; legacy `YYYY-MM-DD-HH.MM-*.md` files still valid during lazy migration)
 
 **When to capture**: End of session, context full, milestone reached
 
@@ -394,7 +395,7 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 /rite-of-creation        # Full project lifecycle (vision → SDLC phases → exit criteria → execution)
 /council-of-wizards      # Multi-plan orchestration (requirements → sub-plans → parallel execution)
 /implement-plan          # Start implementing approved plan with Execution Protocol
-/wrap-up                 # End-of-session: save episodic + auto-detect project context + push all
+/wrap-up                 # End-of-session: comprehensive memory update (via /update-memory) + push all
 /update-memory [new]     # Comprehensive update (all layers evaluated)
 /update-episodic [new]   # Episodic only
 /add-reasoning           # Add reasoning pattern

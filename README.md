@@ -118,7 +118,7 @@ Quick Wizard auto-escalates to High Wizard when the task is too complex. Higher-
 | `/awaken-agent [domain]` | Load agent memory and activate |
 | `/refresh-memory [domain]` | Recover memory after context compaction |
 | `/implement-plan` | Start implementing an approved plan |
-| `/wrap-up` | End-of-session: save episodic + auto-detect project context + push all |
+| `/wrap-up` | End-of-session: comprehensive memory update (via `/update-memory`) + push all |
 | `/push-project` | Commit and push current project |
 | `/push-memory` | Commit and push agent memory |
 | `/push-all` | Push both project + agent memory |

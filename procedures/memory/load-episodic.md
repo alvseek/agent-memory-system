@@ -64,7 +64,7 @@ After user selection, go to Step 5.
 ### Step 4: Match Mode
 
 Search for the keyword(s) from arguments against:
-1. **Filenames**: Match against the episode filename (e.g., keyword "readme" matches `2026-03-03-20.56-agent-memory-readme-memory-in-action-improvement.md`)
+1. **Filenames**: Match against the episode filename (e.g., keyword "readme" matches `agent-memory-readme-memory-in-action-improvement.md`). Legacy dated filenames like `2026-03-03-20.56-agent-memory-readme-memory-in-action-improvement.md` still match by the same keywords — only the date prefix is being phased out.
 2. **Summaries**: Match against the one-line summary text (e.g., keyword "wizard" matches summaries containing "high-wizard")
 
 Matching is case-insensitive.

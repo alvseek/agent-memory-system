@@ -1,6 +1,6 @@
 # Wrap Up Session
 
-End-of-session orchestrator: save episodic memory, optionally capture project context, then commit and push everything.
+End-of-session orchestrator: comprehensive memory update + push + surface open items. Three active steps + summary.
 
 ## Arguments
 
@@ -12,34 +12,50 @@ End-of-session orchestrator: save episodic memory, optionally capture project co
 
 ## Procedure
 
-### Step 1: Save Episodic Memory
+### Step 1: Save Memory (Comprehensive)
 
-Execute the [Update Episodic Protocol](//@agent-memory/control-files/procedures/memory/update-episodic.md) using default mode (update existing episode, or create new if theme is unrelated).
+Execute the [Update Memory Protocol](//@agent-memory/control-files/procedures/memory/update-memory.md) using default mode. This orchestrates everything memory-related:
+- Project context auto-eval (gated → conditional write via concrete checklist)
+- Cross-layer promotion-marker pre-scan (project context / knowledge / reasoning)
+- Episodic capture via `/update-episodic` (populates promotion markers in the sub-episode)
+- Emotional auto-capture if the 5-criteria gate passes (silent skip otherwise)
 
-### Step 2: Evaluate Project Context
-
-Auto-evaluate whether this session produced **project-specific context** worth preserving for future sessions. Ask yourself:
-
-- Were there project-specific conventions, setup steps, deployment procedures, or environment details discussed?
-- Were there workarounds, configurations, or technical decisions specific to the current project?
-- Were there new access credentials, URLs, API endpoints, or infrastructure details shared?
-
-**If yes**: Execute the [Update Project Context Protocol](//@agent-memory/control-files/procedures/memory/update-project-context.md) with the relevant context. No user prompt needed — auto-detect the theme and create/update the file.
-
-**If no**: Skip silently.
-
-### Step 3: Push Everything
+### Step 2: Push Everything
 
 Execute the [Push All Protocol](//@agent-memory/control-files/procedures/push-all.md) to commit and push both the current project and agent-memory repositories.
+
+### Step 3: Surface Open Items
+
+Read the just-written episodic sub-episode (newest H3 block at the top of the episodic file written in Step 1). Extract the `Tech Debts` and `Next Steps` fields from its Outcomes section.
+
+Report to [USER-NAME] in a formal block — this is the carry-forward signal so [USER-NAME] knows what's left going into the next session:
+
+```
+📋 Open items going forward:
+
+Tech debts:
+- [item 1]
+- [item 2]
+(or "None declared")
+
+Next steps:
+- [item 1]
+- [item 2]
+(or "None declared")
+```
+
+If both Tech Debts and Next Steps are absent or empty in the episodic entry → report *"No open items declared from this session."*
+
+> **Why this step exists**: per UUID a1b2c3d4 (NO TODOS LEFT BEHIND), open items must never be silent. The episodic entry has the fields; this step ensures they're surfaced at wrap-up so [USER-NAME] sees them, and they're preserved in episodic for next-session awakening to recall.
 
 ### Step 4: Summary
 
 Report what was done:
 ```
 Wrap-up complete:
-  - Episodic memory: [updated/created] — [episode file name]
-  - Project context: [updated/created/skipped] — [file name if applicable]
+  - Memory update: [see /update-memory summary block above for full breakdown]
   - Push: [project: pushed/no changes] [agent memory: pushed/no changes]
+  - Open items: [N tech debts, M next steps surfaced / no open items]
 ```
 
 ---

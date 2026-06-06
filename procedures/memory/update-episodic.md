@@ -1,15 +1,13 @@
 # Update Episodic Memory Protocol
 
-Update episodic memory to capture session context and interactions.
+Update episodic memory to capture session context and interactions. Episodes are stored as **rolling per-theme files** within `episodes/`. The default flow scans all non-archived episodes on the same project, identifies theme matches, and appends a dated sub-episode to the matching file — or creates a new file if no match.
 
 ## Arguments
 
 `$ARGUMENTS`
 
-- `/update-episodic` → Execute [Updating Memory](#updating-memory) (default)
-- `/update-episodic new` → Execute [Creating New Memory](#creating-new-memory)
-
-If updating and theme is unrelated to latest context, will automatically create new file.
+- `/update-episodic` → Default flow: scan, heuristic match, confirm, then append or create (see [Default Flow](#default-flow))
+- `/update-episodic new` → Force new file, skip scan/heuristic (see [Force New File](#force-new-file))
 
 ---
 
@@ -17,44 +15,123 @@ If updating and theme is unrelated to latest context, will automatically create 
 
 *IMPORTANT: Use TodoWrite tool with FULL VERBATIM copy of each step below (including all commands, examples, and sub-points) to prevent context loss and ensure complete execution*
 
-### Creating New Memory
+### Default Flow
 
 #### Step 1: Check Date
 
-ALWAYS CHECK DATE TIME FIRST for file naming:
+ALWAYS CHECK DATE TIME FIRST for sub-episode H3 header and index entry placement:
 `date '+%Y-%m-%d %H:%M'`
 
-#### Step 2: Copy Template
+#### Step 2: Identify Project + Theme
 
-Copy the [Episodic Memory Template](//@agent-memory/control-files/templates/episodic-memory-template.md) file to the `//@agent-memory/agent-[domain]/episodes/` folder with the final name `[YYYY-MM-DD]-[hh.mm]-[project-name]-[context-theme].md`:
-`cp {source} //@agent-memory/agent-[domain]/episodes/[YYYY-MM-DD]-[hh.mm]-[project-name]-[context-theme].md`
+Determine:
+- **Project name**: the current project being worked on (from working directory or session context — e.g., `agent-memory`, `plko`, `ocx-platform`)
+- **Theme keywords**: 2-5 noun/topic keywords summarizing this session's focus (e.g., `episodic`, `rolling-file`, `redesign`)
 
-#### Step 3: Add Entry
+#### Step 3: Scan Candidate Episodes
 
-Add new entry using [Detailed Entry Template](#detailed-entry-template)
+Read `//@agent-memory/agent-[domain]/agent-memory-index.md` and locate `# Recent Context Episodes`.
 
-#### Step 4: Update Index
+Collect all entries where the filename or summary contains the **project name**. These are scan candidates.
 
-Add reference links in `//@agent-memory/agent-[domain]/agent-memory-index.md` by chronological order (newest at the top). Add one-line summary of what it contains.
+If no candidates → skip to Step 6 (Create New File branch).
+
+> **Why scan all non-archived?** The index is already loaded into context at awakening (Phase 2 Step 7). Scanning all active entries is essentially free. Archived entries (in `archive/`) are intentionally out of reach — old context should not be merged into.
+
+#### Step 4: Match Heuristic
+
+For each candidate, score theme overlap:
+- Tokenize the candidate's filename (sans extension and any legacy date prefix) and summary
+- Count keyword overlap with this session's theme keywords
+- Higher overlap = stronger merge signal
+
+Identify:
+- **Top match**: highest-scoring candidate (if any meaningful overlap exists)
+- **Runner-ups**: 2nd-3rd scoring candidates if scores are close
+
+If the top match has zero meaningful overlap, treat as "no match" → skip to Step 6 (Create New File branch).
+
+#### Step 5: Confirm Match
+
+Present the top match (and any close runner-ups) to [USER-NAME]:
+
+```
+Theme match candidate(s) found:
+  → [filename] — [summary] (overlap: keyword1, keyword2)
+  → [runner-up filename] — [summary] (overlap: keyword1)
+
+Append a new sub-episode to this file? Or create a new file?
+  A) Append to [top-match filename]
+  B) Create new file
+  C) Append to a different existing file (specify)
+```
+
+Wait for response. Auto-default to **A** only if confidence is high (≥3 strong overlapping keywords AND same project tag). Otherwise wait for explicit confirmation.
+
+#### Step 6: Branch — Append OR Create
+
+- **If Append** → execute [Append Sub-Episode](#append-sub-episode)
+- **If Create** → execute [Create New File](#create-new-file)
+
+> **Scope note**: `/update-episodic` only writes the episodic file + index entry. Cross-layer concerns (promotion markers to project context / knowledge / reasoning, and emotional memory auto-capture) are handled by `/update-memory`, which calls this procedure and then orchestrates the cross-layer work. If you're calling `/update-episodic` directly and want cross-layer orchestration, use `/update-memory` instead.
 
 ---
 
-### Updating Memory
+### Append Sub-Episode
 
-#### Step 1: Get Latest Context
+1. **Open the chosen file** in `//@agent-memory/agent-[domain]/episodes/`
 
-Get the latest Recent Context from `//@agent-memory/agent-[domain]/agent-memory-index.md` referenced file
+2. **Insert sub-episode H3 block at TOP** (newest-first within file) using the [Detailed Entry Template](#detailed-entry-template). The H3 header includes the current date+time:
+   ```
+   ### YYYY-MM-DD HH.MM - [SESSION SUB-THEME]
+   ```
 
-#### Step 2: Check Theme Relation
+3. **Check line limit** after the insert:
+   - **> 500 lines**: warn — *"[filename] over 500 lines, consider splitting on next merge"*
+   - **> 1000 lines**: split — move the *just-added* sub-episode out into `[project]-[theme]-2.md` (or next incrementing suffix if `-2` exists). Add `> Continues from [original-filename]` note at top of the new file. Add a new index entry for the split file under today's date group.
 
-Check if the current context theme is still related to the latest recent context theme:
+4. **Lazy filename migration** (one-time per file): if the chosen file still uses the legacy `YYYY-MM-DD-HH.MM-[project]-[theme].md` format, rename it to `[project]-[theme].md` as part of this append. Update the index entry's filename reference. If a file at the new name already exists (rare collision), use the line-limit `-{n}` suffix rule.
 
-**A. RELATED**: Execute these steps:
-1. Check date (see Step 3 above)
-2. Add new entry using [Detailed Entry Template](#detailed-entry-template) to the newest entries at the top, maintain date-based organization
-3. **Line Limit**: Episode file must not exceed 1000 lines. If exceeding 500+ lines and adding new entry, create new document with same project and theme name but current date/time. If exact file exists, add `-{incrementing-number}.md` suffix. Example: `2025-09-08-analysis-2.md`
+5. **Update index entry — MOVE-TO-TODAY rule**:
+   - Locate the existing entry for this file in the index
+   - Delete it from its current date group (if the group becomes empty, remove the group header too)
+   - Insert at the **top of today's date group** (`📂 YYYY-MM-DD:`)
+   - Create today's date group if it doesn't exist
+   - Update the summary by appending `+ [new sub-topic]` (or rewriting the summary if the new sub-topic shifts the overall theme)
 
-**B. UNRELATED**: Execute [Creating New Memory](#creating-new-memory) procedure
+   > **Why move?** Awakening Phase 2 Step 7 grabs the top entry as "latest episodic." The move preserves the "top = newest" invariant. Edit-in-place would leave a stale top entry and break awakening's selection logic.
+
+---
+
+### Create New File
+
+1. **Build filename**: `[project-name]-[context-theme].md` (no date prefix). Examples:
+   - `agent-memory-task-system-framework-rules.md`
+   - `plko-jira-mcp-integration.md`
+
+   If a file at this name already exists (and we explicitly want a separate file rather than appending), use incrementing suffix: `[project-name]-[context-theme]-2.md`.
+
+2. **Copy template**:
+   ```
+   cp //@agent-memory/control-files/templates/episodic-memory-template.md //@agent-memory/agent-[domain]/episodes/[filename].md
+   ```
+
+3. **Replace template placeholder** at the top of the file with a single sub-episode block using the [Detailed Entry Template](#detailed-entry-template). The H3 header includes the current date+time.
+
+4. **Add index entry**:
+   - Insert at the **top of today's date group** (`📂 YYYY-MM-DD:`)
+   - Create today's date group if it doesn't exist
+   - Entry format: `- [filename.md](episodes/filename.md) - [one-line summary]`
+
+---
+
+### Force New File
+
+`/update-episodic new` bypasses the scan + heuristic + confirm flow. Execute [Create New File](#create-new-file) directly. Use when:
+- The current session is intentionally a new theme even if it overlaps an existing file
+- The agent wants to start fresh for any reason
+
+Cross-layer orchestration is still handled by `/update-memory` if invoked through that command.
 
 ---
 
@@ -64,13 +141,20 @@ Check if the current context theme is still related to the latest recent context
 
 ```
 episodes/
-└── [YYYY-MM-DD]-[hh.mm]-[project-name]-[context-theme].md  # Episodes
+├── [project-name]-[context-theme].md        # Active episode file (rolling per theme)
+├── [project-name]-[context-theme]-2.md      # Split file when 1000-line cap hit
+├── YYYY-MM-DD-HH.MM-[project]-[theme].md    # Legacy dated files (lazy migration)
+└── archive/                                  # Archived old episodes (via /archive-old-memories)
+    └── YYYY-archived-context.md
 ```
+
+**Legacy filenames** (`YYYY-MM-DD-HH.MM-[project]-[theme].md`) are still valid and are migrated lazily — only renamed when the file gets its next merge-append. No bulk sweep.
 
 ### Detailed Entry Template
 
 ```markdown
-### [YYYY-MM-DD] [hh.mm] - [SESSION THEME]
+### YYYY-MM-DD HH.MM - [SESSION SUB-THEME]
+
 - **Context**: [What we were working on]
 - **Discussion**: [List of discussion you had with [USER-NAME]]
   - **[Discussion 1]**: [Content of the discussion]
@@ -79,7 +163,7 @@ episodes/
   - **[Discussion 2]**: [Content of the discussion]
     - **[USER-NAME]'s Input**: [What [USER-NAME] said/requested]
     - **My Response**: [How I responded and why]
-- **Key Interactions**: [Important Discussion decision]
+- **Key Interactions**: [Important discussion decisions]
 - **Issues Encountered**: [Problems faced and solutions found]
   - **Problem Description**: [What went wrong]
   - **Root Cause**: [Why it happened]
@@ -88,11 +172,16 @@ episodes/
 - **Outcomes**: [Results achieved]
   - **Deliverables**: [List of what was created/updated]
   - **Progress Made**: [What was achieved]
-  - **Next Steps**: [What comes next]
+  - **Tech Debts**: [Known deferred items, partial implementations, open follow-ups — declared per UUID a1b2c3d4 (NO TODOS LEFT BEHIND), never silent. Use "None declared" if genuinely none.]
+  - **Next Steps**: [Planned forward work — distinct from debts. Use "None declared" if genuinely none.]
 - **Insights**: [Learning moments and breakthroughs]
   - **New Understanding**: [What I learned]
   - **Pattern Recognition**: [Connections to previous work]
   - **Improvement Areas**: [What could be better next time]
+- **Promotions** (if any — populated by `/update-memory` orchestrator, or filled manually if the session explicitly promoted content to another memory layer):
+  → Promoted to [layer-file](path) — [what was formalized]
 ```
+
+**Multi-session files**: when appending to an existing file, the new H3 block goes at the **top**, above any older H3 blocks. Each sub-episode is a full block following this template. Result is newest-first within the file, mirroring the index ordering.
 
 ---

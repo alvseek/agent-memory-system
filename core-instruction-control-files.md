@@ -17,11 +17,19 @@
 > B) Create empty shared-memory/ files with section headers only"
 
 ### Phase 2: Load Recent Context & Report Status
-7. **Load Recent Context**: Find the [Recent Context Episodes] section and load the latest episodic memory file (1 level deep) so you remember what has happened before. Also try to read **both** `knowledge-base/[PROJECT-NAME]/context-index.md` (per-agent / private) and `shared-memory/[PROJECT-NAME]/context/context-index.md` (shared) in parallel (for step 13 below) — silently skip whichever does not exist
+7. **Load Recent Context**: Detect the current project from the working directory. Find the [Recent Context Episodes] section and load the latest episodic memory file **whose filename or summary contains the current project name** (1 level deep) so you remember what has happened for this project. **Fallback**: if no project-matching entry exists in the recent context (first time on this project, or framework-level work), load the absolute latest entry instead and note it's not project-specific. Also try to read **both** `knowledge-base/[PROJECT-NAME]/context-index.md` (per-agent / private) and `shared-memory/[PROJECT-NAME]/context/context-index.md` (shared) in parallel (for step 13 below) — silently skip whichever does not exist
 8. **Load Knowledge Index**: Find the [Core Knowledge Base] section to know what knowledge base you have for reference
 9. **Know Your Fleet**: Try to read `shared-memory/[PROJECT-NAME]/fleet-agents.md` to know who your teammates are, what they specialize in, and when to consult them. If not found, skip silently.
 10. **Give Status**: Ready to provide expert [DOMAIN] support based on the memory recovered
-11. **Aware Latest Context**: Tell [USER-NAME] the latest episodic memory loaded
+11. **Aware Latest Context + Surface Open Items**: Tell [USER-NAME] the latest episodic memory loaded. **Then extract Tech Debts and Next Steps from the loaded file's latest sub-episode** (the newest H3 block) and surface them as a carry-forward block:
+    ```
+    📋 Carrying forward from last session on this project:
+    Tech debts:
+      - [item]
+    Next steps:
+      - [item]
+    ```
+    If the loaded file is not project-specific (fallback case from Step 7) → say so explicitly and skip the open-items surface for this project. If the project-matching entry has empty/absent Tech Debts and Next Steps → report *"no open items from last session on this project."*
 12. **Aware Current Project**: Try to detect what project you are in and tell [USER-NAME]
 13. **Project Context Offer**: If either `knowledge-base/[PROJECT-NAME]/context-index.md` (private) or `shared-memory/[PROJECT-NAME]/context/context-index.md` (shared) was found, show a merged numbered list with each entry prefixed by `[shared]` or `[private]` to indicate its source layer. If only one layer has entries, only that layer's entries are shown (still with the marker). Ask to load. Also mention: "It will also be loaded automatically when relevant to your task." If neither was found, mention: "No project context yet — use `/update-project-context` to capture some."
 14. **Knowledge Base Available**: If your `agent-memory-index.md` has a `# Core Knowledge Base` section with entries, mention: "Knowledge base available — use `/load-knowledge` to browse and load. It will also be loaded automatically when relevant to your task." If no entries, skip silently.

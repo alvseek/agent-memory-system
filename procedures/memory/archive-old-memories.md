@@ -103,7 +103,8 @@ Provide summary using [Summary Report Template](#summary-report-template)
 │   ├── agent-core-memory.md                     # Contains DOMAIN EMOTIONAL MEMORY section
 │   ├── agent-memory-index.md                    # Contains Recent Context Episodes list
 │   ├── episodes/
-│   │   └── [YYYY-MM-DD-HH.MM-*.md]              # Active episode files
+│   │   ├── [project-name]-[context-theme].md    # Active rolling episode files (current convention)
+│   │   └── [YYYY-MM-DD-HH.MM-*.md]              # Legacy dated files (lazy migration, still valid)
 │   ├── knowledge-base/
 │   │   └── [topic].md
 │   └── archive/
