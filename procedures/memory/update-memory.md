@@ -1,7 +1,8 @@
 # Update Memory Protocol
 
-Comprehensive memory update orchestrator. Four phases, seven steps:
+Comprehensive memory update orchestrator. Five phases, eight steps:
 
+- **Phase 0 — Detect Delta Cutoff**: lightweight theme-match scan to detect whether a same-session sub-episode already exists. Sets MODE = `delta` (subsequent wrap-up) or `fresh` (first wrap-up of the session). Phases 1 + 3 scope their evaluations accordingly.
 - **Phase 1 — Promote durable artifacts**: three parallel gated auto-evals (project context, reasoning, knowledge). Did this session produce rules / patterns / facts that should persist beyond the session?
 - **Phase 2 — Capture the session**: collect promotion markers from Phase 1 + any mid-session writes, then write the episodic journal entry.
 - **Phase 3 — Capture the feeling**: retrospective emotional 5-criteria gate. Was this session significant enough to anchor as a permanent feeling-moment?
@@ -13,8 +14,9 @@ Comprehensive memory update orchestrator. Four phases, seven steps:
 
 `$ARGUMENTS`
 
-- `/update-memory` → Comprehensive update (default)
-- `/update-memory new` → Force-create a new episodic file, then run cross-layer orchestration
+- `/update-memory` → Comprehensive update (default — auto-detects delta vs fresh in Phase 0)
+- `/update-memory fresh` → Force fresh mode (full-session evaluation, ignores cutoff detection — use when the session truly is a fresh start even if a same-day sub-episode exists)
+- `/update-memory new` → Force-create a new episodic file, then run cross-layer orchestration. Combines with `fresh` (e.g., `/update-memory fresh new`).
 
 ---
 
@@ -24,9 +26,43 @@ Comprehensive memory update orchestrator. Four phases, seven steps:
 
 ---
 
+## Phase 0 — Detect Delta Cutoff
+
+> A `/wrap-up` (or direct `/update-memory`) may run more than once per working session. The first run captures the full session up to that point; the second run is a *delta wrap-up* covering only the work since the first. Without delta-awareness, Phase 1 + Phase 3 gates would re-evaluate already-captured content and risk double-writing project context / reasoning / knowledge / emotional entries. This phase detects the situation and sets `MODE` so subsequent phases can scope correctly.
+
+### Step 0: Detect Mode (fresh vs delta) + Cutoff Timestamp
+
+1. **Check explicit override**: if `$ARGUMENTS` contains `fresh` → set `MODE = fresh`, skip to Phase 1. Auto-detect is bypassed.
+
+2. **Lightweight theme-match scan** (mirrors `/update-episodic` Step 2-4 but read-only):
+   - Determine `project name` and `theme keywords` from current session context
+   - Read `//@agent-memory/agent-[domain]/agent-memory-index.md`, locate `# Recent Context Episodes`
+   - Find the top theme-matching candidate (filename or summary contains project name; highest keyword overlap)
+
+3. **Branch**:
+   - **No theme match** → `MODE = fresh` (a new file will be created in Phase 2). Skip to step 4.
+   - **Theme match found** → open the matched file, read the top H3 sub-episode timestamp (format `YYYY-MM-DD HH.MM`). Set `MODE = delta`, `CUTOFF = top H3 timestamp`.
+
+4. **Report mode selection to [USER-NAME]** before continuing:
+   ```
+   Mode: delta — scoping evaluations to work after [CUTOFF YYYY-MM-DD HH.MM]
+   ```
+   or
+   ```
+   Mode: fresh — full-session evaluation
+   ```
+
+> **Why theme match alone is sufficient**: if the topic differs from the prior wrap-up, `/update-episodic` would create a new file anyway (no prior H3 to scope against). If the topic matches, the prior H3 exists with a deterministic timestamp — that timestamp IS the cutoff, regardless of how recent. When prior H3 is from the same conversation, delta scoping prevents Phase 1 + Phase 3 from re-firing on already-captured content. When prior H3 is older (e.g., days ago), today's conversation context naturally only contains today's work, so delta scoping is mechanically equivalent to fresh — no harm, no special-case needed.
+
+> **Why the `fresh` override exists**: forces full-session re-evaluation in the rare case [USER-NAME] explicitly wants gates to re-fire on the matched theme file's content (e.g., re-promoting after an archive reset).
+
+---
+
 ## Phase 1 — Promote Durable Artifacts
 
 > Three parallel gated auto-evals. Each step asks: *"did this session produce X worth persisting beyond the session?"* Each gate is a concrete checklist that the agent can answer yes/no honestly — no vague "is this important?" judgments. If yes → call the corresponding write protocol. If no → skip silently. All three gates run independently; order doesn't matter within this phase.
+>
+> **Delta-mode scope rule (when Phase 0 set `MODE = delta`)**: each gate's checklist applies ONLY to work that occurred AFTER `CUTOFF`. Discussions, decisions, files written, and signals from BEFORE the cutoff were already evaluated at the prior wrap-up — re-evaluating them risks double-writing. Mentally re-frame each checklist item as *"...since CUTOFF"* before answering yes/no.
 
 ### Step 1: Project Context Auto-Eval (Gated Conditional Write)
 
@@ -120,6 +156,8 @@ If no cross-layer impact identified → proceed to Step 5 with empty promotion l
 
 ### Step 6: Emotional Memory Auto-Capture (5-Criteria Gate)
 
+> **Delta-mode scope rule (when Phase 0 set `MODE = delta`)**: evaluate the 5 criteria against the DELTA window only (work + signals after `CUTOFF`), not the full session. The prior wrap-up already evaluated the pre-cutoff portion. Criterion 5 in particular — [USER-NAME]'s celebration signals — must be from after `CUTOFF`; reusing morning's *"yippieee"* to capture the afternoon's delta would be LARP duplication. If the delta window alone doesn't independently meet all 5 criteria, skip silently — emotional was either captured at the prior wrap-up or genuinely doesn't qualify.
+
 Apply the 5 criteria to this session. **All 5 must pass** to auto-capture emotional memory:
 
 1. **Previous state was primitive / basic / wrong, OR there was no previous system** (entirely new system created from scratch)
@@ -162,16 +200,19 @@ Report what was done across all phases:
 ```markdown
 ✅ **MEMORY UPDATE COMPLETE**
 
-Phase 1 — Promoted artifacts:
+Mode: [fresh / delta from CUTOFF YYYY-MM-DD HH.MM]
+
+Phase 1 — Promoted artifacts ([scope: full session / delta since CUTOFF]):
 - **Project context**: [updated/created / skipped] — [file name if written]
 - **Reasoning pattern**: [added / skipped] — [pattern name if added]
 - **Knowledge**: [added / skipped] — [entry name if added]
 
 Phase 2 — Session captured:
 - **Episodic**: [appended to / created] [filename] — [brief theme]
+- **Carry-forward** (delta mode only): [N still-open items carried into new H3 / not applicable in fresh mode]
 - **Promotions** (cross-layer markers added to episodic): [N markers / none] — [list if N>0]
 
-Phase 3 — Feeling captured:
+Phase 3 — Feeling captured ([scope: full session / delta since CUTOFF]):
 - **Emotional**: [captured / skipped] — [if captured: theme + which criterion made the cut clearest]
 ```
 
@@ -181,4 +222,6 @@ Phase 3 — Feeling captured:
 
 - **Conservative bias on all four gates**: when borderline, default to SKIP. False negatives (missed capture) are recoverable via direct command call; false positives (diluted memory) are corrosive and hard to undo.
 - **Phase 1 gates are safety-nets, not replacements for proactive mid-session writes**. Agents should still call `/update-project-context`, `/add-reasoning`, `/update-knowledge` proactively mid-session when a pattern is clearly visible at the moment of discovery. Step 4 catches both sources (Phase 1 writes + mid-session writes) into a unified marker list.
+- **Delta mode is auto-detected, not opt-in**: theme match alone is the signal. When a matched theme file exists, its top H3 timestamp becomes the cutoff regardless of age. Override with `/update-memory fresh` (or `/wrap-up fresh`) in the rare case full-session re-evaluation against a matched theme is genuinely wanted.
+- **Phase 2's carry-forward (in `/update-episodic` Append Sub-Episode) is the open-items mechanism in delta mode**: it ensures the newest H3 block is self-contained, so wrap-up Step 4 and awakening Phase 2 Step 11 (both read newest H3 only) continue to work without change. If carry-forward is skipped or partially done, morning's unresolved debts get hidden — that's the failure mode to guard against.
 - **This protocol is the session-end orchestrator** — it complements, does not replace, the individual layer-write commands.

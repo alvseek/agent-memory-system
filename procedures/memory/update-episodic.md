@@ -81,18 +81,29 @@ Wait for response. Auto-default to **A** only if confidence is high (≥3 strong
 
 1. **Open the chosen file** in `//@agent-memory/agent-[domain]/episodes/`
 
-2. **Insert sub-episode H3 block at TOP** (newest-first within file) using the [Detailed Entry Template](#detailed-entry-template). The H3 header includes the current date+time:
+2. **Carry-forward review of prior H3's open items**: since we're appending to an existing file, the file's top H3 (which our new block will sit above) holds the most recent prior open items. Review them so the new H3 stays self-contained:
+   - **a. Read prior H3's open items**: extract the `**Tech Debts**` and `**Next Steps**` fields from the prior H3 block's Outcomes section.
+   - **b. Review each item against work done since the prior H3's timestamp**:
+     - *Resolved by the delta work?* → drop from carry-forward list.
+     - *Still open?* → keep in carry-forward list (verbatim, or refined if the delta clarified scope).
+   - **c. Stage the carry-forward list**: when filling the new H3 block's `**Tech Debts**` and `**Next Steps**` in step 3, the values become the **union** of (still-open carried forward from prior) + (genuinely new items from this delta window).
+   
+   > **Why this matters**: both wrap-up Step 4 and awakening Phase 2 Step 11 read only the newest H3 block to surface open items. Without carry-forward, prior unresolved debts get hidden inside an older H3 block and the next awakening won't see them. Carry-forward makes the newest H3 self-contained, preserving the read-newest-only invariant.
+   
+   > **Why no time threshold**: prior H3's timestamp is deterministic — it's whatever it is. When the prior wrap-up was recent (same conversation), the agent has full context to review each item meaningfully. When the prior wrap-up was older (different session/conversation), the prior items are still candidates for carry-forward — the agent reviews based on whatever's in current context plus the items' own descriptions. Items that can't be confidently evaluated default to "still open" (conservative, per UUID a1b2c3d4 — debts never get silently dropped).
+
+3. **Insert sub-episode H3 block at TOP** (newest-first within file) using the [Detailed Entry Template](#detailed-entry-template). The H3 header includes the current date+time:
    ```
    ### YYYY-MM-DD HH.MM - [SESSION SUB-THEME]
    ```
 
-3. **Check line limit** after the insert:
+4. **Check line limit** after the insert:
    - **> 500 lines**: warn — *"[filename] over 500 lines, consider splitting on next merge"*
    - **> 1000 lines**: split — move the *just-added* sub-episode out into `[project]-[theme]-2.md` (or next incrementing suffix if `-2` exists). Add `> Continues from [original-filename]` note at top of the new file. Add a new index entry for the split file under today's date group.
 
-4. **Lazy filename migration** (one-time per file): if the chosen file still uses the legacy `YYYY-MM-DD-HH.MM-[project]-[theme].md` format, rename it to `[project]-[theme].md` as part of this append. Update the index entry's filename reference. If a file at the new name already exists (rare collision), use the line-limit `-{n}` suffix rule.
+5. **Lazy filename migration** (one-time per file): if the chosen file still uses the legacy `YYYY-MM-DD-HH.MM-[project]-[theme].md` format, rename it to `[project]-[theme].md` as part of this append. Update the index entry's filename reference. If a file at the new name already exists (rare collision), use the line-limit `-{n}` suffix rule.
 
-5. **Update index entry — MOVE-TO-TODAY rule**:
+6. **Update index entry — MOVE-TO-TODAY rule**:
    - Locate the existing entry for this file in the index
    - Delete it from its current date group (if the group becomes empty, remove the group header too)
    - Insert at the **top of today's date group** (`📂 YYYY-MM-DD:`)
