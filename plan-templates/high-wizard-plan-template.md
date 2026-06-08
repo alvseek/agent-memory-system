@@ -70,6 +70,22 @@
 | [Component 1] | [Other components] | [Input → Processing → Output] | [Required components] |
 | [Component 2] | [Other components] | [Input → Processing → Output] | [Required components] |
 
+<!-- OPTIONAL SECTION A2: Include when a change alters a data shape/format/contract that CROSSES a system, service, or process boundary (a field's type/nullability, a string format, an enum value, a serialized payload, a DB column another app reads). Skip for single-system internal changes. -->
+### Cross-System Contract Impact (Blast-Radius Check)
+
+*A producer-side change to shared data silently breaks consumers that nobody updated in the same pass. Enumerate EVERY consumer of the changed shape and how each is verified BEFORE shipping. Producer and consumers are usually separate deploys.*
+
+**Change classification** (check all that apply): ☐ field type/nullability ☐ string/ID format ☐ enum value added/changed ☐ new/removed field ☐ semantics changed (same shape, new meaning)
+
+| # | Consumer (system + path) | How it couples (deserialize / string-parse / DB-read / migrate / display) | Breaks how on this change? | Verified / mitigated |
+|---|---|---|---|---|
+| 1 | [System → file] | [coupling] | [crash / silent-wrong / leak / none] | [what was checked] |
+| 2 | [System → file] | [coupling] | [crash / silent-wrong / leak / none] | [what was checked] |
+
+- **Deploy ordering**: [which ends deploy, in what order — a producer-only deploy with a stale consumer is the classic break]
+- **Existing data**: [is historical data mixed-format / un-migrated? parsers must handle both]
+- **Project registry**: [link to the project's cross-system consumer registry if one exists]
+
 <!-- OPTIONAL SECTION B: Include when changing data/process flow, API changes -->
 ### System Flow Diagrams
 
