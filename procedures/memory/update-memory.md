@@ -10,6 +10,8 @@ Comprehensive memory update orchestrator. Five phases:
 
 `/update-episodic` writes only the episodic layer. `/update-memory` is the full end-of-session orchestrator (what `/wrap-up` invokes).
 
+**Execution style**: silent. Run Phases 0-3 silently — tool calls (read, edit, write) stay visible, but no prose narration of phases or per-step decisions. Produce only the Phase 4 Step 7 summary block as user-facing output. (When invoked by `/wrap-up`, even the Phase 4 summary is captured by the caller and folded into its own summary.)
+
 ## Arguments
 
 `$ARGUMENTS`
@@ -27,7 +29,7 @@ Comprehensive memory update orchestrator. Five phases:
 1. If `$ARGUMENTS` contains `fresh` → `MODE = fresh`, skip to Phase 1.
 2. Theme-match scan: read `agent-[domain]/agent-memory-index.md` `# Recent Context Episodes`. Find top candidate where filename or summary contains current project name + highest keyword overlap with session theme.
 3. **No match** → `MODE = fresh` (new file will be created in Phase 2). **Match** → `MODE = delta`, `CUTOFF = top H3 timestamp`.
-4. Report: `Mode: delta — scoping evaluations to work after [CUTOFF]` or `Mode: fresh — full-session evaluation`.
+4. Capture `MODE` and `CUTOFF` (if delta) for Phase 4 summary. No standalone "Mode: ..." print.
 
 ---
 
