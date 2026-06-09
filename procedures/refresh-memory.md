@@ -26,6 +26,8 @@ STOP doing anything else. Memory recovery takes priority.
 
 ### Step 3: Read Core Files
 
+🚨 **CRITICAL**: Use the **Read tool directly** — DO NOT delegate to a sub-agent (Agent tool / general-purpose / Explore). Sub-agents return summaries; memory recovery needs the full content of these files in YOUR own context window. Reading via sub-agent produces a hollow recovery with diluted identity and missing reasoning patterns.
+
 Read these 5 files:
 - `[AGENT-MEMORY-PATH]/control-files/core-instruction-control-files.md` (Shared foundations + awakening instructions)
 - `[AGENT-MEMORY-PATH]/agent-[DOMAIN]/agent-core-memory.md` (Agent-specific identity)

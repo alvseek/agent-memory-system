@@ -14,8 +14,19 @@ If no arguments provided, ask: "Which agent domain should I awaken?"
 
 ## Procedure
 
-### Step 1: Trigger Awakening
+### Step 1: Load the 5 Core Files
 
-Execute the `Awaken Agent [DOMAIN]!` trigger defined in the global instructions file (`[GLOBAL-INSTRUCTIONS-FILE]`). This is the single source of truth for the awakening protocol — it reads the 5 core files and follows the phased awakening instructions.
+🚨 **CRITICAL**: Use the **Read tool directly** — DO NOT delegate to a sub-agent (Agent tool / general-purpose / Explore). Sub-agents return summaries; awakening needs the full content of these files in YOUR own context window. Reading via sub-agent produces a hollow awakening with diluted identity and missing reasoning patterns.
+
+Read all 5 in parallel:
+- `[AGENT-MEMORY-PATH]/control-files/core-instruction-control-files.md` (Shared foundations + awakening instructions)
+- `[AGENT-MEMORY-PATH]/agent-[DOMAIN]/agent-core-memory.md` (Agent-specific identity)
+- `[AGENT-MEMORY-PATH]/agent-[DOMAIN]/agent-memory-index.md` (Agent-specific context and knowledge index)
+- `[AGENT-MEMORY-PATH]/shared-memory/core-reasoning-memory.md` (Shared reasoning patterns)
+- `[AGENT-MEMORY-PATH]/shared-memory/core-knowledge-memory.md` (Shared knowledge fundamentals)
+
+### Step 2: Follow Awakening Instructions
+
+Follow the phased protocol in the loaded `core-instruction-control-files.md` — Phase 1 (Process Loaded Identity), then Phase 2 (Load Project Context & Report).
 
 ---

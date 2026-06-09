@@ -1,10 +1,8 @@
 # Map Orientation
 
-Maintain a per-project index of orientation artifacts (READMEs, architecture docs, flow diagrams, ADRs, sub-project maps) with staleness + role tracking. Self-contained skill: handles check / load / mtime-refresh / session-touched updates in one entry point. **Creation is explicit (`create` arg), never automatic** — matches framework pattern (`/generate-readme`, `/setup-fleet`, `/setup-qa-instrument` are all user-invoked).
+Maintain a per-project index of orientation artifacts (READMEs, architecture docs, flow diagrams, ADRs, sub-project maps) with staleness + role tracking.
 
-Called automatically by `/awaken-agent` (Step 12, load-only) and `/wrap-up` (with `--session-touched` arg). Explicitly invoked by user with `create` or `--rescan` for write operations.
-
-The map file lives at `shared-memory/[project]/context/orientation-map.md`. Sub-project maps use flat-suffix naming in the same folder. Format template: [orientation-map-template.md](../templates/orientation-map-template.md).
+Map file: `shared-memory/[PROJECT-NAME]/context/orientation-map.md`. Format: [orientation-map-template.md](../templates/orientation-map-template.md).
 
 ---
 
@@ -12,131 +10,133 @@ The map file lives at `shared-memory/[project]/context/orientation-map.md`. Sub-
 
 `$ARGUMENTS`
 
-- `/map-orientation` → **Load mode (default, read-only).** If map exists: load + mtime check + write only if entries flagged stale. If map missing: report "no map yet — run `/map-orientation create` to scan and create." **Never auto-creates.**
-- `/map-orientation create` → **Create mode (explicit, user-invoked).** Full scan + create map + load. Use when first setting up orientation tracking for a project.
-- `/map-orientation --session-touched [path1,path2,...]` → **Wrap-up mode.** Update the specified entries' `last_verified` and status based on session knowledge. If map missing: silent no-op.
-- `/map-orientation --rescan` → **Force full rescan.** Only valid if map exists. For explicit refresh after major project restructure.
-- `/map-orientation [project-name]` → **Specific project.** Operate on the named project (overrides cwd-based detection).
+- `/map-orientation` — **Load mode** (default, read-only). Load map + mtime check + write only if entries flagged stale. If map missing: report and exit.
+- `/map-orientation create` — **Create mode**. Full scan + classify + write. For first-time setup.
+- `/map-orientation --session-touched [path1,path2,...]` — **Update mode**. Update the named entries' verification. Silent no-op if map missing.
+- `/map-orientation --rescan` — **Rescan mode**. Full rescan preserving status/verified_by where paths unchanged. No-op if map missing.
+- `/map-orientation [project-name]` — **Project override**. Combines with any mode; targets the named project instead of cwd detection.
 
 ---
 
-## Procedure
+## Step 1: Prelude (all modes)
 
-### Step 1: Determine Current Project
+1. **Identify project** — match cwd against known project mappings (`shared-memory/[project]/` existence + `shared-memory/integrations/external-integrations.md` task-system mapping). If a project-name arg is passed, use it. If neither: skip silently.
+2. **Compute map path** — `//@agent-memory/shared-memory/[PROJECT-NAME]/context/orientation-map.md`.
+3. **Check existence** — record `MAP_EXISTS = true/false`.
 
-Identify which project the map covers:
-
-- **From working directory**: Match cwd against known project mappings (cross-reference `shared-memory/integrations/external-integrations.md` "project ↔ task system mapping" or `shared-memory/[project]/` folder existence)
-- **From argument**: If a project name is passed, use it
-- **If neither matches**: Skip silently. Not all sessions are project-scoped (e.g., framework-level meta work).
-
-Set `[PROJECT-NAME]` for subsequent steps.
-
-### Step 2: Compute Map Path
-
-Root map path: `//@agent-memory/shared-memory/[PROJECT-NAME]/context/orientation-map.md`
-
-Verify the `shared-memory/[PROJECT-NAME]/context/` folder exists. If not (during `create` mode only), create it (`mkdir -p`).
-
-### Step 3: Branch on Mode + Existence
-
-| Mode (arg) | Map exists? | Action |
-|---|---|---|
-| bare (default) | Yes | **Load Mode** (Step 8) |
-| bare (default) | No | **Report and exit**: "No orientation map for [PROJECT-NAME] yet. Run `/map-orientation create` to scan and create." |
-| `create` | Yes | **Confirm with user**: map already exists, do you mean `--rescan`? Wait for explicit confirmation. |
-| `create` | No | **Create Mode** (Step 4) |
-| `--session-touched` | Yes | **Load Mode + Session-Touched Update** (Step 8 + Step 10) |
-| `--session-touched` | No | **Silent no-op**. Nothing to update. |
-| `--rescan` | Yes | **Create Mode** (Step 4) — full rescan, overwriting entries (preserve existing status/verified_by where path unchanged) |
-| `--rescan` | No | **Report and exit**: "No map to rescan. Run `/map-orientation create` first." |
+Then jump to the matching mode block below — read only that block.
 
 ---
 
-## Create Mode
+## Load Mode (bare arg, default)
 
-> **Triggered only by explicit `create` or `--rescan` args.** Never runs automatically at awakening.
+> Read-only by default. Writes only if mtime check flags entries stale.
 
-### Step 4: Scan for Orientation Artifacts
+### L1: Branch on existence
 
-Discover orientation artifacts in the project root:
+- `MAP_EXISTS = false` → report `"No orientation map for [PROJECT-NAME] yet — use '/map-orientation create' to scan and create."` and exit.
+- `MAP_EXISTS = true` → continue.
+
+### L2: Read map + apply role filter
+
+Read the map file. For each entry, apply [Role Filter Rules](#role-filter-rules) — load only entries the current agent's role qualifies for. For each `orientation-map-link` entry that passes the filter: ALSO read the linked child map (same rules apply). If a linked child map is missing: flag the parent entry with `[child map missing — run /map-orientation --rescan when ready]` and continue.
+
+### L3: mtime check
+
+For each loaded entry, compare the file's actual mtime to its `last_verified`:
+
+```sh
+stat -c %Y "[entry-path]"
+```
+
+- `file_mtime > last_verified` → set `status: unverified` + add `staleness_reason: "mtime > last_verified"`.
+- File missing → set `status: obsolete` + `notes: "file no longer exists at path"`. Don't delete (breadcrumb).
+
+### L4: Write if changed
+
+If L3 flagged any entries: write the updated map back. Else: skip the write.
+
+### L5: Report
+
+```
+Orientation map loaded: shared-memory/[PROJECT-NAME]/context/orientation-map.md
+  - N entries total
+  - M unverified (need agent verification on next relevant task)
+  - K stale-but-valuable | L obsolete
+  - P sub-map links: [filenames]
+```
+
+---
+
+## Create Mode (`create` arg)
+
+> Explicit user action. Triggered only by `create` arg. Never runs automatically.
+
+### C1: Branch on existence
+
+- `MAP_EXISTS = true` → confirm with [USER-NAME]: *"map already exists, did you mean `--rescan`?"* Wait for confirmation.
+- `MAP_EXISTS = false` → ensure `shared-memory/[PROJECT-NAME]/context/` exists (`mkdir -p`), continue.
+
+### C2: Scan for orientation artifacts
+
+**Scan scope**: project root (depth 1), `/docs/` recursive, optional submodule roots (depth 1 each).
 
 **File patterns** (case-insensitive):
-- `README*.md` — any README variant (README.md, README-deployment.md, README-architecture.md)
-- `ARCH*.md` — architecture docs (ARCH-map.md, ARCH-overview.md, ARCH-domain-*.md)
-- `ADR-*.md` or `*-adr.md` — architecture decision records
-- `*.mmd`, `*.mermaid` — flow diagrams in Mermaid format
-- `CONTRIBUTING.md`, `GLOSSARY.md`, `CHANGELOG.md` — optional, captured as `type: other`
+- `README*.md`
+- `ARCH*.md`
+- `ADR-*.md` or `*-adr.md`
+- `*.mmd`, `*.mermaid`
+- `CONTRIBUTING.md`, `GLOSSARY.md`, `CHANGELOG.md` (optional, `type: other`)
 
-**Scan scope**:
-- Project root (depth 1)
-- `/docs/` recursive
-- Optional submodule roots (depth 1 each) — for monorepos / multi-submodule projects
+**Skip**: `.git/`, `node_modules/`, `vendor/`, `build/`, `dist/`, `.next/`, `target/`, `bin/`, `obj/`, hidden folders (except `.github/`).
 
-**Skip patterns**:
-- `.git/`, `node_modules/`, `vendor/`, `build/`, `dist/`, `.next/`, `target/`, `bin/`, `obj/`
-- Hidden folders starting with `.` (except `.github/` if it contains workflow docs)
+### C3: Detect sub-projects
 
-### Step 4a: Detect Sub-Projects (Hierarchical Maps)
+**Sub-map triggers** (any): `.gitmodules` at root; sub-folder under `apps/`, `services/`, `packages/`, `submodules/` with ≥5 orientation docs.
 
-After the root scan, check for sub-project structure that warrants its own sub-map:
+For each detected: ask user *"Sub-project `[path]` has N orientation docs. Create sub-map `orientation-map-[name].md`? [y/n]"*.
+- **Yes** → recursive scan within sub-project boundary (same C2 patterns) + write sub-map at `shared-memory/[PROJECT-NAME]/context/orientation-map-[name].md` + add `type: orientation-map-link` entry to root map with `child_map: orientation-map-[name].md`.
+- **No** → docs stay in root map.
 
-**Sub-map triggers** (any of):
-- `.gitmodules` file at project root (git submodules detected)
-- Sub-folder under common monorepo patterns (`apps/`, `services/`, `packages/`, `submodules/`) with ≥5 orientation docs
+### C4: Extract purpose per file
 
-For each detected sub-project:
-- Present to user: "Sub-project `apps/api/` has 8 orientation docs. Create sub-map `orientation-map-api.md`? [y/n]"
-- If yes:
-  - Recursive scan within sub-project boundary (using same Step 4 patterns)
-  - Create sub-map at `shared-memory/[PROJECT-NAME]/context/orientation-map-[subproject].md`
-  - Root map gets an `orientation-map-link` entry pointing to the sub-map (see Step 7)
-- If no: docs remain entries in the root map
+For each file, extract a 1-line purpose:
+- **Markdown**: first non-trivial paragraph after the title heading.
+- **Mermaid**: first comment block, or diagram title.
+- Failure → `[unverified - needs read]`.
 
-### Step 5: Extract Purpose Per File
+Use `head -20` / first 500 chars only. Do NOT read full file content.
 
-For each found file, extract a 1-line purpose:
+### C5: Classify type + scope + roles (heuristic)
 
-- **Markdown files**: First non-trivial paragraph after the title heading (skip "Table of Contents", "Status", or empty lines)
-- **Mermaid files**: First comment block, or the diagram title if present
-- If extraction fails: leave purpose as `[unverified - needs read]`
+**Type** (path + filename):
 
-Do NOT read full file content during scan. Purpose extraction should be cheap (head -20 or first 500 chars).
-
-### Step 6: Classify Type, Scope, and Roles (Heuristic)
-
-Per file, assign:
-
-**Type** (based on path + filename):
-
-| Filename pattern | Type |
+| Pattern | Type |
 |---|---|
-| `README*.md` (root or module) following 7Q structure (≥4 of 7 questions present) | `7q-readme` |
-| `README*.md` without 7Q structure | `other` (with note "non-7Q README") |
+| `README*.md` with 7Q structure (≥4 of 7 questions present) | `7q-readme` |
+| `README*.md` without 7Q structure | `other` (note: "non-7Q README") |
 | `ARCH-map.md` or `architecture-map.md` | `architecture-map` |
-| `ARCH-*.md` (domain/overhead/governance overviews) | `architecture-overview` |
+| `ARCH-*.md` (domain/overhead/governance) | `architecture-overview` |
 | `*.mmd`, `*.mermaid` | `flow-diagram` |
 | `ADR-*.md` or `*-decision.md` | `adr` |
-| Sub-map reference (from Step 4a) | `orientation-map-link` |
+| Sub-map reference (from C3) | `orientation-map-link` |
 | Anything else | `other` |
 
-**Scope + Roles** (role-blind creation, path-heuristic guess):
+**Scope + Roles** (path heuristic, editable after):
 
-| Path pattern | Scope | Roles |
+| Path | Scope | Roles |
 |---|---|---|
-| Root-level docs (`README.md`, `docs/architecture/*`, `docs/decisions/*`) | `shared` | `[]` |
-| `apps/api/`, `backend/`, `server/`, `api/` paths | `role-private` | `[backend]` |
-| `apps/web/`, `frontend/`, `client/`, `web/` paths | `role-private` | `[frontend]` |
-| `apps/mobile/`, `mobile/`, `ios/`, `android/` paths | `role-private` | `[mobile]` |
-| `apps/admin/`, `admin/` paths | `role-private` | `[admin]` |
-| `docs/integration-*`, `docs/contracts/`, `*-contract.md` | `cross-readable` | best guess from path (e.g., `[backend, frontend]` for FE-BE contracts) |
-| Ambiguous paths | `shared` (default) with note "auto-classified — verify scope" |
+| Root docs (`README.md`, `docs/architecture/*`, `docs/decisions/*`) | `shared` | `[]` |
+| `apps/api/`, `backend/`, `server/`, `api/` | `role-private` | `[backend]` |
+| `apps/web/`, `frontend/`, `client/`, `web/` | `role-private` | `[frontend]` |
+| `apps/mobile/`, `mobile/`, `ios/`, `android/` | `role-private` | `[mobile]` |
+| `apps/admin/`, `admin/` | `role-private` | `[admin]` |
+| `docs/integration-*`, `docs/contracts/`, `*-contract.md` | `cross-readable` | best guess from path |
+| Ambiguous | `shared` (note: "auto-classified — verify scope") |
 
-User can override after scan via direct edit or future `/update-project-context` call. Default-then-edit pattern.
+### C6: Write map (+ sub-maps)
 
-### Step 7: Write Initial Map (and Sub-Maps)
-
-Copy the [orientation-map-template.md](../templates/orientation-map-template.md) to the root map path, then populate with discovered entries:
+Copy [orientation-map-template.md](../templates/orientation-map-template.md) to the map path. Populate frontmatter:
 
 ```yaml
 ---
@@ -147,149 +147,114 @@ last_full_scan: "[TODAY-DATE]"
 ---
 ```
 
-Per entry, initial values:
-- **status**: `unverified` (no agent has verified yet)
-- **last_verified**: empty (will be set on first verification)
-- **verified_by**: empty
-- **update_trigger**: empty (filled when verified)
-- **notes**: the 1-line purpose extracted in Step 5
-- **scope** + **roles**: from Step 6 heuristic
+Per entry initial values:
+- `status: unverified`
+- `last_verified: ""` + `verified_by: ""` + `update_trigger: ""`
+- `notes: <1-line purpose from C4>`
+- `scope` + `roles`: from C5
 
-For each sub-map created in Step 4a:
-- Write the sub-map file at `shared-memory/[PROJECT-NAME]/context/orientation-map-[subproject].md`
-- Root map gets an entry of `type: orientation-map-link` with `child_map: orientation-map-[subproject].md`
+Write each sub-map (from C3) to its own file. Root map gets the `orientation-map-link` entries.
 
-Proceed to Step 13.
+### C7: Report
+
+```
+Orientation map created: shared-memory/[PROJECT-NAME]/context/orientation-map.md
+  - N entries total (all unverified — will verify as future tasks touch their scope)
+  - P sub-map links: [filenames]
+```
 
 ---
 
-## Load Mode
+## Update Mode (`--session-touched [paths]` arg)
 
-### Step 8: Read Map File
+> Internal to `/wrap-up`. Silent — no user-facing report.
 
-Read the existing `orientation-map.md` file. Parse its entries.
+### U1: Branch on existence
 
-This step LOADS the map into session context — that's the value of awakening-time invocation. Agent now has the orientation index available for all subsequent task work in this session.
+- `MAP_EXISTS = false` → silent no-op. Exit.
+- `MAP_EXISTS = true` → continue.
 
-For each `orientation-map-link` entry: if the agent's role passes the role filter for that entry (or agent is Architect/QA), ALSO load the child map.
+### U2: Read map
 
-**If child map referenced but file missing**: Flag the entry with `[child map missing — run /map-orientation --rescan when ready]`. Continue loading the rest. Do not auto-create.
+Read the map file into memory.
 
-### Step 9: mtime Check (Cross-Session Staleness)
+### U3: Update touched entries
 
-For each entry in the map, compare the file's actual modification time to the entry's `last_verified` date:
+For each path in the arg:
+- Find matching entry (or add new entry if not present).
+- Set `last_verified: [TODAY-DATE]`.
+- Set `verified_by: [current-agent-role] / [session context]`.
+- Confirm status (`useful` / `stale-but-valuable` / `obsolete`) — auto-set if clear from session context, else prompt agent.
+- Update `notes` if session generated relevant info.
 
-```sh
-stat -c %Y "[entry-path]"  # actual mtime (Unix timestamp)
-```
+### U4: Write updated map
 
-If `file_mtime > last_verified_date`:
-- Mark the entry's status as `unverified`
-- Add a `staleness_reason: "mtime > last_verified"` field (optional, for audit)
-
-If the file no longer exists at the recorded path:
-- Mark the entry as `obsolete` with `notes: "file no longer exists at path"`
-- Do not delete the entry — serves as breadcrumb if path is restored
-
-### Step 10: Apply Session-Touched Updates (if `--session-touched` arg)
-
-If called with `--session-touched [path1,path2,...]`:
-
-For each path in the argument:
-- Find the matching entry in the map (or add new entry if not present)
-- Update `last_verified` to today's date
-- Update `verified_by` to `[current-agent-role] / [session context]`
-- Prompt the agent (or auto-set if obvious) to confirm status (useful / stale-but-valuable / obsolete)
-- Update `notes` if session generated relevant info
-
-### Step 11: Write Updated Map (if changed)
-
-If any entries changed in Step 9 or Step 10:
-- Write the updated map back to disk
-- Update `last_full_scan` ONLY if a full rescan occurred (not for mtime checks or session-touched updates)
-
-If no changes: skip the write. No-op is the goal.
-
-### Step 12: Confirm Loaded
-
-Confirm the map is now in session context. Subsequent task work in this project can reference entries by path without re-reading.
+Write back. No report — `/wrap-up` aggregates results in its final summary.
 
 ---
 
-## Step 13: Report to User
+## Rescan Mode (`--rescan` arg)
 
-Brief report regardless of mode:
+> Explicit refresh after major restructure. Preserves human-verified state where paths unchanged.
+
+### R1: Branch on existence
+
+- `MAP_EXISTS = false` → report `"No map to rescan — run '/map-orientation create' first."` and exit.
+- `MAP_EXISTS = true` → continue.
+
+### R2: Snapshot existing state
+
+Read the current map. Capture `(path → {status, last_verified, verified_by, update_trigger, notes})` per entry — this is what we preserve.
+
+### R3: Scan + classify
+
+Execute **C2 → C3 → C4 → C5** as in Create Mode.
+
+### R4: Merge
+
+For each newly-scanned entry:
+- **Path matches snapshot** → preserve snapshot's `status`, `last_verified`, `verified_by`, `update_trigger`. Update `notes` only if newly extracted purpose differs.
+- **Path is new** → initialize as in C6 (unverified, blank metadata).
+
+For each snapshot entry whose path was NOT scanned:
+- Mark `status: obsolete` + `notes: "file no longer exists at path (rescan)"`.
+
+### R5: Write merged map
+
+Write back. Update `last_full_scan: [TODAY-DATE]`.
+
+### R6: Report
 
 ```
-Orientation map [created/loaded/updated]: shared-memory/[PROJECT-NAME]/context/orientation-map.md
-  - N entries total
-  - M unverified (need agent verification on next relevant task)
-  - K stale-but-valuable | L obsolete
-  - P sub-map links: [list of sub-map filenames]
+Orientation map rescanned: shared-memory/[PROJECT-NAME]/context/orientation-map.md
+  - N entries total | A added | O obsoleted | P preserved
 ```
-
-If created from scratch, also note: "First-time map. Entries will be verified as future tasks touch their scope."
-
-If load-mode found missing map: "No map yet for [PROJECT-NAME]. Run `/map-orientation create` when ready to scan + create."
 
 ---
 
-## Templates
+## Role Filter Rules
 
-### Orientation Map File Template
+Used by **Load Mode L2** when reading entries:
 
-See [orientation-map-template.md](../templates/orientation-map-template.md) — defines the frontmatter + entry schema with all type/scope/role combinations.
+- `scope: shared` → load (everyone).
+- `scope: role-private` → load if current agent's role ∈ `roles`, else skip.
+- `scope: cross-readable` → load if current agent's role ∈ `roles` OR current agent is Architect or QA.
+- **Architect / QA exception** — both cross-read all entries regardless of scope.
+- **Single-role projects** (e.g., agent-memory framework) — all entries get `scope: shared, roles: []`. Filter is a no-op.
 
 ---
 
 ## Integration With Other Procedures
 
-- **[awaken-agent](awaken-agent.md)** Step 12 (Aware Current Project): after project detection, call `/map-orientation` (bare). Map loads into session context if it exists. If missing, report and proceed (no auto-create).
-- **[wrap-up](wrap-up.md)**: after episodic capture, call `/map-orientation --session-touched [paths]` with the orientation docs this session touched or referenced. Silent no-op if map doesn't exist.
-- **[update-project-context](memory/update-project-context.md)**: if a session DISCOVERED that an orientation doc's status is wrong (e.g., a "useful" doc is actually obsolete), prefer direct edit via this procedure over `/map-orientation` arg — the map will pick up the change via mtime check on next awakening.
-
-### Framework Pattern Compliance
-
-This skill follows the framework's automatic-vs-explicit split:
-
-| Op | Pattern | This skill |
-|---|---|---|
-| First creation | Explicit (`/generate-readme`, `/setup-fleet`, `/setup-qa-instrument`) | `/map-orientation create` |
-| Recurring read | Automatic (awakening loads memory files) | Bare `/map-orientation` at awakening (load only) |
-| Recurring write | Explicit (`/update-project-context`, `/update-episodic`) | `/map-orientation --session-touched` at wrap-up |
-
-No surprise scans. Creation is always intentional.
-
----
-
-## Role Filter Rules (Load Mode)
-
-When loading the map, apply role filter per entry:
-
-- `scope: shared` → load (everyone)
-- `scope: role-private` → load if current agent's role ∈ `roles`, else skip
-- `scope: cross-readable` → load if current agent's role ∈ `roles` OR current agent is Architect or QA (cross-cutting roles always)
-
-**Architect and QA exception**: Both cross-read all entries regardless of scope (per May 29 3-zone project memory model). Their job is cross-cutting; restricting their view defeats the purpose of their role.
-
-**Single-role projects** (undanganaku, tradingdata, agent-memory framework): all entries get `scope: shared, roles: []`. Role filter becomes a no-op. Same skill, same behavior — just simpler data.
-
----
-
-## Re-evaluation Rules
-
-- **mtime check is mandatory** on every Load Mode run. Skip risks the agent operating on stale assumptions.
-- **Full rescan is rare**. Only via explicit `--rescan` after major project restructure (folders moved, conventions changed).
-- **Status changes require evidence**. An entry shouldn't move from `unverified` to `useful` without an agent having actually read it during real task work — verification by inspection only, not by assumption.
+- **[awaken-agent](awaken-agent.md)** — calls `/map-orientation` (bare, load-only) after project detection.
+- **[wrap-up](wrap-up.md)** — calls `/map-orientation --session-touched [paths]` for orientation docs the session touched. Silent no-op if map missing.
+- **[update-project-context](memory/update-project-context.md)** — preferred path when a session DISCOVERED an entry's status is wrong. Direct edit; mtime check picks it up on next awakening.
 
 ---
 
 ## Anti-Patterns
 
-1. **Auto-creating maps at awakening.** Violates framework pattern. Creation = explicit user action via `create` arg. Awakening loads only.
-2. **Calling `/map-orientation` to "freshen things up" without specific session-touched paths.** That's a full mtime sweep — fine — but don't expect status changes without verification.
-3. **Marking entries `useful` because they exist.** Useful means "verified accurate and future tasks will rely on it." Existence alone is not verification.
-4. **Skipping the map at awakening because the agent feels confident.** The map also catches cross-session edits the agent doesn't know about.
-5. **Bloating the map with every markdown file in the project.** Map covers ORIENTATION artifacts (README/architecture/flow/ADR/cross-cutting). Implementation docs, change logs, meeting notes don't belong here.
-6. **Flattening submodule docs into the root map when sub-map makes sense.** If a sub-project has ≥5 docs, create a sub-map and link from root via `orientation-map-link` entry. Keeps root map navigable.
-7. **Auto-creating child maps when parent's `orientation-map-link` points to missing file.** Flag and let user trigger `--rescan` when ready. Don't fire scans unexpectedly during task work.
+1. **Marking entries `useful` because they exist.** Useful = "verified accurate and future tasks will rely on it." Existence ≠ verification.
+2. **Bloating the map with every markdown file.** Map covers ORIENTATION artifacts (README/architecture/flow/ADR/cross-cutting). Implementation docs, change logs, meeting notes belong elsewhere.
+3. **Flattening submodule docs into the root map when sub-map makes sense.** ≥5 docs under a sub-folder → sub-map + `orientation-map-link` from root.
+4. **Auto-creating child maps when parent's `orientation-map-link` points to missing file.** Flag the parent entry and let user trigger `--rescan` when ready.

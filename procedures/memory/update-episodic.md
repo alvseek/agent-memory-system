@@ -36,7 +36,7 @@ Collect all entries where the filename or summary contains the **project name**.
 
 If no candidates → skip to Step 6 (Create New File branch).
 
-> **Why scan all non-archived?** The index is already loaded into context at awakening (Phase 2 Step 7). Scanning all active entries is essentially free. Archived entries (in `archive/`) are intentionally out of reach — old context should not be merged into.
+> **Why scan all non-archived?** The index is already loaded into context at awakening. Scanning all active entries is essentially free. Archived entries (in `archive/`) are intentionally out of reach — old context should not be merged into.
 
 #### Step 4: Match Heuristic
 
@@ -88,7 +88,7 @@ Wait for response. Auto-default to **A** only if confidence is high (≥3 strong
      - *Still open?* → keep in carry-forward list (verbatim, or refined if the delta clarified scope).
    - **c. Stage the carry-forward list**: when filling the new H3 block's `**Tech Debts**` and `**Next Steps**` in step 3, the values become the **union** of (still-open carried forward from prior) + (genuinely new items from this delta window).
    
-   > **Why this matters**: both wrap-up Step 4 and awakening Phase 2 Step 11 read only the newest H3 block to surface open items. Without carry-forward, prior unresolved debts get hidden inside an older H3 block and the next awakening won't see them. Carry-forward makes the newest H3 self-contained, preserving the read-newest-only invariant.
+   > **Why this matters**: both wrap-up and awakening read only the newest H3 block when surfacing open items. Without carry-forward, prior unresolved debts get hidden inside an older H3 block and the next awakening won't see them. Carry-forward makes the newest H3 self-contained, preserving the read-newest-only invariant.
    
    > **Why no time threshold**: prior H3's timestamp is deterministic — it's whatever it is. When the prior wrap-up was recent (same conversation), the agent has full context to review each item meaningfully. When the prior wrap-up was older (different session/conversation), the prior items are still candidates for carry-forward — the agent reviews based on whatever's in current context plus the items' own descriptions. Items that can't be confidently evaluated default to "still open" (conservative, per UUID a1b2c3d4 — debts never get silently dropped).
 
@@ -110,7 +110,7 @@ Wait for response. Auto-default to **A** only if confidence is high (≥3 strong
    - Create today's date group if it doesn't exist
    - Update the summary by appending `+ [new sub-topic]` (or rewriting the summary if the new sub-topic shifts the overall theme)
 
-   > **Why move?** Awakening Phase 2 Step 7 grabs the top entry as "latest episodic." The move preserves the "top = newest" invariant. Edit-in-place would leave a stale top entry and break awakening's selection logic.
+   > **Why move?** Awakening's project-scoped episodic load grabs the top entry as "latest episodic." The move preserves the "top = newest" invariant. Edit-in-place would leave a stale top entry and break awakening's selection logic.
 
 ---
 
