@@ -230,10 +230,26 @@ After all implementation phases are complete:
      - `mcp__playwright__browser_take_screenshot` → `.agent-screenshots/result.png`
    - **Mobile**: execute `SCREENSHOT_CMD` → `.agent-screenshots/result.png`
 
-4. **Visual comparison**: Read both `.agent-screenshots/design.png` and `.agent-screenshots/result.png` side by side. Describe the visual gaps concisely:
-   - Layout differences (spacing, alignment, sizing)
-   - Color/style differences
-   - Missing or extra elements
+4. **Visual comparison**: Read both `.agent-screenshots/design.png` and `.agent-screenshots/result.png` side by side.
+
+   **Precondition**: both screenshots must share the same viewport/canvas size. If they differ, re-take with matching dimensions before comparing — size mismatch invalidates all layout judgment.
+
+   Compare **zone by zone** (top → bottom, left → right), not holistically. For each zone, walk this checklist:
+
+   - **a. Element inventory** — every design element exists in result; no extra elements; correct order, grouping, and nesting (cards, panels, dividers)
+   - **b. Text content** — labels, placeholders, button text, links verbatim; casing matches
+   - **c. Typography** — font family category (serif/sans/mono/display), weight, relative size hierarchy, text color role
+   - **d. Layout & spacing** — alignment (left/center/right; edges that should line up), relative proportions (element width/height vs container), spacing rhythm (which gaps are larger/smaller than which)
+   - **e. Color & style** — background layer colors, accent colors and their roles, borders, shadows, gradients, opacity
+   - **f. Shape language** — corner radius category (sharp/rounded/pill/circle), border thickness, icon style (outline vs filled)
+   - **g. States & affordances** — empty vs filled inputs, masked fields, visibility toggles, disabled/active styling, focus states if captured
+
+   **Confidence rules** — tag every gap found with confidence:
+   - Element-level diffs (a, b, g): HIGH confidence — trust visual reading.
+   - Categorical style diffs (c, f): HIGH at category level (serif vs sans, pill vs rounded), LOW at metric level (exact pt size, exact radius px).
+   - Shade-level color and px-level spacing (d, e): LOW confidence — do NOT judge from pixels alone. Verify in code instead: read the implemented values and compare against the design source (`.html` reference, design tokens, or spec). If no exact spec exists, mark "unverifiable visually" rather than declaring a match.
+
+   List the gaps found, grouped by zone, tagged with checklist letter and confidence — this list is the fix queue for step 5. Gaps marked "unverifiable visually" are excluded from iteration; carry them to the Step 20 completion report instead of looping on them.
 
 5. **Iterate**:
    - If gaps exist → fix the relevant code → go back to step 3
