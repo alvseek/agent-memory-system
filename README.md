@@ -39,6 +39,7 @@ control-files/
 ├── templates/                          # Output templates (readme, etc.)
 ├── new-agent-template/                 # Starter template for new agents
 ├── core-memory/                        # Source files for Global CLAUDE.md compilation
+├── docs/                               # Framework standards + orientation map
 ├── scripts/                            # Utility scripts (hooks, copy-lines)
 └── setup-scripts/                      # Top-level setup orchestrators
 ```
@@ -219,3 +220,4 @@ For the complete loading flow, memory layer details, and wizard protocol hierarc
 - **[SETUP.md](SETUP.md)** — Environment configuration and creating new agents
 - **[MCP.md](MCP.md)** — Connect agents to databases, APIs, and tools via MCP
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** — How to contribute to the shared framework
+- **[docs/document-quality-standard.md](docs/document-quality-standard.md)** — Lean/clear/precise/self-contained rules for writing & reviewing framework prose

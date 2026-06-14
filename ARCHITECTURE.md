@@ -109,6 +109,9 @@ control-files/
 │   ├── rite-of-creation-plan-template.md
 │   ├── forge-of-covenant-plan-template.md
 │   └── code-quality-analysis-template.md  # 8-dimension QA checklist (used by wizards + /analyze-code-quality)
+├── docs/                              # Framework standards + orientation map
+│   ├── document-quality-standard.md   # Lean/clear/precise/self-contained rules for all framework docs
+│   └── orientation-map.md             # Framework's own orientation map (child of agent-memory root map)
 ├── archived/                          # Archived/retired files
 └── templates/                         # Output templates (used by procedures)
     ├── readme-template.md             # 7Q README template (used by /generate-readme)
@@ -514,3 +517,4 @@ Each agent's **context navigator**. Contains:
 ## Additional Resources
 
 - **[README](README.md)** - Architecture overview, getting started, automation features
+- **[Document Quality Standard](docs/document-quality-standard.md)** - Lean/clear/precise/self-contained rules for writing & reviewing framework prose

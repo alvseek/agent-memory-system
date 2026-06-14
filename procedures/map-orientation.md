@@ -94,9 +94,20 @@ Orientation map loaded: shared-memory/[PROJECT-NAME]/context/orientation-map.md
 
 **Sub-map triggers** (any): `.gitmodules` at root; sub-folder under `apps/`, `services/`, `packages/`, `submodules/` with ≥5 orientation docs.
 
-For each detected: ask user *"Sub-project `[path]` has N orientation docs. Create sub-map `orientation-map-[name].md`? [y/n]"*.
-- **Yes** → recursive scan within sub-project boundary (same C2 patterns) + write sub-map at `shared-memory/[PROJECT-NAME]/context/orientation-map-[name].md` + add `type: orientation-map-link` entry to root map with `child_map: orientation-map-[name].md`.
+For each detected, ask user *"Sub-project `[path]` has N orientation docs. Create sub-map?"* with placement options:
+
+- **A) Inside the sub-project**: `[sub-path]/orientation-map.md` — fits git submodules and self-contained sub-projects; the map ships with the sub-project (standalone clones get it too). No filename suffix needed.
+- **B) Sibling to root map**: `shared-memory/[PROJECT-NAME]/context/orientation-map-[name].md` — fits non-submodule sub-folders; everything stays under the parent's `context/`. Filename suffix required to disambiguate from root.
 - **No** → docs stay in root map.
+
+If A or B:
+- Recursive scan within sub-project boundary (same C2 patterns).
+- Write sub-map at the chosen location.
+- Add `type: orientation-map-link` entry to the ROOT map with `child_map` as a path relative to the root map's folder:
+  - A) `child_map: ../../../[sub-path]/orientation-map.md` (three `../` to climb out of `shared-memory/[PROJECT-NAME]/context/` to the project root, then descend into the sub-project).
+  - B) `child_map: orientation-map-[name].md` (same folder, filename only).
+
+**One-way reference rule**: parent map → child map via `orientation-map-link`. Child maps DO NOT reference the parent. A sub-map is a self-contained orientation view of its own scope; standalone consumers (e.g., someone cloning just the submodule) should not need the parent to use it.
 
 ### C4: Extract purpose per file
 
@@ -153,7 +164,7 @@ Per entry initial values:
 - `notes: <1-line purpose from C4>`
 - `scope` + `roles`: from C5
 
-Write each sub-map (from C3) to its own file. Root map gets the `orientation-map-link` entries.
+Write each sub-map (from C3) to its chosen path (A: inside sub-project, B: sibling to root). Root map gets the `orientation-map-link` entries with `child_map` resolved per the placement choice.
 
 ### C7: Report
 
