@@ -179,32 +179,61 @@ STOP. Wait for [USER-NAME]'s instruction to proceed to implementation.
 
 After [USER-NAME] instructs to start implementing, start implementing following the **Execution Protocol for AI** from the plan file.
 
-### Step 16: Quality Review
+### Step 16: Quality Review (Delegated to `/analyze-code-quality`)
 
-After all implementation phases are done and logged, review the implementation for craftsmanship quality before closing the plan.
+After all implementation phases are done and logged, run **static** code quality review by delegating to `/analyze-code-quality` in embedded mode. Findings are embedded directly into this plan's `## QUALITY REVIEW` section — the plan IS the audit trail.
 
-1. **Collect scope**: Identify all files created or modified during implementation (from the Execution Log)
-2. **Load quality standard**: If a `quality-standard.md` was found during investigation (Step 5, item 7), re-read it now. If not found, note: *"No quality-standard.md found — reviewing against built-in dimensions only."*
-3. **Read and analyze**: Read all files in scope. Review using the [Code Quality Analysis Template](//@agent-memory/control-files/plan-templates/code-quality-analysis-template.md) as a reference — walk through each quality dimension that applies, check items against the implementation. Do NOT copy the template — use it as a read-only checklist.
-4. **Present findings**: If findings exist, present using the [WAIT Options Quality Review variant](//@agent-memory/control-files/procedures/wait-options.md#quality-review-variant).
-Preamble: "Quality review for implementation:"
+1. **Collect scope**: Identify all files created or modified during implementation from this plan's Execution Log. This file list is the **caller-passed scope** for the delegated procedure.
 
-STOP. Wait for [USER-NAME]'s response.
+2. **Invoke `/analyze-code-quality`** following the [Analyze Code Quality procedure](//@agent-memory/control-files/procedures/analyze-code-quality.md) with these inputs:
+   - `scope`: the file list collected above (from Execution Log)
+   - `embedded_mode=true`: signals the procedure to skip standalone working-doc creation; findings get embedded into this plan's Quality Review section
 
-5. **Fix approved items**: Apply approved fixes in one batch. Briefly report what was changed.
+The delegated procedure will:
+- Run **Scope Reconciliation** (its Step 3) — surface any git-diff vs Execution Log discrepancies for [USER-NAME] to reconcile
+- **Discover quality standard** (its Step 4) — looks for `**/quality-standard.md`; if found, applies Dimension 8; if not, freeform
+- Walk quality dimensions against the reconciled scope (its Steps 5-6)
+- Present findings via [WAIT Options Quality Review variant](//@agent-memory/control-files/procedures/wait-options.md#quality-review-variant) (its Step 7) — preamble: *"Code quality review for implementation:"*
+- **STOP** at the WAIT Options prompt — wait for [USER-NAME]'s response
+- Apply approved fixes and update this plan's Quality Review section (its Step 8)
 
-### Step 17: Move Plan to Completed
+3. **Resume control** here after `/analyze-code-quality` completes. Proceed to Step 17 (Final Integration Test).
 
-After all implementation phases are done, logged, and quality review is resolved, move the plan file to `/plans/completed/`:
+### Step 17: Final Integration Test (Delegated to `/integration-test`)
+
+After Quality Review is resolved, run **runtime** verification by delegating to `/integration-test` in embedded mode. Results are embedded directly into this plan's `## FINAL INTEGRATION TEST` section — static quality review (Step 16) answered "is the code clean?"; this step answers "does it actually work?".
+
+1. **Collect scope**: Identify all files created or modified during implementation from this plan's Execution Log. This file list is the **caller-passed scope** for the delegated procedure.
+
+2. **Invoke `/integration-test`** following the [Integration Test procedure](//@agent-memory/control-files/procedures/integration-test.md) with these inputs:
+   - `scope`: the file list collected above (from Execution Log)
+   - `embedded_mode=true`: signals the procedure to write results into this plan's Final Integration Test section
+
+The delegated procedure will:
+- **Detect qa/ instrument** (its Step 1) — stop + offer `/setup-qa-instrument` if missing
+- **Identify touched modules** and map to playbooks (its Step 2)
+- **Run R/I/A/O loop per module** (its Step 3): reset → seed → start → act scenarios → smoke → compare
+- Present findings via [WAIT Options Quality Review variant](//@agent-memory/control-files/procedures/wait-options.md#quality-review-variant) (its Step 4) — preamble: *"Runtime verification findings:"*
+- **STOP** at the WAIT Options prompt — wait for [USER-NAME]'s response
+- Apply approved fixes and re-run affected modules (its Step 5)
+- Log results into this plan's `## FINAL INTEGRATION TEST` section (its Step 6)
+
+3. **Resume control** here after `/integration-test` completes. Proceed to Step 18 (Move Plan to Completed).
+
+### Step 18: Move Plan to Completed
+
+After all implementation phases are done, logged, and both Quality Review (Step 16) + Final Integration Test (Step 17) are resolved, move the plan file to `/plans/completed/`:
 `mkdir -p ./plans/completed && mv ./plans/[plan-file].md ./plans/completed/[plan-file].md`
 
 **Note**: Episodic memory links to the plan will break after moving. This is accepted — completed plans are archival.
 
-### Step 18: Completion Report
+### Step 19: Completion Report
 
 Present a brief completion report to [USER-NAME]:
 - Plan file location (in `/plans/completed/`)
 - Summary of what was implemented
+- Quality Review status (clean / N findings fixed)
+- Final Integration Test status (clean / N runtime failures fixed / skipped — no qa/)
 - Any notes or follow-ups worth mentioning
 
 Then offer: "Would you like me to run `/wrap-up` to close the session?"

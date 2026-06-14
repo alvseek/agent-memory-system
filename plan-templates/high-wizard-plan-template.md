@@ -259,15 +259,27 @@ I have to use this document as my **ONLY** source of truth to execute and track 
 ---
 
 ## **QUALITY REVIEW**
-*Filled by procedure Step 16 after all execution phases are complete.*
+*Filled by procedure Step 16 (delegated to `/analyze-code-quality` in embedded mode) after all execution phases are complete. **Static** review — answers "is the code clean?".*
 
-- **Scope**: [Files reviewed — from Execution Log]
+- **Scope**: [Files reviewed — from Execution Log, reconciled against `git diff --name-only`]
 - **Quality Standard**: [quality-standard.md found / not found — dimensions applied]
 - **Findings**: [Issues found, or "No findings — implementation meets quality dimensions"]
 - **Fixed**: [What was fixed from approved findings, or "N/A"]
 
 ---
 
+## **FINAL INTEGRATION TEST**
+*Filled by procedure Step 17 after Quality Review is resolved. **Runtime** verification through the qa/ instrument — answers "does it actually work end-to-end?".*
+
+- **Scope**: [Modules touched — mapped from Execution Log scope]
+- **qa/ Status**: [Detected / Missing / Skipped — reason if skipped]
+- **Playbooks Run**: [List of `qa/playbooks/{module}.md` exercised, or "N/A — skipped"]
+- **R/I/A/O Results**: [Per-module pass/fail summary, or "N/A — skipped"]
+- **Findings**: [Runtime failures + severity, or "No findings — runtime clean", or "N/A — skipped"]
+- **Fixed**: [What was fixed from approved findings, or "N/A"]
+
+---
+
 ## **POST-COMPLETION**
-After all phases are executed, logged, and quality review is filled, move this plan to `plans/completed/`:
+After all phases are executed, logged, and both **Quality Review** + **Final Integration Test** are filled, move this plan to `plans/completed/`:
 `mkdir -p ./plans/completed && mv ./plans/[this-file].md ./plans/completed/[this-file].md`

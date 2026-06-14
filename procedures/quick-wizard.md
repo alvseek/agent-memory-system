@@ -78,24 +78,53 @@ Execute the steps from the plan in order. After each step, briefly report what w
 
 **CRITICAL**: If any NEW decision is discovered during execution that was not covered in Step 3, STOP immediately. Present the new decision to [USER-NAME] with the same format (options + confidence + reason) before continuing. Do NOT execute ahead on assumptions.
 
-### Step 7: Quality Review
+### Step 7: Quality Review (Delegated to `/analyze-code-quality`)
 
-After all steps are executed, review the implementation for craftsmanship quality before reporting completion.
+After all steps are executed, run **static** code quality review by delegating to `/analyze-code-quality` in embedded mode. Findings are embedded directly into the plan's Quality Review section (created at Step 4 from the Quick Wizard Plan Content Template) — the plan IS the audit trail.
 
-1. **Collect scope**: Identify all files created or modified during execution
-2. **Load quality standard**: If a `quality-standard.md` was found during investigation (Step 1, item 7), re-read it now. If not found, note: *"No quality-standard.md found — reviewing against built-in dimensions only."*
-3. **Read and analyze**: Read all files in scope. Review using the [Code Quality Analysis Template](//@agent-memory/control-files/plan-templates/code-quality-analysis-template.md) as a reference — walk through each quality dimension that applies, check items against the implementation. Do NOT copy the template — use it as a read-only checklist.
-4. **Present findings**: If findings exist, present using the [WAIT Options Quality Review variant](//@agent-memory/control-files/procedures/wait-options.md#quality-review-variant).
-Preamble: "Quality review for implementation:"
+1. **Collect scope**: Identify all files created or modified during execution (from the plan's execution tracking — plan-mode steps or in-conversation tracking). This file list is the **caller-passed scope** for the delegated procedure.
 
-STOP. Wait for [USER-NAME]'s response.
+2. **Invoke `/analyze-code-quality`** following the [Analyze Code Quality procedure](//@agent-memory/control-files/procedures/analyze-code-quality.md) with these inputs:
+   - `scope`: the file list collected above
+   - `embedded_mode=true`: signals the procedure to skip standalone working-doc creation; findings get embedded into the QW plan's Quality Review section
 
-5. **Fix approved items**: Apply approved fixes in one batch. Briefly report what was changed.
+The delegated procedure will:
+- Run **Scope Reconciliation** (its Step 3) — surface any git-diff vs tracked-scope discrepancies for [USER-NAME] to reconcile
+- **Discover quality standard** (its Step 4) — looks for `**/quality-standard.md`; if found, applies Dimension 8; if not, freeform
+- Walk quality dimensions against the reconciled scope (its Steps 5-6)
+- Present findings via [WAIT Options Quality Review variant](//@agent-memory/control-files/procedures/wait-options.md#quality-review-variant) (its Step 7) — preamble: *"Code quality review for implementation:"*
+- **STOP** at the WAIT Options prompt — wait for [USER-NAME]'s response
+- Apply approved fixes and update the QW plan's Quality Review section (its Step 8)
 
-### Step 8: Report Completion
+3. **Resume control** here after `/analyze-code-quality` completes. Proceed to Step 8 (Final Integration Test).
 
-After all steps are executed and quality review is resolved, present a brief completion summary to [USER-NAME]:
+### Step 8: Final Integration Test (Delegated to `/integration-test`)
+
+After Quality Review is resolved, run **runtime** verification by delegating to `/integration-test` in embedded mode. Results are embedded directly into this plan's `## FINAL INTEGRATION TEST` section — static quality review (Step 7) answered "is the code clean?"; this step answers "does it actually work?".
+
+1. **Collect scope**: Identify all files created or modified during execution (from the plan's execution tracking — plan-mode steps or in-conversation tracking). This file list is the **caller-passed scope** for the delegated procedure.
+
+2. **Invoke `/integration-test`** following the [Integration Test procedure](//@agent-memory/control-files/procedures/integration-test.md) with these inputs:
+   - `scope`: the file list collected above
+   - `embedded_mode=true`: signals the procedure to write results into the QW plan's Final Integration Test section
+
+The delegated procedure will:
+- **Detect qa/ instrument** (its Step 1) — stop + offer `/setup-qa-instrument` if missing
+- **Identify touched modules** and map to playbooks (its Step 2)
+- **Run R/I/A/O loop per module** (its Step 3): reset → seed → start → act scenarios → smoke → compare
+- Present findings via [WAIT Options Quality Review variant](//@agent-memory/control-files/procedures/wait-options.md#quality-review-variant) (its Step 4) — preamble: *"Runtime verification findings:"*
+- **STOP** at the WAIT Options prompt — wait for [USER-NAME]'s response
+- Apply approved fixes and re-run affected modules (its Step 5)
+- Log results into the QW plan's `## FINAL INTEGRATION TEST` section (its Step 6)
+
+3. **Resume control** here after `/integration-test` completes. Proceed to Step 9 (Report Completion).
+
+### Step 9: Report Completion
+
+After all steps are executed and both Quality Review (Step 7) + Final Integration Test (Step 8) are resolved, present a brief completion summary to [USER-NAME]:
 - What was done
+- Quality Review status (clean / N findings fixed)
+- Final Integration Test status (clean / N runtime failures fixed / skipped — no qa/)
 - Any issues encountered
 - Any tech debts or follow-up items
 
@@ -122,12 +151,31 @@ Use this structure when writing the plan in plan mode (or presenting in conversa
 
 ## Success Criteria
 - [ ] [How we know it's done]
-- [ ] Quality review completed (Step 7)
+- [ ] Static quality review completed (Step 7 — delegated to `/analyze-code-quality`)
+- [ ] Final Integration Test completed (Step 8 — runtime via qa/ instrument, or explicitly skipped)
 
 ## Execution Steps
 1. **[Step name]**: [What to do] → [How to verify]
 2. **[Step name]**: [What to do] → [How to verify]
 3. **[Step name]**: [What to do] → [How to verify]
+
+## Quality Review
+*Filled by Step 7 (delegated to `/analyze-code-quality` in embedded mode). **Static** review — answers "is the code clean?".*
+
+- **Scope**: [Files reviewed — reconciled against `git diff --name-only`]
+- **Quality Standard**: [found / not found — dimensions applied]
+- **Findings**: [Issues found, or "No findings — implementation meets quality dimensions"]
+- **Fixed**: [What was fixed from approved findings, or "N/A"]
+
+## Final Integration Test
+*Filled by Step 8 after Quality Review is resolved. **Runtime** verification through the qa/ instrument — answers "does it actually work end-to-end?".*
+
+- **Scope**: [Modules touched]
+- **qa/ Status**: [Detected / Missing / Skipped — reason if skipped]
+- **Playbooks Run**: [List of `qa/playbooks/{module}.md` exercised, or "N/A — skipped"]
+- **R/I/A/O Results**: [Per-module pass/fail summary, or "N/A — skipped"]
+- **Findings**: [Runtime failures + severity, or "No findings — runtime clean", or "N/A — skipped"]
+- **Fixed**: [What was fixed from approved findings, or "N/A"]
 ```
 
 ---

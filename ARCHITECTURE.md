@@ -83,7 +83,7 @@ control-files/
 │   ├── generate-standard.md          # Generate project quality-standard.md from codebase
 │   ├── analyze-code-quality.md       # Standalone code quality analysis (8 dimensions)
 │   ├── pixel-wizard.md               # Visual design-to-implementation wizard (screenshot validation loop)
-│   ├── generate-visual-testing-framework.md  # Set up project-type-aware screenshot tooling
+│   ├── setup-qa-visual-instrument.md  # Set up project-type-aware screenshot tooling
 │   ├── memory/                        # Memory management procedures
 │   │   ├── update-memory.md           # Comprehensive memory update
 │   │   ├── update-episodic.md         # Episodic memory update
@@ -384,7 +384,7 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 | **Generate Quality Standard** | `procedures/generate-standard.md` | `/generate-standard` |
 | **Analyze Code Quality** | `procedures/analyze-code-quality.md` | `/analyze-code-quality` |
 | **Pixel Wizard** | `procedures/pixel-wizard.md` | `/pixel-wizard` |
-| **Generate Visual Testing Framework** | `procedures/generate-visual-testing-framework.md` | `/generate-visual-testing-framework` |
+| **Setup QA Visual Instrument** | `procedures/setup-qa-visual-instrument.md` | `/setup-qa-visual-instrument` |
 
 ### Common Slash Commands
 
@@ -409,7 +409,7 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 /generate-standard       # Generate project quality-standard.md from codebase
 /analyze-code-quality    # Standalone code quality analysis (8 dimensions)
 /pixel-wizard [context]  # Visual design-to-implementation wizard (screenshot validation loop)
-/generate-visual-testing-framework  # Set up project-type-aware screenshot tooling for current project
+/setup-qa-visual-instrument  # Set up project-type-aware screenshot tooling for current project
 /push-project            # Commit and push current project
 /push-memory             # Commit and push agent memory
 /push-all                # Commit and push both project + agent memory
