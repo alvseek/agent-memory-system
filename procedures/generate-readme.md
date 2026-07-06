@@ -21,6 +21,8 @@ If no arguments provided, use default: `./docs/README.md`
 2. **If no argument**: Default to `./docs/README.md`
 3. **If target file already exists**: Ask [USER-NAME] before overwriting — "A README already exists at [path]. Overwrite, merge, or pick a different location?"
 
+> **Placement Contract** (see [ADR-004](//@agent-memory/docs/adr/2026-07-06-docs-placement-contract.md)): **scope = location.** A **module** README co-locates in `[module]/docs/` next to the unit it describes (never hoisted into a central `/docs`) — a thin `README.md` may sit at the module folder root pointing into its own `docs/`. A **cross-cutting** README (`README-{topic}.md` spanning multiple units) lives at the **Lowest Common Ancestor** of what it interconnects — the nearest *existing* folder containing all its subjects, migrated up only as the span actually grows. The root `README.md` is a thin pointer, not a 7Q README.
+
 ### Step 2: Copy Template
 
 1. Read the [README Template](//@agent-memory/control-files/templates/readme-template.md)

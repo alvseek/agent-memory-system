@@ -79,7 +79,9 @@ Orientation map loaded: shared-memory/[PROJECT-NAME]/context/orientation-map.md
 
 ### C2: Scan for orientation artifacts
 
-**Scan scope**: project root (depth 1), `/docs/` recursive, optional submodule roots (depth 1 each).
+**Scan scope**: project root (depth 1), **all `**/docs/` folders recursive** (any depth, bounded by the skip-list below), optional submodule roots (depth 1 each). The recursive `**/docs/` glob is what catches co-located module docs (e.g. `src/orders/docs/`) per the Placement Contract.
+
+> **Placement Contract** (see [ADR-004](//@agent-memory/docs/adr/2026-07-06-docs-placement-contract.md)): docs follow **scope = location** — module docs co-locate in `[module]/docs/`; cross-cutting docs live at the **Lowest Common Ancestor** of what they interconnect (ADRs bias to root `/docs/adr/`). This map is the **navigation layer** — it indexes docs wherever they physically sit and is where flow/playbook ordering is imposed without moving files.
 
 **File patterns** (case-insensitive):
 - `README*.md`
@@ -89,6 +91,12 @@ Orientation map loaded: shared-memory/[PROJECT-NAME]/context/orientation-map.md
 - `CONTRIBUTING.md`, `GLOSSARY.md`, `CHANGELOG.md` (optional, `type: other`)
 
 **Skip**: `.git/`, `node_modules/`, `vendor/`, `build/`, `dist/`, `.next/`, `target/`, `bin/`, `obj/`, hidden folders (except `.github/`).
+
+**Submodule boundary rule**: the `**/docs/` glob will surface `docs/` folders that live **inside a git submodule** (path under a `.gitmodules` entry, or a nested `.git` file). A submodule is a separate repo whose docs have a natural home in its own map — do **NOT** silently fold them into the root project map. When a discovered `docs/` is inside a submodule, ASK [USER-NAME]:
+
+> *"`docs/` at `[path]` is inside submodule `[name]`. Index it via **A) a sub-map inside the submodule** (`[sub-path]/orientation-map.md` — ships with the submodule on standalone clone), or **B) directly in the root project map**?"*
+
+This is the same A/B placement choice as [C3](#c3-detect-sub-projects) (sub-map inside sub-project vs root). Default recommendation: **A** for real git submodules (keeps the map with the repo that owns the docs); **B** for small projects that prefer a single flat root map. In-project module docs that are NOT inside a submodule (e.g. `src/orders/docs/`) are indexed directly in the root/nearest map with no ask.
 
 ### C3: Detect sub-projects
 
