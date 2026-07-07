@@ -3,6 +3,7 @@ project: "[project-name]"
 description: "Orientation map for [project] — index of READMEs, architecture docs, flow diagrams, ADRs, and sub-project maps with staleness + role tracking."
 created: "YYYY-MM-DD"
 last_full_scan: "YYYY-MM-DD"
+# source_of_truth: project   # present only on an IN-PROJECT map after /localize-context (default = central, omit)
 ---
 
 # Orientation Map — [project-name]
@@ -160,3 +161,12 @@ For `type: orientation-map-link` entries: if the entry passes the role filter, A
 - Remove example entries that don't apply to this project.
 - For monorepos with sub-projects: parent map references sub-maps via `type: orientation-map-link` entries. Sub-maps live in the same `context/` folder with suffix naming (`orientation-map-[subproject].md`).
 - For projects with no role split (single-role projects like undanganaku, agent-memory framework): all entries get `scope: shared`, `roles: []`. Role filtering becomes a no-op.
+
+## Localization (delete after first fill)
+
+A **consenting** project can graduate its map + structural context into its own repo via [`/localize-context`](../procedures/localize-context.md) (see [ADR-005](../../docs/adr/2026-07-06-project-local-memory-externalization.md)). After graduation:
+
+- The real map lives **in the project repo** at `<project-root>/.agents/orientation-map.md` with frontmatter `source_of_truth: project`. Entry paths are **project-root-relative**.
+- Structural context moves to `<project-root>/.agents/context/`; the root `AGENTS.md` gets a prose pointer to the map.
+- The **central** `shared-memory/[project]/context/orientation-map.md` becomes a thin **stub** with frontmatter `home: project` + `localized_path: .agents/orientation-map.md`. It holds no real entries — it's the fleet breadcrumb + the machine-branch signal that [Localized Home Resolution](../procedures/localize-context.md#localized-home-resolution) keys off (resolved relative to the project cwd).
+- **Only code-describing artifacts localize.** Episodic / emotional / relationship / business / role-private memory stays fleet-private and central.
