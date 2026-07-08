@@ -33,7 +33,7 @@ Silent no-op if no map exists or no orientation docs touched. Capture refresh co
 
 Execute [Push All Protocol](//@agent-memory/control-files/procedures/push-all.md). Invoking `/wrap-up` IS the authorization to commit + push — The whole point of `/wrap-up` is to persist everything before the user walks away / shuts down.
 
-⚠️ **Not every repo should be pushed.** Some are **vendored / third-party / read-only** dependencies (e.g. a Unity SDK submodule like `Ludios PLKO_SDK`) — pushing them is wrong, and their being dirty must NOT fail the wrap-up. **Before pushing, consult the project's push-exclude list** at `shared-memory/[project]/context/push-policy.md` (if present). Push every repo EXCEPT the excluded ones; excluded repos are reported as `skipped (excluded)`, never pushed, never counted against completion.
+⚠️ **Not every repo should be pushed.** Some are **vendored / third-party / read-only** dependencies  — pushing them is wrong, and their being dirty must NOT fail the wrap-up. **Before pushing, consult the project's push-exclude list** at `shared-memory/[project]/context/push-policy.md` (if present). Push every repo EXCEPT the excluded ones; excluded repos are reported as `skipped (excluded)`, never pushed, never counted against completion.
 
 Tool calls visible (git commands); capture commit hashes for Step 5.
 
