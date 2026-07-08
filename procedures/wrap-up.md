@@ -29,9 +29,13 @@ If this session touched orientation docs (READMEs, architecture, flow diagrams, 
 
 Silent no-op if no map exists or no orientation docs touched. Capture refresh count / no-op reason for Step 5.
 
-### Step 3: Push Everything (silent)
+### Step 3: Push Everything (silent) — MANDATORY
 
-Execute [Push All Protocol](//@agent-memory/control-files/procedures/push-all.md). Tool calls visible (git commands); capture commit hashes / no-changes status for Step 5.
+Execute [Push All Protocol](//@agent-memory/control-files/procedures/push-all.md). Invoking `/wrap-up` IS the authorization to commit + push — **NEVER ask for confirmation, NEVER defer, NEVER "hand over the commands."** The whole point of `/wrap-up` is to persist everything before the user walks away / shuts down.
+
+Tool calls visible (git commands); capture commit hashes for Step 5.
+
+**Then verify (drives the Step 5 completion gate)**: run `git status --short` in every repo (project + submodules + agent-memory) and confirm each branch is pushed (not ahead of its remote). Record, per repo, whether the tree is **clean AND pushed**. Do NOT attempt elaborate recovery — if a push fails or anything remains, that is simply carried to Step 5, where the wrap-up fails loudly.
 
 ### Step 4: Extract Open Items (silent)
 
@@ -39,7 +43,9 @@ Read the newest H3 sub-episode block. Extract `Tech Debts` and `Next Steps` from
 
 ### Step 5: Final Summary (only visible output)
 
-Print ONE summary block:
+**Completion gate (per NO TODOS LEFT BEHIND, UUID a1b2c3d4)**: using the Step 3 verification, check every repo. The wrap-up is **complete ONLY if EVERY repo is clean AND pushed**. If ANY repo has uncommitted changes, a branch ahead of its remote, or a failed push → **the wrap-up is NOT complete**: print the *WRAP-UP INCOMPLETE* block (at the bottom of this step) instead, and never claim completion.
+
+**On success (every repo clean + pushed)**, print this block:
 
 ```
 Wrap-up complete (mode: [fresh / delta from CUTOFF]):
@@ -51,9 +57,9 @@ Memory update:
 
 Orientation map: [refreshed N entries / no-op: reason]
 
-Push:
-- [submodule]: [commit-hash pushed / no changes]
-- [parent]: [commit-hash pushed / no changes]
+Push (every repo must be ✅):
+- [submodule]: ✅ [commit-hash] pushed / no changes
+- [parent]: ✅ [commit-hash] pushed / no changes
 
 📋 Open items going forward:
 
@@ -69,3 +75,22 @@ Next steps:
 ```
 
 If both Tech Debts and Next Steps are empty → replace both lists with *"No open items declared from this session."*
+
+---
+
+**On failure (ANY repo not clean + pushed)** — do NOT print "Wrap-up complete". Print this block instead:
+
+```
+🚨 WRAP-UP INCOMPLETE — UNPUSHED WORK. Do NOT shut down.
+
+[Memory update / Orientation map / Open items sections — same as above]
+
+Push — FAILED / INCOMPLETE:
+- [repo]: ⚠️ [uncommitted N files / branch ahead by N / push error: <reason>]
+- [repo]: ✅ [commit-hash] pushed
+
+⚠️ Your work is NOT fully saved to the remote. What remains, and where:
+- [repo → what's uncommitted/unpushed]
+
+Retry the push (or resolve the blocker) before leaving — the wrap-up is only complete when every repo is clean AND pushed.
+```
