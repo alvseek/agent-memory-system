@@ -31,11 +31,13 @@ Silent no-op if no map exists or no orientation docs touched. Capture refresh co
 
 ### Step 3: Push Everything (silent) — MANDATORY
 
-Execute [Push All Protocol](//@agent-memory/control-files/procedures/push-all.md). Invoking `/wrap-up` IS the authorization to commit + push — **NEVER ask for confirmation, NEVER defer, NEVER "hand over the commands."** The whole point of `/wrap-up` is to persist everything before the user walks away / shuts down.
+Execute [Push All Protocol](//@agent-memory/control-files/procedures/push-all.md). Invoking `/wrap-up` IS the authorization to commit + push — The whole point of `/wrap-up` is to persist everything before the user walks away / shuts down.
+
+⚠️ **Not every repo should be pushed.** Some are **vendored / third-party / read-only** dependencies (e.g. a Unity SDK submodule like `Ludios PLKO_SDK`) — pushing them is wrong, and their being dirty must NOT fail the wrap-up. **Before pushing, consult the project's push-exclude list** at `shared-memory/[project]/context/push-policy.md` (if present). Push every repo EXCEPT the excluded ones; excluded repos are reported as `skipped (excluded)`, never pushed, never counted against completion.
 
 Tool calls visible (git commands); capture commit hashes for Step 5.
 
-**Then verify (drives the Step 5 completion gate)**: run `git status --short` in every repo (project + submodules + agent-memory) and confirm each branch is pushed (not ahead of its remote). Record, per repo, whether the tree is **clean AND pushed**. Do NOT attempt elaborate recovery — if a push fails or anything remains, that is simply carried to Step 5, where the wrap-up fails loudly.
+**Then verify (drives the Step 5 completion gate)**: run `git status --short` in every repo (project + submodules + agent-memory) and confirm each branch is pushed (not ahead of its remote). Record, per repo, whether the tree is **clean AND pushed** — **excluded repos are exempt** (report them as `skipped (excluded)`, not as failures). Do NOT attempt elaborate recovery — if a push of an *in-scope* repo fails or anything in-scope remains, that is simply carried to Step 5, where the wrap-up fails loudly.
 
 ### Step 4: Extract Open Items (silent)
 
@@ -43,7 +45,7 @@ Read the newest H3 sub-episode block. Extract `Tech Debts` and `Next Steps` from
 
 ### Step 5: Final Summary (only visible output)
 
-**Completion gate (per NO TODOS LEFT BEHIND, UUID a1b2c3d4)**: using the Step 3 verification, check every repo. The wrap-up is **complete ONLY if EVERY repo is clean AND pushed**. If ANY repo has uncommitted changes, a branch ahead of its remote, or a failed push → **the wrap-up is NOT complete**: print the *WRAP-UP INCOMPLETE* block (at the bottom of this step) instead, and never claim completion.
+**Completion gate (per NO TODOS LEFT BEHIND, UUID a1b2c3d4)**: using the Step 3 verification, check every **in-scope** repo (repos on the project's push-exclude list are exempt). The wrap-up is **complete ONLY if EVERY in-scope repo is clean AND pushed**. If ANY in-scope repo has uncommitted changes, a branch ahead of its remote, or a failed push → **the wrap-up is NOT complete**: print the *WRAP-UP INCOMPLETE* block (at the bottom of this step) instead, and never claim completion. (Excluded repos never trigger this — they are reported as `skipped (excluded)`.)
 
 **On success (every repo clean + pushed)**, print this block:
 
@@ -57,9 +59,10 @@ Memory update:
 
 Orientation map: [refreshed N entries / no-op: reason]
 
-Push (every repo must be ✅):
+Push (every in-scope repo must be ✅):
 - [submodule]: ✅ [commit-hash] pushed / no changes
 - [parent]: ✅ [commit-hash] pushed / no changes
+- [excluded repo]: ⏭️ skipped (excluded — vendored/read-only)   ← only if the project has exclusions
 
 📋 Open items going forward:
 
@@ -81,7 +84,7 @@ If both Tech Debts and Next Steps are empty → replace both lists with *"No ope
 **On failure (ANY repo not clean + pushed)** — do NOT print "Wrap-up complete". Print this block instead:
 
 ```
-🚨 WRAP-UP INCOMPLETE — UNPUSHED WORK. Do NOT shut down.
+🚨 WRAP-UP INCOMPLETE — UNPUSHED WORK. NEED CONFIRMATION.
 
 [Memory update / Orientation map / Open items sections — same as above]
 

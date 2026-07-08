@@ -13,6 +13,8 @@ Commit and push changes in both the current working project and the agent-memory
 
 ## Procedure
 
+> **Push-exclude list (check first).** Before pushing, consult the project's push policy at `shared-memory/[project]/context/push-policy.md` (if present). Repos/submodules listed there are **vendored / third-party / read-only** (e.g. a Unity SDK submodule like `Ludios PLKO_SDK`) — **do NOT commit or push them**, and do NOT count their state against completion. Report each as `skipped (excluded)`. Absent file → no exclusions (push project + agent-memory + owned submodules as normal).
+
 ### Step 1: Push Project Files
 
 Follow the [Push Project](/push-project) procedure for the current working directory.
