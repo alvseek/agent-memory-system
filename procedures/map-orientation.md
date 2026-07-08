@@ -96,6 +96,9 @@ Orientation map loaded: shared-memory/[PROJECT-NAME]/context/orientation-map.md
 - `ARCH*.md`
 - `ADR-*.md` or `*-adr.md`
 - `*.mmd`, `*.mermaid`
+- `*.md` under any `docs/flows/` folder (flow docs from `/generate-flow-docs` — carry `doc_type: flow` frontmatter)
+- `*.md` under any `docs/domain/` folder (domain docs from `/generate-domain-docs` — carry `doc_type: domain` frontmatter)
+- `*.md` under any `docs/architecture/` folder (architecture docs from `/generate-architecture-docs` — carry `doc_type: architecture-map` / `architecture-overview` frontmatter)
 - `CONTRIBUTING.md`, `GLOSSARY.md`, `CHANGELOG.md` (optional, `type: other`)
 
 **Skip**: `.git/`, `node_modules/`, `vendor/`, `build/`, `dist/`, `.next/`, `target/`, `bin/`, `obj/`, hidden folders (except `.github/`).
@@ -136,7 +139,7 @@ Use `head -20` / first 500 chars only. Do NOT read full file content.
 
 ### C5: Classify type + scope + roles (heuristic)
 
-**Type** (path + filename):
+**Type** (path + filename + frontmatter — **match top-to-bottom; a specific `doc_type` wins over a folder fallback**):
 
 | Pattern | Type |
 |---|---|
@@ -145,6 +148,12 @@ Use `head -20` / first 500 chars only. Do NOT read full file content.
 | `ARCH-map.md` or `architecture-map.md` | `architecture-map` |
 | `ARCH-*.md` (domain/overhead/governance) | `architecture-overview` |
 | `*.mmd`, `*.mermaid` | `flow-diagram` |
+| `*.md` with `doc_type: flow-journey-map` frontmatter | `flow-journey-map` |
+| `*.md` with `doc_type: flow` frontmatter (or other `docs/flows/` `*.md`) | `flow-diagram` |
+| `*.md` with `doc_type: domain-context-map` frontmatter | `domain-context-map` |
+| `*.md` with `doc_type: domain` frontmatter (or other `docs/domain/` `*.md`) | `domain-model` |
+| `*.md` with `doc_type: architecture-map` frontmatter | `architecture-map` |
+| `*.md` with `doc_type: architecture-overview` frontmatter (or other `docs/architecture/` `*.md`) | `architecture-overview` |
 | `ADR-*.md` or `*-decision.md` | `adr` |
 | Sub-map reference (from C3) | `orientation-map-link` |
 | Anything else | `other` |
