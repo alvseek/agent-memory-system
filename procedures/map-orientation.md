@@ -67,7 +67,7 @@ If L3 flagged any entries: write the updated map back. Else: skip the write.
 ### L5: Report
 
 ```
-Orientation map loaded: shared-memory/[PROJECT-NAME]/context/orientation-map.md
+Orientation map loaded: [MAP_PATH]
   - N entries total
   - M unverified (need agent verification on next relevant task)
   - K stale-but-valuable | L obsolete
@@ -83,7 +83,7 @@ Orientation map loaded: shared-memory/[PROJECT-NAME]/context/orientation-map.md
 ### C1: Branch on existence
 
 - `MAP_EXISTS = true` → confirm with [USER-NAME]: *"map already exists, did you mean `--rescan`?"* Wait for confirmation.
-- `MAP_EXISTS = false` → ensure `shared-memory/[PROJECT-NAME]/context/` exists (`mkdir -p`), continue.
+- `MAP_EXISTS = false` → ensure `[CONTEXT_DIR]` exists (`mkdir -p`), continue.
 
 ### C2: Scan for orientation artifacts
 
@@ -143,7 +143,8 @@ Use `head -20` / first 500 chars only. Do NOT read full file content.
 
 | Pattern | Type |
 |---|---|
-| `README*.md` with 7Q structure (≥4 of 7 questions present) | `7q-readme` |
+| `*.md` with `doc_type: 7q-readme` frontmatter | `7q-readme` |
+| `README*.md` with 7Q structure (≥4 of 7 questions present) | `7q-readme` (fallback for READMEs without `doc_type`) |
 | `README*.md` without 7Q structure | `other` (note: "non-7Q README") |
 | `ARCH-map.md` or `architecture-map.md` | `architecture-map` |
 | `ARCH-*.md` (domain/overhead/governance) | `architecture-overview` |
@@ -194,7 +195,7 @@ Write each sub-map (from C3) to its chosen path (A: inside sub-project, B: sibli
 ### C7: Report
 
 ```
-Orientation map created: shared-memory/[PROJECT-NAME]/context/orientation-map.md
+Orientation map created: [MAP_PATH]
   - N entries total (all unverified — will verify as future tasks touch their scope)
   - P sub-map links: [filenames]
 ```
@@ -262,7 +263,7 @@ Write back. Update `last_full_scan: [TODAY-DATE]`.
 ### R6: Report
 
 ```
-Orientation map rescanned: shared-memory/[PROJECT-NAME]/context/orientation-map.md
+Orientation map rescanned: [MAP_PATH]
   - N entries total | A added | O obsoleted | P preserved
 ```
 
@@ -286,6 +287,7 @@ Used by **Load Mode L2** when reading entries:
 - **[wrap-up](wrap-up.md)** — calls `/map-orientation --session-touched [paths]` for orientation docs the session touched. Silent no-op if map missing.
 - **[update-project-context](memory/update-project-context.md)** — preferred path when a session DISCOVERED an entry's status is wrong. Direct edit; mtime check picks it up on next awakening.
 - **[localize-context](localize-context.md)** — graduates a consenting project's map + structural context into its own repo (`.agents/`). Sets the central map's `home: project` frontmatter that the Prelude resolves. After localization, all modes here operate on the in-project `MAP_PATH` transparently.
+- **[discovery-contract](discovery-contract.md)** — the four doc generators' bare **discovery mode** reads this map (per-entry `status`, via the resolved `MAP_PATH`) to mark units documented-vs-not. A doc on disk that is absent from the map surfaces there as a staleness flag (→ `--rescan`).
 
 ---
 

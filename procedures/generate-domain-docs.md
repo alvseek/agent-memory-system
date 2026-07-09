@@ -1,34 +1,46 @@
 # Generate Domain Docs
 
-Generate **domain docs** — Mermaid diagrams of a project's *data / domain structure* — placed per the ADR-004 contract. This skill is **fractal** (like `/generate-readme`): the scope picks the altitude —
-- **bare / no arg → a domain-context-map** (the whole system: how bounded contexts relate)
+Generate **domain docs** — Mermaid diagrams of a project's *data / domain structure* — placed per the ADR-004 contract. Per [ADR-008](//@agent-memory/docs/adr/2026-07-09-discovery-first-generation.md), bare invocation runs **discovery** (lists the project's bounded contexts, documented-vs-not, per the [Doc Discovery Contract](discovery-contract.md)); you then generate one at a time. The scope picks the mode —
+- **bare / no arg → discovery** (the context inventory; pick one to deep-dive, or `[M]` for the context-map)
 - **`[context]` arg → one domain-model** (the deep-dive: one context's `erDiagram`)
+- **`[M]` pick → the domain-context-map** (the whole-system map altitude: how bounded contexts relate)
 
-A domain doc is one of the **atomic doc types**. Its siblings: `/generate-readme` (what a unit *is*), `/generate-flow-docs` (behavior), `/generate-architecture-docs` (component structure). A future `/generate-docs` orchestrator composes them. See [ADR-007](//@agent-memory/docs/adr/2026-07-08-doc-altitudes-and-three-layer-map-model.md) for the two-altitude model.
+A domain doc is one of the **atomic doc types**. Its siblings: `/generate-readme` (what a unit *is*), `/generate-flow-docs` (behavior), `/generate-architecture-docs` (component structure). A future `/generate-docs` orchestrator composes them. See [ADR-007](//@agent-memory/docs/adr/2026-07-08-doc-altitudes-and-three-layer-map-model.md) for the two-altitude model and [ADR-008](//@agent-memory/docs/adr/2026-07-09-discovery-first-generation.md) for discovery-first.
 
 ## Arguments
 
 `$ARGUMENTS`
 
-- `/generate-domain-docs` (bare) → a **domain-context-map** (map altitude): the whole system's bounded contexts + how they relate. → **Step 1A**.
+- `/generate-domain-docs` (bare) → **discovery**: the context inventory (documented / not / trivial-collapsed / `[M]` map). Pick one to deep-dive. → **Step 1D**.
 - `/generate-domain-docs [context]` → one **domain-model** ERD (deep-dive altitude). `[context]` is a **module / bounded-context path** (e.g. `src/orders`). → **Step 1B**.
+- `[M]` (from the discovery menu) → the **domain-context-map** (map altitude): the whole system's bounded contexts + how they relate. → **Step 1M**.
 
-Scope picks the altitude (fractal, like `/generate-readme`'s root vs module). To document several contexts' ERDs, run the deep-dive per context (a future `/generate-docs` orchestrator will batch this).
+Bare discovers; you generate one deep-dive at a time (a future `/generate-docs` orchestrator will batch this).
 
 ---
 
 ## Procedure
 
-### Step 1: Route by altitude
+### Step 1: Route by mode
 
-- **Bare / no arg → domain-context-map** (map altitude): go to **Step 1A**. That path is self-contained — Steps 2–6 are the deep-dive and don't apply.
+- **Bare / no arg → Discovery**: go to **Step 1D** (the context inventory). Nothing is generated until you pick.
 - **`[context]` arg → one domain-model** (deep-dive): go to **Step 1B**, then Steps 2–6.
+- **`[M]` pick (from discovery) → domain-context-map**: go to **Step 1M**. Self-contained — Steps 2–6 are the deep-dive and don't apply.
 
-### Step 1A: Domain-context-map (map altitude)
+### Step 1D: Discovery (bare)
 
-*The whole-system view of the domain: how bounded contexts relate. Per [ADR-007](//@agent-memory/docs/adr/2026-07-08-doc-altitudes-and-three-layer-map-model.md), this is a map-altitude content artifact — indexed by, but separate from, the orientation map.*
+*Run the bare **discovery** pass per the [Doc Discovery Contract](discovery-contract.md) — list the project's bounded contexts, marked documented-vs-not, and STOP for the human's pick. Discovery generates nothing.*
 
-1. **Identify the bounded contexts**: modules / packages / services that own their own models (each with its own entities). Glob `**/docs/domain/*.md` for existing per-context ERDs; scan module boundaries for contexts not yet documented.
+1. **Scan (unit = a bounded context)**: glob `**/docs/domain/*.md` (existing per-context ERDs → documented) + scan module boundaries for contexts that own entities but aren't yet documented (→ not).
+2. **Join status**: mark documented-vs-not from disk; enrich from the orientation map (`MAP_PATH`); a doc on disk absent from the map → `⚠ stale — /map-orientation --rescan` (per the contract).
+3. **Relevance floor (cheap signal)**: a context with ≤1 entity → bucket **trivial** (collapsed, overridable); contexts with ≥2 entities + a relationship are listed.
+4. **Present the inventory** in the contract's format (✓ documented / ✗ not / ▸ trivial / `[M]` domain-context-map) and STOP for the pick — a `[context]` pick → **Step 1B**; `[M]` → **Step 1M**.
+
+### Step 1M: Domain-context-map (the `[M]` map pick)
+
+*The whole-system view of the domain: how bounded contexts relate — synthesized only when picked (`[M]`), never on bare. Per [ADR-007](//@agent-memory/docs/adr/2026-07-08-doc-altitudes-and-three-layer-map-model.md), a map-altitude content artifact indexed by, but separate from, the orientation map.*
+
+1. **Identify the bounded contexts + readability check**: glob `**/docs/domain/*.md` for existing per-context ERDs; scan module boundaries for contexts not yet documented. **Readability ceiling** (flag-3): if the system has **more than ~15–20 bounded contexts**, STOP and recommend grouping into sub-context-maps (per area / subsystem) rather than one unreadable map — a judgment trigger, not a hard cap (recommend, let [USER-NAME] decide).
 2. **Infer the relationships**: how contexts integrate — the DDD patterns: upstream/downstream (U/D), shared kernel, customer/supplier, conformist, anti-corruption layer (ACL), open-host service (OHS). Read cross-context references / imports / shared types. `[CONFIRM]` where the pattern is a design intention code doesn't spell out; `[NOT FOUND]` where an integration is expected but unclear.
 3. **Build the diagram**: a Mermaid `flowchart` — contexts as nodes, edges labelled with the DDD pattern + direction.
 4. **Place**: root `docs/domain/context-map.md` (project-wide; project tree, never `.agents/`).
@@ -103,11 +115,12 @@ Present the domain doc to [USER-NAME]:
 
 ## Integration With Other Procedures
 
+- **[discovery-contract](//@agent-memory/control-files/procedures/discovery-contract.md)** — defines the bare **discovery mode** (Step 1D): inventory format, disk+map status-join, relevance floor, map-as-pick. Per [ADR-008](//@agent-memory/docs/adr/2026-07-09-discovery-first-generation.md), bare discovers; the context-map is the `[M]` pick, not the bare default.
 - **[generate-flow-docs](//@agent-memory/control-files/procedures/generate-flow-docs.md) / [generate-readme](//@agent-memory/control-files/procedures/generate-readme.md)** — sibling atomic doc generators. Same shape: resolve → extract/investigate → fill → review.
-- **[map-orientation](//@agent-memory/control-files/procedures/map-orientation.md)** — indexes the deep-dive as `domain-model` (`doc_type: domain`) and the map as `domain-context-map` (`doc_type: domain-context-map`). This skill does **not** run the map — indexing is `/wrap-up` or an explicit `/map-orientation --rescan`.
+- **[map-orientation](//@agent-memory/control-files/procedures/map-orientation.md)** — indexes the deep-dive as `domain-model` (`doc_type: domain`) and the map as `domain-context-map` (`doc_type: domain-context-map`), and supplies the documented-status that Step 1D discovery joins. This skill does **not** run the map — indexing is `/wrap-up` or an explicit `/map-orientation --rescan`.
 - **The two altitudes** (see [ADR-007](//@agent-memory/docs/adr/2026-07-08-doc-altitudes-and-three-layer-map-model.md)): the **domain-context-map** is the *map altitude* (how bounded contexts relate); the **domain-model** ERD is the *deep-dive*. Both are content docs, separate from the orientation map (navigation), which indexes them.
 - **Future `/generate-docs` orchestrator** — composes this with the other atomic generators. See [ADR-006](//@agent-memory/docs/adr/2026-07-07-doc-generation-family-architecture.md).
-- **Decision collection** — if Step 1 scope resolution is ambiguous, present the candidates using [wait-options](//@agent-memory/control-files/procedures/wait-options.md).
+- **Decision collection** — if Step 1B scope resolution is ambiguous, present the candidates using [wait-options](//@agent-memory/control-files/procedures/wait-options.md).
 
 ---
 
@@ -120,5 +133,5 @@ Present the domain doc to [USER-NAME]:
 5. **Runtime DB introspection.** Reconstruct from static code (entities / migrations / schema), not a live database.
 6. **Auto-running the orientation map.** This skill generates + reports only.
 7. **Re-documenting an existing context.** For the deep-dive, update an existing context's ERD rather than regenerating it.
-8. **Mixing altitudes.** Don't cram every entity into one ERD, and don't reduce the context-map to a single mega-ERD — the context-map shows *contexts + relationships*, the deep-dive shows one context's *entities*. Scope picks the altitude.
-9. **Stitching ERDs to fake a map.** The whole-system view is the context-map (bare) — one synthesized artifact of context *relationships*, not N ERDs glued together.
+8. **Mixing altitudes.** Don't cram every entity into one ERD, and don't reduce the context-map to a single mega-ERD — the context-map shows *contexts + relationships*, the deep-dive shows one context's *entities*. The mode picks the altitude — a `[context]` deep-dive vs the `[M]` context-map.
+9. **Stitching ERDs to fake a map.** The whole-system view is the context-map (the `[M]` pick) — one synthesized artifact of context *relationships*, not N ERDs glued together.

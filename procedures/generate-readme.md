@@ -1,25 +1,40 @@
 # Generate README (7Q README)
 
-Generate a **7Q README** (full name: **7 Questions Framework README**) by copying the template into a project, investigating the relevant scope, and filling each section from code.
+Generate a **7Q README** (full name: **7 Questions Framework README**) by copying the template into a project, investigating the relevant scope, and filling each section from code. Per [ADR-008](//@agent-memory/docs/adr/2026-07-09-discovery-first-generation.md), bare invocation runs **discovery** (lists the project's documentable scopes, documented-vs-not, per the [Doc Discovery Contract](discovery-contract.md)); a `[path]` arg generates one README — you generate one at a time.
 
 ## Arguments
 
 `$ARGUMENTS`
 
-- `/generate-readme` → Generate README at `./docs/README.md` for the current project scope
-- `/generate-readme [path]` → Generate README at the specified path (e.g., `./README.md`, `./src/orders/docs/README.md`)
+- `/generate-readme` (bare) → **discovery**: the scope inventory (documentable modules/scopes, documented / not / trivial-collapsed / `[M]` project README). Pick one to generate. → **Step 1D**.
+- `/generate-readme [path]` → generate one README at the specified path (e.g., `./src/orders/docs/README.md`). → **Step 1T**, then Steps 2–6.
+- `[M]` (from the discovery menu) → the project-level `docs/README.md` (README's map altitude is the root 7Q, prose — see [ADR-007](//@agent-memory/docs/adr/2026-07-08-doc-altitudes-and-three-layer-map-model.md)). → **Step 1T** with target `./docs/README.md`.
 
-If no arguments provided, use default: `./docs/README.md`
+Bare discovers; you generate one at a time.
 
 ---
 
 ## Procedure
 
-### Step 1: Determine Target
+### Step 1: Route by mode
 
-1. **If path argument provided**: Use it as the target file path
-2. **If no argument**: Default to `./docs/README.md`
-3. **If target file already exists**: Ask [USER-NAME] before overwriting — "A README already exists at [path]. Overwrite, merge, or pick a different location?"
+- **Bare / no arg → Discovery**: go to **Step 1D** (the scope inventory). Nothing is generated until you pick.
+- **`[path]` arg → one README** (deep-dive): go to **Step 1T**, then Steps 2–6.
+- **`[M]` pick (from discovery) → project README**: go to **Step 1T** with target `./docs/README.md`, then Steps 2–6.
+
+### Step 1D: Discovery (bare)
+
+*Run the bare **discovery** pass per the [Doc Discovery Contract](discovery-contract.md) — list the project's documentable scopes, marked documented-vs-not, and STOP for the human's pick. Discovery generates nothing.*
+
+1. **Scan (unit = a documentable scope)**: glob README locations (`README*.md`, `**/docs/README.md`) for documented scopes + scan buildable-unit folders (modules / services / packages) for scopes without a README (→ not).
+2. **Join status**: mark documented-vs-not from disk; enrich from the orientation map (`MAP_PATH`); a README on disk absent from the map → `⚠ stale — /map-orientation --rescan` (per the contract).
+3. **Relevance floor (cheap signal)**: an empty / trivial module (no real content, a stub package) → bucket **trivial** (collapsed, overridable); substantive units are listed.
+4. **Present the inventory** in the contract's format (✓ documented / ✗ not / ▸ trivial / `[M]` project `docs/README.md`) and STOP for the pick — a scope pick → **Step 1T**; `[M]` → **Step 1T** with target `./docs/README.md`.
+
+### Step 1T: Determine Target (deep-dive)
+
+1. **If a scope/path was picked or passed**: use it as the target file path (a module → `[module]/docs/README.md`; `[M]` → `./docs/README.md`)
+2. **If target file already exists**: Ask [USER-NAME] before overwriting — "A README already exists at [path]. Overwrite, merge, or pick a different location?"
 
 > **Placement Contract** (see [ADR-004](//@agent-memory/docs/adr/2026-07-06-docs-placement-contract.md)): **scope = location.** A **module** README co-locates in `[module]/docs/` next to the unit it describes (never hoisted into a central `/docs`) — a thin `README.md` may sit at the module folder root pointing into its own `docs/`. A **cross-cutting** README (`README-{topic}.md` spanning multiple units) lives at the **Lowest Common Ancestor** of what it interconnects — the nearest *existing* folder containing all its subjects, migrated up only as the span actually grows. The root `README.md` is a thin pointer, not a 7Q README.
 
@@ -28,7 +43,8 @@ If no arguments provided, use default: `./docs/README.md`
 1. Read the [README Template](//@agent-memory/control-files/templates/readme-template.md)
 2. Copy it to the target location
 3. Update the `# [Project Name]` heading with the actual project/module name
-4. Remove the convention preamble block (the blockquote marked "delete this section after reading") — the agent already knows the conventions
+4. Keep the `doc_type: 7q-readme` frontmatter — the orientation map keys on it (map-orientation C5)
+5. Remove the convention preamble block (the blockquote marked "delete this section after reading") — the agent already knows the conventions
 
 ### Step 3: Investigate Scope
 
@@ -98,3 +114,9 @@ Present the completed README to [USER-NAME]:
 - Ask if anything needs adjustment
 
 ---
+
+## Integration With Other Procedures
+
+- **[discovery-contract](//@agent-memory/control-files/procedures/discovery-contract.md)** — defines the bare **discovery mode** (Step 1D): inventory format, disk+map status-join, relevance floor, map-as-pick. Per [ADR-008](//@agent-memory/docs/adr/2026-07-09-discovery-first-generation.md), bare discovers; the project `docs/README.md` is the `[M]` pick, not the bare default.
+- **[generate-flow-docs](//@agent-memory/control-files/procedures/generate-flow-docs.md) / [generate-domain-docs](//@agent-memory/control-files/procedures/generate-domain-docs.md) / [generate-architecture-docs](//@agent-memory/control-files/procedures/generate-architecture-docs.md)** — sibling atomic doc generators. Same shape: resolve → investigate → fill → review.
+- **[map-orientation](//@agent-memory/control-files/procedures/map-orientation.md)** — classifies a generated README as `7q-readme` (via its `doc_type` frontmatter — C5), and supplies the documented-status that Step 1D discovery joins. This skill does **not** run the map — indexing is `/wrap-up` or an explicit `/map-orientation --rescan`.

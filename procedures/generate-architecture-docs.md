@@ -2,33 +2,50 @@
 
 Generate an **architecture doc** — a Mermaid diagram of a project's *component/structure* lens (components, boundaries, how they connect + deploy) wrapped in a short markdown doc — by resolving a scope, synthesizing the structure from static signals, and placing the doc per the ADR-004 contract.
 
-An architecture doc is one of the **atomic doc types** (the third + final). Its siblings: `/generate-readme` (what a unit *is*), `/generate-flow-docs` (behavior over time), `/generate-domain-docs` (data model). A future `/generate-docs` orchestrator composes them.
+An architecture doc is one of the **atomic doc types**. Its siblings: `/generate-readme` (what a unit *is*), `/generate-flow-docs` (behavior over time), `/generate-domain-docs` (data model). A future `/generate-docs` orchestrator composes them.
 
-This skill is **fractal** (like `/generate-readme`): the scope picks the altitude —
-- whole-project scope → an **architecture-map** (the system's components + how they connect)
-- a subsystem scope → an **architecture-overview** (that subsystem's internal structure)
+Architecture has **two axes** (per [ADR-008](//@agent-memory/docs/adr/2026-07-09-discovery-first-generation.md)) — and only one needs a discovery menu:
+- **Aspect** (cross-cutting concern — CICD, DBMS, auth…) — *name-addressed*, invisible in the folder tree, so **bare invocation runs aspect discovery** (the concern inventory) per the [Doc Discovery Contract](discovery-contract.md).
+- **Subsystem** (a module / service / area) — *scope-addressed*: the repo tree is already the menu, so a `[subsystem]` path arg goes straight to an **architecture-overview** (no discovery menu).
 
-See [ADR-007](//@agent-memory/docs/adr/2026-07-08-doc-altitudes-and-three-layer-map-model.md) for the two-altitude + 3-layer model.
+The whole-system **architecture-map** is the `[M]` pick from the aspect inventory (not the bare default). See [ADR-007](//@agent-memory/docs/adr/2026-07-08-doc-altitudes-and-three-layer-map-model.md) for the two-altitude + 3-layer model.
 
 ## Arguments
 
 `$ARGUMENTS`
 
-- `/generate-architecture-docs` (bare) or `/generate-architecture-docs project` → an **architecture-map** of the whole system.
-- `/generate-architecture-docs [subsystem]` → an **architecture-overview** of that subsystem (a module / service / bounded area path).
+- `/generate-architecture-docs` (bare) → **aspect discovery**: the concern inventory (2-layer — aspect → sub-topic; documented / not / `[M]` map). Pick one to generate. → **Step 1D**.
+- `/generate-architecture-docs [subsystem]` → an **architecture-overview** of that subsystem (a module / service / bounded area path) — no discovery menu. → **Step 1S**, then Steps 2–6.
+- `[M]` (from the aspect inventory) → the whole-system **architecture-map**. → **Step 1M**, then Steps 2–6 at project scope.
 
-One doc per run. To document several subsystems, run it per subsystem (a future `/generate-docs` orchestrator will batch this).
+One doc per run. Bare discovers; you generate one at a time (a future `/generate-docs` orchestrator will batch this).
 
 ---
 
 ## Procedure
 
-### Step 1: Resolve the scope + altitude
+### Step 1: Route by mode
 
-- **Bare / `project`** → altitude = **architecture-map** (whole system).
-- **A subsystem path arg** → altitude = **architecture-overview** of that subsystem. If the arg is ambiguous (matches several areas), ask [USER-NAME] which one.
+- **Bare / no arg → aspect discovery**: go to **Step 1D** (the concern inventory). Nothing is generated until you pick.
+- **`[subsystem]` path arg → architecture-overview**: go to **Step 1S**, then Steps 2–6. (No discovery menu — the repo tree is the menu.)
+- **`[M]` pick (from discovery) → architecture-map**: go to **Step 1M**, then Steps 2–6 at project scope.
 
-Filter out already-documented scopes: glob `**/docs/architecture/*.md`, read their `scope:` frontmatter / titles, and don't regenerate one that exists (update instead).
+### Step 1D: Aspect discovery (bare)
+
+*Run the bare **discovery** pass per the [Doc Discovery Contract](discovery-contract.md) over the **aspect** axis — cross-cutting concerns, which have no folder to see. List them documented-vs-not and STOP for the pick. Discovery generates nothing.*
+
+1. **Seed the aspect checklist (hybrid — ADR-008 Decision 4A)**: start from the standard concerns — **deployment/CICD, persistence/DBMS, auth, caching, messaging, observability, config, API/integration**.
+2. **Mark present/absent from signals**: use the same static signals Step 2 reads (`docker-compose` / k8s / `Procfile` → deployment; DB config / ORM → persistence; auth middleware → auth; CI config → CICD; queue/broker → messaging; etc.). Add any **detected-but-unlisted** aspect the signals reveal. An aspect with only a lone config file / no multi-component footprint → bucket **trivial** or "not detected" (collapsed).
+3. **Join status**: glob `**/docs/architecture/*.md` for existing aspect docs (documented); enrich from the orientation map (`MAP_PATH`); a doc on disk absent from the map → `⚠ stale — /map-orientation --rescan`.
+4. **Present the 2-layer inventory** in the contract's format (✓ / ✗ / ▸ trivial / `[M]` architecture-map). Layer 1 = the aspects; on picking an aspect, present **Layer 2** = its sub-topics (e.g. DBMS → connection · pooling · migrations · patterns). On a sub-topic pick → **Steps 2–6** with that concern's file-set as the scope (`doc_type: architecture-overview`). `[M]` → **Step 1M**.
+
+### Step 1S: Subsystem overview (path arg)
+
+Resolve the `[subsystem]` path as the scope. If the arg is ambiguous (matches several areas), ask [USER-NAME] which one. Filter already-documented scopes: glob `**/docs/architecture/*.md`, read their `scope:` frontmatter / titles, and don't regenerate one that exists (update instead). Altitude = **architecture-overview**. Continue to Step 2.
+
+### Step 1M: Architecture-map (the `[M]` map pick)
+
+The whole-system view — synthesized only when picked (`[M]`), never on bare. Altitude = **architecture-map**, scope = the whole project. Continue to Step 2 (its ~15–20-component readability check applies here).
 
 ### Step 2: Synthesize the structure + readability health-check
 
@@ -90,11 +107,12 @@ Present the architecture doc to [USER-NAME]:
 
 ## Integration With Other Procedures
 
+- **[discovery-contract](//@agent-memory/control-files/procedures/discovery-contract.md)** — defines the bare **aspect discovery mode** (Step 1D): inventory format, disk+map status-join, relevance floor, map-as-pick. Per [ADR-008](//@agent-memory/docs/adr/2026-07-09-discovery-first-generation.md), bare discovers the aspect axis; the architecture-map is the `[M]` pick and subsystems stay path-addressed.
 - **[generate-flow-docs](//@agent-memory/control-files/procedures/generate-flow-docs.md) / [generate-domain-docs](//@agent-memory/control-files/procedures/generate-domain-docs.md) / [generate-readme](//@agent-memory/control-files/procedures/generate-readme.md)** — sibling atomic doc generators. Same shape: resolve → extract/synthesize → fill → review.
-- **[map-orientation](//@agent-memory/control-files/procedures/map-orientation.md)** — indexes the generated doc as `architecture-map` or `architecture-overview` (via the `doc_type` frontmatter). This skill does **not** run the map — indexing is `/wrap-up` or an explicit `/map-orientation --rescan`.
+- **[map-orientation](//@agent-memory/control-files/procedures/map-orientation.md)** — indexes the generated doc as `architecture-map` or `architecture-overview` (via the `doc_type` frontmatter), and supplies the documented-status that Step 1D discovery joins. This skill does **not** run the map — indexing is `/wrap-up` or an explicit `/map-orientation --rescan`.
 - **The 3-layer model** ([ADR-007](//@agent-memory/docs/adr/2026-07-08-doc-altitudes-and-three-layer-map-model.md)): this doc is a **map-altitude content artifact** — cleanly separate from the *orientation map* (navigation), which indexes it. The orientation map maps *docs*; an architecture-map maps the *system*.
 - **Future `/generate-docs` orchestrator** — composes this with the other atomic generators. See [ADR-006](//@agent-memory/docs/adr/2026-07-07-doc-generation-family-architecture.md).
-- **Decision collection** — if Step 1 resolution is ambiguous, present the candidates using [wait-options](//@agent-memory/control-files/procedures/wait-options.md).
+- **Decision collection** — if Step 1S / Step 1D resolution is ambiguous, present the candidates using [wait-options](//@agent-memory/control-files/procedures/wait-options.md).
 
 ---
 

@@ -1,34 +1,46 @@
 # Generate Flow Docs
 
-Generate **flow docs** — Mermaid diagrams of a project's *behavior* — placed per the ADR-004 contract. This skill is **fractal** (like `/generate-readme`): the scope picks the altitude —
-- **bare / no arg → a flow-journey-map** (the whole system: how flows chain into journeys)
+Generate **flow docs** — Mermaid diagrams of a project's *behavior* — placed per the ADR-004 contract. Per [ADR-008](//@agent-memory/docs/adr/2026-07-09-discovery-first-generation.md), bare invocation runs **discovery** (lists the project's flows, documented-vs-not, per the [Doc Discovery Contract](discovery-contract.md)); you then generate one at a time. The scope picks the mode —
+- **bare / no arg → discovery** (the flow inventory; pick one to deep-dive, or `[M]` for the journey-map)
 - **`[flow]` arg → one flow-diagram** (the deep-dive: one flow's sequence over time)
+- **`[M]` pick → the flow-journey-map** (the whole-system map altitude: how flows chain into journeys)
 
-A flow doc is one of the **atomic doc types**. Its siblings: `/generate-readme` (what a unit *is*), `/generate-domain-docs` (data model), `/generate-architecture-docs` (component structure). A future `/generate-docs` orchestrator composes them. See [ADR-007](//@agent-memory/docs/adr/2026-07-08-doc-altitudes-and-three-layer-map-model.md) for the two-altitude model.
+A flow doc is one of the **atomic doc types**. Its siblings: `/generate-readme` (what a unit *is*), `/generate-domain-docs` (data model), `/generate-architecture-docs` (component structure). A future `/generate-docs` orchestrator composes them. See [ADR-007](//@agent-memory/docs/adr/2026-07-08-doc-altitudes-and-three-layer-map-model.md) for the two-altitude model and [ADR-008](//@agent-memory/docs/adr/2026-07-09-discovery-first-generation.md) for discovery-first.
 
 ## Arguments
 
 `$ARGUMENTS`
 
-- `/generate-flow-docs` (bare) → a **flow-journey-map** (map altitude): the whole system's flows + how they chain. → **Step 1A**.
+- `/generate-flow-docs` (bare) → **discovery**: the flow inventory (documented / not / trivial-collapsed / `[M]` map). Pick one to deep-dive. → **Step 1D**.
 - `/generate-flow-docs [flow]` → one **flow-diagram** (deep-dive altitude). `[flow]` is a **flow name** ("order checkout") or an **entrypoint reference** (route, handler, cron job, consumer, CLI command). → **Step 1B**.
+- `[M]` (from the discovery menu) → the **flow-journey-map** (map altitude): the whole system's flows + how they chain. → **Step 1M**.
 
-Scope picks the altitude (fractal, like `/generate-readme`'s root vs module). To document several specific flows, run the deep-dive per flow (a future `/generate-docs` orchestrator will batch this).
+Bare discovers; you generate one deep-dive at a time (a future `/generate-docs` orchestrator will batch this).
 
 ---
 
 ## Procedure
 
-### Step 1: Route by altitude
+### Step 1: Route by mode
 
-- **Bare / no arg → flow-journey-map** (map altitude): go to **Step 1A**. That path is self-contained — Steps 2–6 are the deep-dive and don't apply.
+- **Bare / no arg → Discovery**: go to **Step 1D** (the flow inventory). Nothing is generated until you pick.
 - **`[flow]` arg → one flow-diagram** (deep-dive): go to **Step 1B**, then Steps 2–6.
+- **`[M]` pick (from discovery) → flow-journey-map**: go to **Step 1M**. Self-contained — Steps 2–6 are the deep-dive and don't apply.
 
-### Step 1A: Flow-journey-map (map altitude)
+### Step 1D: Discovery (bare)
 
-*The whole-system view of behavior: how flows chain into journeys. Per [ADR-007](//@agent-memory/docs/adr/2026-07-08-doc-altitudes-and-three-layer-map-model.md), this is a map-altitude content artifact — indexed by, but separate from, the orientation map.*
+*Run the bare **discovery** pass per the [Doc Discovery Contract](discovery-contract.md) — list the project's flows, marked documented-vs-not, and STOP for the human's pick. Discovery generates nothing.*
 
-1. **Discover the flows**: glob `**/docs/flows/*.md` (existing flow-diagram docs) + light-scan entrypoints (routes / cron / consumers / CLI / UI handlers) for flows not yet documented.
+1. **Scan (unit = a flow)**: glob `**/docs/flows/*.md` (existing flow-diagram docs → documented) + light-scan entrypoints (routes / cron / consumers / CLI / UI handlers) for flows not yet documented (→ not).
+2. **Join status**: mark documented-vs-not from disk; enrich from the orientation map (`MAP_PATH`); a doc on disk absent from the map → `⚠ stale — /map-orientation --rescan` (per the contract).
+3. **Relevance floor (cheap signal)**: a flow whose entrypoint handler is confined to ~1 file / ≤2 calls / no branch → bucket **trivial** (collapsed, overridable); multi-participant / branching / external-call flows are listed.
+4. **Present the inventory** in the contract's format (✓ documented / ✗ not / ▸ trivial / `[M]` flow-journey-map) and STOP for the pick — a `[flow]` pick → **Step 1B**; `[M]` → **Step 1M**.
+
+### Step 1M: Flow-journey-map (the `[M]` map pick)
+
+*The whole-system view of behavior: how flows chain into journeys — synthesized only when picked (`[M]`), never on bare. Per [ADR-007](//@agent-memory/docs/adr/2026-07-08-doc-altitudes-and-three-layer-map-model.md), a map-altitude content artifact indexed by, but separate from, the orientation map.*
+
+1. **Discover the flows + readability check**: glob `**/docs/flows/*.md` + light-scan entrypoints for undocumented flows. **Readability ceiling** (flag-3): if the system has **more than ~15–20 flows**, STOP and recommend grouping into named sub-journeys / per-area journey sub-maps rather than one unreadable map — a judgment trigger, not a hard cap (recommend, let [USER-NAME] decide).
 2. **Infer the chains**: how one flow's outcome hands off to the next — an emitted event another flow consumes, a success redirect into another entrypoint, shared state. `[CONFIRM]` inferred chains; `[NOT FOUND]` where a handoff is expected but unclear.
 3. **Build the diagram**: a Mermaid `flowchart` — flows as nodes, edges labelled with the handoff (`then` / `triggers` / `emits …`).
 4. **Place**: root `docs/flows/journey-map.md` (project-wide; project tree, never `.agents/`).
@@ -108,11 +120,12 @@ Present the flow doc to [USER-NAME]:
 
 ## Integration With Other Procedures
 
+- **[discovery-contract](//@agent-memory/control-files/procedures/discovery-contract.md)** — defines the bare **discovery mode** (Step 1D): inventory format, disk+map status-join, relevance floor, map-as-pick. Per [ADR-008](//@agent-memory/docs/adr/2026-07-09-discovery-first-generation.md), bare discovers; the journey-map is the `[M]` pick, not the bare default.
 - **[generate-readme](//@agent-memory/control-files/procedures/generate-readme.md)** — sibling atomic doc generator (7Q README). Same shape: resolve → investigate → fill → review.
-- **[map-orientation](//@agent-memory/control-files/procedures/map-orientation.md)** — indexes the deep-dive as `flow-diagram` (`doc_type: flow`) and the map as `flow-journey-map` (`doc_type: flow-journey-map`). This skill does **not** run the map itself — indexing happens at `/wrap-up` or an explicit `/map-orientation --rescan`.
+- **[map-orientation](//@agent-memory/control-files/procedures/map-orientation.md)** — indexes the deep-dive as `flow-diagram` (`doc_type: flow`) and the map as `flow-journey-map` (`doc_type: flow-journey-map`), and supplies the documented-status that Step 1D discovery joins. This skill does **not** run the map itself — indexing happens at `/wrap-up` or an explicit `/map-orientation --rescan`.
 - **The two altitudes** (see [ADR-007](//@agent-memory/docs/adr/2026-07-08-doc-altitudes-and-three-layer-map-model.md)): the **flow-journey-map** is the *map altitude* (a content map of how flows relate); the **flow-diagram** is the *deep-dive*. Both are content docs, separate from the orientation map (navigation), which indexes them.
 - **Future `/generate-docs` orchestrator** — will compose this with the sibling generators to produce a project's full doc suite. See [ADR-006](//@agent-memory/docs/adr/2026-07-07-doc-generation-family-architecture.md).
-- **Decision collection** — if Step 1 resolution is ambiguous, present the candidates using [wait-options](//@agent-memory/control-files/procedures/wait-options.md).
+- **Decision collection** — if Step 1B resolution is ambiguous, present the candidates using [wait-options](//@agent-memory/control-files/procedures/wait-options.md).
 
 ---
 
@@ -123,5 +136,5 @@ Present the flow doc to [USER-NAME]:
 3. **Inventing a parent folder for placement.** Use the nearest *existing* common ancestor. Don't fabricate a `/flows/` root or a `/software/` parent.
 4. **Auto-running the orientation map.** This skill generates + reports only. Indexing is `/wrap-up`'s or an explicit `/map-orientation`'s job.
 5. **Re-documenting an existing flow.** For the deep-dive, update an existing flow doc rather than regenerating it.
-6. **Mixing altitudes.** Don't put one flow's step-by-step internals into the journey-map (that's the deep-dive), and don't cram every flow into one deep-dive (that's the map). Scope picks the altitude.
-7. **Stitching deep-dives to fake a map.** The whole-system view is the journey-map (bare) — one synthesized artifact, not N flow-diagrams glued together.
+6. **Mixing altitudes.** Don't put one flow's step-by-step internals into the journey-map (that's the deep-dive), and don't cram every flow into one deep-dive (that's the map). The mode picks the altitude — a `[flow]` deep-dive vs the `[M]` journey-map.
+7. **Stitching deep-dives to fake a map.** The whole-system view is the journey-map (the `[M]` pick) — one synthesized artifact, not N flow-diagrams glued together.
