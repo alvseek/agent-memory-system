@@ -5,7 +5,7 @@ Generate **domain docs** — Mermaid diagrams of a project's *data / domain stru
 - **`[context]` arg → one domain-model** (the deep-dive: one context's `erDiagram`)
 - **`[M]` pick → the domain-context-map** (the whole-system map altitude: how bounded contexts relate)
 
-A domain doc is one of the **atomic doc types**. Its siblings: `/generate-readme` (what a unit *is*), `/generate-flow-docs` (behavior), `/generate-architecture-docs` (component structure). A future `/generate-docs` orchestrator composes them. See [ADR-007](//@agent-memory/docs/adr/2026-07-08-doc-altitudes-and-three-layer-map-model.md) for the two-altitude model and [ADR-008](//@agent-memory/docs/adr/2026-07-09-discovery-first-generation.md) for discovery-first.
+A domain doc is one of the **atomic doc types**. Its siblings: `/generate-readme` (what a unit *is*), `/generate-flow-docs` (behavior), `/generate-architecture-docs` (component structure). The [`/generate-docs`](generate-docs.md) orchestrator composes them (the cross-lens map surface). See [ADR-007](//@agent-memory/docs/adr/2026-07-08-doc-altitudes-and-three-layer-map-model.md) for the two-altitude model and [ADR-008](//@agent-memory/docs/adr/2026-07-09-discovery-first-generation.md) for discovery-first.
 
 ## Arguments
 
@@ -15,7 +15,7 @@ A domain doc is one of the **atomic doc types**. Its siblings: `/generate-readme
 - `/generate-domain-docs [context]` → one **domain-model** ERD (deep-dive altitude). `[context]` is a **module / bounded-context path** (e.g. `src/orders`). → **Step 1B**.
 - `[M]` (from the discovery menu) → the **domain-context-map** (map altitude): the whole system's bounded contexts + how they relate. → **Step 1M**.
 
-Bare discovers; you generate one deep-dive at a time (a future `/generate-docs` orchestrator will batch this).
+Bare discovers; you generate one deep-dive at a time. The [`/generate-docs`](generate-docs.md) orchestrator generates the whole-system map of every lens at once (the cross-lens `[M]` pick) — deep-dives still go one at a time.
 
 ---
 
@@ -119,7 +119,7 @@ Present the domain doc to [USER-NAME]:
 - **[generate-flow-docs](//@agent-memory/control-files/procedures/generate-flow-docs.md) / [generate-readme](//@agent-memory/control-files/procedures/generate-readme.md)** — sibling atomic doc generators. Same shape: resolve → extract/investigate → fill → review.
 - **[map-orientation](//@agent-memory/control-files/procedures/map-orientation.md)** — indexes the deep-dive as `domain-model` (`doc_type: domain`) and the map as `domain-context-map` (`doc_type: domain-context-map`), and supplies the documented-status that Step 1D discovery joins. This skill does **not** run the map — indexing is `/wrap-up` or an explicit `/map-orientation --rescan`.
 - **The two altitudes** (see [ADR-007](//@agent-memory/docs/adr/2026-07-08-doc-altitudes-and-three-layer-map-model.md)): the **domain-context-map** is the *map altitude* (how bounded contexts relate); the **domain-model** ERD is the *deep-dive*. Both are content docs, separate from the orientation map (navigation), which indexes them.
-- **Future `/generate-docs` orchestrator** — composes this with the other atomic generators. See [ADR-006](//@agent-memory/docs/adr/2026-07-07-doc-generation-family-architecture.md).
+- **[`/generate-docs`](generate-docs.md) orchestrator** — composes this generator's `[M]` (context-map) path with the other atomic generators to synthesize the whole-system doc surface. See [ADR-006](//@agent-memory/docs/adr/2026-07-07-doc-generation-family-architecture.md) + [ADR-009](//@agent-memory/docs/adr/2026-07-09-generate-docs-orchestrator.md).
 - **Decision collection** — if Step 1B scope resolution is ambiguous, present the candidates using [wait-options](//@agent-memory/control-files/procedures/wait-options.md).
 
 ---

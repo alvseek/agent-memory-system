@@ -2,7 +2,7 @@
 
 Generate an **architecture doc** — a Mermaid diagram of a project's *component/structure* lens (components, boundaries, how they connect + deploy) wrapped in a short markdown doc — by resolving a scope, synthesizing the structure from static signals, and placing the doc per the ADR-004 contract.
 
-An architecture doc is one of the **atomic doc types**. Its siblings: `/generate-readme` (what a unit *is*), `/generate-flow-docs` (behavior over time), `/generate-domain-docs` (data model). A future `/generate-docs` orchestrator composes them.
+An architecture doc is one of the **atomic doc types**. Its siblings: `/generate-readme` (what a unit *is*), `/generate-flow-docs` (behavior over time), `/generate-domain-docs` (data model). The [`/generate-docs`](generate-docs.md) orchestrator composes them (the cross-lens map surface).
 
 Architecture has **two axes** (per [ADR-008](//@agent-memory/docs/adr/2026-07-09-discovery-first-generation.md)) — and only one needs a discovery menu:
 - **Aspect** (cross-cutting concern — CICD, DBMS, auth…) — *name-addressed*, invisible in the folder tree, so **bare invocation runs aspect discovery** (the concern inventory) per the [Doc Discovery Contract](discovery-contract.md).
@@ -18,7 +18,7 @@ The whole-system **architecture-map** is the `[M]` pick from the aspect inventor
 - `/generate-architecture-docs [subsystem]` → an **architecture-overview** of that subsystem (a module / service / bounded area path) — no discovery menu. → **Step 1S**, then Steps 2–6.
 - `[M]` (from the aspect inventory) → the whole-system **architecture-map**. → **Step 1M**, then Steps 2–6 at project scope.
 
-One doc per run. Bare discovers; you generate one at a time (a future `/generate-docs` orchestrator will batch this).
+One doc per run. Bare discovers; you generate one at a time. The [`/generate-docs`](generate-docs.md) orchestrator generates the whole-system map of every lens at once (the cross-lens `[M]` pick).
 
 ---
 
@@ -111,7 +111,7 @@ Present the architecture doc to [USER-NAME]:
 - **[generate-flow-docs](//@agent-memory/control-files/procedures/generate-flow-docs.md) / [generate-domain-docs](//@agent-memory/control-files/procedures/generate-domain-docs.md) / [generate-readme](//@agent-memory/control-files/procedures/generate-readme.md)** — sibling atomic doc generators. Same shape: resolve → extract/synthesize → fill → review.
 - **[map-orientation](//@agent-memory/control-files/procedures/map-orientation.md)** — indexes the generated doc as `architecture-map` or `architecture-overview` (via the `doc_type` frontmatter), and supplies the documented-status that Step 1D discovery joins. This skill does **not** run the map — indexing is `/wrap-up` or an explicit `/map-orientation --rescan`.
 - **The 3-layer model** ([ADR-007](//@agent-memory/docs/adr/2026-07-08-doc-altitudes-and-three-layer-map-model.md)): this doc is a **map-altitude content artifact** — cleanly separate from the *orientation map* (navigation), which indexes it. The orientation map maps *docs*; an architecture-map maps the *system*.
-- **Future `/generate-docs` orchestrator** — composes this with the other atomic generators. See [ADR-006](//@agent-memory/docs/adr/2026-07-07-doc-generation-family-architecture.md).
+- **[`/generate-docs`](generate-docs.md) orchestrator** — composes this generator's `[M]` (architecture-map) path with the other atomic generators to synthesize the whole-system doc surface. See [ADR-006](//@agent-memory/docs/adr/2026-07-07-doc-generation-family-architecture.md) + [ADR-009](//@agent-memory/docs/adr/2026-07-09-generate-docs-orchestrator.md).
 - **Decision collection** — if Step 1S / Step 1D resolution is ambiguous, present the candidates using [wait-options](//@agent-memory/control-files/procedures/wait-options.md).
 
 ---

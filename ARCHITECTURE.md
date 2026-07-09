@@ -384,6 +384,10 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 | **Pull Memory** | `procedures/pull-memory.md` | `/pull-memory` |
 | **Pull All** | `procedures/pull-all.md` | `/pull-all` |
 | **Generate README** | `procedures/generate-readme.md` | `/generate-readme` |
+| **Generate Flow Docs** | `procedures/generate-flow-docs.md` | `/generate-flow-docs` |
+| **Generate Domain Docs** | `procedures/generate-domain-docs.md` | `/generate-domain-docs` |
+| **Generate Architecture Docs** | `procedures/generate-architecture-docs.md` | `/generate-architecture-docs` |
+| **Generate Docs (Orchestrator)** | `procedures/generate-docs.md` | `/generate-docs` |
 | **Generate Quality Standard** | `procedures/generate-standard.md` | `/generate-standard` |
 | **Analyze Code Quality** | `procedures/analyze-code-quality.md` | `/analyze-code-quality` |
 | **Pixel Wizard** | `procedures/pixel-wizard.md` | `/pixel-wizard` |
@@ -409,6 +413,10 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 /load-knowledge          # List and load knowledge files
 /archive-old-memories    # Archive old memories
 /generate-readme         # Generate 7Q README from codebase investigation
+/generate-flow-docs      # Flow docs (bare=discovery; [flow]=diagram; [M]=journey-map)
+/generate-domain-docs    # Domain/ERD docs (bare=discovery; [context]=ERD; [M]=context-map)
+/generate-architecture-docs # Architecture docs (bare=aspect discovery; [path]=overview; [M]=architecture-map)
+/generate-docs           # Orchestrator: generate all 4 lens maps (cross-lens [M] pick)
 /generate-standard       # Generate project quality-standard.md from codebase
 /analyze-code-quality    # Standalone code quality analysis (8 dimensions)
 /pixel-wizard [context]  # Visual design-to-implementation wizard (screenshot validation loop)

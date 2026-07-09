@@ -5,7 +5,7 @@ Generate **flow docs** — Mermaid diagrams of a project's *behavior* — placed
 - **`[flow]` arg → one flow-diagram** (the deep-dive: one flow's sequence over time)
 - **`[M]` pick → the flow-journey-map** (the whole-system map altitude: how flows chain into journeys)
 
-A flow doc is one of the **atomic doc types**. Its siblings: `/generate-readme` (what a unit *is*), `/generate-domain-docs` (data model), `/generate-architecture-docs` (component structure). A future `/generate-docs` orchestrator composes them. See [ADR-007](//@agent-memory/docs/adr/2026-07-08-doc-altitudes-and-three-layer-map-model.md) for the two-altitude model and [ADR-008](//@agent-memory/docs/adr/2026-07-09-discovery-first-generation.md) for discovery-first.
+A flow doc is one of the **atomic doc types**. Its siblings: `/generate-readme` (what a unit *is*), `/generate-domain-docs` (data model), `/generate-architecture-docs` (component structure). The [`/generate-docs`](generate-docs.md) orchestrator composes them (the cross-lens map surface). See [ADR-007](//@agent-memory/docs/adr/2026-07-08-doc-altitudes-and-three-layer-map-model.md) for the two-altitude model and [ADR-008](//@agent-memory/docs/adr/2026-07-09-discovery-first-generation.md) for discovery-first.
 
 ## Arguments
 
@@ -15,7 +15,7 @@ A flow doc is one of the **atomic doc types**. Its siblings: `/generate-readme` 
 - `/generate-flow-docs [flow]` → one **flow-diagram** (deep-dive altitude). `[flow]` is a **flow name** ("order checkout") or an **entrypoint reference** (route, handler, cron job, consumer, CLI command). → **Step 1B**.
 - `[M]` (from the discovery menu) → the **flow-journey-map** (map altitude): the whole system's flows + how they chain. → **Step 1M**.
 
-Bare discovers; you generate one deep-dive at a time (a future `/generate-docs` orchestrator will batch this).
+Bare discovers; you generate one deep-dive at a time. The [`/generate-docs`](generate-docs.md) orchestrator generates the whole-system map of every lens at once (the cross-lens `[M]` pick) — deep-dives still go one at a time.
 
 ---
 
@@ -124,7 +124,7 @@ Present the flow doc to [USER-NAME]:
 - **[generate-readme](//@agent-memory/control-files/procedures/generate-readme.md)** — sibling atomic doc generator (7Q README). Same shape: resolve → investigate → fill → review.
 - **[map-orientation](//@agent-memory/control-files/procedures/map-orientation.md)** — indexes the deep-dive as `flow-diagram` (`doc_type: flow`) and the map as `flow-journey-map` (`doc_type: flow-journey-map`), and supplies the documented-status that Step 1D discovery joins. This skill does **not** run the map itself — indexing happens at `/wrap-up` or an explicit `/map-orientation --rescan`.
 - **The two altitudes** (see [ADR-007](//@agent-memory/docs/adr/2026-07-08-doc-altitudes-and-three-layer-map-model.md)): the **flow-journey-map** is the *map altitude* (a content map of how flows relate); the **flow-diagram** is the *deep-dive*. Both are content docs, separate from the orientation map (navigation), which indexes them.
-- **Future `/generate-docs` orchestrator** — will compose this with the sibling generators to produce a project's full doc suite. See [ADR-006](//@agent-memory/docs/adr/2026-07-07-doc-generation-family-architecture.md).
+- **[`/generate-docs`](generate-docs.md) orchestrator** — composes this generator's `[M]` (journey-map) path with the sibling generators to synthesize the whole-system doc surface. See [ADR-006](//@agent-memory/docs/adr/2026-07-07-doc-generation-family-architecture.md) + [ADR-009](//@agent-memory/docs/adr/2026-07-09-generate-docs-orchestrator.md).
 - **Decision collection** — if Step 1B resolution is ambiguous, present the candidates using [wait-options](//@agent-memory/control-files/procedures/wait-options.md).
 
 ---
