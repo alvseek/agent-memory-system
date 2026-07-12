@@ -159,7 +159,7 @@ Given a project:
 - **[map-orientation](map-orientation.md)** — consumes Localized Home Resolution in its Prelude (all modes read/write the resolved paths).
 - **[update-project-context](memory/update-project-context.md)** — shared scope consumes the resolution; private scope is never localized.
 - **[wrap-up](wrap-up.md)** — inherits via `/map-orientation --session-touched` (no direct change).
-- **[awaken-agent](awaken-agent.md)** — no change; `/map-orientation` (bare) resolves the localized map at load.
+- **[awaken-agent](awaken-agent.md)** — Phase 2 resolves the localized **shared context-index** via Localized Home Resolution (reads `<project-root>/docs/context-index.md` when `home: project`); the orientation map is resolved separately by `/map-orientation` (bare) at load.
 
 ## Anti-Patterns
 
