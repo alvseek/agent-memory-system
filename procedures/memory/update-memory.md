@@ -71,7 +71,7 @@ Identify cross-layer files written this session (Phase 1 + any mid-session write
 
 | Layer | Path |
 |-------|------|
-| Project context (shared) | `shared-memory/[project]/context/*.md` (or `<project-root>/.agents/context/*.md` if [localized](../localize-context.md)) |
+| Project context (shared) | `shared-memory/[project]/context/*.md` (or `<project-root>/docs/*.md` if [localized](../localize-context.md)) |
 | Project context (private) | `knowledge-base/[project]/*.md` |
 | Knowledge | `knowledge-base/[topic].md`, `knowledge-base/core-domain-knowledge.md` |
 | Reasoning (shared) | `shared-memory/core-reasoning-memory.md` |

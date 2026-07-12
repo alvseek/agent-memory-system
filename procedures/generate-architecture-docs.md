@@ -77,7 +77,7 @@ Default to `flowchart` unless C4 clearly fits (Mermaid's C4 support is newer/les
 
 Use the nearest *existing* ancestor — never invent a parent folder. Create `docs/architecture/` at the target if it doesn't exist.
 
-> **Placement Contract** (see [ADR-004](//@agent-memory/docs/adr/2026-07-06-docs-placement-contract.md)): **scope = location.** The doc lives in the **project's own tree**, never in agent-memory memory (`.agents/`).
+> **Placement Contract** (see [ADR-004](//@agent-memory/docs/adr/2026-07-06-docs-placement-contract.md)): **scope = location.** The doc lives in the **project's own tree** at its LCA.
 
 ### Step 5: Fill the doc
 

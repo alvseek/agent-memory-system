@@ -43,7 +43,7 @@ Bare discovers; you generate one deep-dive at a time. The [`/generate-docs`](gen
 1. **Identify the bounded contexts + readability check**: glob `**/docs/domain/*.md` for existing per-context ERDs; scan module boundaries for contexts not yet documented. **Readability ceiling** (flag-3): if the system has **more than ~15–20 bounded contexts**, STOP and recommend grouping into sub-context-maps (per area / subsystem) rather than one unreadable map — a judgment trigger, not a hard cap (recommend, let [USER-NAME] decide).
 2. **Infer the relationships**: how contexts integrate — the DDD patterns: upstream/downstream (U/D), shared kernel, customer/supplier, conformist, anti-corruption layer (ACL), open-host service (OHS). Read cross-context references / imports / shared types. `[CONFIRM]` where the pattern is a design intention code doesn't spell out; `[NOT FOUND]` where an integration is expected but unclear.
 3. **Build the diagram**: a Mermaid `flowchart` — contexts as nodes, edges labelled with the DDD pattern + direction.
-4. **Place**: root `docs/domain/context-map.md` (project-wide; project tree, never `.agents/`).
+4. **Place**: root `docs/domain/context-map.md` (project-wide; lives in the project tree per ADR-004).
 5. **Fill**: copy [domain-context-map-template.md](//@agent-memory/control-files/templates/domain-context-map-template.md), set `doc_type: domain-context-map`, fill the diagram + contexts + relationships + links to each context's ERD (note contexts lacking one). Fill-from-code, no fiction, typed markers.
 6. **Review**: show the map, group markers, state placement, note which contexts still lack a deep-dive ERD. **Done** — skip Steps 2–6.
 
@@ -85,7 +85,7 @@ When in doubt, default to `erDiagram`.
    - A model shared across modules → LCA = their nearest common ancestor's `docs/domain/` (data models often sit higher than flows).
 4. Use the nearest *existing* ancestor — never invent a parent folder. Create `docs/domain/` at the LCA if it doesn't exist.
 
-> **Placement Contract** (see [ADR-004](//@agent-memory/docs/adr/2026-07-06-docs-placement-contract.md)): **scope = location.** A domain doc lives at the LCA of the entity files it covers — *blast radius, not casual references*. It always lives in the **project's own tree**, never in agent-memory memory (`.agents/`).
+> **Placement Contract** (see [ADR-004](//@agent-memory/docs/adr/2026-07-06-docs-placement-contract.md)): **scope = location.** A domain doc lives at the LCA of the entity files it covers — *blast radius, not casual references*. It always lives in the **project's own tree**.
 
 ### Step 5: Fill the doc
 

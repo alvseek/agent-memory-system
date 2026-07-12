@@ -24,13 +24,13 @@ Map file: `shared-memory/[PROJECT-NAME]/context/orientation-map.md`. Format: [or
 2. **Compute central map path** — `//@agent-memory/shared-memory/[PROJECT-NAME]/context/orientation-map.md`. Record `CENTRAL_MAP_EXISTS`.
 3. **Resolve localized home** — apply the [Localized Home Resolution](localize-context.md#localized-home-resolution) rule:
    - `CENTRAL_MAP_EXISTS` **and** its frontmatter has `home: project` → the project is **localized** (see [ADR-005](//@agent-memory/docs/adr/2026-07-06-project-local-memory-externalization.md)). Set:
-     - `MAP_PATH` = `<project-root>/<localized_path>` (default `.agents/orientation-map.md`; `project-root` = cwd)
-     - `CONTEXT_DIR` = `<project-root>/.agents/context/`
+     - `MAP_PATH` = `<project-root>/<localized_path>` (default `docs/orientation-map.md`; `project-root` = cwd)
+     - `CONTEXT_DIR` = `<project-root>/docs/`
      - `SOURCE_OF_TRUTH` = project
-     - `MAP_EXISTS` = whether `MAP_PATH` exists. If the stub says localized but `MAP_PATH` is missing → report *"[PROJECT] is localized but `.agents/orientation-map.md` isn't here — wrong cwd, or the bundle isn't checked out."* and exit.
+     - `MAP_EXISTS` = whether `MAP_PATH` exists. If the stub says localized but `MAP_PATH` is missing → report *"[PROJECT] is localized but `docs/orientation-map.md` isn't here — wrong cwd, or the bundle isn't checked out."* and exit.
    - else → central defaults: `MAP_PATH` = the central map path, `CONTEXT_DIR` = `//@agent-memory/shared-memory/[PROJECT-NAME]/context/`, `SOURCE_OF_TRUTH` = central, `MAP_EXISTS` = `CENTRAL_MAP_EXISTS`.
 
-> **All mode blocks below operate on the resolved `MAP_PATH` / `CONTEXT_DIR`.** Where a block names `shared-memory/[PROJECT-NAME]/context/orientation-map.md`, read it as `MAP_PATH` — identical for non-localized projects, in-project `.agents/` for localized ones.
+> **All mode blocks below operate on the resolved `MAP_PATH` / `CONTEXT_DIR`.** Where a block names `shared-memory/[PROJECT-NAME]/context/orientation-map.md`, read it as `MAP_PATH` — identical for non-localized projects, in-project `docs/` for localized ones.
 
 Then jump to the matching mode block below — read only that block.
 
@@ -286,7 +286,7 @@ Used by **Load Mode L2** when reading entries:
 - **[awaken-agent](awaken-agent.md)** — calls `/map-orientation` (bare, load-only) after project detection.
 - **[wrap-up](wrap-up.md)** — calls `/map-orientation --session-touched [paths]` for orientation docs the session touched. Silent no-op if map missing.
 - **[update-project-context](memory/update-project-context.md)** — preferred path when a session DISCOVERED an entry's status is wrong. Direct edit; mtime check picks it up on next awakening.
-- **[localize-context](localize-context.md)** — graduates a consenting project's map + structural context into its own repo (`.agents/`). Sets the central map's `home: project` frontmatter that the Prelude resolves. After localization, all modes here operate on the in-project `MAP_PATH` transparently.
+- **[localize-context](localize-context.md)** — graduates a consenting project's map + structural context into its own repo (`docs/`). Sets the central map's `home: project` frontmatter that the Prelude resolves. After localization, all modes here operate on the in-project `MAP_PATH` transparently.
 - **[discovery-contract](discovery-contract.md)** — the four doc generators' bare **discovery mode** reads this map (per-entry `status`, via the resolved `MAP_PATH`) to mark units documented-vs-not. A doc on disk that is absent from the map surfaces there as a staleness flag (→ `--rescan`).
 
 ---

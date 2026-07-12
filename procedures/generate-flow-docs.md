@@ -43,7 +43,7 @@ Bare discovers; you generate one deep-dive at a time. The [`/generate-docs`](gen
 1. **Discover the flows + readability check**: glob `**/docs/flows/*.md` + light-scan entrypoints for undocumented flows. **Readability ceiling** (flag-3): if the system has **more than ~15–20 flows**, STOP and recommend grouping into named sub-journeys / per-area journey sub-maps rather than one unreadable map — a judgment trigger, not a hard cap (recommend, let [USER-NAME] decide).
 2. **Infer the chains**: how one flow's outcome hands off to the next — an emitted event another flow consumes, a success redirect into another entrypoint, shared state. `[CONFIRM]` inferred chains; `[NOT FOUND]` where a handoff is expected but unclear.
 3. **Build the diagram**: a Mermaid `flowchart` — flows as nodes, edges labelled with the handoff (`then` / `triggers` / `emits …`).
-4. **Place**: root `docs/flows/journey-map.md` (project-wide; project tree, never `.agents/`).
+4. **Place**: root `docs/flows/journey-map.md` (project-wide; lives in the project tree per ADR-004).
 5. **Fill**: copy [flow-journey-map-template.md](//@agent-memory/control-files/templates/flow-journey-map-template.md), set `doc_type: flow-journey-map`, fill the diagram + named journeys + links to each flow's deep-dive (note flows lacking one). Fill-from-code, no fiction, typed markers.
 6. **Review**: show the map, group markers, state placement, note which flows still lack a deep-dive doc. **Done** — skip Steps 2–6.
 
@@ -88,7 +88,7 @@ When in doubt, default to `sequenceDiagram`.
    - A flow spanning modules → LCA = their nearest common ancestor's `docs/flows/`.
 4. Use the nearest *existing* ancestor — never invent a parent folder. If `docs/flows/` doesn't exist at the LCA, create it there.
 
-> **Placement Contract** (see [ADR-004](//@agent-memory/docs/adr/2026-07-06-docs-placement-contract.md)): **scope = location.** A flow doc lives at the LCA of the files it runs through — measured by *blast radius, not casual references* (only files the flow actually executes through count). A flow doc always lives in the **project's own tree**, never in agent-memory memory (`.agents/`); ADR-005 localization only governs where the orientation map that later indexes it lives, not the doc.
+> **Placement Contract** (see [ADR-004](//@agent-memory/docs/adr/2026-07-06-docs-placement-contract.md)): **scope = location.** A flow doc lives at the LCA of the files it runs through — measured by *blast radius, not casual references* (only files the flow actually executes through count). A flow doc always lives in the **project's own tree** at its LCA; ADR-005 localization only governs where the orientation map that later indexes it lives, not the doc.
 
 ### Step 5: Fill the doc
 
