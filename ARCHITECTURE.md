@@ -76,6 +76,7 @@ control-files/
 │   ├── rite-of-creation.md            # Full project lifecycle orchestration (scratch to finish)
 │   ├── forge-of-covenant.md           # Project vision + milestone roadmap planning (multi-milestone)
 │   ├── wait-options.md                # WAIT Options format reference (used by wizard + quality procedures)
+│   ├── push-exclude-policy.md         # Push-exclude rule reference (shared by push + wrap-up flows)
 │   ├── awaken-agent.md                # Load agent memory and activate domain agent
 │   ├── refresh-memory.md              # Recover agent memory after context compaction
 │   ├── implement-plan.md             # Start implementing approved plan with Execution Protocol
@@ -380,6 +381,7 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 | **Push Project** | `procedures/push-project.md` | `/push-project` |
 | **Push Memory** | `procedures/push-memory.md` | `/push-memory` |
 | **Push All** | `procedures/push-all.md` | `/push-all` |
+| **Push Agent Work** | `procedures/push-agent-work.md` | `/push-agent-work` |
 | **Pull Project** | `procedures/pull-project.md` | `/pull-project` |
 | **Pull Memory** | `procedures/pull-memory.md` | `/pull-memory` |
 | **Pull All** | `procedures/pull-all.md` | `/pull-all` |
@@ -402,7 +404,7 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 /rite-of-creation        # Full project lifecycle (vision → SDLC phases → exit criteria → execution)
 /council-of-wizards      # Multi-plan orchestration (requirements → sub-plans → parallel execution)
 /implement-plan          # Start implementing approved plan with Execution Protocol
-/wrap-up                 # End-of-session: comprehensive memory update (via /update-memory) + push all
+/wrap-up                 # End-of-session: comprehensive memory update (via /update-memory) + push agent work only
 /update-memory [new]     # Comprehensive update (all layers evaluated)
 /update-episodic [new]   # Episodic only
 /add-reasoning           # Add reasoning pattern
@@ -424,6 +426,7 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 /push-project            # Commit and push current project
 /push-memory             # Commit and push agent memory
 /push-all                # Commit and push both project + agent memory
+/push-agent-work         # Commit and push ONLY the agent's work (agent-memory + agent paths); used by /wrap-up
 /pull-project            # Pull latest for current project
 /pull-memory             # Pull agent memory + update control-files submodule
 /pull-all                # Pull both project + agent memory

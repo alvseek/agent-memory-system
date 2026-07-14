@@ -13,7 +13,7 @@ Commit and push changes in both the current working project and the agent-memory
 
 ## Procedure
 
-> **Push-exclude list (check first).** Before pushing, consult the project's push policy at `shared-memory/[project]/context/push-policy.md` (if present). Repos/submodules listed there are **vendored / third-party / read-only** — **do NOT commit or push them**, and do NOT count their state against completion. Report each as `skipped (excluded)`. Absent file → no exclusions (push project + agent-memory + owned submodules as normal).
+> **Push-exclude list (check first).** Honor the shared [Push Exclude Policy](//@agent-memory/control-files/procedures/push-exclude-policy.md) — excluded repos/submodules are never committed or pushed and never counted against completion (`skipped (excluded)`).
 
 ### Step 1: Push Project Files
 

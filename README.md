@@ -23,13 +23,14 @@ This submodule provides the shared infrastructure for the [5-layer agent memory 
 ```
 control-files/
 ├── core-instruction-control-files.md  # Shared reasoning & knowledge (loaded by all agents)
-├── procedures/                         # 28 procedures (also work as slash commands)
+├── procedures/                         # 30 procedures (also work as slash commands)
 │   ├── high-wizard.md                 # Smart planning
 │   ├── quick-wizard.md                # Lightweight decisions
 │   ├── council-of-wizards.md          # Multi-plan orchestration
 │   ├── rite-of-creation.md            # Full project lifecycle
 │   ├── forge-of-covenant.md           # Project vision + milestone roadmap
 │   ├── wait-options.md                # WAIT Options format reference (shared)
+│   ├── push-exclude-policy.md         # Push-exclude rule reference (shared)
 │   ├── awaken-agent.md                # Load agent memory
 │   ├── refresh-memory.md              # Post-compaction recovery
 │   ├── implement-plan.md              # Execute approved plans
@@ -119,10 +120,11 @@ Quick Wizard auto-escalates to High Wizard when the task is too complex. Higher-
 | `/awaken-agent [domain]` | Load agent memory and activate |
 | `/refresh-memory [domain]` | Recover memory after context compaction |
 | `/implement-plan` | Start implementing an approved plan |
-| `/wrap-up` | End-of-session: comprehensive memory update (via `/update-memory`) + push all |
+| `/wrap-up` | End-of-session: comprehensive memory update (via `/update-memory`) + push agent work only |
 | `/push-project` | Commit and push current project |
 | `/push-memory` | Commit and push agent memory |
 | `/push-all` | Push both project + agent memory |
+| `/push-agent-work` | Push ONLY the agent's work (agent-memory + agent paths); used by `/wrap-up` |
 | `/pull-project` | Pull latest for current project |
 | `/pull-memory` | Pull agent memory + update submodule |
 | `/pull-all` | Pull both project + agent memory |

@@ -45,10 +45,10 @@ The agent who runs `/map-orientation create` for the first time scans ALL orient
 - **type**: 7q-readme
 - **scope**: shared
 - **roles**: []
-- **status**: unverified
+- **status**: useful
 - **tags**: [overview, entry-point, framework]
-- **last_verified**: ""
-- **verified_by**: ""
+- **last_verified**: "2026-07-14"
+- **verified_by**: "meta"
 - **update_trigger**: "when framework procedures, slash commands, wizard hierarchy, or setup steps change"
 - **notes**: "Top-level framework README. 7Q-style: What Is This / How Do I Set It Up / How Do I Use It / How Does It Work Inside / What Decisions Were Made. First read for new contributors and agents."
 
@@ -57,10 +57,10 @@ The agent who runs `/map-orientation create` for the first time scans ALL orient
 - **type**: architecture-overview
 - **scope**: shared
 - **roles**: []
-- **status**: unverified
+- **status**: useful
 - **tags**: [architecture, file-structure, loading-flow, memory-layers, wizard-hierarchy]
-- **last_verified**: ""
-- **verified_by**: ""
+- **last_verified**: "2026-07-14"
+- **verified_by**: "meta"
 - **update_trigger**: "when file structure changes, awakening flow changes, 5-layer memory layout changes, or wizard hierarchy changes"
 - **notes**: "Single-deep architecture doc: file structure, agent + shared-memory directory layouts, awakening flow, 5-layer memory system, write procedures table, wizard protocol hierarchy."
 
