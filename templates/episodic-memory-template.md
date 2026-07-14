@@ -20,10 +20,10 @@
 
 ## Individual Episode File Format
 
-A single-session episode file:
+A single-session episode file *(the H3 header carries an optional `(agent: [domain])` tag — **required** once the project is localized, since episodic flat-merges across agents in `.agents/session/` where the folder no longer implies authorship; see [ADR-010](//@agent-memory/docs/adr/2026-07-13-work-product-memory-localization.md))*:
 
 ```markdown
-### YYYY-MM-DD HH.MM - [SESSION SUB-THEME]
+### YYYY-MM-DD HH.MM - [SESSION SUB-THEME] (agent: [domain])
 
 - **Context**: ...
 - **Discussion**: ...

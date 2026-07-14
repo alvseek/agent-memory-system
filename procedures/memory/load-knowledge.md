@@ -90,6 +90,8 @@ No knowledge files matching "[keyword]" found. Showing all available:
 
 Read the selected file(s) from `//@agent-memory/agent-[domain]/knowledge-base/` into agent context using the Read tool.
 
+> **Localization** ([ADR-010](//@agent-memory/docs/adr/2026-07-13-work-product-memory-localization.md)): `/load-knowledge` loads **general** knowledge (research, core-domain, cross-cutting) — cross-project, so it **never localizes** and is always read from the central store. Project-scoped knowledge (`knowledge-base/[project]/`) is loaded by [`/load-project-context`](load-project-context.md), which resolves to `.agents/knowledge/` when localized.
+
 After loading, confirm to the user:
 ```
 Loaded [N] knowledge file(s):

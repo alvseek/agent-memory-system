@@ -85,7 +85,9 @@ No episodes matching "[keyword]" found. Showing recent episodes:
 
 ### Step 5: Load Selected Files
 
-Read the selected episode file(s) from `//@agent-memory/agent-[domain]/episodes/` into agent context using the Read tool.
+Read the selected episode file(s) into agent context using the Read tool:
+- **Non-localized**: from `//@agent-memory/agent-[domain]/episodes/`.
+- **Localized** ([ADR-010](//@agent-memory/docs/adr/2026-07-13-work-product-memory-localization.md)): apply [Localized Home Resolution](../localize-context.md#localized-home-resolution). Index entries are **breadcrumbs** (`→ <project>/.agents/session/…`), so read the actual file from `SESSION_DIR` (`<project-root>/.agents/session/[file]`). If `.agents/` isn't reachable at cwd, report *"localized but not checked out here"* and skip.
 
 After loading, confirm to the user:
 ```

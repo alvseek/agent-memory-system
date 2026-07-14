@@ -53,7 +53,11 @@ Based on the confirmed scope, the subsequent steps will use the matching path:
 - **Shared scope**: `//@agent-memory/shared-memory/[project-name]/context/`
 - **Private scope**: `//@agent-memory/agent-[domain]/knowledge-base/[project-name]/`
 
-> **Localized projects**: if the project has been graduated via [`/localize-context`](../localize-context.md) (its central map frontmatter has `home: project`), the **shared** path resolves via [Localized Home Resolution](../localize-context.md#localized-home-resolution) to the in-project bundle `<project-root>/docs/` instead of the central `shared-memory/[project-name]/context/`. Use that resolved `CONTEXT_DIR` for every shared-scope step below (folder check, create, index). **Private scope is never localized** — domain knowledge-base stays central. If in doubt whether the project is localized, check the central map's frontmatter for `home: project`.
+> **Localized projects**: if the project has been graduated via [`/localize-context`](../localize-context.md) (its central map frontmatter has `home: project`), paths resolve via [Localized Home Resolution](../localize-context.md#localized-home-resolution):
+> - **Shared** scope → the in-project bundle `<project-root>/docs/` (`CONTEXT_DIR`) instead of central `shared-memory/[project-name]/context/`.
+> - **Private** scope → the in-project `<project-root>/.agents/knowledge/` (`KNOWLEDGE_DIR`) instead of central `agent-[domain]/knowledge-base/[project-name]/`, per [ADR-010](//@agent-memory/docs/adr/2026-07-13-work-product-memory-localization.md) (project-scoped knowledge is work-product and travels). Also refresh `.agents/knowledge/index.md` and repoint the central index **breadcrumb**. **Reachability guard**: localized but `.agents/` missing at cwd → STOP, never write centrally.
+>
+> Use the resolved dir for every scope-aware step below (folder check, create, index). If in doubt whether the project is localized, check the central map frontmatter for `home: project`.
 
 > **Move operation**: If the user has asked to **move** an existing private entry to shared (e.g., "move X to shared", "promote X to shared"), skip the rest of this procedure and follow the [Move-to-Shared Sub-Flow](#move-to-shared-sub-flow) section below.
 

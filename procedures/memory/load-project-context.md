@@ -23,6 +23,8 @@ Scan **both** locations for project context files:
 
 2. **Shared layer**: Scan `//@agent-memory/shared-memory/` for project subfolders. For each project subfolder, check if `context/context-index.md` exists, and if so read it.
 
+> **Localized projects** ([ADR-010](//@agent-memory/docs/adr/2026-07-13-work-product-memory-localization.md)): if the project has `home: project`, apply [Localized Home Resolution](../localize-context.md#localized-home-resolution) — **shared** entries resolve to `CONTEXT_DIR` (`<project-root>/docs/`) and **private** entries to `KNOWLEDGE_DIR` (`<project-root>/.agents/knowledge/`); read those in-project indexes/files instead of the central paths. **Reachability guard**: if localized but `docs/` / `.agents/` is missing at cwd, report *"localized but not checked out here"* and skip that layer. (Scope markers `[shared]`/`[private]` are unchanged.)
+
 **Silent skip**: If either folder is missing or empty for a given project, skip it without error. Only present what exists.
 
 For each entry found, retain its **scope marker**:
@@ -83,9 +85,9 @@ No context files matching "[keyword]" found. Showing all available:
 
 ### Step 5: Load Selected Files
 
-Read the selected file(s) into agent context using the Read tool. Each file is loaded from its source-layer path:
-- Shared entries: `//@agent-memory/shared-memory/[project]/context/[theme].md`
-- Private entries: `//@agent-memory/agent-[domain]/knowledge-base/[project]/[theme].md`
+Read the selected file(s) into agent context using the Read tool. Each file is loaded from its source-layer path — or, if the project is **localized**, from the resolved in-project path (see the Step 1 note):
+- Shared entries: `//@agent-memory/shared-memory/[project]/context/[theme].md` → localized `<project-root>/docs/[theme].md`
+- Private entries: `//@agent-memory/agent-[domain]/knowledge-base/[project]/[theme].md` → localized `<project-root>/.agents/knowledge/[theme].md`
 
 After loading, confirm to the user with the scope marker for each file:
 ```
