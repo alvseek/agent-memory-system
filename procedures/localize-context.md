@@ -46,9 +46,11 @@ Graduate a **consenting** project's fleet-authored memory OUT of the central `@a
    - Central map: `//@agent-memory/shared-memory/[PROJECT-NAME]/context/orientation-map.md`
    - Central context dir: `//@agent-memory/shared-memory/[PROJECT-NAME]/context/`
    - Project root: the project's working directory on disk (cwd for the active project).
-3. **Guards** (STOP + report if any fail):
-   - Central map missing → *"No orientation map for [PROJECT] yet — run `/map-orientation create` first, then localize."*
-   - Central map already has `home: project` → *"[PROJECT] is already localized (`docs/orientation-map.md`)."* Exit.
+3. **Guards**:
+   - Central map missing → STOP + report: *"No orientation map for [PROJECT] yet — run `/map-orientation create` first, then localize."*
+   - Central map already has `home: project` → the **`docs/` structural lane is already localized**. Do NOT blanket-exit — branch on the **agent lane** (Step 6b, ADR-010):
+     - `<project-root>/.agents/session/` **exists** → both lanes already done → *"[PROJECT] is already fully localized (`docs/` + `.agents/`)."* Exit.
+     - `<project-root>/.agents/session/` **absent** → the docs lane is done but the agent lane was never graduated (e.g. the project was localized before ADR-010 added it). **Skip Steps 2–6 (docs lane already done) and jump straight to [Step 6b](#step-6b-graduate-work-product-memory-opt-in--agent-lane)** to offer graduating episodic + project-scoped knowledge. Report first: *"[PROJECT]'s `docs/` lane is already localized; picking up the newer agent lane (Step 6b)."*
 
 > `--status` mode stops here: report localized (map `home: project`) or central-only; if localized, also note whether the agent lane is present (`.agents/` exists), then exit.
 
