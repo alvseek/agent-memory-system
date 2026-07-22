@@ -1,10 +1,10 @@
 # Wrap Up Session
 
-End-of-session orchestrator: memory update → orientation map refresh → push the agent's work → final summary with open items.
+End-of-session orchestrator: push the project's work → memory update → orientation map refresh → push memory → final summary with open items.
 
 **Delta-aware**: re-running `/wrap-up` after more work auto-scopes evaluations to the delta (theme match → cutoff = prior H3 timestamp). `/wrap-up fresh` forces full-session re-eval.
 
-**Execution style**: silent. Run Steps 1-4 silently — tool calls (bash, edit, write) stay visible, but no prose narration of phases. Produce ONE summary block at Step 5 as the only user-facing output.
+**Execution style**: silent. Run Steps 1-5 silently — tool calls (bash, edit, write) stay visible, but no prose narration of phases. Produce ONE summary block at Step 6 as the only user-facing output.
 
 ## Arguments
 
@@ -17,33 +17,39 @@ End-of-session orchestrator: memory update → orientation map refresh → push 
 
 ## Procedure
 
-### Step 1: Save Memory (silent)
+### Step 1: Push the Project's Work (silent) — MANDATORY
 
-Execute [Update Memory Protocol](//@agent-memory/control-files/procedures/memory/update-memory.md). Pass `fresh` arg through if present. Capture results (mode, gate decisions, episodic entry, carry-forward count, promotions, emotional status) as data for Step 5. Do NOT print `/update-memory`'s own Phase 4 summary block separately — it gets folded into Step 5.
+Push the agent's **project** work FIRST, so a merge request / PR can be opened immediately without waiting for the memory update that follows. Execute [Push Agent Work Protocol](//@agent-memory/control-files/procedures/push-agent-work.md) scoped to the **working project repo and its owned submodules only** — do NOT touch the agent-memory repo yet (this session's memory isn't written until Step 2, so pushing it now would miss it). The conservative rule still holds: stage only agent-produced project paths (never `git add -A`); the user's unrelated changes are left for the user.
 
-### Step 2: Refresh Orientation Map (silent)
+Tool calls visible (git commands); capture per-repo commit hashes + user-files-left counts for Step 6.
+
+### Step 2: Save Memory (silent)
+
+Execute [Update Memory Protocol](//@agent-memory/control-files/procedures/memory/update-memory.md). Pass `fresh` arg through if present. Capture results (mode, gate decisions, episodic entry, carry-forward count, promotions, emotional status) as data for Step 6. Do NOT print `/update-memory`'s own Phase 4 summary block separately — it gets folded into Step 6.
+
+### Step 3: Refresh Orientation Map (silent)
 
 If this session touched orientation docs (READMEs, architecture, flow diagrams, ADRs):
 
 `/map-orientation --session-touched [path1,path2,...]`
 
-Silent no-op if no map exists or no orientation docs touched. Capture refresh count / no-op reason for Step 5.
+Silent no-op if no map exists or no orientation docs touched. Capture refresh count / no-op reason for Step 6.
 
-### Step 3: Push the Agent's Work (silent) — MANDATORY
+### Step 4: Push Memory (silent) — MANDATORY
 
-Execute [Push Agent Work Protocol](//@agent-memory/control-files/procedures/push-agent-work.md). Invoking `/wrap-up` IS the authorization to commit + push — but an **automatic** wrap-up pushes **only the agent's own work** (agent-memory repo + agent-produced paths in the project), never a blanket `git add -A` on the working project. (Explicit `/push-all` / `/push-project` stay full-tree — that is a deliberate user choice.)
+Execute [Push Agent Work Protocol](//@agent-memory/control-files/procedures/push-agent-work.md) for the **agent-memory repo** (whole) plus any **project memory files** Steps 2–3 just wrote (localized `.agents/**` + refreshed `docs/` orientation/context docs). Invoking `/wrap-up` IS the authorization to commit + push. This captures the episodic / emotional / reasoning / knowledge writes that the Step 1 project push ran too early to include. Same scope discipline — never a blanket `git add -A` on the project (only the memory paths above); explicit `/push-all` / `/push-project` stay full-tree as a deliberate user choice.
 
-Tool calls visible (git commands); capture per-repo commit hashes, agent-work-pushed status, and user-files-left counts for Step 5.
+Tool calls visible (git commands); capture per-repo commit hashes + agent-work-pushed status for Step 6.
 
-**Then verify (drives the Step 5 completion gate)**: from Push Agent Work's Step 3 verification, record per repo whether **every agent-work path is committed AND pushed** (branch not ahead of remote) + a count of user files left. **Excluded repos are exempt** (report as `skipped (excluded)`). Do NOT attempt elaborate recovery — if an *agent-work* push fails or any agent-work path remains, that is carried to Step 5, where the wrap-up fails loudly.
+**Then verify (drives the Step 6 completion gate)**: from Push Agent Work's Step 3 verification across BOTH pushes (Step 1 project + Step 4 memory), record per repo whether **every agent-work path is committed AND pushed** (branch not ahead of remote) + a count of user files left. **Excluded repos are exempt** (report as `skipped (excluded)`). Do NOT attempt elaborate recovery — if an *agent-work* push fails or any agent-work path remains, that is carried to Step 6, where the wrap-up fails loudly.
 
-### Step 4: Extract Open Items (silent)
+### Step 5: Extract Open Items (silent)
 
-Read the newest H3 sub-episode block. Extract `Tech Debts` and `Next Steps` from Outcomes. Hold the full lists as data for Step 5.
+Read the newest H3 sub-episode block. Extract `Tech Debts` and `Next Steps` from Outcomes. Hold the full lists as data for Step 6.
 
-### Step 5: Final Summary (only visible output)
+### Step 6: Final Summary (only visible output)
 
-**Completion gate (per NO TODOS LEFT BEHIND, UUID a1b2c3d4)**: using the Step 3 verification, the wrap-up is **complete ONLY if every agent-work path is committed AND pushed** in every in-scope repo. A project repo that still holds the **user's own** uncommitted changes is still complete — leftover user files are expected and exempt (so are push-excluded repos). The wrap-up is **NOT complete** only if an **agent-work** path is uncommitted, a branch carrying agent commits is ahead of its remote, or an agent-work push failed → print the *WRAP-UP INCOMPLETE* block (at the bottom of this step) instead, and never claim completion.
+**Completion gate (per NO TODOS LEFT BEHIND, UUID a1b2c3d4)**: using the Step 4 verification (covering both the Step 1 project push and the Step 4 memory push), the wrap-up is **complete ONLY if every agent-work path is committed AND pushed** in every in-scope repo. A project repo that still holds the **user's own** uncommitted changes is still complete — leftover user files are expected and exempt (so are push-excluded repos). The wrap-up is **NOT complete** only if an **agent-work** path is uncommitted, a branch carrying agent commits is ahead of its remote, or an agent-work push failed → print the *WRAP-UP INCOMPLETE* block (at the bottom of this step) instead, and never claim completion.
 
 **On success (every agent-work path committed + pushed)**, print this block:
 
@@ -58,8 +64,9 @@ Memory update:
 Orientation map: [refreshed N entries / no-op: reason]
 
 Push — agent work only (every agent-work path must be ✅):
-- agent-memory: ✅ [commit-hash] pushed / no changes
-- [project/submodule]: ✅ [commit-hash] pushed — [N user file(s) left for user (not agent's work) / no user files left]
+- [project/submodule]: ✅ [commit-hash] pushed (project work) — [N user file(s) left for user / no user files left]
+- agent-memory: ✅ [commit-hash] pushed (memory) / no changes
+- [project memory files]: ✅ pushed with memory (localized .agents/docs)   ← only if the project is localized
 - [excluded repo]: ⏭️ skipped (excluded — vendored/read-only)   ← only if the project has exclusions
 
 📋 Open items going forward:
