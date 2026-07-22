@@ -108,7 +108,7 @@ Graduate a **consenting** project's fleet-authored memory OUT of the central `@a
 The `docs/` structural lane (Steps 4–6) is done. Now offer the **agent lane** — episodic + project-scoped knowledge → `.agents/` (see [ADR-010](//@agent-memory/docs/adr/2026-07-13-work-product-memory-localization.md)). This is a **separate** consent: welcoming AI into the repo (`AGENTS.md`) is not the same as publishing the fleet's session history.
 
 1. **Opt-in gate** — ask [USER-NAME]:
-   > *"Also graduate this project's **work-product memory** into `.agents/`? This moves episodic session logs + project-scoped knowledge (gathered across all agents) into `<project-root>/.agents/`, leaving per-theme breadcrumbs centrally. Identity (reasoning/emotion/RAS), general knowledge, and business/strategy stay fleet-private. Confirm, or skip to keep them central."*
+   > *"Also graduate this project's **work-product memory** into `.agents/`? This moves episodic session logs + project-scoped knowledge (gathered across all agents) into `<project-root>/.agents/`, leaving a bounded per-project pointer centrally (episodic index becomes repo-authoritative — ADR-011). Identity (reasoning/emotion/RAS), general knowledge, and business/strategy stay fleet-private. Confirm, or skip to keep them central."*
 
    If **skipped** → jump to Step 7 (the project is still localized for the `docs/` lane; the agent lane simply isn't graduated).
 
@@ -153,10 +153,10 @@ The `docs/` structural lane (Steps 4–6) is done. Now offer the **agent lane** 
    and project knowledge (`.agents/knowledge/`). Any agent working here can read and extend it.
    ```
 
-8. **Central breadcrumbs** — in EACH contributing agent's `agent-memory-index.md`, **repoint** the moved entries (do NOT delete them):
-   - Episodic: keep the `# Recent Context Episodes` entry, repoint the link to the repo file + tag — `- [theme](→ <project>/.agents/session/theme.md) — [summary] [LOCALIZED YYYY-MM-DD]`. Apply the MOVE-TO-TODAY rule so awakening still surfaces the latest.
-   - Knowledge: same repoint in the `# Core Knowledge Base` (or project-context) index.
-   - Breadcrumbs are **permanent traces** — the fleet still remembers *what it did* even if the repo isn't checked out.
+8. **Central traces** — in EACH contributing agent's `agent-memory-index.md` / knowledge index, leave a permanent trace (do NOT delete the memory of the work):
+   - Episodic ([ADR-011](//@agent-memory/docs/adr/2026-07-21-localized-episodic-index-repo-authoritative.md)): do **not** keep per-theme entries and do **not** repoint each one. Collapse them into **one** bounded pointer in a `## Localized Projects` subsection: `- [PROJECT](→ <project>/.agents/session/index.md) — localized YYYY-MM-DD (index in repo). Latest: [theme] (YYYY-MM-DD)`. The **repo** `.agents/session/index.md` is the authoritative newest-first index (MOVE-TO-TODAY applies there); the central pointer is a fleet-trace only, never the read source.
+   - Knowledge: keep the repoint in the `# Core Knowledge Base` (or project-context) index (unchanged).
+   - Traces are **permanent** — the fleet still remembers *what it did* even if the repo isn't checked out.
 
 ## Step 7: Write the central stub
 
@@ -186,9 +186,9 @@ resolution keys off the project root (cwd) — see Localized Home Resolution.
 
 ## Step 8: Report
 
-Summarize **both lanes**: `docs/` structural files moved vs stayed (with reasons); and — if the agent lane (Step 6b) was graduated — episodic + knowledge gathered/merged into `.agents/` (which agents contributed, any merges), breadcrumbs written. Note `AGENTS.md` updated/created, stub written. Remind [USER-NAME]:
+Summarize **both lanes**: `docs/` structural files moved vs stayed (with reasons); and — if the agent lane (Step 6b) was graduated — episodic + knowledge gathered/merged into `.agents/` (which agents contributed, any merges), central traces written (per-project episodic pointer + knowledge breadcrumb). Note `AGENTS.md` updated/created, stub written. Remind [USER-NAME]:
 - Commit `docs/`, `.agents/` (if graduated), + `AGENTS.md` in the **project** repo.
-- Commit the stub + index/breadcrumb changes in the **`@agent-memory`** repo.
+- Commit the stub + central index changes (per-project episodic pointer + knowledge breadcrumb) in the **`@agent-memory`** repo.
 
 ---
 
@@ -205,7 +205,7 @@ Given a project:
      - `PROJECT_ROOT` = the project's working directory (cwd for the active project)
      - `MAP_PATH` = `<PROJECT_ROOT>/<localized_path>` (default `docs/orientation-map.md`)
      - `CONTEXT_DIR` = `<PROJECT_ROOT>/docs/`
-     - `SESSION_DIR` = `<PROJECT_ROOT>/.agents/session/` — localized **episodic** (ADR-010)
+     - `SESSION_DIR` = `<PROJECT_ROOT>/.agents/session/` — localized **episodic**; its `index.md` is the authoritative episodic index-of-record ([ADR-011](//@agent-memory/docs/adr/2026-07-21-localized-episodic-index-repo-authoritative.md) — the central store keeps only a bounded `## Localized Projects` pointer) (ADR-010)
      - `KNOWLEDGE_DIR` = `<PROJECT_ROOT>/.agents/knowledge/` — localized **project-scoped** knowledge (ADR-010)
      - `SOURCE_OF_TRUTH` = `project`
    - else → **(central)**
@@ -229,7 +229,7 @@ Given a project:
 
 - **[map-orientation](map-orientation.md)** — consumes Localized Home Resolution in its Prelude (all modes read/write the resolved `MAP_PATH`/`CONTEXT_DIR`). `.agents/` is a hidden folder, so its C2 scan already skips it — the agent lane never pollutes the map.
 - **[update-project-context](memory/update-project-context.md) / [load-project-context](memory/load-project-context.md)** — shared scope resolves to `docs/`; **private scope resolves to `.agents/knowledge/`** when localized (ADR-010). These are the real project-scoped knowledge writer/reader.
-- **[update-episodic](memory/update-episodic.md) / [load-episodic](memory/load-episodic.md)** — episodic resolves to `SESSION_DIR` (`.agents/session/`) when localized; central keeps a breadcrumb.
+- **[update-episodic](memory/update-episodic.md) / [load-episodic](memory/load-episodic.md)** — episodic files **and the index** resolve to `SESSION_DIR` when localized; the repo `.agents/session/index.md` is the read/write/archive index-of-record, and central keeps one bounded `## Localized Projects` pointer ([ADR-011](//@agent-memory/docs/adr/2026-07-21-localized-episodic-index-repo-authoritative.md)).
 - **[update-knowledge](memory/update-knowledge.md) / [load-knowledge](memory/load-knowledge.md)** — general knowledge stays central; project-scoped resolves to `KNOWLEDGE_DIR` (`.agents/knowledge/`) via `/update-project-context`.
 - **[wrap-up](wrap-up.md)** — inherits via `/map-orientation --session-touched` + `/update-episodic` (no direct change).
 - **[awaken-agent](awaken-agent.md)** — Phase 2 resolves the localized **shared context-index** (`docs/`), **episodic** (`.agents/session/`), and **private project knowledge** (`.agents/knowledge/`) via Localized Home Resolution; the orientation map is resolved separately by `/map-orientation` (bare) at load.
@@ -237,7 +237,7 @@ Given a project:
 ## Anti-Patterns
 
 1. **Moving IDENTITY memory into a repo** — reasoning, emotion, RAS, **general** (cross-project) knowledge, and business/strategy/relationship never localize. (Episodic + project-scoped knowledge DO — into `.agents/` — per ADR-010.)
-2. **Dual home** — leaving a full central map AND an in-project map. Central must become a stub. Same for work-product: content moves to `.agents/`; central keeps only a breadcrumb.
+2. **Dual home** — leaving a full central map AND an in-project map. Central must become a stub. Same for work-product: content **and the episodic index** move to `.agents/`; central keeps only a stub / bounded pointer, never a full mirror ([ADR-011](//@agent-memory/docs/adr/2026-07-21-localized-episodic-index-repo-authoritative.md)).
 3. **Boolean consent flag in `AGENTS.md`** — use presence + a prose pointer; a boolean duplicates filesystem state and can lie.
 4. **Absolute or cross-store relative paths in the stub** — breaks portability; resolution keys off cwd.
 5. **Auto-moving ambiguous files** — classification pauses for confirmation; never move on assumption.
