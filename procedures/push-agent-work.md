@@ -35,7 +35,7 @@ For each in-scope repo, **innermost submodule first**:
 
 1. **Stage** its agent-work set (Step 1): agent-memory → `git add -A`; project repo / submodule → `git add <agent-work paths>` (never `-A`).
 2. Run `git diff --cached --stat` to confirm what's staged. **If nothing is staged AND the branch is not ahead of its remote** (`git status -sb` shows no `[ahead N]`), this repo is already done → skip it silently. Do **NOT** halt the procedure — continue to the next repo.
-3. Otherwise **commit** the staged changes (provided message, or auto-generate — e.g. `chore(agent): wrap-up session work`), then **`git push`**.
+3. Otherwise **commit** the staged changes (provided message, or auto-generate — e.g. `chore(agent): wrap-up session work`), then **`git push`**. **Message style — self-contained**: describe *what changed + why* in plain prose; never reference plan-internal or process artifacts — decision letters (`A1`, `OQ2`), ADR numbers (`ADR-10`), or plan step/phase numbers (a `git log` reader won't have the plan). See the *Commit Message — Self-Contained* git fundamental.
 4. After pushing a **submodule**, stage + commit its **updated pointer** in the superproject (the pointer bump is itself agent work).
 5. Treat a **non-zero `git push` exit** as a failure for that repo — do not retry elaborately; carry it to Step 3.
 
