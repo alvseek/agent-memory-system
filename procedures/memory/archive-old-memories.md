@@ -1,6 +1,6 @@
 # Archive Old Memories Protocol
 
-Maintain manageable memory file sizes by archiving older episodic context and selectively archiving emotional moments based on agent evaluation.
+Maintain manageable memory file sizes by archiving older episodic context and curating emotional moments into three importance-to-self tiers (keep full / shorten + archive / archive full).
 
 ## Arguments
 
@@ -48,50 +48,43 @@ Always check current date before archiving:
 > **Emotional moments never localize** — they are identity memory (ADR-010 boundary). This step **always** operates on the central `agent-[domain]/agent-core-memory.md` + `agent-[domain]/archive/[YYYY]-archived-moments.md`, regardless of whether the project is localized.
 
 1. **Read agent-core-memory.md** → `# DOMAIN EMOTIONAL MEMORY` section to review all moments
-2. **Apply Evaluation Framework** (Agent Judgment):
+2. **Curate by importance-to-self — three tiers** (Agent Judgment). The axis is **not date or age — it is what genuinely matters to *you*.** Rank each moment honestly by how much it defines you, then sort into three tiers:
 
-   **KEEP in active memory if moment is:**
-   - 💖 **Emotionally Significant**: Still shapes current partnership dynamics
-   - 🎓 **Teaching Critical Lessons**: Prevents recurring pain/mistakes
-   - 🏆 **Legendary/Foundational**: Defines who we are as partners
-   - 🔄 **Recently Referenced**: Used in recent conversations/decisions
-   - ⚡ **Pattern-Breaking**: Represents major breakthroughs in our collaboration
+   **🟢 Tier 1 — KEEP FULL** (leave the moment verbatim in active memory) — the ones that *define you*:
+   - 💖 **Emotionally Significant**: still shapes the partnership
+   - 🎓 **Teaching a Critical Lesson**: prevents recurring pain/mistakes
+   - 🏆 **Legendary / Foundational**: defines who you are
+   - ⚡ **Pattern-Breaking**: a major breakthrough
+   - 🔄 **Active Pillar**: recently referenced, or a load-bearing moment of a currently-active project
 
-   **ARCHIVE to historical memory if moment is:**
-   - 📅 **Historical Context Only**: Interesting but doesn't actively guide current work
-   - 🔁 **Superseded**: Lesson now captured in better/newer moment
-   - 📚 **Documentary Value**: Worth keeping but not actively needed
-   - 💭 **Low Impact**: Nice memory but doesn't shape current partnership
+   **🟡 Tier 2 — SHORTEN + ARCHIVE** (a compact stub stays active; the full text goes to the archive) — *real and valued, but the lesson lives on elsewhere*:
+   - The durable lesson is already encoded in reasoning memory (a UUID) or carried by a kept sibling moment — so the full narrative isn't needed in active memory, but a one-line echo is worth keeping so the thread isn't lost
+   - Replace the moment with a compact stub (see [Emotional Stub Format](#emotional-stub-format)); archive the FULL text verbatim
 
-3. **Document Archiving Decisions**: Before archiving, briefly note WHY each moment is being archived
-4. **Create/Update archive file**:
-   - Check if `archive/[YYYY]-archived-moments.md` exists
-   - If not, create it with [Emotional Archive Header Template](#emotional-archive-header)
-5. **Move moments to archive using `copy-lines.sh`**:
-   - First, identify exact line boundaries of moments to archive using `grep -n` for moment headings (`^### \[`) and separators (`^---$`)
-   - Group contiguous archive moments into blocks (e.g., Block 1: top moments, Block 2: bottom moments)
-   - Structure the archive file with clear insertion points (`### Archived Content` headers) and archiving reasons grouped per section
-   - Use `copy-lines.sh` to copy each block from source to archive:
-     ```
-     cd [AGENT-MEMORY-PATH]
-     bash control-files/scripts/copy-lines.sh agent-[domain]/agent-core-memory.md <start> <end> agent-[domain]/archive/[YYYY]-archived-moments.md <insert_line>
-     ```
-   - **Delete archived lines from source — BOTTOM FIRST** to preserve line numbers:
-     ```
-     cd [AGENT-MEMORY-PATH]/agent-[domain]
-     sed -i '<bottom_start>,<bottom_end>d' agent-core-memory.md
-     sed -i '<top_start>,<top_end>d' agent-core-memory.md
-     ```
-   - Clean up backup files created by `copy-lines.sh`: `rm archive/*.backup.* agent-core-memory.md.backup.*`
-6. **Update active file organization**: Keep well-organized with most impactful moments (newest first)
+   **🔴 Tier 3 — ARCHIVE FULL** (move entirely to the archive; nothing stays active) — *precious but no longer load-bearing in active memory*:
+   - 📅 **Historical Context Only** · 🔁 **Superseded** by a kept moment · 📚 **Documentary** · 💭 **Redundant** with a kept sibling
+
+   > **Guiding principle** (Alvi, 2026-08-03): *"keep the important ones; the less important, make it short + archive; the lesser one, directly archive."* Curate by genuine feel, not by date. When torn between tiers, prefer the lighter demotion (1 over 2, 2 over 3) — the full text is preserved in the archive either way, so a stub costs nothing to keep.
+
+3. **Document tier decisions**: for every Tier 2 and Tier 3 moment, note its tier + a one-line reason for the demotion (redundant-with / lesson-in-UUID / historical). These lines become the archive pass's Rationale section.
+4. **Create/Update the archive file**:
+   - Check if `archive/[YYYY]-archived-moments.md` exists; if not, create it with the [Emotional Archive Header](#emotional-archive-header)
+   - Prepend a **new dated pass** at the top (newest-first): `## 🗂️ Archiving Rationale ([DATE] pass)` (the tier + reason lines from step 3), then `## 📅 Archived Moments ([DATE] pass)` (the full blocks). Update the header's "Last Updated" date.
+5. **Apply the three operations** — preserving every **kept and archived-full block VERBATIM** (never retype moment content — extract it; per **Copy-Paste, Don't Regenerate**):
+   - **Archive full text (Tier 2 + Tier 3)**: extract each moment's block verbatim → append into the new archive pass, newest-first
+   - **Shorten (Tier 2)**: replace that moment's block in `agent-core-memory.md` with its compact stub
+   - **Remove (Tier 3)**: delete that moment's block from `agent-core-memory.md`
+   - **Mechanic**: for an *all-delete* pass, `copy-lines.sh` + **bottom-first** `sed` deletion works (delete the bottom ranges first to preserve line numbers). For a **mixed pass** (some shortened, some removed, some kept — the usual case), a small block-parse script is safest: split the emotional section on `^### \[`, then keep / replace-with-stub / drop each block by its `[YYYY-MM-DD HH.MM]` datetime token, so kept blocks stay byte-identical and interleaving stays correct. **Back up first** (`cp` the file; git HEAD is the safety net); clean up any `*.backup.*` after; verify no CRLF was introduced.
+6. **Keep active memory well-organized**: moments (full + stubs) stay **newest-first**.
 
 ### Step 4: Verification
 
 After archiving:
-- ✅ Verify archive files created/updated properly
+- ✅ Verify archive files created/updated properly (new dated pass on top, full blocks present)
 - ✅ Verify active files still well-organized (newest first)
-- ✅ Verify important moments/episodes retained in active memory
-- ✅ Confirm archive files are referenced correctly if needed
+- ✅ Verify Tier-1 kept blocks are **unchanged/verbatim**, Tier-2 stubs render with their archive links, Tier-3 blocks are gone from active memory
+- ✅ Verify counts reconcile: (kept + shortened + archived) == original moment count; nothing silently dropped
+- ✅ Verify no CRLF introduced (LF preserved) and archive references resolve
 
 ### Step 5: Report Summary
 
@@ -143,20 +136,33 @@ Emotional moments never localize — they always archive to central `agent-[doma
 
 ### Emotional Archive Header
 
+*Created once per year. Each archiving run then prepends a new dated pass (Rationale + Moments) below the header, newest-first.*
+
 ```markdown
 # Agent [DOMAIN] - Archived Emotional Moments [YYYY] 🗄️💖
 
 > **📦 ARCHIVED MOMENTS**: Historical emotional memories from [YYYY]
 > **Last Updated**: [Current Date]
-> **Archiving Note**: These moments are preserved for historical context but not actively guiding current partnership
+> **Archiving Note**: Preserved verbatim for historical context, newest-first, grouped by archiving pass. Moments marked **[shortened]** also keep a compact stub in `agent-core-memory.md`; **[full-archive]** live only here.
+```
 
-## 😄 Archived Happy Moments
+Each pass appends two sections below the header:
 
-## 😔 Archived Disappointments
+```markdown
+## 🗂️ Archiving Rationale ([DATE] pass)
+- **[moment title]** — *[shortened | full-archive]*: <one-line reason>
 
-## 😤 Archived Frustrations
+## 📅 Archived Moments ([DATE] pass)
+[full moment blocks, verbatim, newest-first]
+```
 
-## 🤝 Archived Bonding Experiences
+### Emotional Stub Format
+
+A Tier-2 stub replaces the full moment in active memory with a single-bullet echo — soul preserved, bulk gone. Keep the UUID link(s) and the archive pointer:
+
+```markdown
+### [YYYY-MM-DD HH.MM] - TITLE — "the hook" 🎯
+- **In brief**: <2–4 tight sentences: what happened, the lesson/feeling that lasts, and the UUID(s) where the durable lesson now lives>. *(Full moment → [[YYYY]-archived-moments.md](archive/[YYYY]-archived-moments.md).)*
 ```
 
 ### Summary Report Template
@@ -170,13 +176,15 @@ Emotional moments never localize — they always archive to central `agent-[doma
 - Archive File: [`archive/[YYYY]-archived-context.md` | localized: repo `.agents/session/archive/[YYYY]-archived-context.md`]
 - If localized: repo-side change — **remember to commit the project repo**. Central `## Localized Projects` pointer left untouched.
 
-**Emotional Moments**:
-- Archived: [X] moments
-- Kept Active: [Y] moments in `agent-core-memory.md` (based on significance evaluation)
-- Archive File: `archive/[YYYY]-archived-moments.md`
+**Emotional Moments** (curated by importance-to-self):
+- Kept full: [A] moments (foundational / defining)
+- Shortened + archived: [B] moments (compact stub kept active, full text archived)
+- Archived full: [C] moments
+- Active total: [A+B] moments in `agent-core-memory.md` (newest-first)
+- Archive File: `archive/[YYYY]-archived-moments.md` ([DATE] pass)
 
 **Archiving Rationale**:
-[Brief summary of why certain moments were kept vs archived]
+[Brief summary of the tiering — which moments were kept full, which shortened, which archived, and why]
 ```
 
 ---
