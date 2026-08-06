@@ -1,31 +1,48 @@
 #!/bin/bash
-# setup-all-codex.sh - Install agent-memory procedures as Codex user skills
+# setup-all-codex.sh - Install agent-memory procedures as Codex user skills.
 #
-# Usage: ./control-files/procedures/setup-scripts/setup-all-codex.sh
-#        bash control-files/procedures/setup-scripts/setup-all-codex.sh
+# Sources the memory CORE (control-files) plus, when present, the coding-skill OVERLAY
+# (agent-memory-coding-skill). A chat agent installs core only; a coding agent installs core+skill.
+# Uses a manifest to track installed skills and clean up stale ones on re-run.
+#
+# Usage:
+#   bash control-files/procedures/setup-scripts/setup-all-codex.sh             # core + skill (if overlay present)
+#   bash control-files/procedures/setup-scripts/setup-all-codex.sh --core-only # force chat profile (core only)
+# Env overrides:
+#   AGENT_MEMORY_SKILL_DIR   path to the overlay's procedures/ dir (default: sibling of control-files)
+#   AGENT_MEMORY_TARGET_DIR  install target             (default: ~/.agents/skills)
+#   AGENT_MEMORY_PROFILE     set to "core-only" to force the chat profile
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SOURCE_DIR="$(dirname "$SCRIPT_DIR")"
-MEMORY_DIR="$SOURCE_DIR/memory"
-TARGET_DIR="$HOME/.agents/skills"
+CORE_DIR="$(dirname "$SCRIPT_DIR")"                 # control-files/procedures (core: awaken-agent, refresh-memory, wrap-up)
+MEMORY_DIR="$CORE_DIR/memory"                       # control-files/procedures/memory
+AGGREGATOR_DIR="$(cd "$CORE_DIR/../.." 2>/dev/null && pwd)"
+SKILL_DIR="${AGENT_MEMORY_SKILL_DIR:-$AGGREGATOR_DIR/agent-memory-coding-skill/procedures}"
+TARGET_DIR="${AGENT_MEMORY_TARGET_DIR:-$HOME/.agents/skills}"
 MANIFEST_FILE="$TARGET_DIR/.agent-memory-codex-manifest"
 
-echo "=== Setup All Procedures as Codex Skills ==="
+# Profile: install the overlay when present, unless forced core-only.
+INSTALL_SKILL=0
+if [ "$1" = "--core-only" ] || [ "$AGENT_MEMORY_PROFILE" = "core-only" ]; then
+    PROFILE="core-only"
+elif [ -d "$SKILL_DIR" ]; then
+    PROFILE="core+skill"
+    INSTALL_SKILL=1
+else
+    PROFILE="core-only (overlay not found)"
+fi
+
+echo "=== Setup agent-memory Codex Skills ==="
 echo ""
-echo "Source (wizard): $SOURCE_DIR"
+echo "Profile:         $PROFILE"
+echo "Source (core):   $CORE_DIR"
 echo "Source (memory): $MEMORY_DIR"
-echo "Target: $TARGET_DIR"
+[ "$INSTALL_SKILL" -eq 1 ] && echo "Source (skill):  $SKILL_DIR"
+echo "Target:          $TARGET_DIR"
 echo ""
 
-if [ ! -d "$SOURCE_DIR" ]; then
-    echo "Error: Source directory not found: $SOURCE_DIR"
-    exit 1
-fi
-
-if [ ! -d "$MEMORY_DIR" ]; then
-    echo "Error: Memory directory not found: $MEMORY_DIR"
-    exit 1
-fi
+if [ ! -d "$CORE_DIR" ]; then echo "Error: core directory not found: $CORE_DIR"; exit 1; fi
+if [ ! -d "$MEMORY_DIR" ]; then echo "Error: memory directory not found: $MEMORY_DIR"; exit 1; fi
 
 mkdir -p "$TARGET_DIR"
 
@@ -42,22 +59,9 @@ if [ -f "$MANIFEST_FILE" ]; then
     echo ""
 fi
 
-SOURCE_COUNT=$(find "$SOURCE_DIR" -maxdepth 1 -type f -name '*.md' | wc -l)
-MEMORY_COUNT=$(find "$MEMORY_DIR" -maxdepth 1 -type f -name '*.md' | wc -l)
-TOTAL_COUNT=$((SOURCE_COUNT + MEMORY_COUNT))
-
-if [ "$TOTAL_COUNT" -eq 0 ]; then
-    echo "Error: No .md files found in source directories"
-    exit 1
-fi
-
 create_skill_from_markdown() {
     local source_file="$1"
-    local base_name
-    local skill_dir_name
-    local skill_dir
-    local title
-    local description
+    local base_name skill_dir_name skill_dir title description
 
     base_name="$(basename "$source_file" .md)"
     skill_dir_name="agent-memory-$base_name"
@@ -86,19 +90,24 @@ create_skill_from_markdown() {
     echo "$skill_dir_name" >> "$MANIFEST_FILE"
 }
 
+# Assemble source dirs: core always, skill when the coding profile is active.
+SRC_DIRS=("$CORE_DIR" "$MEMORY_DIR")
+[ "$INSTALL_SKILL" -eq 1 ] && SRC_DIRS+=("$SKILL_DIR")
+
 : > "$MANIFEST_FILE"
-
-echo "Converting $SOURCE_COUNT wizard procedures into skills..."
-for file in "$SOURCE_DIR"/*.md; do
-    [ -f "$file" ] || continue
-    create_skill_from_markdown "$file"
+TOTAL_COUNT=0
+for dir in "${SRC_DIRS[@]}"; do
+    for file in "$dir"/*.md; do
+        [ -f "$file" ] || continue
+        create_skill_from_markdown "$file"
+        TOTAL_COUNT=$((TOTAL_COUNT + 1))
+    done
 done
 
-echo "Converting $MEMORY_COUNT memory procedures into skills..."
-for file in "$MEMORY_DIR"/*.md; do
-    [ -f "$file" ] || continue
-    create_skill_from_markdown "$file"
-done
+if [ "$TOTAL_COUNT" -eq 0 ]; then
+    echo "Error: No .md files found in source directories"
+    exit 1
+fi
 
 echo ""
 echo "Successfully installed $TOTAL_COUNT Codex skills!"
