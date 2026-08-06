@@ -34,7 +34,7 @@ Decide whether this context belongs in the **shared** layer (cross-agent univers
 
 > **Why this matters**: Under-sharing causes drift (agent A learns a fact, agent B doesn't know it). Over-sharing is just slightly noisier loads. When the call is genuinely ambiguous, default to **shared**.
 
-Present the suggestion via [WAIT Options](//@agent-memory/control-files/procedures/wait-options.md) and wait for confirmation:
+Present the suggestion and wait for confirmation (show the reason, the suggested scope, and the alternative so [USER-NAME] can confirm or switch):
 
 ```
 **Scope determination for "[context summary]":**
@@ -53,11 +53,7 @@ Based on the confirmed scope, the subsequent steps will use the matching path:
 - **Shared scope**: `//@agent-memory/shared-memory/[project-name]/context/`
 - **Private scope**: `//@agent-memory/agent-[domain]/knowledge-base/[project-name]/`
 
-> **Localized projects**: if the project has been graduated via [`/localize-context`](../localize-context.md) (its central map frontmatter has `home: project`), paths resolve via [Localized Home Resolution](../localize-context.md#localized-home-resolution):
-> - **Shared** scope → the in-project bundle `<project-root>/docs/` (`CONTEXT_DIR`) instead of central `shared-memory/[project-name]/context/`.
-> - **Private** scope → the in-project `<project-root>/.agents/knowledge/` (`KNOWLEDGE_DIR`) instead of central `agent-[domain]/knowledge-base/[project-name]/`, per [ADR-010](//@agent-memory/docs/adr/2026-07-13-work-product-memory-localization.md) (project-scoped knowledge is work-product and travels). Also refresh `.agents/knowledge/index.md` and repoint the central index **breadcrumb**. **Reachability guard**: localized but `.agents/` missing at cwd → STOP, never write centrally.
->
-> Use the resolved dir for every scope-aware step below (folder check, create, index). If in doubt whether the project is localized, check the central map frontmatter for `home: project`.
+> **Storage location (seam)**: the scope paths above (`shared-memory/[project-name]/context/`, `agent-[domain]/knowledge-base/[project-name]/`) are the **central** defaults. Where a project's memory physically lives is decided by the storage-location resolver, which **defaults to central**; if a coding/environment add-on installed a localized resolver, it overrides the resolved shared/private dirs transparently — use the resolved dir for every scope-aware step below (folder check, create, index).
 
 > **Move operation**: If the user has asked to **move** an existing private entry to shared (e.g., "move X to shared", "promote X to shared"), skip the rest of this procedure and follow the [Move-to-Shared Sub-Flow](#move-to-shared-sub-flow) section below.
 

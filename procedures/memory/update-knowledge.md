@@ -36,7 +36,7 @@ If no arguments provided, ask: "What knowledge or domain expertise should I docu
 
 - Create in `knowledge-base/research/` (domain expertise and research)
 - **Note**: For project-specific context (VM access, deploy procedures, conventions), use `/update-project-context` instead
-- **Localization** ([ADR-010](//@agent-memory/docs/adr/2026-07-13-work-product-memory-localization.md)): `/update-knowledge` writes **general** knowledge (`knowledge-base/research/`, core-domain, cross-cutting), which is cross-project and **never localizes** — it always stays fleet-central. **Project-scoped** knowledge travels to a localized repo's `.agents/knowledge/`, but that path is written via `/update-project-context` (private scope), which handles [Localized Home Resolution](../localize-context.md#localized-home-resolution).
+- **Scope**: `/update-knowledge` writes **general** knowledge (`knowledge-base/research/`, core-domain, cross-cutting) — cross-project, always **central**. Project-scoped knowledge is written via `/update-project-context` instead.
 
 ### Step 3: Name File
 

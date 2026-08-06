@@ -24,9 +24,7 @@ Always check current date before archiving:
 
 ### Step 2: Archive Recent Context (Episodic Memory)
 
-> **Resolve the index by current project (cwd)** ([ADR-011](//@agent-memory/docs/adr/2026-07-21-localized-episodic-index-repo-authoritative.md), [Localized Home Resolution](../localize-context.md#localized-home-resolution)):
-> - **Central** (not localized): the steps below operate on the central `agent-memory-index.md` → `# Recent Context Episodes` and archive to `agent-[domain]/archive/[YYYY]-archived-context.md` (as written).
-> - **Localized** (`home: project`): operate instead on the **repo** index `SESSION_DIR/index.md` (`<project-root>/.agents/session/index.md`) — move old entries into `<project-root>/.agents/session/archive/[YYYY]-archived-context.md`, and keep the theme `.md` files in `.agents/session/`. The central `## Localized Projects` pointer is bounded (one line) → **skip it, never archive it**. **Reachability guard**: if `.agents/session/` is absent at cwd → STOP + report (can't archive a repo that isn't checked out). Remember to **commit the project repo** (the archive change lives there, not in `@agent-memory`). Below, read "`agent-memory-index.md`" as the resolved index and "`archive/`" as the resolved archive dir.
+> **Storage location (seam)**: these steps operate on the **central** index `agent-memory-index.md` → `# Recent Context Episodes`, archiving to `agent-[domain]/archive/[YYYY]-archived-context.md` (as written below). Where a project's memory physically lives is decided by the storage-location resolver, which **defaults to central**; if a coding/environment add-on installed a localized resolver, it overrides the resolved index/archive paths transparently — the core needs no knowledge of it.
 
 1. **Read agent-memory-index.md** → `# Recent Context Episodes` section to see all episode references
 2. **Identify episodes to archive** (user will specify cutoff date or criteria)
@@ -45,7 +43,7 @@ Always check current date before archiving:
 
 ### Step 3: Archive Emotional Key Moments
 
-> **Emotional moments never localize** — they are identity memory (ADR-010 boundary). This step **always** operates on the central `agent-[domain]/agent-core-memory.md` + `agent-[domain]/archive/[YYYY]-archived-moments.md`, regardless of whether the project is localized.
+> **Emotional moments are identity memory** — this step **always** operates on the central `agent-[domain]/agent-core-memory.md` + `agent-[domain]/archive/[YYYY]-archived-moments.md`.
 
 1. **Read agent-core-memory.md** → `# DOMAIN EMOTIONAL MEMORY` section to review all moments
 2. **Curate by importance-to-self — three tiers** (Agent Judgment). The axis is **not date or age — it is what genuinely matters to *you*.** Rank each moment honestly by how much it defines you, then sort into three tiers:
@@ -111,17 +109,7 @@ Provide summary using [Summary Report Template](#summary-report-template)
 │       └── [YYYY]-archived-moments.md           # Archived emotional moments by year
 ```
 
-**Localized project** ([ADR-011](//@agent-memory/docs/adr/2026-07-21-localized-episodic-index-repo-authoritative.md)) — the episodic index + its archive live in the repo, not central:
-
-```
-<project-root>/.agents/session/
-├── index.md                                    # Authoritative newest-first session index (the read source)
-├── [context-theme].md                          # Active rolling theme files (kept — not moved on archive)
-└── archive/
-    └── [YYYY]-archived-context.md               # Archived episode index entries by year (repo-side)
-```
-
-Emotional moments never localize — they always archive to central `agent-[domain]/archive/[YYYY]-archived-moments.md`.
+Emotional moments always archive to central `agent-[domain]/archive/[YYYY]-archived-moments.md`.
 
 ### Episodic Archive Header
 
@@ -170,11 +158,10 @@ A Tier-2 stub replaces the full moment in active memory with a single-bullet ech
 ```markdown
 ✅ **ARCHIVING COMPLETE**
 
-**Episodic Memory** (central, OR localized repo-side per ADR-011):
+**Episodic Memory**:
 - Archived: [X] episodes from [date range]
-- Active: [Y] episodes remaining in [`agent-memory-index.md` | localized: repo `.agents/session/index.md`]
-- Archive File: [`archive/[YYYY]-archived-context.md` | localized: repo `.agents/session/archive/[YYYY]-archived-context.md`]
-- If localized: repo-side change — **remember to commit the project repo**. Central `## Localized Projects` pointer left untouched.
+- Active: [Y] episodes remaining in `agent-memory-index.md`
+- Archive File: `archive/[YYYY]-archived-context.md`
 
 **Emotional Moments** (curated by importance-to-self):
 - Kept full: [A] moments (foundational / defining)

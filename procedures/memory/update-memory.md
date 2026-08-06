@@ -27,7 +27,7 @@ Comprehensive memory update orchestrator. Five phases:
 ### Step 0: Detect Mode + Cutoff
 
 1. If `$ARGUMENTS` contains `fresh` → `MODE = fresh`, skip to Phase 1.
-2. Theme-match scan: read the episodic index — **Central** (not localized): `agent-[domain]/agent-memory-index.md` `# Recent Context Episodes`; **Localized** (`home: project`, [ADR-011](//@agent-memory/docs/adr/2026-07-21-localized-episodic-index-repo-authoritative.md)): the repo `.agents/session/index.md` (`SESSION_DIR`, via [Localized Home Resolution](../localize-context.md#localized-home-resolution); if unreachable at cwd → `MODE = fresh`). Find top candidate where filename or summary contains current project name + highest keyword overlap with session theme.
+2. Theme-match scan: read the **central** episodic index `agent-[domain]/agent-memory-index.md` → `# Recent Context Episodes` (the store **defaults to central**; an installed add-on resolver may override where the index lives transparently). Find top candidate where filename or summary contains current project name + highest keyword overlap with session theme.
 3. **No match** → `MODE = fresh` (new file will be created in Phase 2). **Match** → `MODE = delta`, `CUTOFF = top H3 timestamp`.
 4. Capture `MODE` and `CUTOFF` (if delta) for Phase 4 summary. No standalone "Mode: ..." print.
 
@@ -71,7 +71,7 @@ Identify cross-layer files written this session (Phase 1 + any mid-session write
 
 | Layer | Path |
 |-------|------|
-| Project context (shared) | `shared-memory/[project]/context/*.md` (or `<project-root>/docs/*.md` if [localized](../localize-context.md)) |
+| Project context (shared) | `shared-memory/[project]/context/*.md` (central; an installed add-on resolver may override the location) |
 | Project context (private) | `knowledge-base/[project]/*.md` |
 | Knowledge | `knowledge-base/[topic].md`, `knowledge-base/core-domain-knowledge.md` |
 | Reasoning (shared) | `shared-memory/core-reasoning-memory.md` |

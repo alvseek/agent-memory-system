@@ -17,9 +17,7 @@ Load past episodic memory files from the agent's `episodes/` folder into working
 
 ### Step 1: Read Episode Index
 
-Resolve the index source by current project (cwd) via [Localized Home Resolution](../localize-context.md#localized-home-resolution), per [ADR-011](//@agent-memory/docs/adr/2026-07-21-localized-episodic-index-repo-authoritative.md):
-- **Central** (not localized): read `//@agent-memory/agent-[domain]/agent-memory-index.md` and locate the `# Recent Context Episodes` section (episode links resolve under `episodes/`).
-- **Localized** (`home: project`): read the **repo** index `SESSION_DIR/index.md` (`<project-root>/.agents/session/index.md`) — the authoritative, newest-first session list (entries resolve under `SESSION_DIR`). The central `## Localized Projects` pointer is a fleet-trace only, **not** the list source. **Reachability guard**: if `.agents/session/` is absent at cwd → report *"[project] is localized but not checked out here"* and stop.
+Read the **central** index `//@agent-memory/agent-[domain]/agent-memory-index.md` and locate the `# Recent Context Episodes` section (episode links resolve under `episodes/`). The store **defaults to central**; if an add-on installed a localized resolver it overrides where the index lives transparently — no core change needed.
 
 Parse the episode entries. Each entry follows this format:
 ```
@@ -87,9 +85,7 @@ No episodes matching "[keyword]" found. Showing recent episodes:
 
 ### Step 5: Load Selected Files
 
-Read the selected episode file(s) into agent context using the Read tool:
-- **Non-localized**: from `//@agent-memory/agent-[domain]/episodes/`.
-- **Localized** ([ADR-011](//@agent-memory/docs/adr/2026-07-21-localized-episodic-index-repo-authoritative.md)): the list came from the **repo** index (Step 1), so read each selected file directly from `SESSION_DIR` (`<project-root>/.agents/session/[file]`). Reachability was already checked in Step 1.
+Read the selected episode file(s) into agent context using the Read tool, from `//@agent-memory/agent-[domain]/episodes/`.
 
 After loading, confirm to the user:
 ```

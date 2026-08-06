@@ -28,7 +28,7 @@ Determine:
 - **Project name**: the current project being worked on (from working directory or session context — e.g., `agent-memory`, `plko`, `ocx-platform`)
 - **Theme keywords**: 2-5 noun/topic keywords summarizing this session's focus (e.g., `episodic`, `rolling-file`, `redesign`)
 
-> **Localized projects** ([ADR-011](//@agent-memory/docs/adr/2026-07-21-localized-episodic-index-repo-authoritative.md), extending [ADR-010](//@agent-memory/docs/adr/2026-07-13-work-product-memory-localization.md)): after identifying the project, apply [Localized Home Resolution](../localize-context.md#localized-home-resolution). If `home: project`, episode files **and the episodic index** live in `SESSION_DIR` (`<project-root>/.agents/session/`), **not** `agent-[domain]/episodes/` or the central index: write/append the theme file there and refresh the repo index `.agents/session/index.md` (**the MOVE-TO-TODAY rule below applies to *this* repo index**). In the central `agent-memory-index.md`, do **not** write a per-theme breadcrumb — instead ensure/refresh **one** bounded pointer in a `## Localized Projects` subsection: `- [PROJECT](→ <root>/.agents/session/index.md) — localized YYYY-MM-DD (index in repo). Latest: [theme] (YYYY-MM-DD)`. **Lazy migration**: if legacy per-theme breadcrumbs for this project still exist in the central index, collapse them into that single pointer on this touch. **Reachability guard**: if localized but `SESSION_DIR` is missing at cwd → STOP + report, never write centrally. Non-localized projects: everything below is unchanged. Below, read "episodes dir" as the resolved `SESSION_DIR` and "the index" as the repo `.agents/session/index.md`.
+> **Storage location (seam)**: episode files and the episodic index **default to central** — `agent-[domain]/episodes/` and `agent-memory-index.md` → `# Recent Context Episodes` (the MOVE-TO-TODAY rule below applies to the central index). Where memory physically lives is decided by the storage-location resolver, which **defaults to central**; if an add-on installed a localized resolver it overrides the resolved episodes-dir / index paths transparently. Below, read "episodes dir" as the resolved episodes directory and "the index" as the resolved index.
 
 #### Step 3: Scan Candidate Episodes
 
@@ -98,7 +98,7 @@ Wait for response. Auto-default to **A** only if confidence is high (≥3 strong
    ```
    ### YYYY-MM-DD HH.MM - [SESSION SUB-THEME] (agent: [domain])
    ```
-   (the `(agent: [domain])` tag is required when the project is localized — see the [Detailed Entry Template](#detailed-entry-template) note.)
+   (the `(agent: [domain])` tag is optional — see the [Detailed Entry Template](#detailed-entry-template) note.)
 
 4. **Check line limit** after the insert:
    - **> 500 lines**: warn — *"[filename] over 500 lines, consider splitting on next merge"*
@@ -166,7 +166,7 @@ episodes/
 
 ### Detailed Entry Template
 
-*The H3 header carries an optional `(agent: [domain])` tag. It is **required** once a project is localized — episodic is flat-merged across agents in `.agents/session/`, so the folder no longer implies authorship ([ADR-010](//@agent-memory/docs/adr/2026-07-13-work-product-memory-localization.md)). Omittable (harmless) for non-localized per-agent episodes.*
+*The H3 header carries an optional `(agent: [domain])` tag — omittable (harmless) for central per-agent episodes, where the `agent-[domain]/episodes/` folder already implies authorship.*
 
 ```markdown
 ### YYYY-MM-DD HH.MM - [SESSION SUB-THEME] (agent: [domain])
