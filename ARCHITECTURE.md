@@ -71,22 +71,10 @@ control-files/
 │   │   ├── write-to-claude.sh         # Write compiled output to CLAUDE.md
 │   │   └── write-to-gemini.sh         # Write compiled output to GEMINI.md
 │   └── output/                        # Runtime-resolved files + compiled output (gitignored)
-├── procedures/                         # Procedures (also work as slash commands)
-│   ├── high-wizard.md                 # Smart planning with dynamic section proposal
-│   ├── quick-wizard.md                # Lightweight decision collection + direct execution
-│   ├── council-of-wizards.md          # Multi-plan orchestration (council of wizards)
-│   ├── rite-of-creation.md            # Full project lifecycle orchestration (scratch to finish)
-│   ├── forge-of-covenant.md           # Project vision + milestone roadmap planning (multi-milestone)
-│   ├── wait-options.md                # WAIT Options format reference (used by wizard + quality procedures)
-│   ├── push-exclude-policy.md         # Push-exclude rule reference (shared by push + wrap-up flows)
-│   ├── awaken-agent.md                # Load agent memory and activate domain agent
+├── procedures/                         # Memory-primitive procedures (also work as slash commands)
+│   ├── awaken-agent.md                # Load agent identity + central memory
 │   ├── refresh-memory.md              # Recover agent memory after context compaction
-│   ├── implement-plan.md             # Start implementing approved plan with Execution Protocol
-│   ├── generate-readme.md            # Generate 7Q README from codebase investigation
-│   ├── generate-standard.md          # Generate project quality-standard.md from codebase
-│   ├── analyze-code-quality.md       # Standalone code quality analysis (8 dimensions)
-│   ├── pixel-wizard.md               # Visual design-to-implementation wizard (screenshot validation loop)
-│   ├── setup-qa-visual-instrument.md  # Set up project-type-aware screenshot tooling
+│   ├── wrap-up.md                     # End-of-session memory capture (memory-only)
 │   ├── memory/                        # Memory management procedures
 │   │   ├── update-memory.md           # Comprehensive memory update
 │   │   ├── update-episodic.md         # Episodic memory update
@@ -100,28 +88,39 @@ control-files/
 │   │   └── archive-old-memories.md    # Memory archiving
 │   ├── template/                      # Procedure template
 │   └── setup-scripts/                 # Slash command setup scripts
-├── scripts/                           # Utility scripts
+├── scripts/                           # Core utility scripts
+│   ├── check-core-invariant.sh        # Guard: core references no add-on procedure by name
 │   ├── claude-agent-refresh.sh        # Hook: memory refresh after compaction
+│   ├── codex-agent-refresh.sh         # Hook: memory refresh after compaction (Codex)
 │   ├── copy-lines.sh                  # Utility: copy lines between files
 │   ├── stop.wav                       # Hook: audio notification sound
 │   └── setup-scripts/                 # Settings setup scripts
 │       └── setup-settings-claude-code.sh  # Configure hooks + bypass permissions
-├── plan-templates/                    # Planning templates (used by procedures)
-│   ├── high-wizard-plan-template.md
-│   ├── council-of-wizards-plan-template.md
-│   ├── rite-of-creation-plan-template.md
-│   ├── forge-of-covenant-plan-template.md
-│   └── code-quality-analysis-template.md  # 8-dimension QA checklist (used by wizards + /analyze-code-quality)
 ├── docs/                              # Framework standards + orientation map
 │   ├── document-quality-standard.md   # Lean/clear/precise/self-contained rules for all framework docs
 │   └── orientation-map.md             # Framework's own orientation map (child of agent-memory root map)
 ├── archived/                          # Archived/retired files
-└── templates/                         # Output templates (used by procedures)
-    ├── readme-template.md             # 7Q README template (used by /generate-readme)
-    ├── quality-standard-template.md   # 9-dimension quality standard (used by /generate-standard)
-    ├── adr-template.md                # Architecture Decision Record template
+└── templates/                         # Memory templates (used by memory procedures)
     ├── episodic-memory-template.md    # Episodic memory entry template
     └── project-context-template.md    # Project context file template
+```
+
+### Coding Overlay Directory (`agent-memory-coding-skill` — separate repo)
+```
+agent-memory-coding-skill/
+├── procedures/                         # All coding/repo slash commands (depend on the core)
+│   ├── awaken-coder.md                # Coding awakening overlay (composes core /awaken-agent)
+│   ├── project-wrap-up.md             # Full wrap-up: core /wrap-up + push + /map-orientation
+│   ├── localized-memory-workflow.md   # Repo-authoritative localized memory behavior
+│   ├── high-wizard · quick-wizard · council-of-wizards · rite-of-creation · forge-of-covenant · implement-plan
+│   ├── generate-readme · generate-docs · generate-architecture-docs · generate-domain-docs · generate-flow-docs · discovery-contract
+│   ├── analyze-code-quality · generate-standard · integration-test · setup-qa-instrument · setup-qa-visual-instrument · pixel-wizard
+│   ├── map-orientation · localize-context · pull-* · push-* · push-exclude-policy
+│   ├── ask-agent · delegate-agent · setup-fleet
+│   └── wait-options.md                # WAIT Options reference (consumed by wizards)
+├── plan-templates/                     # Wizard/QA plan templates (high-wizard, council, rite, forge, code-quality)
+├── templates/                          # Doc-gen / ADR / fleet / orientation / flow / domain templates
+└── scripts/                            # Fleet scripts (ask-agent, delegate-agent, fleet-common, wrap-up-agent)
 ```
 
 ### Agent Directory Structure
@@ -379,67 +378,47 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 | **Session Wrap-Up (memory-only)** | `procedures/wrap-up.md` | `/wrap-up` — memory capture only; the overlay's `/project-wrap-up` adds push + `/map-orientation` |
 | **Awaken Agent** | `procedures/awaken-agent.md` | `/awaken-agent` |
 | **Refresh Memory** | `procedures/refresh-memory.md` | `/refresh-memory` |
-| **Implement Plan** | `procedures/implement-plan.md` | `/implement-plan` |
-| **Push Project** | `procedures/push-project.md` | `/push-project` |
-| **Push Memory** | `procedures/push-memory.md` | `/push-memory` |
-| **Push All** | `procedures/push-all.md` | `/push-all` |
-| **Push Agent Work** | `procedures/push-agent-work.md` | `/push-agent-work` |
-| **Pull Project** | `procedures/pull-project.md` | `/pull-project` |
-| **Pull Memory** | `procedures/pull-memory.md` | `/pull-memory` |
-| **Pull All** | `procedures/pull-all.md` | `/pull-all` |
-| **Generate README** | `procedures/generate-readme.md` | `/generate-readme` |
-| **Generate Flow Docs** | `procedures/generate-flow-docs.md` | `/generate-flow-docs` |
-| **Generate Domain Docs** | `procedures/generate-domain-docs.md` | `/generate-domain-docs` |
-| **Generate Architecture Docs** | `procedures/generate-architecture-docs.md` | `/generate-architecture-docs` |
-| **Generate Docs (Orchestrator)** | `procedures/generate-docs.md` | `/generate-docs` |
-| **Generate Quality Standard** | `procedures/generate-standard.md` | `/generate-standard` |
-| **Analyze Code Quality** | `procedures/analyze-code-quality.md` | `/analyze-code-quality` |
-| **Pixel Wizard** | `procedures/pixel-wizard.md` | `/pixel-wizard` |
-| **Setup QA Visual Instrument** | `procedures/setup-qa-visual-instrument.md` | `/setup-qa-visual-instrument` |
+
+**Coding overlay commands** (in [agent-memory-coding-skill](https://github.com/alvseek/agent-memory-coding-skill), installed for coding agents): `/project-wrap-up`, `/implement-plan`, the wizard protocols, `/generate-readme` · `/generate-docs` · `/generate-architecture-docs` · `/generate-domain-docs` · `/generate-flow-docs`, `/generate-standard`, `/analyze-code-quality`, `/integration-test`, `/pixel-wizard`, `/setup-qa-instrument` · `/setup-qa-visual-instrument`, `/map-orientation`, `/localize-context`, `/ask-agent` · `/delegate-agent` · `/setup-fleet`, and `/push-*` · `/pull-*`.
 
 ### Common Slash Commands
 
 ```
-/awaken-agent [domain]   # Load agent memory and activate domain agent
+# --- Memory core (installed for every agent) ---
+/awaken-agent [domain]   # Load agent memory and activate domain agent (central)
 /refresh-memory [domain] # Recover agent memory after context compaction
-/forge-of-covenant       # Project vision + milestone roadmap (multi-milestone planning + living tracker)
-/rite-of-creation        # Full project lifecycle (vision → SDLC phases → exit criteria → execution)
-/council-of-wizards      # Multi-plan orchestration (requirements → sub-plans → parallel execution)
-/implement-plan          # Start implementing approved plan with Execution Protocol
 /wrap-up                 # End-of-session memory capture only (via /update-memory + surface open items)
-/project-wrap-up         # (overlay) Full wrap-up: /wrap-up memory + push agent work + /map-orientation
 /update-memory [new]     # Comprehensive update (all layers evaluated)
 /update-episodic [new]   # Episodic only
 /add-reasoning           # Add reasoning pattern
 /update-knowledge        # Update knowledge entry
-/update-project-context  # Create/update project context (shared or private, with heuristic + confirm; supports move-to-shared)
-/load-project-context    # List and load project context files (both layers, with [shared]/[private] markers)
+/update-emotional        # Update emotional memory
+/update-project-context  # Create/update project context (shared or private; heuristic + confirm; move-to-shared)
+/load-project-context    # List and load project context files ([shared]/[private] markers)
 /load-episodic           # List and load past episodic memories
 /load-knowledge          # List and load knowledge files
 /archive-old-memories    # Archive old memories
-/generate-readme         # Generate 7Q README from codebase investigation
-/generate-flow-docs      # Flow docs (bare=discovery; [flow]=diagram; [M]=journey-map)
-/generate-domain-docs    # Domain/ERD docs (bare=discovery; [context]=ERD; [M]=context-map)
-/generate-architecture-docs # Architecture docs (bare=aspect discovery; [path]=overview; [M]=architecture-map)
-/generate-docs           # Orchestrator: generate all 4 lens maps (cross-lens [M] pick)
-/generate-standard       # Generate project quality-standard.md from codebase
-/analyze-code-quality    # Standalone code quality analysis (8 dimensions)
-/pixel-wizard [context]  # Visual design-to-implementation wizard (screenshot validation loop)
-/setup-qa-visual-instrument  # Set up project-type-aware screenshot tooling for current project
-/push-project            # Commit and push current project
-/push-memory             # Commit and push agent memory
-/push-all                # Commit and push both project + agent memory
-/push-agent-work         # Commit and push ONLY the agent's work (agent-memory + agent paths); used by /project-wrap-up
-/pull-project            # Pull latest for current project
-/pull-memory             # Pull agent memory + update control-files submodule
-/pull-all                # Pull both project + agent memory
+
+# --- Coding overlay (agent-memory-coding-skill; coding agents only) ---
+/awaken-coder            # Coding awakening: composes core /awaken-agent + localized/map/fleet
+/project-wrap-up         # Full wrap-up: /wrap-up memory + push agent work + /map-orientation
+/implement-plan          # Start implementing approved plan with Execution Protocol
+/quick-wizard · /high-wizard · /council-of-wizards · /rite-of-creation · /forge-of-covenant
+/generate-readme · /generate-docs · /generate-architecture-docs · /generate-domain-docs · /generate-flow-docs
+/generate-standard · /analyze-code-quality · /integration-test · /pixel-wizard · /setup-qa-instrument · /setup-qa-visual-instrument
+/map-orientation · /localize-context
+/ask-agent · /delegate-agent · /setup-fleet
+/push-project · /push-memory · /push-all · /push-agent-work
+/pull-project · /pull-memory · /pull-all
 ```
 
 ---
 
 ## Wizard Protocols
 
-The `procedures/` directory contains wizard-based planning procedures. High Wizard dynamically adapts its output based on task context — it can produce implementation plans, analysis documents, brainstorming outputs, or investigation reports by proposing relevant optional sections during the Early Review step.
+> **Overlay-provided:** the wizard protocols now live in the [agent-memory-coding-skill](https://github.com/alvseek/agent-memory-coding-skill) overlay (`agent-memory-coding-skill/procedures/`), not the memory core — they're installed for coding agents. The hierarchy below is unchanged.
+
+The wizard-based planning procedures dynamically adapt output based on task context — High Wizard can produce implementation plans, analysis documents, brainstorming outputs, or investigation reports by proposing relevant optional sections during the Early Review step.
 
 | Protocol | Level | When to Use | Slash Command |
 |----------|-------|-------------|---------------|
