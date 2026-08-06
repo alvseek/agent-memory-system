@@ -1,12 +1,15 @@
-# Agent Memory System
+# Agent Memory System — Memory Core
 
-The shared control files for the [Agent Memory](https://github.com/alvseek/agent-memory) architecture — procedures, templates, and memory management instructions designed to be used as a **git submodule** inside your private agent-memory repository.
+The **memory core** of the [Agent Memory](https://github.com/alvseek/agent-memory) architecture — the domain-agnostic memory primitives (awaken, memory read/write, session wrap-up) plus the templates and compilation tooling that every agent needs. Designed to be used as a **git submodule** inside your private agent-memory repository.
+
+Coding- and repo-oriented procedures (wizards, doc generation, QA, fleet, localization, push/pull) live in the **separate** [agent-memory-coding-skill](https://github.com/alvseek/agent-memory-coding-skill) overlay — an independent repo that composes on top of this core for coding agents. A plain chat agent uses this core alone.
 
 ---
 
 ## Table of Contents
 
 - [What Is This?](#what-is-this)
+- [Two-Repo Architecture](#two-repo-architecture)
 - [How Do I Set It Up?](#how-do-i-set-it-up)
 - [How Do I Use It?](#how-do-i-use-it)
 - [How Does It Work Inside?](#how-does-it-work-inside)
@@ -16,33 +19,24 @@ The shared control files for the [Agent Memory](https://github.com/alvseek/agent
 
 ## What Is This?
 
-This submodule provides the shared infrastructure for the [5-layer agent memory system](https://github.com/alvseek/agent-memory): procedures that teach agents how to manage their own memory, planning protocols for structured work, templates for consistent output, and scripts for setup automation.
+This submodule provides the **memory-primitive** infrastructure for the [5-layer agent memory system](https://github.com/alvseek/agent-memory): procedures that teach agents how to manage their own memory (episodic, knowledge, reasoning, emotional, project-context), awaken from central memory, recover after compaction, and wrap up a session. It knows nothing about repos, git, wizards, or fleets — those are the overlay's job.
 
 ### Architecture
 
 ```
 control-files/
 ├── core-instruction-control-files.md  # Shared reasoning & knowledge (loaded by all agents)
-├── procedures/                         # 30 procedures (also work as slash commands)
-│   ├── high-wizard.md                 # Smart planning
-│   ├── quick-wizard.md                # Lightweight decisions
-│   ├── council-of-wizards.md          # Multi-plan orchestration
-│   ├── rite-of-creation.md            # Full project lifecycle
-│   ├── forge-of-covenant.md           # Project vision + milestone roadmap
-│   ├── wait-options.md                # WAIT Options format reference (shared)
-│   ├── push-exclude-policy.md         # Push-exclude rule reference (shared)
-│   ├── awaken-agent.md                # Load agent memory
+├── procedures/                         # Memory-primitive procedures (also work as slash commands)
+│   ├── awaken-agent.md                # Load agent identity + central memory
 │   ├── refresh-memory.md              # Post-compaction recovery
-│   ├── implement-plan.md              # Execute approved plans
-│   ├── wrap-up.md                     # End-of-session save + push
-│   └── memory/                        # Memory management (10 procedures)
-├── plan-templates/                     # Planning templates (used by wizard protocols)
-├── templates/                          # Output templates (readme, etc.)
+│   ├── wrap-up.md                     # End-of-session memory capture (memory-only)
+│   ├── memory/                        # Memory management (10 procedures)
+│   └── setup-scripts/                 # 2-repo-aware setup orchestrators (core / core+skill)
+├── templates/                          # Memory templates (episodic-memory, project-context)
 ├── new-agent-template/                 # Starter template for new agents
 ├── core-memory/                        # Source files for Global CLAUDE.md compilation
 ├── docs/                               # Framework standards + orientation map
-├── scripts/                            # Utility scripts (hooks, copy-lines)
-└── setup-scripts/                      # Top-level setup orchestrators
+└── scripts/                            # Core scripts (copy-lines, invariant guard, refresh)
 ```
 
 For the complete file tree and agent directory structure, see [ARCHITECTURE.md](ARCHITECTURE.md).
@@ -55,6 +49,21 @@ For the complete file tree and agent directory structure, see [ARCHITECTURE.md](
 
 ---
 
+## Two-Repo Architecture
+
+The framework is split into two independent, standalone repos with a strict **one-way dependency**:
+
+| Repo | Role | Contents |
+|------|------|----------|
+| **control-files** (this repo) | Memory core | Awaken, memory read/write, session wrap-up, memory templates, compilation. Standalone; MCP-wrappable later. |
+| **[agent-memory-coding-skill](https://github.com/alvseek/agent-memory-coding-skill)** | Coding overlay | Wizards, doc-gen, QA, fleet, `map-orientation`, `localize-context`, `wait-options`, push/pull, `project-wrap-up`, `awaken-coder`. |
+
+- **The overlay depends on the core; the core never references the overlay by name** — enforced by [`scripts/check-core-invariant.sh`](scripts/check-core-invariant.sh).
+- **Composition is agent-side, additive — not override.** The overlay's `awaken-coder` simply orchestrates *"run the core `/awaken-agent`, then localized-home + orientation map + fleet."*
+- A **chat agent** installs core only (`--core-only`); a **coding agent** installs core + overlay. The setup scripts auto-detect the overlay's presence.
+
+---
+
 ## How Do I Set It Up?
 
 ### As Part of Agent Memory
@@ -62,41 +71,28 @@ For the complete file tree and agent directory structure, see [ARCHITECTURE.md](
 If you cloned the [agent-memory](https://github.com/alvseek/agent-memory) template, the setup script handles everything:
 
 ```bash
-bash control-files/setup-scripts/setup-claude-code.sh
+bash control-files/procedures/setup-scripts/setup-all-claude-code.sh             # core + overlay (if present)
+bash control-files/procedures/setup-scripts/setup-all-claude-code.sh --core-only # chat profile (core only)
 ```
 
-This runs 4 steps: user config → compile CLAUDE.md → install slash commands → configure settings.
-
-For detailed setup options and manual alternatives, see the [Setup Guide](SETUP.md).
+The setup sources the core, plus the coding overlay when it's present beside `control-files`. For detailed setup options and manual alternatives, see the [Setup Guide](SETUP.md).
 
 ### Updating the Submodule
 
 Pull the latest control-files updates:
 
 ```bash
-cd control-files && git pull origin master && cd ..
+cd control-files && git pull origin main && cd ..
 git add control-files && git commit -m "chore: bump control-files submodule"
 ```
 
-Or use the built-in command: `/pull-memory`
+Or use the built-in command: `/pull-memory` (provided by the coding overlay).
 
 ---
 
 ## How Do I Use It?
 
-### Wizard Protocols
-
-Planning protocols for structured work, from quick decisions to full project lifecycles:
-
-| Protocol | Level | When to Use | Command |
-|----------|-------|-------------|---------|
-| **Quick Wizard** | 0 | Small tasks, lightweight decisions | `/quick-wizard` |
-| **High Wizard** | 1 | Smart planning, adapts to any task | `/high-wizard` |
-| **Council of Wizards** | 2 | Multi-plan orchestration | `/council-of-wizards` |
-| **Rite of Creation** | 3 | Full project lifecycle | `/rite-of-creation` |
-| **Forge of Covenant** | 4 | Project vision + milestone roadmap | `/forge-of-covenant` |
-
-Quick Wizard auto-escalates to High Wizard when the task is too complex. Higher-level protocols delegate individual plans to High Wizard or Quick Wizard for execution.
+The core installs as slash commands to `~/.claude/commands/`. These are the **memory primitives**:
 
 ### Memory Procedures
 
@@ -113,29 +109,15 @@ Quick Wizard auto-escalates to High Wizard when the task is too complex. Higher-
 | `/load-knowledge` | Browse and load knowledge base files |
 | `/archive-old-memories` | Archive old memories with evaluation |
 
-### Operational Commands
+### Core Operational Commands
 
 | Command | Purpose |
 |---------|---------|
-| `/awaken-agent [domain]` | Load agent memory and activate |
+| `/awaken-agent [domain]` | Load agent memory and activate (central) |
 | `/refresh-memory [domain]` | Recover memory after context compaction |
-| `/implement-plan` | Start implementing an approved plan |
-| `/wrap-up` | End-of-session: comprehensive memory update (via `/update-memory`) + push agent work only |
-| `/push-project` | Commit and push current project |
-| `/push-memory` | Commit and push agent memory |
-| `/push-all` | Push both project + agent memory |
-| `/push-agent-work` | Push ONLY the agent's work (agent-memory + agent paths); used by `/wrap-up` |
-| `/pull-project` | Pull latest for current project |
-| `/pull-memory` | Pull agent memory + update submodule |
-| `/pull-all` | Pull both project + agent memory |
+| `/wrap-up` | End-of-session **memory capture only** (via `/update-memory` + surface open items) |
 
-### Generation & Quality Commands
-
-| Command | Purpose |
-|---------|---------|
-| `/generate-readme [path]` | Generate 7Q README from codebase investigation |
-| `/generate-standard [path]` | Generate project `quality-standard.md` from codebase conventions |
-| `/analyze-code-quality [scope]` | Standalone code quality analysis (8 dimensions + project standard) |
+> **Coding agents**: the overlay adds `/project-wrap-up` (composes `/wrap-up`, then push + `/map-orientation`), the wizard protocols (`/quick-wizard` → `/forge-of-covenant`), `/implement-plan`, doc generation (`/generate-readme`, `/generate-docs`, …), QA (`/analyze-code-quality`, `/integration-test`, …), fleet (`/ask-agent`, `/delegate-agent`, `/setup-fleet`), `/map-orientation`, `/localize-context`, and push/pull. See the [overlay repo](https://github.com/alvseek/agent-memory-coding-skill).
 
 ### Compilation
 
@@ -160,7 +142,7 @@ bash core-memory/compile-scripts/write-to-claude.sh  # Write to ~/.claude/CLAUDE
 
 | Section | Content |
 |---------|---------|
-| Awakening Instructions | 4-phase protocol for agent startup |
+| Awakening Instructions | Central awakening protocol (Phase 1 identity + Phase 2 central context) |
 | User Profile | User identity (name, philosophy, vision) |
 | Reasoning Memory | UUID-based reasoning patterns with emotional anchoring |
 | Knowledge Memory | 5-layer architecture reference, behavioral rules |
@@ -190,11 +172,17 @@ Every procedure follows a consistent format and doubles as a slash command:
 
 Procedures are installed as slash commands to `~/.claude/commands/` by the setup script.
 
-For the complete loading flow, memory layer details, and wizard protocol hierarchy, see [ARCHITECTURE.md](ARCHITECTURE.md).
+For the complete loading flow, memory layer details, and the coding overlay, see [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ---
 
 ## What Decisions Were Made?
+
+### Memory Core / Coding Overlay Split
+
+**Context**: A foreign consuming agent (coding *or* chat-based) should be able to load memory with no coding-specific procedures baked into the output.
+**Decision**: Slim `control-files` to memory primitives; extract all coding/repo procedures into the standalone [agent-memory-coding-skill](https://github.com/alvseek/agent-memory-coding-skill) overlay. One-way dependency (overlay → core), machine-checked by an invariant guard.
+**Trade-off**: Two repos + cross-repo links to maintain, but the core is genuinely standalone and MCP-wrappable, and chat agents get a leak-free memory experience.
 
 ### Procedures as Slash Commands
 
@@ -208,17 +196,11 @@ For the complete loading flow, memory layer details, and wizard protocol hierarc
 **Decision**: Modular source files (`0-*.md`, `1-*.md`, etc.) + bash compilation scripts that concatenate and deploy.
 **Trade-off**: Extra build step after editing source files, but enables per-section editing, multi-target output (Claude, Gemini), and clean separation of concerns.
 
-### Wizard Protocol Hierarchy
-
-**Context**: Different tasks need different levels of planning rigor — from quick fixes to full project lifecycles.
-**Decision**: 4-level wizard hierarchy (Quick → High → Council → Rite) with automatic escalation from lower to higher levels.
-**Trade-off**: More procedures to maintain, but each level is focused and appropriately scoped. Quick Wizard handles 80% of tasks; higher levels exist for when they're genuinely needed.
-
 ---
 
 ## Additional Resources
 
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** — File structure, loading flow, 5-layer memory details, wizard protocol hierarchy
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** — File structure, loading flow, 5-layer memory details, coding overlay
 - **[SETUP.md](SETUP.md)** — Environment configuration and creating new agents
 - **[MCP.md](MCP.md)** — Connect agents to databases, APIs, and tools via MCP
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** — How to contribute to the shared framework

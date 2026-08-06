@@ -4,6 +4,8 @@
 
 The Control Files system provides the **shared memory infrastructure** for all agents. It implements a **5-layer memory architecture** that gives agents persistent, structured memory capabilities.
 
+> **⚠️ Two-repo split (2026-08-06):** `control-files` is now the **memory core** only. Coding/repo procedures — the wizard protocols, doc generation, QA, fleet, `map-orientation`, `localize-context`, `wait-options`, push/pull, and `project-wrap-up` — moved to the standalone [agent-memory-coding-skill](https://github.com/alvseek/agent-memory-coding-skill) overlay (composes on top of the core for coding agents; a chat agent uses core alone). Some tables/trees below still enumerate the full pre-split command set; entries for the moved procedures now live in the overlay repo. Full section-by-section relocation is in progress.
+
 ## Table of Contents
 - [Architecture Overview](#architecture-overview)
 - [File Structure](#file-structure)
@@ -374,7 +376,7 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 | Episodic (load) | `procedures/memory/load-episodic.md` | `/load-episodic` |
 | Knowledge (load) | `procedures/memory/load-knowledge.md` | `/load-knowledge` |
 | Archiving | `procedures/memory/archive-old-memories.md` | `/archive-old-memories` |
-| **Session Wrap-Up** | `procedures/wrap-up.md` | `/wrap-up` |
+| **Session Wrap-Up (memory-only)** | `procedures/wrap-up.md` | `/wrap-up` — memory capture only; the overlay's `/project-wrap-up` adds push + `/map-orientation` |
 | **Awaken Agent** | `procedures/awaken-agent.md` | `/awaken-agent` |
 | **Refresh Memory** | `procedures/refresh-memory.md` | `/refresh-memory` |
 | **Implement Plan** | `procedures/implement-plan.md` | `/implement-plan` |
@@ -404,7 +406,8 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 /rite-of-creation        # Full project lifecycle (vision → SDLC phases → exit criteria → execution)
 /council-of-wizards      # Multi-plan orchestration (requirements → sub-plans → parallel execution)
 /implement-plan          # Start implementing approved plan with Execution Protocol
-/wrap-up                 # End-of-session: comprehensive memory update (via /update-memory) + push agent work only
+/wrap-up                 # End-of-session memory capture only (via /update-memory + surface open items)
+/project-wrap-up         # (overlay) Full wrap-up: /wrap-up memory + push agent work + /map-orientation
 /update-memory [new]     # Comprehensive update (all layers evaluated)
 /update-episodic [new]   # Episodic only
 /add-reasoning           # Add reasoning pattern
@@ -426,7 +429,7 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 /push-project            # Commit and push current project
 /push-memory             # Commit and push agent memory
 /push-all                # Commit and push both project + agent memory
-/push-agent-work         # Commit and push ONLY the agent's work (agent-memory + agent paths); used by /wrap-up
+/push-agent-work         # Commit and push ONLY the agent's work (agent-memory + agent paths); used by /project-wrap-up
 /pull-project            # Pull latest for current project
 /pull-memory             # Pull agent memory + update control-files submodule
 /pull-all                # Pull both project + agent memory
