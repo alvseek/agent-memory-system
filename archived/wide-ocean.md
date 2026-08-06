@@ -19,7 +19,7 @@ If no arguments provided, ask: "What feature needs multi-plan coordination?"
 
 ### Step 1: Read Template
 
-Read the [Wide Ocean Plan Template](//@agent-memory/control-files/plan-templates/wide-ocean-plan-template.md) file
+Read the [Wide Ocean Plan Template]([AGENT-MEMORY-PATH]/control-files/plan-templates/wide-ocean-plan-template.md) file
 
 ### Step 2: Create Feature Folder
 
@@ -36,15 +36,15 @@ Copy the template file to the new folder as `master.md`:
 
 ### Step 4: Fill Feature Info
 
-Fill the [Feature Info](//@agent-memory/control-files/plan-templates/wide-ocean-plan-template.md#feature-info) section
+Fill the [Feature Info]([AGENT-MEMORY-PATH]/control-files/plan-templates/wide-ocean-plan-template.md#feature-info) section
 
 ### Step 5: Fill Objectives and Success Criteria
 
-Fill the [Objectives and Success Criteria](//@agent-memory/control-files/plan-templates/wide-ocean-plan-template.md#objectives) section
+Fill the [Objectives and Success Criteria]([AGENT-MEMORY-PATH]/control-files/plan-templates/wide-ocean-plan-template.md#objectives) section
 
 ### Step 6: Investigate and Fill Analysis
 
-Investigate the codebase and fill the [Analysis](//@agent-memory/control-files/plan-templates/wide-ocean-plan-template.md#analysis) section
+Investigate the codebase and fill the [Analysis]([AGENT-MEMORY-PATH]/control-files/plan-templates/wide-ocean-plan-template.md#analysis) section
 
 ### Step 7: Review Feature Info + Objectives + Analysis
 
@@ -52,7 +52,7 @@ Ask for review. STOP. Present to [USER-NAME] for review. Do NOT write the next s
 
 ### Step 8: Fill Sub-Plans Listing
 
-Fill the [Sub-Plans Listing](//@agent-memory/control-files/plan-templates/wide-ocean-plan-template.md#sub-plans-listing) section
+Fill the [Sub-Plans Listing]([AGENT-MEMORY-PATH]/control-files/plan-templates/wide-ocean-plan-template.md#sub-plans-listing) section
 
 ### Step 9: Review Sub-Plans
 
@@ -60,11 +60,11 @@ Ask for review. STOP. Present to [USER-NAME] for review. Do NOT write the next s
 
 ### Step 10: Fill Execution Order
 
-Fill the [Execution Order](//@agent-memory/control-files/plan-templates/wide-ocean-plan-template.md#execution-order) section
+Fill the [Execution Order]([AGENT-MEMORY-PATH]/control-files/plan-templates/wide-ocean-plan-template.md#execution-order) section
 
 ### Step 11: Fill Dependency Graph
 
-Fill the [Dependency Graph](//@agent-memory/control-files/plan-templates/wide-ocean-plan-template.md#dependency-graph) section
+Fill the [Dependency Graph]([AGENT-MEMORY-PATH]/control-files/plan-templates/wide-ocean-plan-template.md#dependency-graph) section
 
 ### Step 12: Review Execution Order + Dependency Graph
 
@@ -72,15 +72,15 @@ Ask for review. STOP. Present to [USER-NAME] for review. Do NOT write the next s
 
 ### Step 13: Fill Integration Points
 
-Fill the [Integration Points](//@agent-memory/control-files/plan-templates/wide-ocean-plan-template.md#integration-points) section
+Fill the [Integration Points]([AGENT-MEMORY-PATH]/control-files/plan-templates/wide-ocean-plan-template.md#integration-points) section
 
 ### Step 14: Fill Handoff Checklists
 
-Fill the [Handoff Checklists](//@agent-memory/control-files/plan-templates/wide-ocean-plan-template.md#handoff-checklists) section
+Fill the [Handoff Checklists]([AGENT-MEMORY-PATH]/control-files/plan-templates/wide-ocean-plan-template.md#handoff-checklists) section
 
 ### Step 15: Fill Agent Assignment Matrix
 
-Fill the [Agent Assignment Matrix](//@agent-memory/control-files/plan-templates/wide-ocean-plan-template.md#agent-assignment-matrix) section
+Fill the [Agent Assignment Matrix]([AGENT-MEMORY-PATH]/control-files/plan-templates/wide-ocean-plan-template.md#agent-assignment-matrix) section
 
 ### Step 16: Review Integration + Handoffs + Agent Assignment
 
@@ -88,15 +88,15 @@ Ask for review. STOP. Present to [USER-NAME] for review. Do NOT write the next s
 
 ### Step 17: Fill Related Documents
 
-Fill the [Related Documents](//@agent-memory/control-files/plan-templates/wide-ocean-plan-template.md#related-documents) section
+Fill the [Related Documents]([AGENT-MEMORY-PATH]/control-files/plan-templates/wide-ocean-plan-template.md#related-documents) section
 
 ### Step 18: Fill Notes & Decisions Log
 
-Fill the [Notes & Decisions Log](//@agent-memory/control-files/plan-templates/wide-ocean-plan-template.md#notes--decisions-log) section
+Fill the [Notes & Decisions Log]([AGENT-MEMORY-PATH]/control-files/plan-templates/wide-ocean-plan-template.md#notes--decisions-log) section
 
 ### Step 19: Fill Status Tracking
 
-Fill the [Status Tracking](//@agent-memory/control-files/plan-templates/wide-ocean-plan-template.md#status-tracking) section (mirror Sub-Plans with NOT STARTED status)
+Fill the [Status Tracking]([AGENT-MEMORY-PATH]/control-files/plan-templates/wide-ocean-plan-template.md#status-tracking) section (mirror Sub-Plans with NOT STARTED status)
 
 ### Step 20: Self Final Review
 

@@ -19,9 +19,9 @@ Load project-specific context files from **both** the per-agent layer (`agent-[d
 
 Scan **both** locations for project context files:
 
-1. **Per-agent (private) layer**: Scan `//@agent-memory/agent-[domain]/knowledge-base/` for project subfolders (exclude `research/` folder — that's domain knowledge, not project context). For each project subfolder, read its `context-index.md`.
+1. **Per-agent (private) layer**: Scan `[AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/` for project subfolders (exclude `research/` folder — that's domain knowledge, not project context). For each project subfolder, read its `context-index.md`.
 
-2. **Shared layer**: Scan `//@agent-memory/shared-memory/` for project subfolders. For each project subfolder, check if `context/context-index.md` exists, and if so read it.
+2. **Shared layer**: Scan `[AGENT-MEMORY-PATH]/shared-memory/` for project subfolders. For each project subfolder, check if `context/context-index.md` exists, and if so read it.
 
 > **Storage location (seam)**: the two locations above are the **central** defaults. Where a project's memory physically lives is decided by the storage-location resolver, which **defaults to central**; if an add-on installed a localized resolver, it overrides the resolved shared/private dirs transparently — read from the resolved locations. (Scope markers `[shared]`/`[private]` are unchanged.)
 
@@ -86,8 +86,8 @@ No context files matching "[keyword]" found. Showing all available:
 ### Step 5: Load Selected Files
 
 Read the selected file(s) into agent context using the Read tool from their source-layer path:
-- Shared entries: `//@agent-memory/shared-memory/[project]/context/[theme].md`
-- Private entries: `//@agent-memory/agent-[domain]/knowledge-base/[project]/[theme].md`
+- Shared entries: `[AGENT-MEMORY-PATH]/shared-memory/[project]/context/[theme].md`
+- Private entries: `[AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/[project]/[theme].md`
 
 After loading, confirm to the user with the scope marker for each file:
 ```

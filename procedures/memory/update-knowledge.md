@@ -57,7 +57,7 @@ Use the [Knowledge File Template](#knowledge-file-template)
 
 ### Step 5: Update Knowledge Index
 
-- Update `//@agent-memory/agent-[domain]/agent-memory-index.md` knowledge directory
+- Update `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` knowledge directory
 - Add entry to knowledge index for discoverability
 - Consider whether new knowledge should be core vs. specialized
 

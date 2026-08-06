@@ -17,7 +17,7 @@ Load past episodic memory files from the agent's `episodes/` folder into working
 
 ### Step 1: Read Episode Index
 
-Read the **central** index `//@agent-memory/agent-[domain]/agent-memory-index.md` and locate the `# Recent Context Episodes` section (episode links resolve under `episodes/`). The store **defaults to central**; if an add-on installed a localized resolver it overrides where the index lives transparently — no core change needed.
+Read the **central** index `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` and locate the `# Recent Context Episodes` section (episode links resolve under `episodes/`). The store **defaults to central**; if an add-on installed a localized resolver it overrides where the index lives transparently — no core change needed.
 
 Parse the episode entries. Each entry follows this format:
 ```
@@ -85,7 +85,7 @@ No episodes matching "[keyword]" found. Showing recent episodes:
 
 ### Step 5: Load Selected Files
 
-Read the selected episode file(s) into agent context using the Read tool, from `//@agent-memory/agent-[domain]/episodes/`.
+Read the selected episode file(s) into agent context using the Read tool, from `[AGENT-MEMORY-PATH]/agent-[domain]/episodes/`.
 
 After loading, confirm to the user:
 ```

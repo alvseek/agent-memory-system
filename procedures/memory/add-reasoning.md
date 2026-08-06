@@ -19,7 +19,7 @@ If no arguments provided, ask: "What reasoning pattern or anti-pattern should I 
 
 ### Step 1: Read Reasoning Memory File
 
-Read the `//@agent-memory/agent-[domain]/agent-core-memory.md` reasoning memory section
+Read the `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` reasoning memory section
 
 ### Step 2: Write Using Template
 

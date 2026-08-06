@@ -19,7 +19,7 @@ End-of-session **memory** orchestrator: update memory → extract open items →
 
 ### Step 1: Save Memory (silent)
 
-Execute [Update Memory Protocol](//@agent-memory/control-files/procedures/memory/update-memory.md). Pass `fresh` arg through if present. Capture results (mode, gate decisions, episodic entry, carry-forward count, promotions, emotional status) as data for the summary. Do NOT print `/update-memory`'s own Phase 4 summary block separately — it gets folded into the final summary.
+Execute [Update Memory Protocol]([AGENT-MEMORY-PATH]/control-files/procedures/memory/update-memory.md). Pass `fresh` arg through if present. Capture results (mode, gate decisions, episodic entry, carry-forward count, promotions, emotional status) as data for the summary. Do NOT print `/update-memory`'s own Phase 4 summary block separately — it gets folded into the final summary.
 
 ### Step 2: Extract Open Items (silent)
 

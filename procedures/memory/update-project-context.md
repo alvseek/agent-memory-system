@@ -50,8 +50,8 @@ Reply with "shared", "private", or your preferred scope.
 ```
 
 Based on the confirmed scope, the subsequent steps will use the matching path:
-- **Shared scope**: `//@agent-memory/shared-memory/[project-name]/context/`
-- **Private scope**: `//@agent-memory/agent-[domain]/knowledge-base/[project-name]/`
+- **Shared scope**: `[AGENT-MEMORY-PATH]/shared-memory/[project-name]/context/`
+- **Private scope**: `[AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/[project-name]/`
 
 > **Storage location (seam)**: the scope paths above (`shared-memory/[project-name]/context/`, `agent-[domain]/knowledge-base/[project-name]/`) are the **central** defaults. Where a project's memory physically lives is decided by the storage-location resolver, which **defaults to central**; if a coding/environment add-on installed a localized resolver, it overrides the resolved shared/private dirs transparently — use the resolved dir for every scope-aware step below (folder check, create, index).
 
@@ -60,13 +60,13 @@ Based on the confirmed scope, the subsequent steps will use the matching path:
 ### Step 3: Check Project Folder
 
 Check if the project folder exists at the scope-aware path determined in Step 2:
-- **Shared scope**: `//@agent-memory/shared-memory/[project-name]/context/`
-- **Private scope**: `//@agent-memory/agent-[domain]/knowledge-base/[project-name]/`
+- **Shared scope**: `[AGENT-MEMORY-PATH]/shared-memory/[project-name]/context/`
+- **Private scope**: `[AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/[project-name]/`
 
 - **If exists**: Proceed to Step 4
 - **If not exists**: Create the folder:
-  - Shared: `mkdir -p //@agent-memory/shared-memory/[project-name]/context`
-  - Private: `mkdir -p //@agent-memory/agent-[domain]/knowledge-base/[project-name]`
+  - Shared: `mkdir -p [AGENT-MEMORY-PATH]/shared-memory/[project-name]/context`
+  - Private: `mkdir -p [AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/[project-name]`
 
 ### Step 4: Determine Theme and Check Existing Files
 
@@ -78,9 +78,9 @@ Scan existing files in the scope-aware folder to check if a file already covers 
 
 ### Step 5A: Create New Context File
 
-1. Copy the [Project Context Template](//@agent-memory/control-files/templates/project-context-template.md) to the scope-aware path: `[scope-folder]/[theme].md`
-   - Shared: `cp {source} //@agent-memory/shared-memory/[project-name]/context/[theme].md`
-   - Private: `cp {source} //@agent-memory/agent-[domain]/knowledge-base/[project-name]/[theme].md`
+1. Copy the [Project Context Template]([AGENT-MEMORY-PATH]/control-files/templates/project-context-template.md) to the scope-aware path: `[scope-folder]/[theme].md`
+   - Shared: `cp {source} [AGENT-MEMORY-PATH]/shared-memory/[project-name]/context/[theme].md`
+   - Private: `cp {source} [AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/[project-name]/[theme].md`
 2. Fill the YAML frontmatter:
    - `project`: the project name from Step 1
    - `tags`: relevant feature/module tags for selective loading (e.g., `[environment, setup, vm, gcloud]`)
@@ -112,8 +112,8 @@ Check the file line count after writing:
 ### Step 7: Update Context Index
 
 Update the scope-aware `context-index.md`:
-- **Shared**: `//@agent-memory/shared-memory/[project-name]/context/context-index.md`
-- **Private**: `//@agent-memory/agent-[domain]/knowledge-base/[project-name]/context-index.md`
+- **Shared**: `[AGENT-MEMORY-PATH]/shared-memory/[project-name]/context/context-index.md`
+- **Private**: `[AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/[project-name]/context-index.md`
 
 - **If the file doesn't exist**, create it with header: `# [project-name] Project Context`
 - Add or update the entry for this file
@@ -128,15 +128,15 @@ When the user explicitly asks to move an existing private entry to shared (e.g.,
 ### M.1: Identify Source File
 
 Locate the private file to move:
-- Source path: `//@agent-memory/agent-[domain]/knowledge-base/[project-name]/[theme].md`
-- Source index: `//@agent-memory/agent-[domain]/knowledge-base/[project-name]/context-index.md`
+- Source path: `[AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/[project-name]/[theme].md`
+- Source index: `[AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/[project-name]/context-index.md`
 
 If unclear which theme the user means, ask: "Which file should I move? Available private entries: [list]"
 
 ### M.2: Check Collision in Shared
 
 Check if a file with the same theme name already exists in shared:
-- `//@agent-memory/shared-memory/[project-name]/context/[theme].md`
+- `[AGENT-MEMORY-PATH]/shared-memory/[project-name]/context/[theme].md`
 
 - **If no collision**: Proceed to M.3
 - **If collision**: **STOP**. Present the conflict to user: "A shared file with this name already exists. Options: A) merge the content manually first, B) rename the private file before moving, C) cancel." Wait for user direction.
@@ -144,19 +144,19 @@ Check if a file with the same theme name already exists in shared:
 ### M.3: Write to Shared Location
 
 1. Ensure the shared folder exists:
-   `mkdir -p //@agent-memory/shared-memory/[project-name]/context`
+   `mkdir -p [AGENT-MEMORY-PATH]/shared-memory/[project-name]/context`
 2. Copy the private file content (unchanged — same template) to the shared location:
-   `cp //@agent-memory/agent-[domain]/knowledge-base/[project-name]/[theme].md //@agent-memory/shared-memory/[project-name]/context/[theme].md`
+   `cp [AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/[project-name]/[theme].md [AGENT-MEMORY-PATH]/shared-memory/[project-name]/context/[theme].md`
 
 ### M.4: Delete Private File
 
 Remove the private file:
-`rm //@agent-memory/agent-[domain]/knowledge-base/[project-name]/[theme].md`
+`rm [AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/[project-name]/[theme].md`
 
 ### M.5: Update Both Indexes
 
-1. **Remove entry from private index**: Edit `//@agent-memory/agent-[domain]/knowledge-base/[project-name]/context-index.md` and delete the line referencing this theme
-2. **Add entry to shared index**: Edit `//@agent-memory/shared-memory/[project-name]/context/context-index.md` and add the entry (create the index file with `# [project-name] Project Context` header if it doesn't exist):
+1. **Remove entry from private index**: Edit `[AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/[project-name]/context-index.md` and delete the line referencing this theme
+2. **Add entry to shared index**: Edit `[AGENT-MEMORY-PATH]/shared-memory/[project-name]/context/context-index.md` and add the entry (create the index file with `# [project-name] Project Context` header if it doesn't exist):
    - Format: `- [theme.md](theme.md) — description (tags: tag1, tag2, tag3)`
 
 ### Partial-Failure Cleanup
@@ -173,6 +173,6 @@ If any step fails, report the partial state to user and ask before retrying.
 
 ### Project Context File Template
 
-See [project-context-template.md](//@agent-memory/control-files/templates/project-context-template.md)
+See [project-context-template.md]([AGENT-MEMORY-PATH]/control-files/templates/project-context-template.md)
 
 ---

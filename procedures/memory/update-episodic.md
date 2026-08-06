@@ -32,7 +32,7 @@ Determine:
 
 #### Step 3: Scan Candidate Episodes
 
-Read `//@agent-memory/agent-[domain]/agent-memory-index.md` and locate `# Recent Context Episodes`.
+Read `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` and locate `# Recent Context Episodes`.
 
 Collect all entries where the filename or summary contains the **project name**. These are scan candidates.
 
@@ -81,7 +81,7 @@ Wait for response. Auto-default to **A** only if confidence is high (≥3 strong
 
 ### Append Sub-Episode
 
-1. **Open the chosen file** in `//@agent-memory/agent-[domain]/episodes/`
+1. **Open the chosen file** in `[AGENT-MEMORY-PATH]/agent-[domain]/episodes/`
 
 2. **Carry-forward review of prior H3's open items**: since we're appending to an existing file, the file's top H3 (which our new block will sit above) holds the most recent prior open items. Review them so the new H3 stays self-contained:
    - **a. Read prior H3's open items**: extract the `**Tech Debts**` and `**Next Steps**` fields from the prior H3 block's Outcomes section.
@@ -127,7 +127,7 @@ Wait for response. Auto-default to **A** only if confidence is high (≥3 strong
 
 2. **Copy template**:
    ```
-   cp //@agent-memory/control-files/templates/episodic-memory-template.md //@agent-memory/agent-[domain]/episodes/[filename].md
+   cp [AGENT-MEMORY-PATH]/control-files/templates/episodic-memory-template.md [AGENT-MEMORY-PATH]/agent-[domain]/episodes/[filename].md
    ```
 
 3. **Replace template placeholder** at the top of the file with a single sub-episode block using the [Detailed Entry Template](#detailed-entry-template). The H3 header includes the current date+time.

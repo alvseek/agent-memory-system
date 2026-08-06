@@ -43,7 +43,7 @@ Comprehensive memory update orchestrator. Five phases:
 - Workarounds, configs, decisions specific to current project?
 - New credentials, URLs, API endpoints, infrastructure details?
 
-**YES to any** → execute [Update Project Context Protocol](//@agent-memory/control-files/procedures/memory/update-project-context.md). **NO to all** → skip silently.
+**YES to any** → execute [Update Project Context Protocol]([AGENT-MEMORY-PATH]/control-files/procedures/memory/update-project-context.md). **NO to all** → skip silently.
 
 ### Step 2: Reasoning Pattern Gate
 
@@ -51,7 +51,7 @@ Comprehensive memory update orchestrator. Five phases:
 - [USER-NAME] explicit pattern validation? Signals: *"always do it this way"*, *"this is the right pattern"*, *"let's encode this"*
 - New decision-framework emerged from back-and-forth that both agreed should govern future similar situations?
 
-**YES to any** → execute [Add Reasoning Protocol](//@agent-memory/control-files/procedures/memory/add-reasoning.md). **NO to all** → skip silently.
+**YES to any** → execute [Add Reasoning Protocol]([AGENT-MEMORY-PATH]/control-files/procedures/memory/add-reasoning.md). **NO to all** → skip silently.
 
 ### Step 3: Knowledge Gate
 
@@ -59,7 +59,7 @@ Comprehensive memory update orchestrator. Five phases:
 - [USER-NAME] explicit "document this" signal? *"let's document this"*, *"future agents should know X"*, *"write this down"*
 - Non-obvious technical mechanism / edge case / framework internal costly to re-discover?
 
-**YES to any** → execute [Update Knowledge Protocol](//@agent-memory/control-files/procedures/memory/update-knowledge.md). **NO to all** → skip silently.
+**YES to any** → execute [Update Knowledge Protocol]([AGENT-MEMORY-PATH]/control-files/procedures/memory/update-knowledge.md). **NO to all** → skip silently.
 
 ---
 
@@ -81,7 +81,7 @@ Per file: `→ Promoted to [layer-file](path) — [brief: what was formalized]`
 
 ### Step 5: Run Episodic Capture
 
-Invoke `/update-episodic new` if `$ARGUMENTS` contains `new`, else `/update-episodic`. Follow the [Update Episodic Memory Protocol](//@agent-memory/control-files/procedures/memory/update-episodic.md). Populate the new sub-episode's `**Promotions**` field with markers from Step 4 (omit if empty).
+Invoke `/update-episodic new` if `$ARGUMENTS` contains `new`, else `/update-episodic`. Follow the [Update Episodic Memory Protocol]([AGENT-MEMORY-PATH]/control-files/procedures/memory/update-episodic.md). Populate the new sub-episode's `**Promotions**` field with markers from Step 4 (omit if empty).
 
 ---
 
@@ -105,7 +105,7 @@ All 5 must pass:
    - **Disappointment / pushback**: sustained corrections, redirects, exasperation
    - Or sustained deep engagement (any valence) escalating across the session
 
-**All 5 pass** → execute [Update Emotional Protocol](//@agent-memory/control-files/procedures/memory/update-emotional.md) with session context, [USER-NAME]'s verbatim emotion-bearing quote, and inferred polarity. **Any fail** → skip silently.
+**All 5 pass** → execute [Update Emotional Protocol]([AGENT-MEMORY-PATH]/control-files/procedures/memory/update-emotional.md) with session context, [USER-NAME]'s verbatim emotion-bearing quote, and inferred polarity. **Any fail** → skip silently.
 
 ---
 

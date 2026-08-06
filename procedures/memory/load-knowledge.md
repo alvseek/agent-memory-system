@@ -17,7 +17,7 @@ Load knowledge-base files from the agent's `knowledge-base/` folder into working
 
 ### Step 1: Read Knowledge Index
 
-Read `//@agent-memory/agent-[domain]/agent-memory-index.md` and locate the `# Core Knowledge Base` section.
+Read `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` and locate the `# Core Knowledge Base` section.
 
 Parse the knowledge entries. Each entry follows this format:
 ```
@@ -88,7 +88,7 @@ No knowledge files matching "[keyword]" found. Showing all available:
 
 ### Step 5: Load Selected Files
 
-Read the selected file(s) from `//@agent-memory/agent-[domain]/knowledge-base/` into agent context using the Read tool.
+Read the selected file(s) from `[AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/` into agent context using the Read tool.
 
 > **Scope**: `/load-knowledge` loads **general** knowledge (research, core-domain, cross-cutting) — cross-project, always read from the central store. Project-scoped knowledge (`knowledge-base/[project]/`) is loaded by [`/load-project-context`](load-project-context.md) instead.
 
