@@ -60,7 +60,7 @@ The framework is split into two independent, standalone repos with a strict **on
 
 - **The overlay depends on the core; the core never references the overlay by name** — enforced by [`scripts/check-core-invariant.sh`](scripts/check-core-invariant.sh).
 - **Composition is agent-side, additive — not override.** The overlay's `awaken-coder` simply orchestrates *"run the core `/awaken-agent`, then localized-home + orientation map + fleet."*
-- A **chat agent** installs core only (`--core-only`); a **coding agent** installs core + overlay. The setup scripts auto-detect the overlay's presence.
+- **Each repo installs itself.** A **chat agent** runs this core's installer only; a **coding agent** also runs the overlay's own installer (the overlay ships its own `setup-scripts/`). The two installers use **separate manifests**, so they coexist in the same commands dir and clean up independently.
 
 ---
 
@@ -71,11 +71,14 @@ The framework is split into two independent, standalone repos with a strict **on
 If you cloned the [agent-memory](https://github.com/alvseek/agent-memory) template, the setup script handles everything:
 
 ```bash
-bash control-files/procedures/setup-scripts/setup-all-claude-code.sh             # core + overlay (if present)
-bash control-files/procedures/setup-scripts/setup-all-claude-code.sh --core-only # chat profile (core only)
+# Memory core — every agent (chat or coding):
+bash control-files/procedures/setup-scripts/setup-all-claude-code.sh
+
+# Coding agents ALSO run the overlay's own installer (separate repo):
+bash /path/to/agent-memory-coding-skill/setup-scripts/setup-all-claude-code.sh
 ```
 
-The setup sources the core, plus the coding overlay when it's present beside `control-files`. For detailed setup options and manual alternatives, see the [Setup Guide](SETUP.md).
+Each repo installs itself — a coding agent runs both installers (they use separate manifests and coexist). For detailed setup options and manual alternatives, see the [Setup Guide](SETUP.md).
 
 ### Updating the Submodule
 

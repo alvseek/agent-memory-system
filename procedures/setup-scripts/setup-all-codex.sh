@@ -1,43 +1,23 @@
 #!/bin/bash
-# setup-all-codex.sh - Install agent-memory procedures as Codex user skills.
+# setup-all-codex.sh - Install the agent-memory CORE procedures as Codex user skills.
 #
-# Sources the memory CORE (control-files) plus, when present, the coding-skill OVERLAY
-# (agent-memory-coding-skill). A chat agent installs core only; a coding agent installs core+skill.
-# Uses a manifest to track installed skills and clean up stale ones on re-run.
+# Installs ONLY the memory core (this repo): awaken-agent, refresh-memory, wrap-up, and memory/*.
+# The coding overlay (agent-memory-coding-skill) is a separate repo that ships its OWN installer.
+# Each installer owns its own manifest, so they coexist in the same target dir.
 #
-# Usage:
-#   bash control-files/procedures/setup-scripts/setup-all-codex.sh             # core + skill (if overlay present)
-#   bash control-files/procedures/setup-scripts/setup-all-codex.sh --core-only # force chat profile (core only)
-# Env overrides:
-#   AGENT_MEMORY_SKILL_DIR   path to the overlay's procedures/ dir (default: sibling of control-files)
-#   AGENT_MEMORY_TARGET_DIR  install target             (default: ~/.agents/skills)
-#   AGENT_MEMORY_PROFILE     set to "core-only" to force the chat profile
+# Usage:        bash control-files/procedures/setup-scripts/setup-all-codex.sh
+# Env override: AGENT_MEMORY_TARGET_DIR (default: ~/.agents/skills)
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CORE_DIR="$(dirname "$SCRIPT_DIR")"                 # control-files/procedures (core: awaken-agent, refresh-memory, wrap-up)
+CORE_DIR="$(dirname "$SCRIPT_DIR")"                 # control-files/procedures (awaken-agent, refresh-memory, wrap-up)
 MEMORY_DIR="$CORE_DIR/memory"                       # control-files/procedures/memory
-AGGREGATOR_DIR="$(cd "$CORE_DIR/../.." 2>/dev/null && pwd)"
-SKILL_DIR="${AGENT_MEMORY_SKILL_DIR:-$AGGREGATOR_DIR/agent-memory-coding-skill/procedures}"
 TARGET_DIR="${AGENT_MEMORY_TARGET_DIR:-$HOME/.agents/skills}"
 MANIFEST_FILE="$TARGET_DIR/.agent-memory-codex-manifest"
 
-# Profile: install the overlay when present, unless forced core-only.
-INSTALL_SKILL=0
-if [ "$1" = "--core-only" ] || [ "$AGENT_MEMORY_PROFILE" = "core-only" ]; then
-    PROFILE="core-only"
-elif [ -d "$SKILL_DIR" ]; then
-    PROFILE="core+skill"
-    INSTALL_SKILL=1
-else
-    PROFILE="core-only (overlay not found)"
-fi
-
-echo "=== Setup agent-memory Codex Skills ==="
+echo "=== Setup agent-memory CORE Codex Skills ==="
 echo ""
-echo "Profile:         $PROFILE"
 echo "Source (core):   $CORE_DIR"
 echo "Source (memory): $MEMORY_DIR"
-[ "$INSTALL_SKILL" -eq 1 ] && echo "Source (skill):  $SKILL_DIR"
 echo "Target:          $TARGET_DIR"
 echo ""
 
@@ -46,8 +26,9 @@ if [ ! -d "$MEMORY_DIR" ]; then echo "Error: memory directory not found: $MEMORY
 
 mkdir -p "$TARGET_DIR"
 
+# Clean up previously installed CORE skills using the core manifest (leaves overlay skills untouched).
 if [ -f "$MANIFEST_FILE" ]; then
-    echo "Cleaning up previously installed skills..."
+    echo "Cleaning up previously installed core skills..."
     CLEANED=0
     while IFS= read -r skill_dir; do
         if [ -n "$skill_dir" ] && [ -d "$TARGET_DIR/$skill_dir" ]; then
@@ -55,7 +36,7 @@ if [ -f "$MANIFEST_FILE" ]; then
             CLEANED=$((CLEANED + 1))
         fi
     done < "$MANIFEST_FILE"
-    echo "  Removed $CLEANED previously installed skills"
+    echo "  Removed $CLEANED previously installed core skills"
     echo ""
 fi
 
@@ -90,13 +71,9 @@ create_skill_from_markdown() {
     echo "$skill_dir_name" >> "$MANIFEST_FILE"
 }
 
-# Assemble source dirs: core always, skill when the coding profile is active.
-SRC_DIRS=("$CORE_DIR" "$MEMORY_DIR")
-[ "$INSTALL_SKILL" -eq 1 ] && SRC_DIRS+=("$SKILL_DIR")
-
 : > "$MANIFEST_FILE"
 TOTAL_COUNT=0
-for dir in "${SRC_DIRS[@]}"; do
+for dir in "$CORE_DIR" "$MEMORY_DIR"; do
     for file in "$dir"/*.md; do
         [ -f "$file" ] || continue
         create_skill_from_markdown "$file"
@@ -110,9 +87,9 @@ if [ "$TOTAL_COUNT" -eq 0 ]; then
 fi
 
 echo ""
-echo "Successfully installed $TOTAL_COUNT Codex skills!"
+echo "Successfully installed $TOTAL_COUNT core Codex skills!"
 echo ""
-echo "Installed skills:"
+echo "Installed core skills:"
 while IFS= read -r skill_dir; do
     if [ -f "$TARGET_DIR/$skill_dir/SKILL.md" ]; then
         skill_name="$(sed -n 's/^name: //p' "$TARGET_DIR/$skill_dir/SKILL.md" | head -n 1)"
