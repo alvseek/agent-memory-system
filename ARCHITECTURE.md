@@ -4,7 +4,7 @@
 
 The Control Files system provides the **shared memory infrastructure** for all agents. It implements a **5-layer memory architecture** that gives agents persistent, structured memory capabilities.
 
-> **⚠️ Two-repo split (2026-08-06):** `control-files` is now the **memory core** only. Coding/repo procedures — the wizard protocols, doc generation, QA, fleet, `map-orientation`, `localize-context`, `wait-options`, push/pull, and `project-wrap-up` — moved to the standalone [agent-memory-coding-skill](https://github.com/alvseek/agent-memory-coding-skill) overlay (composes on top of the core for coding agents; a chat agent uses core alone). Some tables/trees below still enumerate the full pre-split command set; entries for the moved procedures now live in the overlay repo. Full section-by-section relocation is in progress.
+> **⚠️ Two-repo split (2026-08-06):** `control-files` is now the **memory core** only. Coding/repo procedures — the wizard protocols, doc generation, QA, `map-orientation`, `localize-context`, `wait-options`, push/pull, and `project-wrap-up` — moved to the standalone [agent-memory-coding-skill](https://github.com/alvseek/agent-memory-coding-skill) overlay (fleet was briefly there too but **returned to the core on 2026-08-07** — it operates on agents/awakening) (composes on top of the core for coding agents; a chat agent uses core alone). Some tables/trees below still enumerate the full pre-split command set; entries for the moved procedures now live in the overlay repo. Full section-by-section relocation is in progress.
 
 ## Table of Contents
 - [Architecture Overview](#architecture-overview)
@@ -75,6 +75,9 @@ control-files/
 │   ├── awaken-agent.md                # Load agent identity + central memory
 │   ├── refresh-memory.md              # Recover agent memory after context compaction
 │   ├── wrap-up.md                     # End-of-session memory capture (memory-only)
+│   ├── ask-agent.md                   # Fleet: consult another agent (blocking)
+│   ├── delegate-agent.md              # Fleet: hand off a task to another agent
+│   ├── setup-fleet.md                 # Fleet: define a project's agent roster
 │   ├── memory/                        # Memory management procedures
 │   │   ├── update-memory.md           # Comprehensive memory update
 │   │   ├── update-episodic.md         # Episodic memory update

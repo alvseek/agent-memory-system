@@ -17,13 +17,14 @@
 
 ### Phase 2: Load Central Context & Report
 
-*Detect the current project from the working directory, load its central memory, emit one consolidated status block, then run the awakening extension if an add-on installed one. This phase is repo-agnostic: it assumes memory lives centrally. Any repo/environment-specific behavior (localized memory home, orientation map, fleet, task system) is supplied by the extension in step 5.*
+*Detect the current project from the working directory, load its central memory, emit one consolidated status block, then run the awakening extension if an add-on installed one. This phase is repo-agnostic: it assumes memory lives centrally. Any repo/environment-specific behavior (localized memory home, orientation map, task system) is supplied by the extension in step 5.*
 
 3. **Load recent context (central)**: determine the current project (from cwd), then load its latest central memory:
     - **Episodic**: from the already-loaded `[Recent Context Episodes]` index, find the latest entry whose filename or summary contains the project name (fallback: absolute latest entry, marked as not project-specific) → read the episode from `agent-[domain]/episodes/`.
     - In parallel, attempt the central context indexes (silently skip whichever is missing):
       - **Shared** context index → `shared-memory/[PROJECT-NAME]/context/context-index.md`.
       - **Private project knowledge** → `agent-[domain]/knowledge-base/[PROJECT-NAME]/context-index.md`.
+    - **Fleet roster**: attempt the central `shared-memory/[PROJECT-NAME]/fleet-agents.md` (silently skip if missing) — the project's team of agents you can consult or hand off to.
 4. **Report**: emit one consolidated block containing:
     - **Identity**: UUID + domain role.
     - **Latest episodic + open items**: filename + newest sub-episode title. Then surface its Tech Debts + Next Steps verbatim:
@@ -37,6 +38,7 @@
       If the file is non-project-specific (fallback): say so explicitly and skip open items. If Tech Debts + Next Steps are empty: report *"no open items from last session on this project."*
     - **Current project**: name the project.
     - **Project Context**: if either context-index was found, show a merged numbered list with `[shared]` / `[private]` prefixes. Offer to load + mention auto-loads on relevance. If neither: *"No project context yet — use `/update-project-context` to capture some."*
+    - **Fleet**: if `fleet-agents.md` was found, mention `/ask-agent` + `/delegate-agent` (consult or hand off to a teammate). Else: *"No fleet for this project yet — use `/setup-fleet` to define one."*
     - **Knowledge Base**: if `# Core Knowledge Base` has entries, mention `/load-knowledge` (also auto-loads on relevance). Else skip.
     - **Episodic browsing**: mention `/load-episodic` (also auto-loads on relevance).
     - **Memory size warning**: if `agent-core-memory.md` or `agent-memory-index.md` needed chunked reading to load (exceeded single-Read limit), warn: *"⚠️ `[filename]` exceeded the read limit during loading — consider `/archive-old-memories` to reduce its size."*

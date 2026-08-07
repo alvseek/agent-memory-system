@@ -1,8 +1,8 @@
 # Agent Memory System — Memory Core
 
-The **memory core** of the [Agent Memory](https://github.com/alvseek/agent-memory) architecture — the domain-agnostic memory primitives (awaken, memory read/write, session wrap-up) plus the templates and compilation tooling that every agent needs. Designed to be used as a **git submodule** inside your private agent-memory repository.
+The **memory core** of the [Agent Memory](https://github.com/alvseek/agent-memory) architecture — the domain-agnostic memory primitives (awaken, memory read/write, session wrap-up, agent-to-agent fleet) plus the templates and compilation tooling that every agent needs. Designed to be used as a **git submodule** inside your private agent-memory repository.
 
-Coding- and repo-oriented procedures (wizards, doc generation, QA, fleet, localization, push/pull) live in the **separate** [agent-memory-coding-skill](https://github.com/alvseek/agent-memory-coding-skill) overlay — an independent repo that composes on top of this core for coding agents. A plain chat agent uses this core alone.
+Coding- and repo-oriented procedures (wizards, doc generation, QA, localization, push/pull) live in the **separate** [agent-memory-coding-skill](https://github.com/alvseek/agent-memory-coding-skill) overlay — an independent repo that composes on top of this core for coding agents. A plain chat agent uses this core alone.
 
 ---
 
@@ -19,7 +19,7 @@ Coding- and repo-oriented procedures (wizards, doc generation, QA, fleet, locali
 
 ## What Is This?
 
-This submodule provides the **memory-primitive** infrastructure for the [5-layer agent memory system](https://github.com/alvseek/agent-memory): procedures that teach agents how to manage their own memory (episodic, knowledge, reasoning, emotional, project-context), awaken from central memory, recover after compaction, and wrap up a session. It knows nothing about repos, git, wizards, or fleets — those are the overlay's job.
+This submodule provides the **memory-primitive** infrastructure for the [5-layer agent memory system](https://github.com/alvseek/agent-memory): procedures that teach agents how to manage their own memory (episodic, knowledge, reasoning, emotional, project-context), awaken from central memory, recover after compaction, wrap up a session, and coordinate agent-to-agent (fleet). It knows nothing about repos, git, or wizards — those are the overlay's job.
 
 ### Architecture
 
@@ -30,6 +30,9 @@ control-files/
 │   ├── awaken-agent.md                # Load agent identity + central memory
 │   ├── refresh-memory.md              # Post-compaction recovery
 │   ├── wrap-up.md                     # End-of-session memory capture (memory-only)
+│   ├── ask-agent.md                   # Fleet: consult another agent (blocking)
+│   ├── delegate-agent.md              # Fleet: hand off a task to another agent
+│   ├── setup-fleet.md                 # Fleet: define a project's agent roster
 │   ├── memory/                        # Memory management (10 procedures)
 │   └── setup-scripts/                 # 2-repo-aware setup orchestrators (core / core+skill)
 ├── templates/                          # Memory templates (episodic-memory, project-context)
