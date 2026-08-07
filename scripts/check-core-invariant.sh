@@ -16,13 +16,15 @@ CORE_FILES=(
   "$ROOT/procedures/ask-agent.md"
   "$ROOT/procedures/delegate-agent.md"
   "$ROOT/procedures/setup-fleet.md"
+  "$ROOT/procedures/push-memory.md"
+  "$ROOT/procedures/pull-memory.md"
 )
 # plus all memory primitives + compiled core memory
 while IFS= read -r f; do CORE_FILES+=("$f"); done < <(find "$ROOT/procedures/memory" -name '*.md')
 while IFS= read -r f; do CORE_FILES+=("$f"); done < <(find "$ROOT/core-memory" -maxdepth 1 -name '*.md' 2>/dev/null || true)
 
 # --- Add-on procedure names the core must NOT reference ---
-ADDON='/(awaken-coder|project-wrap-up|localize-context|localized-memory-workflow|map-orientation|high-wizard|quick-wizard|council-of-wizards|rite-of-creation|forge-of-covenant|implement-plan|generate-readme|generate-docs|generate-architecture-docs|generate-domain-docs|generate-flow-docs|discovery-contract|analyze-code-quality|generate-standard|integration-test|setup-qa-instrument|setup-qa-visual-instrument|pixel-wizard|pull-all|pull-memory|pull-project|push-all|push-memory|push-project|push-agent-work|push-exclude-policy|wait-options)\b'
+ADDON='/(awaken-coder|project-wrap-up|localize-context|localized-memory-workflow|map-orientation|high-wizard|quick-wizard|council-of-wizards|rite-of-creation|forge-of-covenant|implement-plan|generate-readme|generate-docs|generate-architecture-docs|generate-domain-docs|generate-flow-docs|discovery-contract|analyze-code-quality|generate-standard|integration-test|setup-qa-instrument|setup-qa-visual-instrument|pixel-wizard|pull-all|pull-project|push-all|push-project|push-agent-work|push-exclude-policy|wait-options)\b'
 
 leaks=0
 for f in "${CORE_FILES[@]}"; do

@@ -78,6 +78,8 @@ control-files/
 │   ├── ask-agent.md                   # Fleet: consult another agent (blocking)
 │   ├── delegate-agent.md              # Fleet: hand off a task to another agent
 │   ├── setup-fleet.md                 # Fleet: define a project's agent roster
+│   ├── push-memory.md                 # Persist the memory store (git push)
+│   ├── pull-memory.md                 # Sync the memory store (git pull + submodule)
 │   ├── memory/                        # Memory management procedures
 │   │   ├── update-memory.md           # Comprehensive memory update
 │   │   ├── update-episodic.md         # Episodic memory update
