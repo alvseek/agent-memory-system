@@ -22,6 +22,6 @@
 - *Per-agent (private):* `knowledge-base/[project-name]/context-index.md` *— domain-specialized facts only this agent needs*
 - *Shared (cross-agent):* `shared-memory/[project-name]/context/context-index.md` *— universal facts every agent on the project should know*
 
-*Use `/load-project-context` to browse both layers (entries are marked `[shared]` or `[private]`). Use `/update-project-context` to create new entries — it routes to the right layer based on a heuristic + your confirmation.*
+*Use `/load-project-context` to browse both layers (entries are marked `[shared]` or `[private]`). Use `/update-project-context` to create new entries — it routes to the right layer based on a heuristic + your confirmation. (These are **coding-overlay** commands — project context is a coding-agent capability; a chat agent using the core alone is project-blind.)*
 
 ---

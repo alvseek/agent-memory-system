@@ -35,8 +35,8 @@ If no arguments provided, ask: "What knowledge or domain expertise should I docu
 ### Step 2: Choose Location
 
 - Create in `knowledge-base/research/` (domain expertise and research)
-- **Note**: For project-specific context (VM access, deploy procedures, conventions), use `/update-project-context` instead
-- **Scope**: `/update-knowledge` writes **general** knowledge (`knowledge-base/research/`, core-domain, cross-cutting) — cross-project, always **central**. Project-scoped knowledge is written via `/update-project-context` instead.
+- **Note**: project-specific context (VM access, deploy procedures, conventions) is handled by the coding overlay, not here.
+- **Scope**: `/update-knowledge` writes **general** knowledge (`knowledge-base/research/`, core-domain, cross-cutting) — cross-project, always **central**. Project-scoped knowledge (`knowledge-base/[project]/`) is handled by the coding overlay, not here.
 
 ### Step 3: Name File
 

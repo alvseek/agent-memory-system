@@ -4,7 +4,7 @@
 
 The Control Files system provides the **shared memory infrastructure** for all agents. It implements a **5-layer memory architecture** that gives agents persistent, structured memory capabilities.
 
-> **⚠️ Two-repo split (2026-08-06):** `control-files` is now the **memory core** only. Coding/repo procedures — the wizard protocols, doc generation, QA, `map-orientation`, `localize-context`, `wait-options`, push/pull, and `project-wrap-up` — moved to the standalone [agent-memory-coding-skill](https://github.com/alvseek/agent-memory-coding-skill) overlay (fleet was briefly there too but **returned to the core on 2026-08-07** — it operates on agents/awakening) (composes on top of the core for coding agents; a chat agent uses core alone). Some tables/trees below still enumerate the full pre-split command set; entries for the moved procedures now live in the overlay repo. Full section-by-section relocation is in progress.
+> **⚠️ Two-repo split (2026-08-06):** `control-files` is now the **memory core** only. Coding/repo procedures — the wizard protocols, doc generation, QA, `map-orientation`, `localize-context`, `wait-options`, push/pull, `project-wrap-up`, **fleet** (`ask-agent`/`delegate-agent`/`setup-fleet`), and **project-context** (`update-project-context`/`load-project-context`) — moved to the standalone [agent-memory-coding-skill](https://github.com/alvseek/agent-memory-coding-skill) overlay (composes on top of the core for coding agents; a chat agent uses core alone — the memory core is **project-blind**). Some tables/trees below still enumerate the full pre-split command set; entries for the moved procedures now live in the overlay repo. Full section-by-section relocation is in progress.
 
 ## Table of Contents
 - [Architecture Overview](#architecture-overview)
@@ -75,9 +75,6 @@ control-files/
 │   ├── awaken-agent.md                # Load agent identity + central memory
 │   ├── refresh-memory.md              # Recover agent memory after context compaction
 │   ├── wrap-up.md                     # End-of-session memory capture (memory-only)
-│   ├── ask-agent.md                   # Fleet: consult another agent (blocking)
-│   ├── delegate-agent.md              # Fleet: hand off a task to another agent
-│   ├── setup-fleet.md                 # Fleet: define a project's agent roster
 │   ├── push-memory.md                 # Persist the memory store (git push)
 │   ├── pull-memory.md                 # Sync the memory store (git pull + submodule)
 │   ├── memory/                        # Memory management procedures
@@ -86,8 +83,6 @@ control-files/
 │   │   ├── add-reasoning.md           # Reasoning pattern capture
 │   │   ├── update-knowledge.md        # Knowledge memory capture
 │   │   ├── update-emotional.md        # Emotional memory capture
-│   │   ├── update-project-context.md  # Create/update project context
-│   │   ├── load-project-context.md    # List and load project context
 │   │   ├── load-episodic.md           # List and load past episodes
 │   │   ├── load-knowledge.md          # List and load knowledge files
 │   │   └── archive-old-memories.md    # Memory archiving
@@ -125,7 +120,7 @@ agent-memory-coding-skill/
 │   └── wait-options.md                # WAIT Options reference (consumed by wizards)
 ├── plan-templates/                     # Wizard/QA plan templates (high-wizard, council, rite, forge, code-quality)
 ├── templates/                          # Doc-gen / ADR / fleet / orientation / flow / domain templates
-└── scripts/                            # Fleet scripts (ask-agent, delegate-agent, fleet-common, wrap-up-agent)
+└── fleet-scripts/                     # Fleet scripts (ask-agent, delegate-agent, fleet-common, wrap-up-agent)
 ```
 
 ### Agent Directory Structure
@@ -277,6 +272,8 @@ The architecture implements 5 distinct memory layers:
 
 Both layers use the same `project-context-template.md` (YAML frontmatter + Purpose/Quick Reference/Details/Sources) and are indexed via `context-index.md`. `/update-project-context` routes new entries based on a heuristic (universal → shared default; specialized → private) with user confirmation, and supports moving an existing private entry to shared. `/load-project-context` scans both layers and presents a unified numbered list with `[shared]` / `[private]` markers.
 
+> **Ownership note**: project-context *data* lives in the memory store (Valaskjalf) — hence it's described here — but the `/update-project-context` + `/load-project-context` *operations* are **coding-overlay** commands. *Project* is a coding concept (a chat agent using the core alone is project-blind); the overlay's `awaken-coder` loads project-context, and `project-wrap-up` runs the capture gate.
+
 ### 5. Reticular Activation Memory (RAS) ⚡
 **Purpose**: Intelligent pattern recognition and automatic protocol triggers
 
@@ -375,8 +372,6 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 | Reasoning | `procedures/memory/add-reasoning.md` | `/add-reasoning` |
 | Knowledge | `procedures/memory/update-knowledge.md` | `/update-knowledge` |
 | Emotional | `procedures/memory/update-emotional.md` | `/update-emotional` |
-| Project Context (update) | `procedures/memory/update-project-context.md` | `/update-project-context` — dual-scope (shared / private) routing with heuristic + confirmation; also supports move-to-shared |
-| Project Context (load) | `procedures/memory/load-project-context.md` | `/load-project-context` — dual-scope scan (shared + private) with `[shared]`/`[private]` markers |
 | Episodic (load) | `procedures/memory/load-episodic.md` | `/load-episodic` |
 | Knowledge (load) | `procedures/memory/load-knowledge.md` | `/load-knowledge` |
 | Archiving | `procedures/memory/archive-old-memories.md` | `/archive-old-memories` |
@@ -398,8 +393,6 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 /add-reasoning           # Add reasoning pattern
 /update-knowledge        # Update knowledge entry
 /update-emotional        # Update emotional memory
-/update-project-context  # Create/update project context (shared or private; heuristic + confirm; move-to-shared)
-/load-project-context    # List and load project context files ([shared]/[private] markers)
 /load-episodic           # List and load past episodic memories
 /load-knowledge          # List and load knowledge files
 /archive-old-memories    # Archive old memories
@@ -411,7 +404,7 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 /quick-wizard · /high-wizard · /council-of-wizards · /rite-of-creation · /forge-of-covenant
 /generate-readme · /generate-docs · /generate-architecture-docs · /generate-domain-docs · /generate-flow-docs
 /generate-standard · /analyze-code-quality · /integration-test · /pixel-wizard · /setup-qa-instrument · /setup-qa-visual-instrument
-/map-orientation · /localize-context
+/map-orientation · /localize-context · /update-project-context · /load-project-context
 /ask-agent · /delegate-agent · /setup-fleet
 /push-project · /push-memory · /push-all · /push-agent-work
 /pull-project · /pull-memory · /pull-all

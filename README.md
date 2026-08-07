@@ -1,6 +1,6 @@
 # Agent Memory System — Memory Core
 
-The **memory core** of the [Agent Memory](https://github.com/alvseek/agent-memory) architecture — the domain-agnostic memory primitives (awaken, memory read/write, session wrap-up, agent-to-agent fleet) plus the templates and compilation tooling that every agent needs. Designed to be used as a **git submodule** inside your private agent-memory repository.
+The **memory core** of the [Agent Memory](https://github.com/alvseek/agent-memory) architecture — the domain-agnostic memory primitives (awaken, memory read/write, session wrap-up) plus the templates and compilation tooling that every agent needs. Designed to be used as a **git submodule** inside your private agent-memory repository.
 
 Coding- and repo-oriented procedures (wizards, doc generation, QA, localization, push/pull) live in the **separate** [agent-memory-coding-skill](https://github.com/alvseek/agent-memory-coding-skill) overlay — an independent repo that composes on top of this core for coding agents. A plain chat agent uses this core alone.
 
@@ -19,7 +19,7 @@ Coding- and repo-oriented procedures (wizards, doc generation, QA, localization,
 
 ## What Is This?
 
-This submodule provides the **memory-primitive** infrastructure for the [5-layer agent memory system](https://github.com/alvseek/agent-memory): procedures that teach agents how to manage their own memory (episodic, knowledge, reasoning, emotional, project-context), awaken from central memory, recover after compaction, wrap up a session, and coordinate agent-to-agent (fleet). It knows nothing about repos, git, or wizards — those are the overlay's job.
+This submodule provides the **memory-primitive** infrastructure for the [5-layer agent memory system](https://github.com/alvseek/agent-memory): procedures that teach agents how to manage their own memory (episodic, knowledge, reasoning, emotional, project-context), awaken from central memory, recover after compaction, and wrap up a session. It knows nothing about repos, git, wizards, or fleet — those are the overlay's job.
 
 ### Architecture
 
@@ -30,9 +30,6 @@ control-files/
 │   ├── awaken-agent.md                # Load agent identity + central memory
 │   ├── refresh-memory.md              # Post-compaction recovery
 │   ├── wrap-up.md                     # End-of-session memory capture (memory-only)
-│   ├── ask-agent.md                   # Fleet: consult another agent (blocking)
-│   ├── delegate-agent.md              # Fleet: hand off a task to another agent
-│   ├── setup-fleet.md                 # Fleet: define a project's agent roster
 │   ├── push-memory.md                 # Persist the memory store (git push)
 │   ├── pull-memory.md                 # Sync the memory store (git pull + submodule)
 │   ├── memory/                        # Memory management (10 procedures)
@@ -111,8 +108,6 @@ The core installs as slash commands to `~/.claude/commands/`. These are the **me
 | `/add-reasoning` | Reasoning pattern capture |
 | `/update-knowledge` | Knowledge entry capture |
 | `/update-emotional` | Emotional memory capture |
-| `/update-project-context` | Create/update project-specific context |
-| `/load-project-context` | Browse and load project context files |
 | `/load-episodic` | Browse and load past episodic memories |
 | `/load-knowledge` | Browse and load knowledge base files |
 | `/archive-old-memories` | Archive old memories with evaluation |

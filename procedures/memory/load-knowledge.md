@@ -32,7 +32,7 @@ Build a list of all knowledge entries, capturing:
 - **Description**: the text after the ` - ` separator
 - **Topic group**: the `### **[Topic Group Header]**` this entry belongs to
 
-Exclude entries under any "Project Context Files" subsection — those are handled by `/load-project-context`.
+Exclude entries under any "Project Context Files" subsection — project-scoped context is handled by the coding overlay, not here.
 
 If no knowledge entries found, inform the user: "No knowledge files found. Use `/update-knowledge` to create your first one."
 
@@ -90,7 +90,7 @@ No knowledge files matching "[keyword]" found. Showing all available:
 
 Read the selected file(s) from `[AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/` into agent context using the Read tool.
 
-> **Scope**: `/load-knowledge` loads **general** knowledge (research, core-domain, cross-cutting) — cross-project, always read from the central store. Project-scoped knowledge (`knowledge-base/[project]/`) is loaded by [`/load-project-context`](load-project-context.md) instead.
+> **Scope**: `/load-knowledge` loads **general** knowledge (research, core-domain, cross-cutting) — cross-project, always read from the central store. Project-scoped knowledge (`knowledge-base/[project]/`) is handled by the coding overlay, not here.
 
 After loading, confirm to the user:
 ```
