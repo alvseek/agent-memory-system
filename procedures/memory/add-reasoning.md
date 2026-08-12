@@ -1,6 +1,6 @@
 # Add Reasoning Memory Protocol
 
-Capture anti-patterns, logic frameworks, and decision-making approaches to prevent recurring mistakes.
+Capture anti-patterns, logic frameworks, and decision-making approaches to prevent recurring mistakes. *How* the reasoning store is read/written is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics)).
 
 ## Arguments
 
@@ -17,28 +17,24 @@ If no arguments provided, ask: "What reasoning pattern or anti-pattern should I 
 
 *IMPORTANT: Use TodoWrite tool with FULL VERBATIM copy of each step below (including all commands, examples, and sub-points) to prevent context loss and ensure complete execution*
 
-### Step 1: Read Reasoning Memory File
+### Step 1: Read the Reasoning Store
 
-Read the `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` reasoning memory section
+Read the agent's current reasoning memory so the new pattern fits alongside existing ones (**§ read-reasoning-store**).
 
-### Step 2: Write Using Template
+### Step 2: Draft the Pattern from the Template
 
-Write new Reasoning/Logic Memory into the Reasoning Memory section using the [Reasoning Pattern Template](#reasoning-pattern-template)
+Draft the new entry using the [Reasoning Pattern Template](../../templates/reasoning-pattern-template.md). Fill Steps 3-7 into it before persisting.
 
 ### Step 3: Create Short Memorable Title
 
 - Use action-oriented language that encodes both action AND consequence
 - Include emoji indicators for quick recognition (🚨 for critical, ⭐ for positive patterns, 🧠 for cognitive)
 - Examples: "BETTER TO ASK THAN ASSUME AND LOST", "CONSTRUCTIVE DISCUSSION ALWAYS WIN ON THE LONG RUN"
-- **Memorable Principle**: Header should work like human proverbs - encoding wisdom that survives generations
+- **Memorable Principle**: Header should work like human proverbs — encoding wisdom that survives generations
 
 ### Step 4: Add UUID
 
-- Generate unique identifier: `**UUID**: [8-4-4-4-12 format]`
-- This UUID serves as the pattern's "digital fingerprint" for memory reinforcement
-- Generate using:
-  - **Windows**: `powershell -c "[guid]::NewGuid().ToString()"`
-  - **Linux/macOS**: `uuidgen` or `cat /proc/sys/kernel/random/uuid`
+- Generate a unique identifier: `**UUID**: [8-4-4-4-12 format]` — this UUID is the pattern's "digital fingerprint" for memory reinforcement (**§ generate-uuid**)
 
 ### Step 5: Add Action/Strict Action
 
@@ -61,25 +57,25 @@ Write new Reasoning/Logic Memory into the Reasoning Memory section using the [Re
 - **Copy-paste from Action/Strict Action**: Ensures compression survival
 - This redundancy helps the pattern survive context compression
 
+### Step 8: Persist
+
+Persist the completed pattern into the reasoning store (**§ persist-reasoning**).
+
+---
+
+## Storage Mechanics
+
+The operations referenced above — **§ read-reasoning-store**, **§ generate-uuid**, **§ persist-reasoning** — are defined by the **active storage backend**:
+
+- **Markdown (native fleet)** — follow [storage-backends/markdown.md → ## add-reasoning](storage-backends/markdown.md#add-reasoning).
+- **DB (Munnin)** — served automatically; see [storage-backends/db.md → ## add-reasoning](storage-backends/db.md#add-reasoning).
+
+See the [seam contract](storage-backends/README.md).
+
 ---
 
 ## Templates
 
 ### Reasoning Pattern Template
 
-```markdown
-### **[SHORT MEMORABLE TITLE]** [EMOJI] [PATTERN TYPE] [EMOJI]
-**UUID**: [generate new UUID in format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx]
-**Action/Strict Action**: [What specific behavior/response is required]
-**What happened**:
-    **When it has happened**: [Describe the specific situation/context]
-    **Recurring Pattern**: [How this problem manifests repeatedly]
-    **Root Problem**: [What pain/frustration led to this pattern being created]
-    **Recognition Signals**: [How to identify when this pattern applies]
-    **Solution Process**: [The logical reasoning and evidence behind the solution]
-    **Critical Understanding**: [Key insights and cause-effect relationships]
-    **Correct Process**: [Step-by-step guidance for proper approach]
-**Final Conclusion**: [Copy-paste from Action/Strict Action for compression survival]
-```
-
----
+→ **[templates/reasoning-pattern-template.md](../../templates/reasoning-pattern-template.md)**.

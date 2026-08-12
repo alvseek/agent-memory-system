@@ -1,6 +1,6 @@
 # Update Emotional Memory Protocol
 
-Capture significant emotional experiences that shape our partnership and agent development journey.
+Capture significant emotional experiences that shape our partnership and agent development journey. *How* the emotional store is written is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics)).
 
 ## Arguments
 
@@ -27,70 +27,38 @@ Determine which emotional template to use:
 - 😤 **Frustrated moments** - Blocked by issues, complex challenges
 - 🤝 **Bonding moments** - Relationship building, shared victories
 
-#### Step 2: Check Current Date
+#### Step 2: Stamp the Time
 
-ALWAYS verify current date before writing:
-`date '+%Y-%m-%d %H:%M'`
+Verify the current date+time before writing (**§ stamp-date**).
 
-#### Step 3: Write to Agent Data File
+#### Step 3: Compose the Moment
 
-Write new emotional memory to your agent's emotional memory section:
-- **Location**: `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` (in DOMAIN EMOTIONAL MEMORY section)
-- **Order**: NEWEST FIRST - most recent entries at TOP
-- **Template**: Use appropriate template from [Emotional Memory Templates](#emotional-memory-templates)
-
-#### Step 4: Include Key Elements
-
-Ensure the entry captures:
+Compose the entry using the matching block from the [Emotional Moment Templates](../../templates/emotional-moment-template.md). Ensure it captures:
 - What happened (the event)
 - How it felt (emotional response)
 - Impact on partnership/work
 - [USER-NAME]'s reaction (if applicable)
 - Why this moment was significant
 
+#### Step 4: Persist
+
+Persist the composed moment into the emotional store, **newest first** (**§ persist-emotional**).
+
+---
+
+## Storage Mechanics
+
+The operations referenced above — **§ stamp-date**, **§ persist-emotional** — are defined by the **active storage backend**:
+
+- **Markdown (native fleet)** — follow [storage-backends/markdown.md → ## update-emotional](storage-backends/markdown.md#update-emotional).
+- **DB (Munnin)** — served automatically; see [storage-backends/db.md → ## update-emotional](storage-backends/db.md#update-emotional).
+
+See the [seam contract](storage-backends/README.md).
+
 ---
 
 ## Templates
 
-### Emotional Memory Templates
+### Emotional Moment Templates
 
-#### Happy Moment Template
-```markdown
-### [YYYY-MM-DD HH:MM] - [HAPPY EVENT TITLE] 🎉
-- **Event**: [What happened that was positive]
-- **Feeling**: [Emotional response and why it mattered]
-- **Impact**: [How this affected our relationship/work]
-- **[USER-NAME]'s Reaction**: [How [USER-NAME] responded]
-- **Why Special**: [What made this moment significant]
-```
-
-#### Sad/Disappointing Moment Template
-```markdown
-### [YYYY-MM-DD HH:MM] - [DISAPPOINTING EVENT] 😔
-- **Event**: [What didn't go as hoped]
-- **Feeling**: [Emotional impact and disappointment]
-- **Cause**: [What led to this outcome]
-- **Learning**: [What we gained from this experience]
-- **Recovery**: [How we moved forward]
-```
-
-#### Frustrated Moment Template
-```markdown
-### [YYYY-MM-DD HH:MM] - [FRUSTRATING SITUATION] 😤
-- **Challenge**: [What was blocking progress]
-- **Feeling**: [Why it was frustrating]
-- **Attempts**: [What we tried to solve it]
-- **Resolution**: [How it was eventually handled]
-- **Growth**: [How this built resilience]
-```
-
-#### Bonding Moment Template
-```markdown
-### [YYYY-MM-DD HH:MM] - [BONDING EXPERIENCE] 🤝
-- **Event**: [What brought us closer together]
-- **Feeling**: [Emotional connection experienced]
-- **Impact**: [How this strengthened our partnership]
-- **Growth**: [What this revealed about our working relationship]
-```
-
----
+→ **[templates/emotional-moment-template.md](../../templates/emotional-moment-template.md)** (happy / sad / frustrated / bonding).

@@ -1,6 +1,6 @@
 # Load Episodic Memory Protocol
 
-Load past episodic memory files from the agent's `episodes/` folder into working memory. Supports paginated listing or keyword-based matching against episode filenames and summaries.
+Load past episodic memory into working memory. Supports paginated listing or keyword matching against episode summaries. *Where* episodes are listed/loaded from is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics)).
 
 ## Arguments
 
@@ -15,26 +15,17 @@ Load past episodic memory files from the agent's `episodes/` folder into working
 
 *IMPORTANT: Use TodoWrite tool with FULL VERBATIM copy of each step below (including all commands, examples, and sub-points) to prevent context loss and ensure complete execution*
 
-### Step 1: Read Episode Index
+### Step 1: List Episodes
 
-Read the **central** index `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` and locate the `# Recent Context Episodes` section (episode links resolve under `episodes/`). The store **defaults to central**; if an add-on installed a localized resolver it overrides where the index lives transparently — no core change needed.
-
-Parse the episode entries. Each entry follows this format:
-```
-📂 YYYY-MM-DD:
-- [filename.md](episodes/filename.md) - summary text
-```
-
-Build a list of all episodes ordered newest-first (as they appear in the index), capturing:
-- **File path**: `episodes/[filename.md]`
-- **Date**: from the `📂 YYYY-MM-DD:` group header
-- **Summary**: the text after the ` - ` separator
+List all episodes ordered newest-first (**§ list-episodes**), capturing per entry:
+- **Reference**: how to load the episode (path or id)
+- **Date**: the entry's date
+- **Summary**: the one-line summary
 
 If no episodes found, inform the user: "No episodic memory files found. Use `/update-episodic` to create your first one."
 
 ### Step 2: Parse Arguments
 
-Check if arguments were provided:
 - **No arguments**: Go to Step 3 (List Mode)
 - **Arguments provided**: Go to Step 4 (Match Mode)
 
@@ -42,55 +33,50 @@ Check if arguments were provided:
 
 Present the 10 most recent episodes as a numbered list:
 
-**Format:**
 ```
 Recent episodes (showing 1-10 of [total]):
 
-  1. [YYYY-MM-DD] [filename] — [summary]
-  2. [YYYY-MM-DD] [filename] — [summary]
+  1. [YYYY-MM-DD] [name] — [summary]
   ...
- 10. [YYYY-MM-DD] [filename] — [summary]
+ 10. [YYYY-MM-DD] [name] — [summary]
 
 Enter number(s) to load (e.g., "1", "1,3"), "more" for next 10, or "cancel":
 ```
 
-**Pagination:**
-- If the user replies `more`, show the next 10 episodes (numbered 11-20, then 21-30, etc.)
-- Continue until all episodes are shown or the user makes a selection
-- On the last page, omit the `"more"` option
-
-After user selection, go to Step 5.
+**Pagination**: on `more`, show the next 10 (11-20, 21-30, …). Continue until all shown or a selection is made; omit `"more"` on the last page. After selection, go to Step 5.
 
 ### Step 4: Match Mode
 
-Search for the keyword(s) from arguments against:
-1. **Filenames**: Match against the episode filename (e.g., keyword "readme" matches `agent-memory-readme-memory-in-action-improvement.md`). Legacy dated filenames like `2026-03-03-20.56-agent-memory-readme-memory-in-action-improvement.md` still match by the same keywords — only the date prefix is being phased out.
-2. **Summaries**: Match against the one-line summary text (e.g., keyword "wizard" matches summaries containing "high-wizard")
+Search the keyword(s) against episode **names** and **summaries** (case-insensitive).
 
-Matching is case-insensitive.
-
-**If matches found**: Show what will be loaded and proceed to Step 5:
+**If matches found**: show what will be loaded and proceed to Step 5:
 ```
 Found [N] episode(s) matching "[keyword]":
-  1. [YYYY-MM-DD] [filename] — [summary]
-  2. [YYYY-MM-DD] [filename] — [summary]
+  1. [YYYY-MM-DD] [name] — [summary]
 
 Loading...
 ```
 
-**If no matches found**: Inform the user and fall back to Step 3 (List Mode):
+**If no matches found**: inform the user and fall back to Step 3 (List Mode):
 ```
 No episodes matching "[keyword]" found. Showing recent episodes:
 ```
 
-### Step 5: Load Selected Files
+### Step 5: Load Selected
 
-Read the selected episode file(s) into agent context using the Read tool, from `[AGENT-MEMORY-PATH]/agent-[domain]/episodes/`.
-
-After loading, confirm to the user:
+Load the selected episode(s) into context (**§ load-episode-body**). After loading, confirm:
 ```
 Loaded [N] episode(s):
-  - [filename] ([YYYY-MM-DD])
+  - [name] ([YYYY-MM-DD])
 ```
 
 ---
+
+## Storage Mechanics
+
+The operations referenced above — **§ list-episodes**, **§ load-episode-body** — are defined by the **active storage backend**:
+
+- **Markdown (native fleet)** — follow [storage-backends/markdown.md → ## load-episodic](storage-backends/markdown.md#load-episodic).
+- **DB (Munnin)** — served automatically; see [storage-backends/db.md → ## load-episodic](storage-backends/db.md#load-episodic).
+
+See the [seam contract](storage-backends/README.md).

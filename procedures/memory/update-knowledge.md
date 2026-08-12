@@ -1,6 +1,6 @@
 # Update Knowledge Memory Protocol
 
-Capture domain expertise, technical patterns, research findings, and best practices that enhance agent capabilities.
+Capture domain expertise, technical patterns, research findings, and best practices that enhance agent capabilities. *How* the knowledge store + index are written is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics)).
 
 ## Arguments
 
@@ -32,22 +32,11 @@ If no arguments provided, ask: "What knowledge or domain expertise should I docu
 - Context already covered in existing knowledge files
 - Information that should be in episodic memory instead
 
-### Step 2: Choose Location
+> **Scope**: `/update-knowledge` writes **general** knowledge (research, core-domain, cross-cutting) — cross-project, always **central**. Project-specific context (VM access, deploy procedures, conventions) + project-scoped knowledge are handled by the coding overlay, not here.
 
-- Create in `knowledge-base/research/` (domain expertise and research)
-- **Note**: project-specific context (VM access, deploy procedures, conventions) is handled by the coding overlay, not here.
-- **Scope**: `/update-knowledge` writes **general** knowledge (`knowledge-base/research/`, core-domain, cross-cutting) — cross-project, always **central**. Project-scoped knowledge (`knowledge-base/[project]/`) is handled by the coding overlay, not here.
+### Step 2: Compose from the Template
 
-### Step 3: Name File
-
-- **Format**: `[date]-[descriptive-theme].md` or `[domain-area].md`
-- **Examples**:
-  - `2025-09-11-nestjs-patterns.md` (dated research)
-  - `typescript-best-practices.md` (timeless domain knowledge)
-
-### Step 4: Create File with Structure
-
-Use the [Knowledge File Template](#knowledge-file-template)
+Compose the entry using the [Knowledge File Template](../../templates/knowledge-file-template.md).
 
 **Quality Standards:**
 - Back claims with sources, documentation, or proven experience
@@ -55,11 +44,13 @@ Use the [Knowledge File Template](#knowledge-file-template)
 - Reference specific examples or case studies
 - Distinguish between proven practices and experimental approaches
 
-### Step 5: Update Knowledge Index
+### Step 3: Persist
 
-- Update `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` knowledge directory
-- Add entry to knowledge index for discoverability
-- Consider whether new knowledge should be core vs. specialized
+Persist the composed entry into the knowledge store (**§ persist-knowledge**).
+
+### Step 4: Register in the Knowledge Index
+
+Add an entry to the knowledge directory for discoverability (**§ update-knowledge-index**). Consider whether new knowledge should be core vs. specialized.
 
 **Cross-Reference Standards:**
 - Use markdown links for all file references: `[Pattern Name](file.md)`
@@ -68,31 +59,19 @@ Use the [Knowledge File Template](#knowledge-file-template)
 
 ---
 
+## Storage Mechanics
+
+The operations referenced above — **§ persist-knowledge**, **§ update-knowledge-index** — are defined by the **active storage backend**:
+
+- **Markdown (native fleet)** — follow [storage-backends/markdown.md → ## update-knowledge](storage-backends/markdown.md#update-knowledge).
+- **DB (Munnin)** — served automatically; see [storage-backends/db.md → ## update-knowledge](storage-backends/db.md#update-knowledge).
+
+See the [seam contract](storage-backends/README.md).
+
+---
+
 ## Templates
 
 ### Knowledge File Template
 
-```markdown
-# Agent - [Knowledge Area] - [Date]
-
-## 📋 **TABLE OF CONTENTS**
-- [Purpose](#purpose)
-- [Quick Reference](#quick-reference)
-- [Section 1](#section-1)
-- [Section 2](#section-2)
-- [Sources](#sources)
-
-## **PURPOSE**
-[Brief description of what this knowledge file covers]
-
-## ⚡ **Quick Reference**
-[Key takeaways, patterns, or cheat sheet]
-
-## 🎯 **[Main Content Sections]**
-[Organized knowledge content here]
-
-## 🎯 **Sources**
-[Context or source of learning]
-```
-
----
+→ **[templates/knowledge-file-template.md](../../templates/knowledge-file-template.md)**.
