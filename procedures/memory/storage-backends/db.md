@@ -133,3 +133,20 @@ The records you wrote this session ARE the promotions — list the reasoning / k
 ### § read-newest-episode
 
 `query(agent_id="<domain>", record_type="episode")` → newest; `get(uuid)` its body; read the top sub-episode block for `Tech Debts` + `Next Steps`.
+
+---
+
+## awaken-agent
+
+### § load-agent-memory
+
+**One call** — `awaken(domain)` (MCP tool) or `GET /api/awaken?agent_id=<domain>` (HTTP). It assembles and returns the agent's memory payload from Valaskjalf server-side:
+
+- `shared.reasoning` + `shared.knowledge` — the `__shared__` always-load layer (layer i).
+- `identity` + `reasoning` + `emotional` — this agent's own records, whole (layer ii). `identity` includes the agent's core knowledge and RAS triggers.
+- `knowledge_index` + `episodic_index` — metadata-only indexes; bodies via `get(uuid)` / `search(text)` on demand (layer iii).
+- `latest_episode` — the newest episode's full body.
+
+No file reads, no parallel Reads — the 4-layer assembly is a single derived call.
+
+> **⚠ Not covered by the payload (step-2 gap)**: the **awakening instructions** (`core-instruction-control-files.md` — the Phase 1/Phase 2 protocol referenced in Step 2) and the **user profile** are NOT part of `awaken`'s payload. They are not yet stored as records or served. Until that is resolved, a pure-DB client must obtain the Phase 1/2 process another way (e.g. this prompt's own text, or global context); the user profile reaches the agent via the global instructions file. See `docs/flows/awaken-db.md`.

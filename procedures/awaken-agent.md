@@ -1,6 +1,6 @@
 # Awaken Agent
 
-Load agent memory and activate a domain-specific agent.
+Load agent memory and activate a domain-specific agent. *Where* the memory is loaded from is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics)).
 
 ## Arguments
 
@@ -14,19 +14,29 @@ If no arguments provided, ask: "Which agent domain should I awaken?"
 
 ## Procedure
 
-### Step 1: Load the 5 Core Files
+### Step 1: Load the Awakening Set
 
-🚨 **CRITICAL**: Use the **Read tool directly** — DO NOT delegate to a sub-agent (Agent tool / general-purpose / Explore). Sub-agents return summaries; awakening needs the full content of these files in YOUR own context window. Reading via sub-agent produces a hollow awakening with diluted identity and missing reasoning patterns.
+Load the agent's full awakening set into **your own context** (**§ load-agent-memory**) — five layers:
 
-Read all 5 in parallel:
-- `[AGENT-MEMORY-PATH]/control-files/core-instruction-control-files.md` (Shared foundations + awakening instructions)
-- `[AGENT-MEMORY-PATH]/agent-[DOMAIN]/agent-core-memory.md` (Agent-specific identity)
-- `[AGENT-MEMORY-PATH]/agent-[DOMAIN]/agent-memory-index.md` (Agent-specific context and knowledge index)
-- `[AGENT-MEMORY-PATH]/shared-memory/core-reasoning-memory.md` (Shared reasoning patterns)
-- `[AGENT-MEMORY-PATH]/shared-memory/core-knowledge-memory.md` (Shared knowledge fundamentals)
+1. **Shared foundations + awakening instructions** — the shared reasoning/knowledge foundations and the phased awakening protocol.
+2. **Agent identity** — this domain's identity, core knowledge, and RAS triggers.
+3. **Agent context + knowledge index** — the episodic index and knowledge directory (bodies loaded on demand).
+4. **Shared reasoning patterns.**
+5. **Shared knowledge fundamentals.**
+
+🚨 **CRITICAL — load into YOUR OWN context, do NOT delegate to a sub-agent** (Agent tool / general-purpose / Explore). Sub-agents return summaries; awakening needs the full content in your own context window. A delegated load produces a hollow awakening with diluted identity and missing reasoning patterns.
 
 ### Step 2: Follow Awakening Instructions
 
-Follow the phased protocol in the loaded `core-instruction-control-files.md` — Phase 1 (Process Loaded Identity), then Phase 2 (Load Project Context & Report).
+Follow the phased protocol from the loaded awakening instructions (`core-instruction-control-files.md`) — Phase 1 (Process Loaded Identity), then Phase 2 (Load Project Context & Report).
 
 ---
+
+## Storage Mechanics
+
+The operation referenced above — **§ load-agent-memory** — is defined by the **active storage backend**:
+
+- **Markdown (native fleet)** — follow [storage-backends/markdown.md → ## awaken-agent](memory/storage-backends/markdown.md#awaken-agent).
+- **DB (Munnin)** — served automatically; see [storage-backends/db.md → ## awaken-agent](memory/storage-backends/db.md#awaken-agent).
+
+See the [seam contract](memory/storage-backends/README.md).

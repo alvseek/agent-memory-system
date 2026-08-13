@@ -175,3 +175,17 @@ Identify cross-layer files written this session, by path:
 ### § read-newest-episode
 
 Read the newest sub-episode: the top H3 block of the top episode file in `[AGENT-MEMORY-PATH]/agent-[domain]/episodes/` (per the episodic index ordering).
+
+---
+
+## awaken-agent
+
+### § load-agent-memory
+
+Use the **Read tool directly** and read all 5 files in parallel:
+
+- `[AGENT-MEMORY-PATH]/control-files/core-instruction-control-files.md` (Shared foundations + awakening instructions)
+- `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` (Agent-specific identity)
+- `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` (Agent-specific context and knowledge index)
+- `[AGENT-MEMORY-PATH]/shared-memory/core-reasoning-memory.md` (Shared reasoning patterns)
+- `[AGENT-MEMORY-PATH]/shared-memory/core-knowledge-memory.md` (Shared knowledge fundamentals)
