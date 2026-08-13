@@ -32,9 +32,8 @@ control-files/
 │   ├── wrap-up.md                     # End-of-session memory capture (memory-only)
 │   ├── push-memory.md                 # Persist the memory store (git push)
 │   ├── pull-memory.md                 # Sync the memory store (git pull + submodule)
-│   ├── memory/                        # Memory management (10 procedures)
+│   ├── memory/                        # Memory management (10 procedures) + resources/ (entry templates) + storage-backends/
 │   └── setup-scripts/                 # 2-repo-aware setup orchestrators (core / core+skill)
-├── templates/                          # Memory templates (episodic-memory, project-context)
 ├── new-agent-template/                 # Starter template for new agents
 ├── core-memory/                        # Source files for Global CLAUDE.md compilation
 ├── docs/                               # Framework standards + orientation map

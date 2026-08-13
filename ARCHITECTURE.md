@@ -85,7 +85,9 @@ control-files/
 │   │   ├── update-emotional.md        # Emotional memory capture
 │   │   ├── load-episodic.md           # List and load past episodes
 │   │   ├── load-knowledge.md          # List and load knowledge files
-│   │   └── archive-old-memories.md    # Memory archiving
+│   │   ├── archive-old-memories.md    # Memory archiving
+│   │   ├── resources/                 # Memory-entry templates (emotional, episodic, knowledge, reasoning)
+│   │   └── storage-backends/          # Per-backend § op definitions (markdown / db)
 │   ├── template/                      # Procedure template
 │   └── setup-scripts/                 # Slash command setup scripts
 ├── scripts/                           # Core utility scripts
@@ -99,11 +101,10 @@ control-files/
 ├── docs/                              # Framework standards + orientation map
 │   ├── document-quality-standard.md   # Lean/clear/precise/self-contained rules for all framework docs
 │   └── orientation-map.md             # Framework's own orientation map (child of agent-memory root map)
-├── archived/                          # Archived/retired files
-└── templates/                         # Memory templates (used by memory procedures)
-    ├── episodic-memory-template.md    # Episodic memory entry template
-    └── project-context-template.md    # Project context file template
+└── archived/                          # Archived/retired files
 ```
+
+> **Memory-entry templates** live in `procedures/memory/resources/` (co-located with the memory procedures that instantiate them) — referenced through the storage seam (`§ template`): the markdown backend reads the `/resources/` file, the DB backend serves it as an MCP Resource.
 
 ### Coding Overlay Directory (`agent-memory-coding-skill` — separate repo)
 ```

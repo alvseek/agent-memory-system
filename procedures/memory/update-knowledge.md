@@ -36,7 +36,7 @@ If no arguments provided, ask: "What knowledge or domain expertise should I docu
 
 ### Step 2: Compose from the Template
 
-Compose the entry using the [Knowledge File Template](../../templates/knowledge-file-template.md).
+Compose the entry using the knowledge-file template (**§ template**).
 
 **Quality Standards:**
 - Back claims with sources, documentation, or proven experience
@@ -61,17 +61,9 @@ Add an entry to the knowledge directory for discoverability (**§ update-knowled
 
 ## Storage Mechanics
 
-The operations referenced above — **§ persist-knowledge**, **§ update-knowledge-index** — are defined by the **active storage backend**:
+The operations referenced above — **§ persist-knowledge**, **§ update-knowledge-index**, **§ template** — are defined by the **active storage backend**:
 
 - **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## update-knowledge`.
 - **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## update-knowledge`.
 
 See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md`.
-
----
-
-## Templates
-
-### Knowledge File Template
-
-→ **[templates/knowledge-file-template.md](../../templates/knowledge-file-template.md)**.

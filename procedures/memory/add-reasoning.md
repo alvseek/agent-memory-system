@@ -23,7 +23,7 @@ Read the agent's current reasoning memory so the new pattern fits alongside exis
 
 ### Step 2: Draft the Pattern from the Template
 
-Draft the new entry using the [Reasoning Pattern Template](../../templates/reasoning-pattern-template.md). Fill Steps 3-7 into it before persisting.
+Draft the new entry using the reasoning-pattern template (**§ template**). Fill Steps 3-7 into it before persisting.
 
 ### Step 3: Create Short Memorable Title
 
@@ -65,17 +65,9 @@ Persist the completed pattern into the reasoning store (**§ persist-reasoning**
 
 ## Storage Mechanics
 
-The operations referenced above — **§ read-reasoning-store**, **§ generate-uuid**, **§ persist-reasoning** — are defined by the **active storage backend**:
+The operations referenced above — **§ read-reasoning-store**, **§ generate-uuid**, **§ persist-reasoning**, **§ template** — are defined by the **active storage backend**:
 
 - **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## add-reasoning`.
 - **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## add-reasoning`.
 
 See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md`.
-
----
-
-## Templates
-
-### Reasoning Pattern Template
-
-→ **[templates/reasoning-pattern-template.md](../../templates/reasoning-pattern-template.md)**.

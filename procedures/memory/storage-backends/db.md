@@ -32,6 +32,10 @@ The index reflects the change automatically (derived `SELECT`) — **no manual i
 
 **No-op.** Records are not line-bounded files: there is no 1000-line split (a large body is fine; shortening is a later curation *policy*, not a write mechanic) and no filename migration (records are keyed by `uuid`, not filenames).
 
+### § template
+
+**No file.** The sub-episode-block template is served as an MCP **Resource** (`episodic-entry-template`) — read it from resources, not a path. (There is no separate file-scaffold template: `§ create-episode` is an `insert`, not a `cp`.)
+
 ---
 
 ## add-reasoning
@@ -48,6 +52,10 @@ The index reflects the change automatically (derived `SELECT`) — **no manual i
 
 `insert(agent_id="<domain>", record_type="reasoning", title="<short memorable title>", content="<full pattern block>")`.
 
+### § template
+
+**No file.** The reasoning-pattern template is served as an MCP **Resource** (`reasoning-pattern-template`) — read it from resources, not a path.
+
 ---
 
 ## update-emotional
@@ -60,6 +68,10 @@ The index reflects the change automatically (derived `SELECT`) — **no manual i
 
 `insert(agent_id="<domain>", record_type="emotional", title="<moment title>", content="<moment block>")`. **Newest-first is a read concern** — the index projection orders by date, so there is no manual top-insert.
 
+### § template
+
+**No file.** The emotional-moment template is served as an MCP **Resource** (`emotional-moment-template`) — read it from resources, not a path.
+
 ---
 
 ## update-knowledge
@@ -71,6 +83,10 @@ The index reflects the change automatically (derived `SELECT`) — **no manual i
 ### § update-knowledge-index
 
 **No-op.** The knowledge directory is a derived `query(record_type="knowledge")` — nothing to hand-edit.
+
+### § template
+
+**No file.** The knowledge-file template is served as an MCP **Resource** (`knowledge-file-template`) — read it from resources, not a path.
 
 ---
 

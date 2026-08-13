@@ -33,7 +33,7 @@ Verify the current date+time before writing (**§ stamp-date**).
 
 #### Step 3: Compose the Moment
 
-Compose the entry using the matching block from the [Emotional Moment Templates](../../templates/emotional-moment-template.md). Ensure it captures:
+Compose the entry using the matching block from the emotional-moment template (**§ template**). Ensure it captures:
 - What happened (the event)
 - How it felt (emotional response)
 - Impact on partnership/work
@@ -48,17 +48,9 @@ Persist the composed moment into the emotional store, **newest first** (**§ per
 
 ## Storage Mechanics
 
-The operations referenced above — **§ stamp-date**, **§ persist-emotional** — are defined by the **active storage backend**:
+The operations referenced above — **§ stamp-date**, **§ persist-emotional**, **§ template** — are defined by the **active storage backend**:
 
 - **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## update-emotional`.
 - **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## update-emotional`.
 
 See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md`.
-
----
-
-## Templates
-
-### Emotional Moment Templates
-
-→ **[templates/emotional-moment-template.md](../../templates/emotional-moment-template.md)** (happy / sad / frustrated / bonding).

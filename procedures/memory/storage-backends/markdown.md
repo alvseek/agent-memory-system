@@ -34,7 +34,7 @@ Read `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` and locate `# Re
 1. **Build filename**: `[project-name]-[context-theme].md` (no date prefix). Examples: `agent-memory-task-system-framework-rules.md`, `plko-jira-mcp-integration.md`. If a file at this name already exists (and a separate file is wanted), use an incrementing suffix: `[project-name]-[context-theme]-2.md`.
 2. **Copy the file scaffold**:
    ```
-   cp [AGENT-MEMORY-PATH]/control-files/templates/episodic-memory-template.md [AGENT-MEMORY-PATH]/agent-[domain]/episodes/[filename].md
+   cp [AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/episodic-memory-template.md [AGENT-MEMORY-PATH]/agent-[domain]/episodes/[filename].md
    ```
 3. **Replace the template placeholder** at the top with the composed sub-episode block.
 4. **Add index entry**:
@@ -59,6 +59,10 @@ Read `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` and locate `# Re
 > ```
 > Legacy filenames are migrated lazily — only renamed when the file gets its next merge-append. No bulk sweep.
 
+### § template
+
+The sub-episode block format → read `[AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/episodic-entry-template.md`.
+
 ---
 
 ## add-reasoning
@@ -77,6 +81,10 @@ Generate a unique identifier:
 
 Write the completed pattern into the `# DOMAIN REASONING MEMORY` section of `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md`.
 
+### § template
+
+The reasoning-pattern block format → read `[AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/reasoning-pattern-template.md`.
+
 ---
 
 ## update-emotional
@@ -90,6 +98,10 @@ ALWAYS verify current date before writing:
 
 Write the moment to `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` (in the `# DOMAIN EMOTIONAL MEMORY` section). **Order: NEWEST FIRST** — most recent entries at the TOP.
 
+### § template
+
+The emotional-moment block format (happy / sad / frustrated / bonding) → read `[AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/emotional-moment-template.md`.
+
 ---
 
 ## update-knowledge
@@ -101,6 +113,10 @@ Create in `[AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/research/` (domain 
 ### § update-knowledge-index
 
 Update `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` knowledge directory — add an entry to the knowledge index for discoverability.
+
+### § template
+
+The knowledge-file format → read `[AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/knowledge-file-template.md`.
 
 ---
 

@@ -87,7 +87,7 @@ Wait for response. Auto-default to **A** only if confidence is high (≥3 strong
 
    > **Why no time threshold**: the prior sub-episode's timestamp is deterministic. Recent prior (same conversation) → full context to review each item. Older prior (different session) → items are still carry-forward candidates, reviewed on their own descriptions; items that can't be confidently evaluated default to "still open" (conservative, per UUID a1b2c3d4 — debts never silently dropped).
 
-2. **Compose the sub-episode block** using the [Detailed Entry Template](../../templates/episodic-entry-template.md). The H3 header includes the stamped date+time:
+2. **Compose the sub-episode block** using the sub-episode-block template (**§ template**). The H3 header includes the stamped date+time:
    ```
    ### YYYY-MM-DD HH.MM - [SESSION SUB-THEME] (agent: [domain])
    ```
@@ -100,7 +100,7 @@ Wait for response. Auto-default to **A** only if confidence is high (≥3 strong
 
 ### Create New Episode
 
-1. **Compose the first sub-episode block** using the [Detailed Entry Template](../../templates/episodic-entry-template.md). The H3 header includes the stamped date+time.
+1. **Compose the first sub-episode block** using the sub-episode-block template (**§ template**). The H3 header includes the stamped date+time.
 
 2. **Create a new episode** for `[project-name]-[context-theme]` seeded with that block, and register it in the index projection (**§ create-episode**).
 
@@ -118,17 +118,9 @@ Cross-layer orchestration is still handled by `/update-memory` if invoked throug
 
 ## Storage Mechanics
 
-The operations referenced above — **§ stamp-date**, **§ list-candidate-episodes**, **§ append-sub-episode**, **§ create-episode**, **§ housekeeping** — are defined by the **active storage backend**:
+The operations referenced above — **§ stamp-date**, **§ list-candidate-episodes**, **§ append-sub-episode**, **§ create-episode**, **§ housekeeping**, **§ template** — are defined by the **active storage backend**:
 
 - **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## update-episodic`.
 - **DB (Munnin)** — served automatically; the equivalents live in `[STORAGE-BACKENDS-PATH]/db.md` → section `## update-episodic`.
 
 See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md` for how this swap works.
-
----
-
-## Templates
-
-### Detailed Entry Template
-
-The sub-episode block format → **[templates/episodic-entry-template.md](../../templates/episodic-entry-template.md)**.
