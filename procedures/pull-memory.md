@@ -12,24 +12,18 @@ Pull the latest changes for the agent-memory repository and update the control-f
 
 ## Procedure
 
-### Step 1: Check Repository State
+### Step 1: Pull Agent Memory
 
-Run `git status` in the agent-memory repo (`[AGENT-MEMORY-PATH]/`).
-
-If there are uncommitted changes, warn user: "You have uncommitted changes in agent-memory. Pull may cause merge conflicts. Continue?" and wait for confirmation.
-
-### Step 2: Pull Agent Memory
-
-1. Run `git pull` in the agent-memory repo
+1. Run `git pull` in the agent-memory repo (`[AGENT-MEMORY-PATH]/`)
 2. Report result: "Agent memory pulled: [result summary]"
 
-If pull fails, report the error and stop.
+If pull fails (e.g., merge conflict), report the error and stop.
 
-### Step 3: Update Control Files Submodule
+### Step 2: Update All of Its Submodule
 
-1. Run `git submodule update --remote --merge` in the agent-memory repo
-2. Report result: "Control files updated: [result summary]"
+1. Run `git submodule update --remote --merge` in the repo
+2. Report result: "Submodules updated: [result summary]"
 
-If submodule update fails, report the error.
+If submodule update fails (e.g., merge conflict), report the error.
 
 ---
