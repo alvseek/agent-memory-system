@@ -67,10 +67,10 @@ Provide a summary using the [Summary Report Template](#summary-report-template).
 
 The operations referenced above — **§ stamp-date**, **§ archive-episodes**, **§ archive-emotional-apply** — are defined by the **active storage backend**:
 
-- **Markdown (native fleet)** — follow [storage-backends/markdown.md → ## archive-old-memories](storage-backends/markdown.md#archive-old-memories).
-- **DB (Munnin)** — served automatically; see [storage-backends/db.md → ## archive-old-memories](storage-backends/db.md#archive-old-memories).
+- **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## archive-old-memories`.
+- **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## archive-old-memories`.
 
-See the [seam contract](storage-backends/README.md).
+See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md`.
 
 ---
 

@@ -76,7 +76,7 @@ Loaded [N] episode(s):
 
 The operations referenced above — **§ list-episodes**, **§ load-episode-body** — are defined by the **active storage backend**:
 
-- **Markdown (native fleet)** — follow [storage-backends/markdown.md → ## load-episodic](storage-backends/markdown.md#load-episodic).
-- **DB (Munnin)** — served automatically; see [storage-backends/db.md → ## load-episodic](storage-backends/db.md#load-episodic).
+- **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## load-episodic`.
+- **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## load-episodic`.
 
-See the [seam contract](storage-backends/README.md).
+See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md`.

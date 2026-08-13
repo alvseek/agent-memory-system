@@ -118,10 +118,10 @@ Phase 3 — Feeling captured (scope: [full session / delta since CUTOFF]):
 
 The operations referenced above — **§ detect-mode-scan**, **§ scan-promotion-markers** — are defined by the **active storage backend**:
 
-- **Markdown (native fleet)** — follow [storage-backends/markdown.md → ## update-memory](storage-backends/markdown.md#update-memory).
-- **DB (Munnin)** — served automatically; see [storage-backends/db.md → ## update-memory](storage-backends/db.md#update-memory).
+- **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## update-memory`.
+- **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## update-memory`.
 
-See the [seam contract](storage-backends/README.md).
+See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md`.
 
 ---
 

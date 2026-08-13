@@ -50,10 +50,10 @@ Persist the composed moment into the emotional store, **newest first** (**§ per
 
 The operations referenced above — **§ stamp-date**, **§ persist-emotional** — are defined by the **active storage backend**:
 
-- **Markdown (native fleet)** — follow [storage-backends/markdown.md → ## update-emotional](storage-backends/markdown.md#update-emotional).
-- **DB (Munnin)** — served automatically; see [storage-backends/db.md → ## update-emotional](storage-backends/db.md#update-emotional).
+- **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## update-emotional`.
+- **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## update-emotional`.
 
-See the [seam contract](storage-backends/README.md).
+See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md`.
 
 ---
 

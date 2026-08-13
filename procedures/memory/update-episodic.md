@@ -120,10 +120,10 @@ Cross-layer orchestration is still handled by `/update-memory` if invoked throug
 
 The operations referenced above — **§ stamp-date**, **§ list-candidate-episodes**, **§ append-sub-episode**, **§ create-episode**, **§ housekeeping** — are defined by the **active storage backend**:
 
-- **Markdown (native fleet)** — follow [storage-backends/markdown.md → ## update-episodic](storage-backends/markdown.md#update-episodic).
-- **DB (Munnin)** — served automatically; the equivalents live in [storage-backends/db.md → ## update-episodic](storage-backends/db.md#update-episodic).
+- **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## update-episodic`.
+- **DB (Munnin)** — served automatically; the equivalents live in `[STORAGE-BACKENDS-PATH]/db.md` → section `## update-episodic`.
 
-See the [seam contract](storage-backends/README.md) for how this swap works.
+See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md` for how this swap works.
 
 ---
 

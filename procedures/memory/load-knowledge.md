@@ -79,7 +79,7 @@ Loaded [N] knowledge file(s):
 
 The operations referenced above — **§ list-knowledge**, **§ load-knowledge-body** — are defined by the **active storage backend**:
 
-- **Markdown (native fleet)** — follow [storage-backends/markdown.md → ## load-knowledge](storage-backends/markdown.md#load-knowledge).
-- **DB (Munnin)** — served automatically; see [storage-backends/db.md → ## load-knowledge](storage-backends/db.md#load-knowledge).
+- **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## load-knowledge`.
+- **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## load-knowledge`.
 
-See the [seam contract](storage-backends/README.md).
+See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md`.

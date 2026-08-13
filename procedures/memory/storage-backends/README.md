@@ -11,8 +11,8 @@ Memory procedures are **storage-agnostic**: each one carries its *judgment* (gat
 
 1. **Marker**: every memory procedure has exactly **one** `## Storage Mechanics` section — the swap point. It sits after the procedure body (after `## Procedure` / the phase sections) and before `## Templates` / `## Notes` if present.
 2. **Reference by name**: the procedure body calls storage operations abstractly as **`§ op-name`** (e.g. *"list candidate episodes (§ list-candidates)"*, *"persist the sub-episode (§ append-sub-episode)"*). It never spells out files or tools inline.
-3. **Native (markdown) resolution**: in this submodule, the `## Storage Mechanics` body simply **points** to `storage-backends/markdown.md → ## [procedure-name]`, where each `§ op` is defined concretely. A markdown-era agent reads the core, then follows that pointer.
-4. **Served (db) resolution**: Munnin's `ContentLoader` **substitutes** the `## Storage Mechanics` body with `storage-backends/db.md → ## [procedure-name]` when serving the procedure as an MCP Prompt. The agent gets the same core, DB mechanics.
+3. **Native (markdown) resolution**: in this submodule, the `## Storage Mechanics` body simply **points** to `[STORAGE-BACKENDS-PATH]/markdown.md → ## [procedure-name]`, where each `§ op` is defined concretely. A markdown-era agent reads the core, then follows that pointer. The absolute `[STORAGE-BACKENDS-PATH]` placeholder (defined in environment memory → compiled into global CLAUDE.md) keeps the pointer resolvable even when the procedure is installed as a slash command outside this tree — a relative `storage-backends/…` link breaks on that move.
+4. **Served (db) resolution**: Munnin's `ContentLoader` **substitutes** the `## Storage Mechanics` body with `[STORAGE-BACKENDS-PATH]/db.md → ## [procedure-name]` when serving the procedure as an MCP Prompt. The agent gets the same core, DB mechanics.
 
 ## Substitution rule (for tooling)
 

@@ -67,10 +67,10 @@ Persist the completed pattern into the reasoning store (**§ persist-reasoning**
 
 The operations referenced above — **§ read-reasoning-store**, **§ generate-uuid**, **§ persist-reasoning** — are defined by the **active storage backend**:
 
-- **Markdown (native fleet)** — follow [storage-backends/markdown.md → ## add-reasoning](storage-backends/markdown.md#add-reasoning).
-- **DB (Munnin)** — served automatically; see [storage-backends/db.md → ## add-reasoning](storage-backends/db.md#add-reasoning).
+- **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## add-reasoning`.
+- **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## add-reasoning`.
 
-See the [seam contract](storage-backends/README.md).
+See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md`.
 
 ---
 

@@ -56,10 +56,10 @@ If both Tech Debts and Next Steps are empty → replace both lists with *"No ope
 
 The operation referenced above — **§ read-newest-episode** — is defined by the **active storage backend**:
 
-- **Markdown (native fleet)** — follow [storage-backends/markdown.md → ## wrap-up](memory/storage-backends/markdown.md#wrap-up).
-- **DB (Munnin)** — served automatically; see [storage-backends/db.md → ## wrap-up](memory/storage-backends/db.md#wrap-up).
+- **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## wrap-up`.
+- **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## wrap-up`.
 
-See the [seam contract](memory/storage-backends/README.md).
+See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md`.
 
 ---
 

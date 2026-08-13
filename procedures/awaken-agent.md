@@ -36,7 +36,7 @@ Follow the phased protocol from the loaded awakening instructions (`core-instruc
 
 The operation referenced above — **§ load-agent-memory** — is defined by the **active storage backend**:
 
-- **Markdown (native fleet)** — follow [storage-backends/markdown.md → ## awaken-agent](memory/storage-backends/markdown.md#awaken-agent).
-- **DB (Munnin)** — served automatically; see [storage-backends/db.md → ## awaken-agent](memory/storage-backends/db.md#awaken-agent).
+- **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## awaken-agent`.
+- **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## awaken-agent`.
 
-See the [seam contract](memory/storage-backends/README.md).
+See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md`.

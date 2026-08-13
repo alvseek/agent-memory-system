@@ -63,10 +63,10 @@ Add an entry to the knowledge directory for discoverability (**§ update-knowled
 
 The operations referenced above — **§ persist-knowledge**, **§ update-knowledge-index** — are defined by the **active storage backend**:
 
-- **Markdown (native fleet)** — follow [storage-backends/markdown.md → ## update-knowledge](storage-backends/markdown.md#update-knowledge).
-- **DB (Munnin)** — served automatically; see [storage-backends/db.md → ## update-knowledge](storage-backends/db.md#update-knowledge).
+- **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## update-knowledge`.
+- **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## update-knowledge`.
 
-See the [seam contract](storage-backends/README.md).
+See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md`.
 
 ---
 
