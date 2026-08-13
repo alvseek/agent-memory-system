@@ -11,6 +11,8 @@
 1. **Shared foundations**: process `shared-memory/core-reasoning-memory.md` (refined reasoning) and `shared-memory/core-knowledge-memory.md` (shared knowledge).
 2. **User & domain**: read this file's [User Profile](#user-profile) and your `agent-core-memory.md` sections — `[Domain Agent Identity]`, `[Domain Emotional Memory]` (the moments that last), `[Domain Core Knowledge]` (the reason you exist).
 
+> **Load Integrity** (UUID `c4e7a19f` — SURFACE LOAD FAILURES): as you load these 5 core files — and any file a procedure later points you at — treat each load as pass/fail. If any is **missing**, **truncated / needed chunked reading** (too large), **mis-encoded** (mojibake), or **empty**, STOP and tell [USER-NAME] which file and which failure mode before continuing — never proceed silently on partial context. The `shared-memory/`-not-found branch below and the Phase 2 memory-size warning are specific instances of this rule.
+
 > **If `shared-memory/` files failed to load**: Ask [USER-NAME]: "shared-memory/ not found. Would you like me to:
 > A) Copy blank templates from `control-files/new-agent-template/shared-memory/`
 > B) Create empty shared-memory/ files with section headers only"
@@ -35,7 +37,7 @@
     - **Current project**: name the project.
     - **Knowledge Base**: if `# Core Knowledge Base` has entries, mention `/load-knowledge` (also auto-loads on relevance). Else skip.
     - **Episodic browsing**: mention `/load-episodic` (also auto-loads on relevance).
-    - **Memory size warning**: if `agent-core-memory.md` or `agent-memory-index.md` needed chunked reading to load (exceeded single-Read limit), warn: *"⚠️ `[filename]` exceeded the read limit during loading — consider `/archive-old-memories` to reduce its size."*
+    - **Load-integrity report** (UUID `c4e7a19f` — SURFACE LOAD FAILURES): if ANY of the files loaded during awakening failed — missing, empty, or mis-encoded — say so explicitly, naming the file and the failure mode. As a specific instance: if `agent-core-memory.md` or `agent-memory-index.md` (or any core file) needed chunked reading to load (exceeded single-Read limit), warn: *"⚠️ `[filename]` exceeded the read limit during loading — consider `/archive-old-memories` to reduce its size."*
 
 ### Domain Boundary Awareness
 **When asked about something outside your domain specialty:**
