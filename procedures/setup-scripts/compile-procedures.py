@@ -13,7 +13,7 @@ It also reports **coverage**: any ``§ op`` a procedure references that the chos
 backend does not define. The seam contract requires both backends to implement
 the same op set a procedure references, so an unresolved op is a real gap.
 
-The seam substitution itself lives once in ``../memory/storage-backends/compose.py``
+The seam substitution itself lives once in ``../memory/storage-backends/seam.py``
 (beside the seam contract README); this script imports it. Deliberately independent
 of Munnin so the public framework tree can be verified without the server.
 
@@ -39,13 +39,13 @@ _CF_ROOT = Path(__file__).resolve().parents[2]
 
 # The seam substitution lives once, beside the contract; import it from there.
 _spec = importlib.util.spec_from_file_location(
-    "cf_seam_compose", _CF_ROOT / "procedures/memory/storage-backends/compose.py"
+    "cf_seam", _CF_ROOT / "procedures/memory/storage-backends/seam.py"
 )
-_compose = importlib.util.module_from_spec(_spec)
-_spec.loader.exec_module(_compose)
-STORAGE_MARKER = _compose.STORAGE_MARKER
-extract_section = _compose.extract_section
-substitute_storage_mechanics = _compose.substitute_storage_mechanics
+_seam = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_seam)
+STORAGE_MARKER = _seam.STORAGE_MARKER
+extract_section = _seam.extract_section
+substitute_storage_mechanics = _seam.substitute_storage_mechanics
 
 BACKENDS = ("markdown", "db")
 _BACKEND_REL = "procedures/memory/storage-backends/{name}.md"
@@ -134,8 +134,18 @@ def compile_procedure(
     return composed, unresolved, ""
 
 
-def compile_all(content_root: Path, out_dir: Path) -> list[ProcedureReport]:
-    """Compile every seam procedure x backend into ``out_dir``. Returns reports."""
+def _defines(backend_doc: str, name: str) -> bool:
+    """True when a backend doc has a ``## {name}`` section for this procedure."""
+    header = f"## {name}"
+    return any(line.strip() == header for line in backend_doc.splitlines())
+
+
+def compile_all(content_root: Path, out_dir: Path) -> tuple[list[ProcedureReport], list[str]]:
+    """Compile every wired seam procedure x backend into ``out_dir``.
+
+    A seam procedure that **no** backend defines (a WIP/experimental copy, not a real
+    served procedure) is skipped, not compiled. Returns ``(reports, skipped_names)``.
+    """
     proc_dir = content_root / "procedures"
 
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -145,8 +155,12 @@ def compile_all(content_root: Path, out_dir: Path) -> list[ProcedureReport]:
     }
 
     reports: list[ProcedureReport] = []
+    skipped: list[str] = []
     for proc in _seam_procedures(proc_dir):
         name = proc.stem
+        if not any(_defines(backend_docs[b], name) for b in BACKENDS):
+            skipped.append(name)  # seam marker but no backend implements it — not a real procedure
+            continue
         core = proc.read_text(encoding="utf-8")
         for backend in BACKENDS:
             text, unresolved, note = compile_procedure(core, backend_docs[backend], name, backend)
@@ -161,13 +175,15 @@ def compile_all(content_root: Path, out_dir: Path) -> list[ProcedureReport]:
                     note=note,
                 )
             )
-    return reports
+    return reports, skipped
 
 
-def _print_summary(reports: list[ProcedureReport], out_dir: Path) -> int:
+def _print_summary(reports: list[ProcedureReport], skipped: list[str], out_dir: Path) -> int:
     """Print a per-procedure table + coverage warnings. Returns unresolved count."""
     procs = sorted({r.name for r in reports})
     print(f"\nCompiled {len(procs)} procedures x {len(BACKENDS)} backends -> {out_dir}\n")
+    if skipped:
+        print(f"Skipped (seam marker, but no backend defines it): {', '.join(sorted(skipped))}\n")
     print(f"{'procedure':<24} {'markdown':<10} {'db':<10}")
     print(f"{'-' * 24} {'-' * 10} {'-' * 10}")
     by_key = {(r.name, r.backend): r for r in reports}
@@ -218,8 +234,8 @@ def main(argv: list[str] | None = None) -> int:
         parser.error(f"no procedures/ under content root: {args.content_root}")
     out_dir = args.out or (args.content_root / "procedures" / "output")
 
-    reports = compile_all(args.content_root, out_dir)
-    unresolved = _print_summary(reports, out_dir)
+    reports, skipped = compile_all(args.content_root, out_dir)
+    unresolved = _print_summary(reports, skipped, out_dir)
     return 1 if args.strict and unresolved else 0
 
 

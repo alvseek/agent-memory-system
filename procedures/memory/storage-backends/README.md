@@ -16,7 +16,7 @@ Memory procedures are **storage-agnostic**: each one carries its *judgment* (gat
 
 ## Substitution rule (for tooling)
 
-Replace everything from the line **after** the `## Storage Mechanics` header up to (but not including) the next `## ` header or end-of-file. This is the single, unique swap region — see `src/munnin/content/compose.py::substitute_storage_mechanics`.
+Replace everything from the line **after** the `## Storage Mechanics` header up to (but not including) the next `## ` header or end-of-file. This is the single, unique swap region — see `seam.py::substitute_storage_mechanics` (this folder).
 
 ## Backend file structure
 
