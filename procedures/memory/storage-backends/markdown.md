@@ -205,3 +205,24 @@ Use the **Read tool directly** and read all 5 files in parallel:
 - `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` (Agent-specific context and knowledge index)
 - `[AGENT-MEMORY-PATH]/shared-memory/core-reasoning-memory.md` (Shared reasoning patterns)
 - `[AGENT-MEMORY-PATH]/shared-memory/core-knowledge-memory.md` (Shared knowledge fundamentals)
+
+---
+
+## list-agents
+
+### § list-agent-domains
+
+Discover every agent in the ecosystem by scanning the memory-store root for `agent-[domain]/` folders that hold an identity file (`agent-core-memory.md`):
+
+- **Windows**: `Get-ChildItem -Path "[AGENT-MEMORY-PATH]" -Directory -Filter "agent-*" | Where-Object { Test-Path (Join-Path $_.FullName "agent-core-memory.md") } | ForEach-Object { $_.Name -replace '^agent-','' }`
+- **Linux/macOS**: `for d in [AGENT-MEMORY-PATH]/agent-*/; do [ -f "$d/agent-core-memory.md" ] && basename "$d" | sed 's/^agent-//'; done`
+
+The domain is the folder name with the `agent-` prefix stripped (`agent-software-architect` → `software-architect`). Scan **only** direct children of the store root — do not descend into `control-files/` (its `new-agent-template/` is a scaffold, not an agent).
+
+### § read-agent-identity
+
+For each domain, read the identity header at the top of `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` (the `# DOMAIN AGENT IDENTITY` / `## 🤖 Agent Identity` block) and extract:
+- **Name** — the `**Name**:` line value.
+- **Role** — the `**Role**:` line value; if absent, fall back to the first line of `**Main Purpose**:`.
+
+Read only the header region (roughly the first 15 lines) rather than the whole file — the scan spans ~30 agents, so keep each read cheap.

@@ -166,3 +166,17 @@ The records you wrote this session ARE the promotions — list the reasoning / k
 No file reads, no parallel Reads — the 4-layer assembly is a single derived call.
 
 > **⚠ Not covered by the payload (step-2 gap)**: the **awakening instructions** (`core-instruction-control-files.md` — the Phase 1/Phase 2 protocol referenced in Step 2) and the **user profile** are NOT part of `awaken`'s payload. They are not yet stored as records or served. Until that is resolved, a pure-DB client must obtain the Phase 1/2 process another way (e.g. this prompt's own text, or global context); the user profile reaches the agent via the global instructions file. See `docs/flows/awaken-db.md`.
+
+---
+
+## list-agents
+
+> **⚠ Deferred — not yet implementable on the DB backend.** Listing agents means enumerating *distinct* `agent_id`s across the store, but the 8 generic data tools are all **agent-scoped** (`query(agent_id=…)`, `get(uuid)`, …) — there is no "list distinct agents" primitive yet. These ops are specified here for seam parity and will be filled in when Munnin gains an agent-enumeration capability. Until then the DB face does not serve `list-agents` (it is not registered as a Prompt).
+
+### § list-agent-domains
+
+**Deferred.** Will map to a Munnin agent-enumeration call (e.g. a `SELECT DISTINCT agent_id` projection exposed as a data tool), returning each `agent_id` and excluding the reserved `__shared__` sentinel. Not available in the current 8-tool surface.
+
+### § read-agent-identity
+
+**Deferred.** Once enumeration exists, map to `awaken(domain)` (or a `get`/`query` on the agent's identity record) to read the agent's Name + Role from its `identity` layer server-side — no file read.
