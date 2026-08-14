@@ -14,7 +14,18 @@ contract (``README.md``). It is Munnin-agnostic. Every consumer imports it:
 
 from __future__ import annotations
 
+import re
+
 STORAGE_MARKER = "## Storage Mechanics"
+
+# The `§` op sigil is KEPT in the composed output — it signals to the reader that a step
+# was provided by the storage backend (a seam swap point), useful provenance.
+
+# The composed procedure inlines the mechanics, so a "(see [Storage Mechanics](#…))"
+# back-reference to the now-removed section is dangling + stale — drop the parenthetical;
+# as a safety net, unlink any other reference to that anchor (keeping its text).
+_SEAM_XREF = re.compile(r"[ \t]*\(see \[[^\]]*\]\(#storage-mechanics\)\)")
+_SEAM_ANCHOR = re.compile(r"\[([^\]]*)\]\(#storage-mechanics\)")
 
 
 def extract_section(doc: str, title: str) -> str:
@@ -40,11 +51,16 @@ def extract_section(doc: str, title: str) -> str:
 
 
 def substitute_storage_mechanics(core: str, backend_section: str) -> str:
-    """Replace the body of the core's ``## Storage Mechanics`` with ``backend_section``.
+    """Replace the core's ``## Storage Mechanics`` section with ``backend_section``.
 
-    Keeps the marker header; replaces everything after it up to the next ``## ``
-    header or a standalone rule (so a trailing footer note survives). Raises
-    ``KeyError`` if the marker is absent.
+    The seam scaffolding is trimmed from the result: the ``## Storage Mechanics`` marker
+    header is **dropped** (the backend section brings its own headers) and the now-stale
+    ``(see [Storage Mechanics](#…))`` back-reference is dropped (the mechanics are inlined
+    here). The ``§`` op sigils are **kept** — they signal to the reader that a step is
+    storage-backend-provided. So the composed procedure reads as plain content, the same
+    on both faces (installed markdown command and Munnin-served prompt). Everything after
+    the section up to the next ``## `` header or standalone rule is preserved (so a
+    trailing footer note survives). Raises ``KeyError`` if the marker is absent.
     """
     lines = core.splitlines(keepends=True)
     start = None
@@ -61,6 +77,9 @@ def substitute_storage_mechanics(core: str, backend_section: str) -> str:
         if lines[j].startswith("## ") or lines[j].strip() == "---":
             end = j
             break
-    head = "".join(lines[: start + 1])
+    head = "".join(lines[:start]).rstrip("\n")  # drop the marker header line itself
     tail = "".join(lines[end:])
-    return f"{head}\n{backend_section.strip(chr(10))}\n\n{tail}"
+    body = backend_section.strip("\n")
+    composed = f"{head}\n\n{body}\n\n{tail}" if tail.strip() else f"{head}\n\n{body}\n"
+    composed = _SEAM_XREF.sub("", composed)
+    return _SEAM_ANCHOR.sub(r"\1", composed)

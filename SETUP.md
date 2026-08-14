@@ -141,7 +141,7 @@ If you prefer to configure manually instead of using the script, edit these file
 
 - **User identity + OS + agent path**: `bash control-files/core-memory/compile-scripts/user-config.sh` (writes runtime-resolved files to `control-files/core-memory/output/`)
 - **Compile CLAUDE.md**: `bash control-files/core-memory/compile-scripts/compile-write-to-claude.sh`
-- **Slash commands**: `bash control-files/procedures/setup-scripts/setup-all-claude-code.sh`
+- **Slash commands**: `python control-files/procedures/setup-scripts/setup-all-claude-code.py`
 - **Settings**: `bash control-files/scripts/setup-scripts/setup-settings-claude-code.sh`
 - **Compile Codex AGENTS.md**: `bash control-files/core-memory/compile-scripts/compile-write-to-codex.sh`
 - **Codex skills**: `bash control-files/procedures/setup-scripts/setup-all-codex.sh`

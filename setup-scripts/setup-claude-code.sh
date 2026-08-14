@@ -14,7 +14,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONTROL_FILES_DIR="$(dirname "$SCRIPT_DIR")"
 USER_CONFIG_SCRIPT="$CONTROL_FILES_DIR/core-memory/compile-scripts/user-config.sh"
 COMPILE_WRITE_SCRIPT="$CONTROL_FILES_DIR/core-memory/compile-scripts/compile-write-to-claude.sh"
-SETUP_PROCEDURES_SCRIPT="$CONTROL_FILES_DIR/procedures/setup-scripts/setup-all-claude-code.sh"
+SETUP_PROCEDURES_SCRIPT="$CONTROL_FILES_DIR/procedures/setup-scripts/setup-all-claude-code.py"
 SETUP_SETTINGS_SCRIPT="$CONTROL_FILES_DIR/scripts/setup-scripts/setup-settings-claude-code.sh"
 
 echo "=========================================="
@@ -68,11 +68,17 @@ echo "Step 2/4: Setup procedures → ~/.claude/commands/"
 echo "------------------------------------------"
 
 if [ ! -f "$SETUP_PROCEDURES_SCRIPT" ]; then
-    echo "ERROR: setup-all-claude-code.sh not found at $SETUP_PROCEDURES_SCRIPT"
+    echo "ERROR: setup-all-claude-code.py not found at $SETUP_PROCEDURES_SCRIPT"
     exit 1
 fi
 
-bash "$SETUP_PROCEDURES_SCRIPT"
+SETUP_PROCEDURES_PYTHON="$(command -v python || command -v python3)"
+if [ -z "$SETUP_PROCEDURES_PYTHON" ]; then
+    echo "ERROR: python not found (needed to install procedures)"
+    exit 1
+fi
+
+"$SETUP_PROCEDURES_PYTHON" "$SETUP_PROCEDURES_SCRIPT"
 setup_status=$?
 
 if [ $setup_status -ne 0 ]; then

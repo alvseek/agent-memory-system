@@ -73,7 +73,7 @@ If you cloned the [agent-memory](https://github.com/alvseek/agent-memory) templa
 
 ```bash
 # Memory core — every agent (chat or coding):
-bash control-files/procedures/setup-scripts/setup-all-claude-code.sh
+python control-files/procedures/setup-scripts/setup-all-claude-code.py
 
 # Coding agents ALSO run the overlay's own installer (separate repo):
 bash /path/to/agent-memory-coding-skill/setup-scripts/setup-all-claude-code.sh

@@ -24,6 +24,9 @@ _spec.loader.exec_module(cc)
 # copy or a newly-added procedure shouldn't break the suite).
 _KNOWN = {"add-reasoning", "awaken-agent", "wrap-up", "update-episodic", "load-knowledge"}
 
+# command procedures with no seam — installed/compiled as-is, byte-for-byte from source.
+_NON_SEAM = {"refresh-memory", "push-memory", "pull-memory"}
+
 
 def test_discovers_seam_procedures_and_excludes_machinery() -> None:
     procs = {p.stem for p in cc._seam_procedures(CF / "procedures")}
@@ -100,4 +103,53 @@ def test_templates_stay_a_reference_not_inlined(tmp_path: Path) -> None:
 
 def test_strict_exit_is_clean_on_healthy_tree(tmp_path: Path) -> None:
     rc = cc.main(["--content-root", str(CF), "--out", str(tmp_path), "--strict"])
+    assert rc == 0
+
+
+# --- single-backend mode: the install-ready command set ---
+
+
+def test_single_backend_emits_plain_command_md(tmp_path: Path) -> None:
+    # one backend → the installable command set as plain <name>.md (seam composed,
+    # non-seam copied as-is), no dual-style backend infix.
+    reports, _ = cc.compile_all(CF, tmp_path, backend="markdown")
+    names = {r.name for r in reports}
+    assert _KNOWN <= names
+    assert _NON_SEAM <= names
+    for r in reports:
+        assert r.out_path.name == f"{r.name}.md"
+        assert r.out_path.exists()
+    assert not list(tmp_path.glob("*.markdown.md"))
+    assert not list(tmp_path.glob("*.db.md"))
+
+
+def test_single_backend_non_seam_copied_verbatim(tmp_path: Path) -> None:
+    cc.compile_all(CF, tmp_path, backend="markdown")
+    for name in _NON_SEAM:
+        out = (tmp_path / f"{name}.md").read_text(encoding="utf-8")
+        src = (CF / "procedures" / f"{name}.md").read_text(encoding="utf-8")
+        assert out == src  # no seam → byte-for-byte copy
+
+
+def test_single_backend_seam_is_decluttered(tmp_path: Path) -> None:
+    # the compiled command has the mechanics inlined and the seam scaffolding stripped.
+    cc.compile_all(CF, tmp_path, backend="markdown")
+    text = (tmp_path / "awaken-agent.md").read_text(encoding="utf-8")
+    assert "## Storage Mechanics" not in text  # marker header dropped
+    assert "#storage-mechanics" not in text  # no dangling anchor/xref
+    assert "§" in text  # op sigils kept as storage-provenance signal
+    assert "agent-core-memory.md" in text  # real inlined markdown mechanics survive
+
+
+def test_single_backend_db_composes_tool_calls(tmp_path: Path) -> None:
+    cc.compile_all(CF, tmp_path, backend="db")
+    text = (tmp_path / "add-reasoning.md").read_text(encoding="utf-8")
+    assert "insert(agent_id=" in text  # db tool call inlined
+    assert 'powershell -c "[guid]' not in text  # markdown-only shell op absent
+
+
+def test_single_backend_main_strict_is_clean(tmp_path: Path) -> None:
+    rc = cc.main(
+        ["--backend", "markdown", "--content-root", str(CF), "--out", str(tmp_path), "--strict"]
+    )
     assert rc == 0

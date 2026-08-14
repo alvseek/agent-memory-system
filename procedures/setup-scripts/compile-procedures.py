@@ -19,11 +19,14 @@ of Munnin so the public framework tree can be verified without the server.
 
 Run (from the control-files root)::
 
-    python procedures/setup-scripts/compile-procedures.py [--content-root DIR] [--out DIR]
+    python procedures/setup-scripts/compile-procedures.py \
+        [--backend {markdown,db}] [--content-root DIR] [--out DIR] [--strict]
 
-Output: ``<out>/<procedure>.<backend>.md`` for every procedure x backend (default
-``procedures/output/``), plus a printed summary. ``--strict`` exits non-zero when
-any op is unresolved.
+Output: with no ``--backend``, ``<out>/<procedure>.<backend>.md`` for every seam
+procedure x backend — a faithful dual preview. With ``--backend NAME``, the installable
+command set as plain ``<out>/<procedure>.md`` (seam commands composed with that one
+backend, non-seam commands copied as-is) — what the Claude Code installer consumes.
+Default out: ``procedures/output/``. ``--strict`` exits non-zero when any op is unresolved.
 """
 
 from __future__ import annotations
@@ -90,6 +93,25 @@ def _seam_procedures(proc_dir: Path) -> list[Path]:
     )
 
 
+# The dirs whose ``*.md`` install as slash commands: top-level ``procedures/`` and
+# ``procedures/memory/`` (non-recursive) — the exact set the Claude Code installer copies.
+_COMMAND_SUBDIRS = ("", "memory")
+
+
+def _command_procedures(proc_dir: Path) -> list[Path]:
+    """The installable command set — ``*.md`` directly in ``procedures/`` and
+    ``procedures/memory/``, sorted.
+
+    Used for single-backend output: seam-bearing commands get composed, the rest are
+    copied as-is, so the output equals the command set with no extras (the installer can
+    then copy every plain ``<name>.md`` blindly).
+    """
+    files: list[Path] = []
+    for sub in _COMMAND_SUBDIRS:
+        files.extend((proc_dir / sub).glob("*.md"))
+    return sorted(files)
+
+
 def _core_without_mechanics(core: str) -> str:
     """The procedure text with its ``## Storage Mechanics`` section removed.
 
@@ -140,74 +162,101 @@ def _defines(backend_doc: str, name: str) -> bool:
     return any(line.strip() == header for line in backend_doc.splitlines())
 
 
-def compile_all(content_root: Path, out_dir: Path) -> tuple[list[ProcedureReport], list[str]]:
-    """Compile every wired seam procedure x backend into ``out_dir``.
+def compile_all(
+    content_root: Path, out_dir: Path, backend: str | None = None
+) -> tuple[list[ProcedureReport], list[str]]:
+    """Compile procedures into ``out_dir``. Returns ``(reports, skipped_names)``.
 
-    A seam procedure that **no** backend defines (a WIP/experimental copy, not a real
-    served procedure) is skipped, not compiled. Returns ``(reports, skipped_names)``.
+    ``backend=None`` (dual / preview): every wired seam procedure found recursively is
+    composed against **both** backends → ``<name>.<backend>.md``. A seam procedure no
+    backend defines (a WIP/experimental copy) is skipped + reported.
+
+    ``backend='markdown'|'db'`` (single / install-ready): the installable command set
+    (``procedures/*.md`` + ``procedures/memory/*.md``) is emitted as plain ``<name>.md`` —
+    seam commands composed against the one backend, non-seam commands copied as-is. A
+    seam command this backend defines no section for is skipped + reported.
     """
     proc_dir = content_root / "procedures"
-
     out_dir.mkdir(parents=True, exist_ok=True)
-    backend_docs = {
-        b: (content_root / _BACKEND_REL.format(name=b)).read_text(encoding="utf-8")
-        for b in BACKENDS
-    }
 
     reports: list[ProcedureReport] = []
     skipped: list[str] = []
-    for proc in _seam_procedures(proc_dir):
+
+    if backend is None:
+        backend_docs = {
+            b: (content_root / _BACKEND_REL.format(name=b)).read_text(encoding="utf-8")
+            for b in BACKENDS
+        }
+        for proc in _seam_procedures(proc_dir):
+            name = proc.stem
+            if not any(_defines(backend_docs[b], name) for b in BACKENDS):
+                skipped.append(name)  # seam marker but no backend implements it
+                continue
+            core = proc.read_text(encoding="utf-8")
+            for b in BACKENDS:
+                text, unresolved, note = compile_procedure(core, backend_docs[b], name, b)
+                out_path = out_dir / f"{name}.{b}.md"
+                out_path.write_text(text, encoding="utf-8", newline="\n")
+                reports.append(ProcedureReport(name, b, out_path, unresolved, note))
+        return reports, skipped
+
+    backend_doc = (content_root / _BACKEND_REL.format(name=backend)).read_text(encoding="utf-8")
+    for proc in _command_procedures(proc_dir):
         name = proc.stem
-        if not any(_defines(backend_docs[b], name) for b in BACKENDS):
-            skipped.append(name)  # seam marker but no backend implements it — not a real procedure
-            continue
         core = proc.read_text(encoding="utf-8")
-        for backend in BACKENDS:
-            text, unresolved, note = compile_procedure(core, backend_docs[backend], name, backend)
-            out_path = out_dir / f"{name}.{backend}.md"
-            out_path.write_text(text, encoding="utf-8")
-            reports.append(
-                ProcedureReport(
-                    name=name,
-                    backend=backend,
-                    out_path=out_path,
-                    unresolved_ops=unresolved,
-                    note=note,
-                )
-            )
+        if _has_seam(core):
+            if not _defines(backend_doc, name):
+                skipped.append(name)  # seam marker but this backend has no section
+                continue
+            text, unresolved, note = compile_procedure(core, backend_doc, name, backend)
+        else:
+            text, unresolved, note = core, [], "copied as-is (no seam)"
+        out_path = out_dir / f"{name}.md"
+        out_path.write_text(text, encoding="utf-8", newline="\n")
+        reports.append(ProcedureReport(name, backend, out_path, unresolved, note))
     return reports, skipped
 
 
-def _print_summary(reports: list[ProcedureReport], skipped: list[str], out_dir: Path) -> int:
+def _print_summary(
+    reports: list[ProcedureReport], skipped: list[str], out_dir: Path, backend: str | None = None
+) -> int:
     """Print a per-procedure table + coverage warnings. Returns unresolved count."""
+    cols = (backend,) if backend else BACKENDS
     procs = sorted({r.name for r in reports})
-    print(f"\nCompiled {len(procs)} procedures x {len(BACKENDS)} backends -> {out_dir}\n")
+    label = backend if backend else f"{len(BACKENDS)} backends"
+    print(f"\nCompiled {len(procs)} procedures ({label}) -> {out_dir}\n")
     if skipped:
-        print(f"Skipped (seam marker, but no backend defines it): {', '.join(sorted(skipped))}\n")
-    print(f"{'procedure':<24} {'markdown':<10} {'db':<10}")
-    print(f"{'-' * 24} {'-' * 10} {'-' * 10}")
+        print(f"Skipped (seam marker, but no backend section): {', '.join(sorted(skipped))}\n")
+    print(f"{'procedure':<24} " + " ".join(f"{c:<12}" for c in cols))
+    print(f"{'-' * 24} " + " ".join("-" * 12 for _ in cols))
     by_key = {(r.name, r.backend): r for r in reports}
     total_unresolved = 0
     for name in procs:
         cells = []
-        for b in BACKENDS:
-            r = by_key.get((name, b))
+        for c in cols:
+            r = by_key.get((name, c))
             if r is None:
                 cells.append("-")
             elif r.unresolved_ops:
                 cells.append(f"{len(r.unresolved_ops)} UNRESOLVED")
                 total_unresolved += len(r.unresolved_ops)
+            elif r.note.startswith("copied"):
+                cells.append("as-is")
             else:
                 cells.append("ok")
-        print(f"{name:<24} {cells[0]:<10} {cells[1]:<10}")
+        print(f"{name:<24} " + " ".join(f"{c:<12}" for c in cells))
 
-    warned = [r for r in reports if r.unresolved_ops or r.note]
+    warned = [
+        r
+        for r in reports
+        if r.unresolved_ops or (r.note and not r.note.startswith("copied"))
+    ]
     if warned:
         print("\nDetails:")
         for r in warned:
             if r.unresolved_ops:
                 print(f"  ! {r.name} [{r.backend}] unresolved ops: {', '.join(r.unresolved_ops)}")
-            if r.note:
+            if r.note and not r.note.startswith("copied"):
                 print(f"  * {r.name} [{r.backend}] {r.note}")
     print()
     return total_unresolved
@@ -216,6 +265,11 @@ def _print_summary(reports: list[ProcedureReport], skipped: list[str], out_dir: 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        "--backend", choices=BACKENDS, default=None,
+        help="compile a single backend to <procedure>.md (default: both backends, as "
+             "<procedure>.<backend>.md — a faithful dual preview)",
     )
     parser.add_argument(
         "--content-root", type=Path, default=_CF_ROOT,
@@ -234,8 +288,8 @@ def main(argv: list[str] | None = None) -> int:
         parser.error(f"no procedures/ under content root: {args.content_root}")
     out_dir = args.out or (args.content_root / "procedures" / "output")
 
-    reports, skipped = compile_all(args.content_root, out_dir)
-    unresolved = _print_summary(reports, skipped, out_dir)
+    reports, skipped = compile_all(args.content_root, out_dir, args.backend)
+    unresolved = _print_summary(reports, skipped, out_dir, args.backend)
     return 1 if args.strict and unresolved else 0
 
 
