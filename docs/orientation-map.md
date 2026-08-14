@@ -47,7 +47,7 @@ The agent who runs `/map-orientation create` for the first time scans ALL orient
 - **roles**: []
 - **status**: useful
 - **tags**: [overview, entry-point, framework]
-- **last_verified**: "2026-08-13"
+- **last_verified**: "2026-08-14"
 - **verified_by**: "meta"
 - **update_trigger**: "when framework procedures, slash commands, wizard hierarchy, or setup steps change"
 - **notes**: "Top-level framework README. 7Q-style: What Is This / How Do I Set It Up / How Do I Use It / How Does It Work Inside / What Decisions Were Made. First read for new contributors and agents."
@@ -69,10 +69,10 @@ The agent who runs `/map-orientation create` for the first time scans ALL orient
 - **type**: other
 - **scope**: shared
 - **roles**: []
-- **status**: unverified
+- **status**: useful
 - **tags**: [setup, installation, environment, claude-code, codex, new-agent]
-- **last_verified**: ""
-- **verified_by**: ""
+- **last_verified**: "2026-08-14"
+- **verified_by**: "meta"
 - **update_trigger**: "when setup scripts change, supported environments change, or agent creation procedure changes"
 - **notes**: "Step-by-step setup guide for Claude Code and Codex; includes environment setup, tool output token limits, manual setup, and creating new agents."
 
