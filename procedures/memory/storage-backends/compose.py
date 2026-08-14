@@ -7,7 +7,7 @@ mechanics for the native fleet, DB tools for Munnin. Pure text ops.
 This is the framework's single home for that logic, defined once beside the seam
 contract (``README.md``). It is Munnin-agnostic. Every consumer imports it:
 
-- the standalone ``procedures/setup-scripts/compile.py`` preview tool (this repo);
+- the standalone ``procedures/setup-scripts/compile-procedures.py`` preview tool (this repo);
 - Munnin's ``ContentLoader`` + markdown-fidelity gate, which import this module
   from the checked-out submodule at runtime (Munnin keeps no copy of its own).
 """

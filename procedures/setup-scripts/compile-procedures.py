@@ -3,14 +3,11 @@
 A standalone verification tool for the control-files framework — **no Munnin /
 server dependency**. For each procedure that carries a ``## Storage Mechanics``
 seam, it emits the procedure composed with **each** storage backend
-(markdown + db):
-
-- the ``## Storage Mechanics`` body is swapped for the backend's ``## [procedure]``
-  section (the seam substitution documented in
-  ``procedures/memory/storage-backends/README.md``);
-- referenced ``resources/*.md`` templates are inlined as a bottom appendix and
-  their references rewritten to in-doc anchors, so the whole resolved procedure
-  reads top-to-bottom with no pointers to chase.
+(markdown + db): the ``## Storage Mechanics`` body is swapped for the backend's
+``## [procedure]`` section (the seam substitution documented in
+``procedures/memory/storage-backends/README.md``). The output mirrors exactly what
+Munnin serves — ``§ template`` stays a **reference** (templates are a separate
+Resource / file, single source of truth), never inlined into the procedure.
 
 It also reports **coverage**: any ``§ op`` a procedure references that the chosen
 backend does not define. The seam contract requires both backends to implement
@@ -22,7 +19,7 @@ of Munnin so the public framework tree can be verified without the server.
 
 Run (from the control-files root)::
 
-    python procedures/setup-scripts/compile.py [--content-root DIR] [--out DIR] [--strict]
+    python procedures/setup-scripts/compile-procedures.py [--content-root DIR] [--out DIR]
 
 Output: ``<out>/<procedure>.<backend>.md`` for every procedure x backend (default
 ``procedures/output/``), plus a printed summary. ``--strict`` exits non-zero when
@@ -37,7 +34,7 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
-# control-files/ root (this script lives at procedures/setup-scripts/compile.py).
+# control-files/ root (this script lives at procedures/setup-scripts/compile-procedures.py).
 _CF_ROOT = Path(__file__).resolve().parents[2]
 
 # The seam substitution lives once, beside the contract; import it from there.
@@ -52,13 +49,10 @@ substitute_storage_mechanics = _compose.substitute_storage_mechanics
 
 BACKENDS = ("markdown", "db")
 _BACKEND_REL = "procedures/memory/storage-backends/{name}.md"
-_RESOURCES_REL = "procedures/memory/resources"
 
 # `§ op-name` — the abstract op reference/definition token used across the seam.
 _OP_RE = re.compile(r"§\s*([a-z][a-z0-9-]*)")
 _OP_DEF_RE = re.compile(r"^#{1,6}\s*§\s*([a-z][a-z0-9-]*)", re.MULTILINE)
-# A `resources/<stem>.md` path (markdown backend + create-episode `cp`).
-_RES_PATH_RE = re.compile(r"resources/([a-z0-9-]+)\.md")
 
 
 # --- compile ---
@@ -72,7 +66,6 @@ class ProcedureReport:
     backend: str
     out_path: Path
     unresolved_ops: list[str] = field(default_factory=list)
-    inlined_templates: list[str] = field(default_factory=list)
     note: str = ""
 
 
@@ -122,87 +115,28 @@ def _referenced_ops(core: str) -> set[str]:
     return set(_OP_RE.findall(_core_without_mechanics(core)))
 
 
-def _referenced_resources(text: str, known: set[str]) -> list[str]:
-    """Resource stems referenced in ``text``, unique, in first-seen order.
-
-    Two reference shapes: a ``resources/<stem>.md`` path (markdown backend) and a
-    backticked bare ``<stem>`` naming an MCP Resource (db backend).
-    """
-    order: list[str] = []
-    seen: set[str] = set()
-
-    def add(stem: str) -> None:
-        if stem in known and stem not in seen:
-            seen.add(stem)
-            order.append(stem)
-
-    for m in _RES_PATH_RE.finditer(text):
-        add(m.group(1))
-    for m in re.finditer(r"`([a-z0-9-]+)`", text):
-        add(m.group(1))
-    return order
-
-
-def _inline_templates(composed: str, resources_dir: Path, known: set[str]) -> tuple[str, list[str]]:
-    """Append referenced templates as an appendix and rewrite refs to anchors.
-
-    Returns the self-contained text and the list of inlined template stems.
-    """
-    stems = _referenced_resources(composed, known)
-    if not stems:
-        return composed, []
-
-    # Rewrite references -> in-doc anchors (path forms first, then bare backticks).
-    def rewrite(text: str) -> str:
-        text = re.sub(
-            r"\[([^\]]+)\]\([^)]*resources/([a-z0-9-]+)\.md\)",
-            lambda m: f"[{m.group(1)}](#{m.group(2)})" if m.group(2) in known else m.group(0),
-            text,
-        )
-        text = re.sub(
-            r"`[^`]*resources/([a-z0-9-]+)\.md`",
-            lambda m: f"[{m.group(1)}](#{m.group(1)})" if m.group(1) in known else m.group(0),
-            text,
-        )
-        alt = "|".join(re.escape(s) for s in stems)
-        text = re.sub(rf"`({alt})`", lambda m: f"[{m.group(1)}](#{m.group(1)})", text)
-        return text
-
-    # Drop a trailing rule the backend section may carry, so the appendix adds only one.
-    body = re.sub(r"(?:\n+-{3,})\s*$", "", rewrite(composed).rstrip())
-    parts = [body, "", "---", "", "## Templates (inlined)", "",
-             "*Inlined at compile time — the procedure above references these by anchor.*"]
-    for stem in stems:
-        tpl = (resources_dir / f"{stem}.md").read_text(encoding="utf-8")
-        tpl = re.sub(r"\A# .*\n", "", tpl).strip("\n")  # drop a leading H1 title
-        parts += ["", f"### {stem}", "", tpl]
-    return "\n".join(parts) + "\n", stems
-
-
 def compile_procedure(
-    core: str, backend_doc: str, name: str, resources_dir: Path, known: set[str], backend: str
-) -> tuple[str, list[str], list[str], str]:
-    """Compose ``core`` with one backend's section + inline templates.
+    core: str, backend_doc: str, name: str, backend: str
+) -> tuple[str, list[str], str]:
+    """Compose ``core`` with one backend's ``## [procedure]`` section.
 
-    Returns (text, unresolved_ops, inlined_templates, note).
+    Returns (text, unresolved_ops, note). ``§ template`` is left as a reference —
+    templates live once as a separate Resource / file, never inlined here.
     """
     referenced = _referenced_ops(core)
     try:
         section = extract_section(backend_doc, name)
     except KeyError:
         note = f"no '## {name}' section in {backend}.md — core served verbatim"
-        return core, sorted(referenced), [], note
+        return core, sorted(referenced), note
     composed = substitute_storage_mechanics(core, section)
-    text, inlined = _inline_templates(composed, resources_dir, known)
     unresolved = sorted(referenced - set(_OP_DEF_RE.findall(section)))
-    return text, unresolved, inlined, ""
+    return composed, unresolved, ""
 
 
 def compile_all(content_root: Path, out_dir: Path) -> list[ProcedureReport]:
     """Compile every seam procedure x backend into ``out_dir``. Returns reports."""
     proc_dir = content_root / "procedures"
-    resources_dir = content_root / _RESOURCES_REL
-    known = {p.stem for p in resources_dir.glob("*.md")} if resources_dir.exists() else set()
 
     out_dir.mkdir(parents=True, exist_ok=True)
     backend_docs = {
@@ -215,9 +149,7 @@ def compile_all(content_root: Path, out_dir: Path) -> list[ProcedureReport]:
         name = proc.stem
         core = proc.read_text(encoding="utf-8")
         for backend in BACKENDS:
-            text, unresolved, inlined, note = compile_procedure(
-                core, backend_docs[backend], name, resources_dir, known, backend
-            )
+            text, unresolved, note = compile_procedure(core, backend_docs[backend], name, backend)
             out_path = out_dir / f"{name}.{backend}.md"
             out_path.write_text(text, encoding="utf-8")
             reports.append(
@@ -226,7 +158,6 @@ def compile_all(content_root: Path, out_dir: Path) -> list[ProcedureReport]:
                     backend=backend,
                     out_path=out_path,
                     unresolved_ops=unresolved,
-                    inlined_templates=inlined,
                     note=note,
                 )
             )
