@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: uv sync
+
+      - name: Lint
+        run: uv run ruff check
+
+      - name: Test
+        run: uv run pytest -q
+
+      # The delivery pipeline must stay resolvable: every seam procedure compiles against
+      # both backends with no unresolved `§ op` and no missing component reference.
+      - name: Compile procedures (strict)
+        run: uv run python procedures/setup-scripts/compile-procedures.py --strict
+
+      # The memory core must stay servable standalone — no add-on procedure named in it.
+      - name: Core invariant
+        run: bash scripts/check-core-invariant.sh
