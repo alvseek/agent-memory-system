@@ -1,34 +1,34 @@
 #!/bin/bash
-# user-config.sh - Configure user identity and OS for the agent memory system
+# user-env-claude.sh - Configure work environment (OS + agent memory path) for the agent memory system
 #
-# Usage: ./control-files/core-memory/compile-scripts/user-config.sh
-#        bash control-files/core-memory/compile-scripts/user-config.sh
+# Usage: ./control-files/core-memory/compile-scripts/user-env-claude.sh
+#        bash control-files/core-memory/compile-scripts/user-env-claude.sh
 #
-# Shows current values as defaults. Press Enter to keep existing values.
-# Idempotent: can be re-run to change values.
+# Writes core-memory/output/1-core-environment-memory.md (the runtime file compile.sh prefers
+# over the template). This script is the SINGLE writer of that file - anything the environment
+# memory must carry has to be emitted here, not only in the template (a template-only edit is
+# silently discarded on the next run).
+#
+# Idempotent: can be re-run to change values. Runs standalone or via user-config-claude.sh.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CORE_MEMORY_DIR="$(dirname "$SCRIPT_DIR")"
 OUTPUT_DIR="$CORE_MEMORY_DIR/output"
-TEMPLATE_USER_PROFILE_FILE="$CORE_MEMORY_DIR/0-core-user-profile.md"
 TEMPLATE_ENV_FILE="$CORE_MEMORY_DIR/1-core-environment-memory.md"
-USER_PROFILE_FILE="$OUTPUT_DIR/0-core-user-profile.md"
 ENV_FILE="$OUTPUT_DIR/1-core-environment-memory.md"
 
 mkdir -p "$OUTPUT_DIR"
 
-# First run: seed runtime files from templates if missing
-if [ ! -f "$USER_PROFILE_FILE" ] && [ -f "$TEMPLATE_USER_PROFILE_FILE" ]; then
-    cp "$TEMPLATE_USER_PROFILE_FILE" "$USER_PROFILE_FILE"
-fi
+# First run: seed runtime file from template if missing
 if [ ! -f "$ENV_FILE" ] && [ -f "$TEMPLATE_ENV_FILE" ]; then
     cp "$TEMPLATE_ENV_FILE" "$ENV_FILE"
 fi
 
-# Read current values from existing files
-CURRENT_NAME=$(grep '\[USER-NAME\]' "$USER_PROFILE_FILE" 2>/dev/null | sed 's/.*\*\* = //')
-CURRENT_PHILOSOPHY=$(grep '\[USER-PHILOSOPHY\]' "$USER_PROFILE_FILE" 2>/dev/null | sed 's/.*\*\* = //')
-CURRENT_VISION=$(grep '\[USER-AGENT-VISION\]' "$USER_PROFILE_FILE" 2>/dev/null | sed 's/.*\*\* = //')
+# Read the current agent memory path NOW - Step 1 rewrites the whole file from a
+# heredoc, so by Step 2 the previous value is gone and cannot be offered as a default.
+# Anchored to the DEFINITION line: [STORAGE-BACKENDS-PATH] quotes [AGENT-MEMORY-PATH]
+# inside its own value, so an unanchored match would return two lines.
+CURRENT_PATH=$(grep '^- \*\*\[AGENT-MEMORY-PATH\]\*\* = ' "$ENV_FILE" 2>/dev/null | head -1 | sed 's/.*\*\* = `//;s/`$//')
 
 # Auto-detect OS
 case "$(uname -s)" in
@@ -38,73 +38,14 @@ case "$(uname -s)" in
     *)                    DETECTED_OS=""  ; DETECTED_OS_NAME="Unknown" ;;
 esac
 
-# Helper: truncate long strings for display
-show_default() {
-    local text="$1"
-    local max="${2:-60}"
-    if [ ${#text} -gt "$max" ]; then
-        echo "${text:0:$max}..."
-    else
-        echo "$text"
-    fi
-}
-
 echo "=========================================="
-echo "  Agent Memory - User Configuration"
+echo "  Agent Memory - Work Environment"
 echo "=========================================="
 echo ""
 
-# --- Step 1: User Identity ---
+# --- Step 1: Operating System ---
 
-echo "Step 1/3: Set your identity"
-echo "------------------------------------------"
-echo ""
-
-if [ -n "$CURRENT_NAME" ]; then
-    echo "  Current: $(show_default "$CURRENT_NAME")"
-    echo "  Press Enter to keep, or type to replace."
-    read -rp "  > Your name: " USER_NAME
-    USER_NAME="${USER_NAME:-$CURRENT_NAME}"
-else
-    read -rp "  > Your name: " USER_NAME
-fi
-echo ""
-
-if [ -n "$CURRENT_PHILOSOPHY" ]; then
-    echo "  Current: $(show_default "$CURRENT_PHILOSOPHY")"
-    echo "  Press Enter to keep, or type to replace."
-    read -rp "  > Your philosophy: " USER_PHILOSOPHY
-    USER_PHILOSOPHY="${USER_PHILOSOPHY:-$CURRENT_PHILOSOPHY}"
-else
-    read -rp "  > Your philosophy (optional): " USER_PHILOSOPHY
-fi
-echo ""
-
-if [ -n "$CURRENT_VISION" ]; then
-    echo "  Current: $(show_default "$CURRENT_VISION")"
-    echo "  Press Enter to keep, or type to replace."
-    read -rp "  > Your agent vision: " USER_AGENT_VISION
-    USER_AGENT_VISION="${USER_AGENT_VISION:-$CURRENT_VISION}"
-else
-    read -rp "  > Your agent vision (optional): " USER_AGENT_VISION
-fi
-echo ""
-
-# Write 0-core-user-profile.md
-cat > "$USER_PROFILE_FILE" << EOF
-## AI Agent - User Profile
-
-- **[USER-NAME]** = $USER_NAME
-- **[USER-PHILOSOPHY]** = $USER_PHILOSOPHY
-- **[USER-AGENT-VISION]** = $USER_AGENT_VISION
-EOF
-
-echo "✓ User profile saved"
-echo ""
-
-# --- Step 2: Operating System ---
-
-echo "Step 2/3: Set your operating system"
+echo "Step 1/2: Set your operating system"
 echo "------------------------------------------"
 echo ""
 
@@ -139,6 +80,7 @@ case "$OS_CHOICE" in
   - CMD syntax like `if exist ... (echo) else (echo)` will FAIL
 EOF
         echo "✓ OS set to: Windows (Git Bash)"
+        STORAGE_BACKENDS_SUFFIX='\control-files\procedures\memory\storage-backends'
         ;;
     2)
         cat > "$ENV_FILE" << 'EOF'
@@ -150,6 +92,7 @@ EOF
   - All standard shell features supported
 EOF
         echo "✓ OS set to: Linux"
+        STORAGE_BACKENDS_SUFFIX='/control-files/procedures/memory/storage-backends'
         ;;
     3)
         cat > "$ENV_FILE" << 'EOF'
@@ -161,6 +104,7 @@ EOF
   - All standard shell features supported
 EOF
         echo "✓ OS set to: macOS"
+        STORAGE_BACKENDS_SUFFIX='/control-files/procedures/memory/storage-backends'
         ;;
     *)
         echo "ERROR: Invalid choice. Please run the script again and select 1, 2, or 3."
@@ -170,21 +114,23 @@ esac
 
 echo ""
 
-# --- Step 3: Agent Memory Path ---
+# --- Step 2: Agent Memory Path ---
 
-echo "Step 3/3: Set agent memory path"
+echo "Step 2/2: Set agent memory path"
 echo "------------------------------------------"
 echo ""
 
-# Auto-detect based on OS choice
+# Auto-detect based on OS choice. GLOBAL_INSTRUCTIONS_FILE is derived the same way -
+# it is where write-to-claude.sh lands the compiled core memory ($HOME/.claude/CLAUDE.md),
+# written in the selected OS's native form.
 case "$OS_CHOICE" in
-    1) DETECTED_PATH="C:\\Users\\$(whoami)\\.claude\\@agent-memory\\" ;;
-    2) DETECTED_PATH="/home/$(whoami)/.claude/@agent-memory/" ;;
-    3) DETECTED_PATH="/Users/$(whoami)/.claude/@agent-memory/" ;;
+    1) DETECTED_PATH="C:\\Users\\$(whoami)\\.claude\\@agent-memory\\"
+       GLOBAL_INSTRUCTIONS_FILE="C:\\Users\\$(whoami)\\.claude\\CLAUDE.md" ;;
+    2) DETECTED_PATH="/home/$(whoami)/.claude/@agent-memory/"
+       GLOBAL_INSTRUCTIONS_FILE="/home/$(whoami)/.claude/CLAUDE.md" ;;
+    3) DETECTED_PATH="/Users/$(whoami)/.claude/@agent-memory/"
+       GLOBAL_INSTRUCTIONS_FILE="/Users/$(whoami)/.claude/CLAUDE.md" ;;
 esac
-
-# Read current value if exists
-CURRENT_PATH=$(grep '\[AGENT-MEMORY-PATH\]' "$ENV_FILE" 2>/dev/null | sed 's/.*\*\* = `//;s/`$//')
 
 if [ -n "$CURRENT_PATH" ]; then
     echo "  Current: $CURRENT_PATH"
@@ -200,17 +146,17 @@ else
 fi
 echo ""
 
-# Append agent memory path to environment file
+# Append agent memory path to environment file.
+# [STORAGE-BACKENDS-PATH] is DERIVED, not prompted: it is always [AGENT-MEMORY-PATH] plus a
+# fixed suffix, written with the selected OS's path separator (set in Step 1). It is emitted
+# as a placeholder reference, not the expanded path, so it resolves off the line above it.
 cat >> "$ENV_FILE" << EOF
 - **[AGENT-MEMORY-PATH]** = \`${AGENT_MEMORY_PATH_INPUT}\`
+- **[STORAGE-BACKENDS-PATH]** = \`[AGENT-MEMORY-PATH]${STORAGE_BACKENDS_SUFFIX}\` (memory procedures' concrete \`§ op\`s per storage backend — absolute so the pointer survives slash-command install)
+- **[GLOBAL-INSTRUCTIONS-FILE]** = \`${GLOBAL_INSTRUCTIONS_FILE}\` (this compiled file's own destination — post-compaction recovery rereads it to restore attention position)
 EOF
 
 echo "✓ Agent memory path saved"
-
-echo ""
-echo "=========================================="
-echo "  User Configuration Complete!"
-echo "=========================================="
-echo ""
-echo "Next: Run the full setup to compile and install:"
-echo "  bash control-files/setup-scripts/setup-claude-code.sh"
+echo "✓ Storage backends path derived"
+echo "✓ Global instructions file derived"
+echo "✓ Environment saved: $ENV_FILE"

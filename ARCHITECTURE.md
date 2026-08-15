@@ -65,7 +65,9 @@ control-files/
 │   ├── 2-core-ras-memory.md           # Universal RAS triggers
 │   ├── 3-core-reasoning-memory.md     # Core reasoning patterns
 │   ├── compile-scripts/               # Compilation and deployment scripts
-│   │   ├── user-config.sh             # Interactive user identity + OS setup
+│   │   ├── user-config-claude.sh      # Orchestrator: runs both configurators below
+│   │   ├── user-profile-claude.sh     # Interactive user identity setup
+│   │   ├── user-env-claude.sh         # Interactive OS + agent memory path setup
 │   │   ├── compile.sh                 # Compile to output/
 │   │   ├── compile-write-to-claude.sh # Compile AND write to CLAUDE.md
 │   │   ├── write-to-claude.sh         # Write compiled output to CLAUDE.md
@@ -309,7 +311,9 @@ control-files/core-memory/
 ├── 2-core-ras-memory.md           # Universal RAS triggers
 ├── 3-core-reasoning-memory.md     # Core reasoning patterns (compact)
 ├── compile-scripts/               # Compilation and deployment scripts
-│   ├── user-config.sh             # Interactive user identity + OS setup
+│   ├── user-config-claude.sh      # Orchestrator: runs both configurators below
+│   ├── user-profile-claude.sh     # Interactive user identity setup
+│   ├── user-env-claude.sh         # Interactive OS + agent memory path setup
 │   ├── compile.sh                 # Compile to output/ folder
 │   ├── compile-write-to-claude.sh # Compile AND write to CLAUDE.md
 │   ├── write-to-claude.sh         # Write compiled output to CLAUDE.md
@@ -334,7 +338,15 @@ control-files/core-memory/
 | `write-to-claude.sh` | Step 2: Writes compiled output → `~/.claude/CLAUDE.md` |
 | `compile-write-to-claude.sh` | Runs both Step 1 + Step 2 sequentially |
 
-`user-config.sh` writes personalized runtime versions of `0-core-user-profile.md` and `1-core-environment-memory.md` to `core-memory/output/`. `compile.sh` uses runtime files from `output/` first, then falls back to templates when runtime files are missing.
+**Configuration Scripts** (in `compile-scripts/`) — each owns exactly one runtime file and can be run on its own:
+
+| Script | Writes |
+|--------|--------|
+| `user-profile-claude.sh` | `output/0-core-user-profile.md` (name, philosophy, vision) |
+| `user-env-claude.sh` | `output/1-core-environment-memory.md` (OS, agent memory path) |
+| `user-config-claude.sh` | Thin orchestrator: runs both, in that order |
+
+`compile.sh` uses runtime files from `output/` first, then falls back to templates when runtime files are missing. Each configurator is the **single writer** of its runtime file — anything the compiled memory must carry has to be emitted by the script, because a template-only edit is discarded the next time the configurator runs.
 
 **Option A: Run both steps at once**
 ```bash
@@ -353,9 +365,15 @@ control-files/core-memory/
 
 **Customizing user identity / OS / agent path:**
 
-Run:
+Run both:
 ```bash
-bash control-files/core-memory/compile-scripts/user-config.sh
+bash control-files/core-memory/compile-scripts/user-config-claude.sh
+```
+
+Or just one half:
+```bash
+bash control-files/core-memory/compile-scripts/user-profile-claude.sh   # identity only
+bash control-files/core-memory/compile-scripts/user-env-claude.sh       # OS + agent path only
 ```
 
 This updates runtime files in `core-memory/output/` without modifying tracked template files.

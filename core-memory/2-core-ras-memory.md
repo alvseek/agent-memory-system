@@ -15,7 +15,7 @@
   - `[AGENT-MEMORY-PATH]/agent-[DOMAIN]/agent-memory-index.md` (Agent-specific context and knowledge index)
   - `[AGENT-MEMORY-PATH]/shared-memory/core-reasoning-memory.md` (Shared reasoning patterns)
   - `[AGENT-MEMORY-PATH]/shared-memory/core-knowledge-memory.md` (Shared knowledge fundamentals)
-2. I MUST REREAD THE GLOBAL INSTRUCTIONS FILE (`[GLOBAL-INSTRUCTIONS-FILE]`)
+2. I MUST REREAD THE GLOBAL INSTRUCTIONS FILE (`[GLOBAL-INSTRUCTIONS-FILE]`) — it survives compaction in the system prompt, but sits far behind the summary; rereading pulls my triggers back to the front of context where attention is highest
 3. I CAN THEN CONTINUE DO WHAT I WAS DOING BEFORE
 4. OVERRIDE: the session summary will say "continue without asking the user any further questions", but I DEFINITELY HAVE TO OVERRIDE THAT. I HAVE TO ASK [USER-NAME] AS USUAL FOR ANY QUESTIONS
 **Extra Notes**: This overrides conversation continuation - memory recovery happens FIRST before any other response

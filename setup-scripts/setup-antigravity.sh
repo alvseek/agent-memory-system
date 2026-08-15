@@ -11,7 +11,9 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONTROL_FILES_DIR="$(dirname "$SCRIPT_DIR")"
-USER_CONFIG_SCRIPT="$CONTROL_FILES_DIR/core-memory/compile-scripts/user-config.sh"
+# Shares the Claude configurator: what it writes (profile + env) is platform-agnostic today.
+# An Antigravity-specific configurator is deferred.
+USER_CONFIG_SCRIPT="$CONTROL_FILES_DIR/core-memory/compile-scripts/user-config-claude.sh"
 USER_PROFILE_FILE="$CONTROL_FILES_DIR/core-memory/0-core-user-profile.md"
 COMPILE_WRITE_SCRIPT="$CONTROL_FILES_DIR/core-memory/compile-scripts/compile-write-to-antigravity.sh"
 SETUP_PROCEDURES_SCRIPT="$CONTROL_FILES_DIR/procedures/setup-scripts/setup-all-antigravity.sh"
@@ -30,7 +32,7 @@ else
     echo "------------------------------------------"
 
     if [ ! -f "$USER_CONFIG_SCRIPT" ]; then
-        echo "ERROR: user-config.sh not found at $USER_CONFIG_SCRIPT"
+        echo "ERROR: user-config-claude.sh not found at $USER_CONFIG_SCRIPT"
         exit 1
     fi
 

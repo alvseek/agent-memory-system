@@ -17,7 +17,9 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONTROL_FILES_DIR="$(dirname "$SCRIPT_DIR")"
-USER_CONFIG_SCRIPT="$CONTROL_FILES_DIR/core-memory/compile-scripts/user-config.sh"
+# Shares the Claude configurator: what it writes (profile + env) is platform-agnostic today.
+# A Codex-specific configurator is deferred.
+USER_CONFIG_SCRIPT="$CONTROL_FILES_DIR/core-memory/compile-scripts/user-config-claude.sh"
 COMPILE_WRITE_SCRIPT="$CONTROL_FILES_DIR/core-memory/compile-scripts/compile-write-to-codex.sh"
 SETUP_PROCEDURES_SCRIPT="$CONTROL_FILES_DIR/procedures/setup-scripts/setup-all-codex.sh"
 SETUP_SETTINGS_SCRIPT="$CONTROL_FILES_DIR/scripts/setup-scripts/setup-settings-codex.sh"
@@ -31,7 +33,7 @@ echo "Step 0/4: Configure user identity and OS"
 echo "------------------------------------------"
 
 if [ ! -f "$USER_CONFIG_SCRIPT" ]; then
-    echo "ERROR: user-config.sh not found at $USER_CONFIG_SCRIPT"
+    echo "ERROR: user-config-claude.sh not found at $USER_CONFIG_SCRIPT"
     exit 1
 fi
 

@@ -39,6 +39,8 @@ Read these 5 files:
 
 Reread the global instructions file (`[GLOBAL-INSTRUCTIONS-FILE]`).
 
+It survives compaction in the system prompt, so this is not about getting the text back — it sits far behind the summary, and rereading restores its attention position. Same reason Step 3 rereads memory files that were also technically still available.
+
 ### Step 5: Continue
 
 Resume what was being done before compaction. Ask [USER-NAME] for clarification if anything is unclear — do NOT continue silently on assumptions.
