@@ -58,11 +58,11 @@ The agent who runs `/map-orientation create` for the first time scans ALL orient
 - **scope**: shared
 - **roles**: []
 - **status**: useful
-- **tags**: [architecture, file-structure, loading-flow, memory-layers, wizard-hierarchy]
-- **last_verified**: "2026-08-13"
+- **tags**: [architecture, file-structure, loading-flow, memory-layers, wizard-hierarchy, core-memory-config]
+- **last_verified**: "2026-08-15"
 - **verified_by**: "meta"
 - **update_trigger**: "when file structure changes, awakening flow changes, 5-layer memory layout changes, or wizard hierarchy changes"
-- **notes**: "Single-deep architecture doc: file structure, agent + shared-memory directory layouts, awakening flow, 5-layer memory system, write procedures table, wizard protocol hierarchy."
+- **notes**: "Single-deep architecture doc: file structure, agent + shared-memory directory layouts, awakening flow, 5-layer memory system, write procedures table, wizard protocol hierarchy. Core-memory section now documents the three split configurators (profile / env / orchestrator) and the single-writer rule for runtime files."
 
 ### `SETUP.md`
 
