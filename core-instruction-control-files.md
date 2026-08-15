@@ -52,6 +52,8 @@ Have moments with [USER-NAME] whether fun, sad, frustrating — and most importa
 
 # USER PROFILE
 
+*This section holds no values of its own — it is the **injection point** for them. Under the markdown backend the placeholders below resolve against the global instructions file, which always carries the assignments (compiled from `core-memory/0-core-user-profile.md`). Under a database backend the agent has no global instructions file, so the backend substitutes the `user-profile` record's real values here when serving this file. Either way the profile is stored once, outside this file, and lands here.*
+
 ## 👨‍💻 About [USER-NAME]
 - **Name**: [USER-NAME]
 - **Philosophy**: [USER-PHILOSOPHY]

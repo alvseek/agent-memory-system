@@ -494,7 +494,7 @@ The **shared dispatcher** loaded by all agents. Contains awakening instructions 
 | Section | Content |
 |---------|---------|
 | Awakening Instructions | 4-phase protocol, fallback for missing shared-memory |
-| `# USER PROFILE` | About the user (philosophy, vision) |
+| `# USER PROFILE` | About the user (name, philosophy, vision) — placeholders only. This is the **injection point**: the markdown backend resolves them against the global instructions file, a database backend substitutes the `user-profile` record here. The profile itself is stored once, outside this file. |
 
 Dispatches to (private repo root):
 | File | Content |
