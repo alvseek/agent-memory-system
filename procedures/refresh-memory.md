@@ -18,31 +18,33 @@ If no arguments provided and agent identity is already known (e.g., from awakeni
 
 STOP doing anything else. Memory recovery takes priority.
 
-### Step 2: Resolve Agent Memory Path
+### Step 2: Load the Memory Layers
 
-**Parameter**: [AGENT-MEMORY-PATH] (set per OS below)
-- **Windows**: `C:\Users\[LOCAL-USER-NAME]\.claude\@agent-memory\`
-- **Linux/macOS**: `/home/[LOCAL-USER-NAME]/.claude/@agent-memory/`
+[🚨 **CRITICAL — memory recovery must land in YOUR OWN context**](../components/no-subagent-load.md)
 
-### Step 3: Read Core Files
+Load the agent's 4 memory layers (**§ load-agent-memory**) — identity, context + knowledge index, shared reasoning patterns, shared knowledge fundamentals.
 
-🚨 **CRITICAL**: Use the **Read tool directly** — DO NOT delegate to a sub-agent (Agent tool / general-purpose / Explore). Sub-agents return summaries; memory recovery needs the full content of these files in YOUR own context window. Reading via sub-agent produces a hollow recovery with diluted identity and missing reasoning patterns.
+Then re-process the awakening protocol — it is carried here rather than read, so recovery no longer depends on loading a file to learn how to load files.
 
-Read these 5 files:
-- `[AGENT-MEMORY-PATH]/control-files/core-instruction-control-files.md` (Shared foundations + awakening instructions)
-- `[AGENT-MEMORY-PATH]/agent-[DOMAIN]/agent-core-memory.md` (Agent-specific identity)
-- `[AGENT-MEMORY-PATH]/agent-[DOMAIN]/agent-memory-index.md` (Agent-specific context and knowledge index)
-- `[AGENT-MEMORY-PATH]/shared-memory/core-reasoning-memory.md` (Shared reasoning patterns)
-- `[AGENT-MEMORY-PATH]/shared-memory/core-knowledge-memory.md` (Shared knowledge fundamentals)
+[**Awakening protocol**](../components/core-instruction-control-files.md)
 
-### Step 4: Reread Global Instructions
+### Step 3: Reread Global Instructions
 
 Reread the global instructions file (`[GLOBAL-INSTRUCTIONS-FILE]`).
 
-It survives compaction in the system prompt, so this is not about getting the text back — it sits far behind the summary, and rereading restores its attention position. Same reason Step 3 rereads memory files that were also technically still available.
+It survives compaction in the system prompt, so this is not about getting the text back — it sits far behind the summary, and rereading restores its attention position. Same reason Step 2 reloads memory layers that were also technically still available.
 
-### Step 5: Continue
+### Step 4: Continue
 
 Resume what was being done before compaction. Ask [USER-NAME] for clarification if anything is unclear — do NOT continue silently on assumptions.
+
+## Storage Mechanics
+
+The operations referenced above — **§ load-agent-memory**, plus the ops the inlined awakening-protocol component references (**§ recover-missing-foundations**, **§ load-latest-episode**, **§ oversized-memory-warning**) — are defined by the **active storage backend**:
+
+- **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## core-instruction-control-files`.
+- **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## core-instruction-control-files`.
+
+See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md`.
 
 ---

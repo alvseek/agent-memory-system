@@ -32,6 +32,12 @@ Each backend file is organized by procedure:
 
 The op names are defined by each procedure's own core (they are procedure-scoped, not a global namespace). Both backends MUST implement the same `§ op` set a procedure references — `markdown.md` with the git/file mechanics, `db.md` with the tool calls (or an explicit no-op + reason where the operation dissolves).
 
+### Sections named after a component
+
+A section may be named after a **component** (`procedures/components/*.md`) rather than a procedure — e.g. `## core-instruction-control-files`. Use this when a shared fragment references storage ops of its own: the ops are then defined **once**, instead of being restated under every procedure that inlines that fragment.
+
+When compiling procedure `P`, the swapped-in body is `## P` **plus** a `## C` section for each component `P` inlined (`seam.py::compose_backend_section`). Either part may be absent — a procedure whose ops all arrive via a component needs no `## P` section at all. Components are inlined before substitution, so an op arriving this way is still covered by the unresolved-op check.
+
 ## Fidelity invariant
 
 The **markdown** composition (`core + markdown.md §proc`) must preserve **every behavioral mechanic** of the pre-seam procedure — the fleet's markdown pathway must not change. Enforced by `tests/content/test_markdown_fidelity.py` (strict git-HEAD mechanic-line accounting) + a per-procedure before→after instruction map.

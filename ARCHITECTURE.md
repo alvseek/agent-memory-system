@@ -26,26 +26,28 @@ When an agent awakens, it loads these files to recover full memory:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│ 1. core-instruction-control-files.md (Shared — dispatcher)  │
-│    └─ Awakening instructions + User profile                 │
-│    └─ Dispatches to shared-memory/ files (steps 2-3):       │
-│                                                             │
-│ 2. shared-memory/core-reasoning-memory.md (Private)         │
+│ 1. shared-memory/core-reasoning-memory.md (Private)         │
 │    └─ Reasoning patterns (UUID-based)                       │
 │                                                             │
-│ 3. shared-memory/core-knowledge-memory.md (Private)         │
+│ 2. shared-memory/core-knowledge-memory.md (Private)         │
 │    └─ Knowledge fundamentals (behavioral rules)             │
 │                                                             │
-│ 4. agent-core-memory.md (Agent-specific)                    │
+│ 3. agent-core-memory.md (Agent-specific)                    │
 │    └─ Identity + Core Knowledge + RAS Triggers + Emotional  │
 │                                                             │
-│ 5. agent-memory-index.md (Agent-specific)                   │
+│ 4. agent-memory-index.md (Agent-specific)                   │
 │    └─ Episode list + Knowledge directory                    │
 │                                                             │
-│ 6. Latest episode file                                      │
+│ 5. Latest episode file                                      │
 │    └─ Recent session context                                │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+> The **awakening protocol** is not in this list. It is a component inlined into
+> `/awaken-agent` and `/refresh-memory` at compile time, so the process arrives with the
+> command instead of being a file the agent must load in order to learn how to load files.
+> The **user profile** is likewise a precondition, already in context before either command
+> runs (global instructions file on the markdown path, `awaken`'s record on the DB path).
 
 > **Note**: Files 2-3 (`shared-memory/`) live in the **private repo root**, not in the `control-files/` submodule. This separates user-specific reasoning and knowledge from the shared framework. New users get blank templates from `control-files/new-agent-template/shared-memory/`.
 
@@ -56,7 +58,6 @@ When an agent awakens, it loads these files to recover full memory:
 ### Control Files Directory
 ```
 control-files/
-├── core-instruction-control-files.md  # Shared dispatcher (awakening + user profile → shared-memory/)
 ├── setup-scripts/                     # Top-level setup orchestrators
 │   └── setup-claude-code.sh           # Complete setup: compile + procedures + settings
 ├── core-memory/                       # Source files for Global CLAUDE.md
@@ -89,9 +90,10 @@ control-files/
 │   │   ├── load-knowledge.md          # List and load knowledge files
 │   │   ├── archive-old-memories.md    # Memory archiving
 │   │   ├── resources/                 # Memory-entry templates (emotional, episodic, knowledge, reasoning)
-│   │   └── storage-backends/          # Per-backend § op definitions (markdown / db)
+│   │   └── storage-backends/          # Per-backend § op definitions (markdown / db) + seam.py
+│   ├── components/                    # Shared procedural fragments, inlined into callers + inline.py
 │   ├── template/                      # Procedure template
-│   └── setup-scripts/                 # Slash command setup scripts
+│   └── setup-scripts/                 # Slash command setup scripts + compile-procedures.py
 ├── scripts/                           # Core utility scripts
 │   ├── check-core-invariant.sh        # Guard: core references no add-on procedure by name
 │   ├── claude-agent-refresh.sh        # Hook: memory refresh after compaction
@@ -107,6 +109,8 @@ control-files/
 ```
 
 > **Memory-entry templates** live in `procedures/memory/resources/` (co-located with the memory procedures that instantiate them) — referenced through the storage seam (`§ template`): the markdown backend reads the `/resources/` file, the DB backend serves it as an MCP Resource.
+
+> **Components** live in `procedures/components/` — reusable procedural fragments shared by two or more procedures, referenced by markdown link and **inlined at delivery**, so the installed command and the served MCP Prompt are both self-contained and never point at a components file. Unlike templates (fill-out data, kept as a separate single source), a component is prose that would otherwise be duplicated and drift. Inlining runs **before** seam substitution and lives once in [inline.py](procedures/components/inline.py) — imported by `compile-procedures.py` and by Munnin's `ContentLoader`, exactly as `seam.py` is. Contract: [procedures/components/README.md](procedures/components/README.md).
 
 ### Coding Overlay Directory (`agent-memory-coding-skill` — separate repo)
 ```
@@ -217,10 +221,9 @@ User: "Awaken Agent [DOMAIN]!"
 ### Post-Compact Recovery
 
 After context compaction, agents recover using UUID `176b0df7` (from Global CLAUDE.md):
-1. Load `core-instruction-control-files.md` (dispatcher → shared-memory/ files)
-2. Load `agent-core-memory.md` (identity recovery)
-3. Reread global CLAUDE.md
-4. Continue work
+1. Load the 4 memory files (identity, index, shared reasoning, shared knowledge) — the awakening protocol itself is inlined in `/refresh-memory`, not read
+2. Reread global CLAUDE.md (restores attention position — it survives compaction but sits far behind the summary)
+3. Continue work
 
 ---
 
@@ -487,14 +490,14 @@ The wizard-based planning procedures dynamically adapt output based on task cont
 
 ## Key Files Reference
 
-### core-instruction-control-files.md
+### procedures/components/core-instruction-control-files.md
 
-The **shared dispatcher** loaded by all agents. Contains awakening instructions and user profile, then dispatches to `shared-memory/` files:
+The **awakening protocol component** — inlined into `/awaken-agent` and `/refresh-memory` at compile time, never loaded as a file by an agent:
 
 | Section | Content |
 |---------|---------|
-| Awakening Instructions | 4-phase protocol, fallback for missing shared-memory |
-| `# USER PROFILE` | About the user (name, philosophy, vision) — placeholders only. This is the **injection point**: the markdown backend resolves them against the global instructions file, a database backend substitutes the `user-profile` record here. The profile itself is stored once, outside this file. |
+| Awakening Instructions | Phase 1 (process loaded identity) + Phase 2 (load central context & report), fallback for missing shared-memory |
+| `# USER PROFILE` | About the user (name, philosophy, vision) — placeholders only, and a **precondition rather than an injection point**: by the time this runs the profile is already in context (markdown → global instructions file; DB → `awaken`'s `user-profile` record). Stored once, outside this file. |
 
 Dispatches to (private repo root):
 | File | Content |

@@ -25,7 +25,6 @@ This submodule provides the **memory-primitive** infrastructure for the [5-layer
 
 ```
 control-files/
-├── core-instruction-control-files.md  # Shared reasoning & knowledge (loaded by all agents)
 ├── procedures/                         # Memory-primitive procedures (also work as slash commands)
 │   ├── awaken-agent.md                # Load agent identity + central memory
 │   ├── refresh-memory.md              # Post-compaction recovery
@@ -33,6 +32,7 @@ control-files/
 │   ├── push-memory.md                 # Persist the memory store (git push)
 │   ├── pull-memory.md                 # Sync the memory store (git pull + submodule)
 │   ├── memory/                        # Memory management (10 procedures) + resources/ (entry templates) + storage-backends/
+│   ├── components/                    # Shared fragments, inlined into the procedures that reference them
 │   └── setup-scripts/                 # 2-repo-aware setup orchestrators (core / core+skill)
 ├── new-agent-template/                 # Starter template for new agents
 ├── core-memory/                        # Source files for Global CLAUDE.md compilation
@@ -138,9 +138,9 @@ bash core-memory/compile-scripts/write-to-claude.sh  # Write to ~/.claude/CLAUDE
 
 ## How Does It Work Inside?
 
-### Core Instruction File
+### Core Instruction Component
 
-`core-instruction-control-files.md` is the shared control file loaded by every agent at awakening. It contains:
+`procedures/components/core-instruction-control-files.md` holds the awakening protocol every agent follows. It is a **component**, not a file agents load: it is inlined into `/awaken-agent` and `/refresh-memory` at compile time, so the process arrives with the command rather than being a file you must read in order to learn how to read files. It contains:
 
 | Section | Content |
 |---------|---------|

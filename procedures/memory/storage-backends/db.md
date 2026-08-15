@@ -152,7 +152,7 @@ The records you wrote this session ARE the promotions — list the reasoning / k
 
 ---
 
-## awaken-agent
+## core-instruction-control-files
 
 ### § load-agent-memory
 
@@ -165,7 +165,24 @@ The records you wrote this session ARE the promotions — list the reasoning / k
 
 No file reads, no parallel Reads — the 4-layer assembly is a single derived call.
 
-> **⚠ Not covered by the payload (step-2 gap)**: the **awakening instructions** (`core-instruction-control-files.md` — the Phase 1/Phase 2 protocol referenced in Step 2) and the **user profile** are NOT part of `awaken`'s payload. They are not yet stored as records or served. Until that is resolved, a pure-DB client must obtain the Phase 1/2 process another way (e.g. this prompt's own text, or global context); the user profile reaches the agent via the global instructions file. See `docs/flows/awaken-db.md`.
+> **Not covered by the payload — and no longer needs to be**: the **awakening instructions** (the Phase 1/Phase 2 protocol) are not a record and are not served, because they are a **component** inlined into this procedure at compile time — the process rides in the prompt, the data comes from `awaken`. The **user profile** is likewise a precondition, not a substitution: it is already in the agent's context before this procedure runs (from the global instructions file on the markdown path, from `awaken`'s `user-profile` record on the DB path). See `docs/flows/awaken-db.md`.
+
+### § recover-missing-foundations
+
+Nothing is missing *from disk* — this backend has no `shared-memory/` directory. The shared foundations are the `__shared__` records inside `awaken`'s payload, and a store with none returns **200 with empty fields** rather than failing, so there is no error to notice. Diagnose before acting:
+
+- **Other layers also short or cut mid-record** → the payload was **truncated in transit** (the MCP tool-result cap), not empty at rest. The store is probably fine; the transport is not.
+- **Only `shared.reasoning` / `shared.knowledge` empty** → the store genuinely holds no `__shared__` records for this user (importer never run, or the wrong `agent_id`).
+
+Recovery is **server-side** — seed the records (importer / `insert`). A file copy is meaningless here; never offer one. Report which of the two it is and STOP: do not fabricate the foundations and do not continue on partial context (`c4e7a19f`).
+
+### § load-latest-episode
+
+Already present as `latest_episode` in the `awaken` payload — no extra call. Use `get(uuid)` only when loading a *different* episode than the newest.
+
+### § oversized-memory-warning
+
+There is no per-file read limit here; the cap applies to the **whole payload** (the MCP tool-result limit), and exceeding it truncates **silently** — no error is raised. If any layer looks cut off mid-record, say so explicitly and treat it as a load failure (`c4e7a19f`). `/archive-old-memories` reduces the store, but narrowing what is requested is the more direct fix.
 
 ---
 

@@ -13,20 +13,32 @@ It also reports **coverage**: any ``§ op`` a procedure references that the chos
 backend does not define. The seam contract requires both backends to implement
 the same op set a procedure references, so an unresolved op is a real gap.
 
-The seam substitution itself lives once in ``../memory/storage-backends/seam.py``
-(beside the seam contract README); this script imports it. Deliberately independent
-of Munnin so the public framework tree can be verified without the server.
+Before the seam is composed, every **component** reference is inlined (a shared fragment
+under ``procedures/components/``, replaced at its reference point so the delivered
+procedure is self-contained). Components are inlined first so an ``§ op`` arriving inside
+one is counted by the coverage check below.
+
+Neither substitution is implemented here: the seam lives once in
+``../memory/storage-backends/seam.py`` and component inlining once in
+``../components/inline.py``, each beside its own contract; this script imports both, as
+Munnin's ``ContentLoader`` does. Deliberately independent of Munnin so the public
+framework tree can be verified without the server.
 
 Run (from the control-files root)::
 
     python procedures/setup-scripts/compile-procedures.py \
-        [--backend {markdown,db}] [--content-root DIR] [--out DIR] [--strict]
+        [--backend {markdown,db}] [--content-root DIR] [--out DIR] \
+        [--emit-inline DIR] [--strict]
 
 Output: with no ``--backend``, ``<out>/<procedure>.<backend>.md`` for every seam
 procedure x backend — a faithful dual preview. With ``--backend NAME``, the installable
 command set as plain ``<out>/<procedure>.md`` (seam commands composed with that one
 backend, non-seam commands copied as-is) — what the Claude Code installer consumes.
-Default out: ``procedures/output/``. ``--strict`` exits non-zero when any op is unresolved.
+Default out: ``procedures/output/``. Each run **also** writes the intermediate stage — every
+procedure after component inlining but before seam composition — to the sibling
+``procedures/output-inline/``, so what a component contributed is always inspectable and
+can never lag behind the compiled output. ``--emit-inline DIR`` relocates it. ``--strict``
+exits non-zero when any op is unresolved or any referenced component is missing.
 """
 
 from __future__ import annotations
@@ -40,15 +52,24 @@ from pathlib import Path
 # control-files/ root (this script lives at procedures/setup-scripts/compile-procedures.py).
 _CF_ROOT = Path(__file__).resolve().parents[2]
 
-# The seam substitution lives once, beside the contract; import it from there.
-_spec = importlib.util.spec_from_file_location(
-    "cf_seam", _CF_ROOT / "procedures/memory/storage-backends/seam.py"
-)
-_seam = importlib.util.module_from_spec(_spec)
-_spec.loader.exec_module(_seam)
+def _load(name: str, rel: str):
+    """Import a framework module that lives beside its own contract, by file path."""
+    spec = importlib.util.spec_from_file_location(name, _CF_ROOT / rel)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+# Both substitutions live once, beside their contracts; import them from there.
+_seam = _load("cf_seam", "procedures/memory/storage-backends/seam.py")
 STORAGE_MARKER = _seam.STORAGE_MARKER
 extract_section = _seam.extract_section
 substitute_storage_mechanics = _seam.substitute_storage_mechanics
+compose_backend_section = _seam.compose_backend_section
+defines_section = _seam.defines_section
+
+_inline = _load("cf_inline", "procedures/components/inline.py")
+inline_components = _inline.inline_components
 
 BACKENDS = ("markdown", "db")
 _BACKEND_REL = "procedures/memory/storage-backends/{name}.md"
@@ -70,6 +91,7 @@ class ProcedureReport:
     out_path: Path
     unresolved_ops: list[str] = field(default_factory=list)
     note: str = ""
+    missing_components: list[str] = field(default_factory=list)
 
 
 def _has_seam(text: str) -> bool:
@@ -78,18 +100,33 @@ def _has_seam(text: str) -> bool:
     return any(line.strip() == STORAGE_MARKER for line in text.splitlines())
 
 
-def _seam_procedures(proc_dir: Path) -> list[Path]:
+def _seam_procedures(proc_dir: Path, generated: tuple[Path, ...] = ()) -> list[Path]:
     """Every procedure ``*.md`` that carries the storage seam, sorted.
 
-    Excludes the seam's own machinery — ``storage-backends/`` (the backend
-    definitions + contract), ``resources/`` (the templates), and ``output/``
-    (this tool's own generated previews, which also carry the marker).
+    Excludes the framework's own machinery — ``storage-backends/`` (the backend
+    definitions + contract), ``resources/`` (the templates), and ``components/`` (shared
+    fragments, inlined into their callers rather than compiled).
+
+    Also excludes this tool's **own generated output**, which carries the marker too and
+    would otherwise be recompiled as if it were source: any ``output*`` directory by name,
+    plus whatever ``generated`` paths the caller was pointed at (``--out`` / ``--emit-inline``
+    can be written anywhere, including inside the source tree).
     """
-    skip = {"storage-backends", "resources", "output"}
+    skip = {"storage-backends", "resources", "components"}
+    roots = tuple(p.resolve() for p in generated)
+
+    def _is_generated(path: Path) -> bool:
+        if any(part.startswith("output") for part in path.parts):
+            return True
+        resolved = path.resolve()
+        return any(resolved.is_relative_to(root) for root in roots)
+
     return sorted(
         p
         for p in proc_dir.rglob("*.md")
-        if not skip & set(p.parts) and _has_seam(p.read_text(encoding="utf-8"))
+        if not skip & set(p.parts)
+        and not _is_generated(p)
+        and _has_seam(p.read_text(encoding="utf-8"))
     )
 
 
@@ -138,16 +175,20 @@ def _referenced_ops(core: str) -> set[str]:
 
 
 def compile_procedure(
-    core: str, backend_doc: str, name: str, backend: str
+    core: str, backend_doc: str, name: str, backend: str, components: tuple[str, ...] = ()
 ) -> tuple[str, list[str], str]:
-    """Compose ``core`` with one backend's ``## [procedure]`` section.
+    """Compose ``core`` with one backend's section for this procedure.
+
+    The backend body is the procedure's own ``## [procedure]`` section plus a
+    ``## [component]`` section for each component inlined into it, so ops arriving via a
+    component resolve without being restated under every caller.
 
     Returns (text, unresolved_ops, note). ``§ template`` is left as a reference —
     templates live once as a separate Resource / file, never inlined here.
     """
     referenced = _referenced_ops(core)
     try:
-        section = extract_section(backend_doc, name)
+        section = compose_backend_section(backend_doc, name, components)
     except KeyError:
         note = f"no '## {name}' section in {backend}.md — core served verbatim"
         return core, sorted(referenced), note
@@ -156,14 +197,40 @@ def compile_procedure(
     return composed, unresolved, ""
 
 
-def _defines(backend_doc: str, name: str) -> bool:
-    """True when a backend doc has a ``## {name}`` section for this procedure."""
-    header = f"## {name}"
-    return any(line.strip() == header for line in backend_doc.splitlines())
+def _backend_covers(backend_doc: str, name: str, components: tuple[str, ...]) -> bool:
+    """True when a backend says anything about this procedure — under its own name, or
+    under one of the components inlined into it."""
+    return defines_section(backend_doc, name) or any(
+        defines_section(backend_doc, c) for c in components
+    )
+
+
+def _inline_source(
+    proc: Path, comp_dir: Path, proc_dir: Path, emit_inline: Path
+) -> tuple[str, list[str], tuple[str, ...]]:
+    """Read a procedure and inline its components — the stage before seam composition.
+
+    The inlined-but-not-yet-composed text is also written to ``emit_inline``, mirroring the
+    source tree: the intermediate stage is a product of every run, not an opt-in, so it can
+    never sit stale beside a newer compiled output.
+    """
+    core, missing, used = inline_components(proc.read_text(encoding="utf-8"), comp_dir)
+    dest = emit_inline / proc.relative_to(proc_dir)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text(core, encoding="utf-8", newline="\n")
+    return core, missing, tuple(dict.fromkeys(used))  # de-duplicated, order preserved
+
+
+def _inline_dir(out_dir: Path, emit_inline: Path | None) -> Path:
+    """Where the pre-seam intermediate goes: ``<out>-inline`` beside the output by default."""
+    return emit_inline or out_dir.parent / f"{out_dir.name}-inline"
 
 
 def compile_all(
-    content_root: Path, out_dir: Path, backend: str | None = None
+    content_root: Path,
+    out_dir: Path,
+    backend: str | None = None,
+    emit_inline: Path | None = None,
 ) -> tuple[list[ProcedureReport], list[str]]:
     """Compile procedures into ``out_dir``. Returns ``(reports, skipped_names)``.
 
@@ -177,6 +244,8 @@ def compile_all(
     seam command this backend defines no section for is skipped + reported.
     """
     proc_dir = content_root / "procedures"
+    comp_dir = proc_dir / "components"
+    emit_inline = _inline_dir(out_dir, emit_inline)
     out_dir.mkdir(parents=True, exist_ok=True)
 
     reports: list[ProcedureReport] = []
@@ -187,40 +256,52 @@ def compile_all(
             b: (content_root / _BACKEND_REL.format(name=b)).read_text(encoding="utf-8")
             for b in BACKENDS
         }
-        for proc in _seam_procedures(proc_dir):
+        for proc in _seam_procedures(proc_dir, (out_dir, emit_inline)):
             name = proc.stem
-            if not any(_defines(backend_docs[b], name) for b in BACKENDS):
+            # inline first: a component may be what brings this procedure's ops
+            core, missing, used = _inline_source(proc, comp_dir, proc_dir, emit_inline)
+            if not any(_backend_covers(backend_docs[b], name, used) for b in BACKENDS):
                 skipped.append(name)  # seam marker but no backend implements it
                 continue
-            core = proc.read_text(encoding="utf-8")
             for b in BACKENDS:
-                text, unresolved, note = compile_procedure(core, backend_docs[b], name, b)
+                text, unresolved, note = compile_procedure(core, backend_docs[b], name, b, used)
+                # a backend section may carry component references of its own
+                text, from_backend, _ = inline_components(text, comp_dir)
                 out_path = out_dir / f"{name}.{b}.md"
                 out_path.write_text(text, encoding="utf-8", newline="\n")
-                reports.append(ProcedureReport(name, b, out_path, unresolved, note))
+                reports.append(
+                    ProcedureReport(
+                        name, b, out_path, unresolved, note, sorted(set(missing + from_backend))
+                    )
+                )
         return reports, skipped
 
     backend_doc = (content_root / _BACKEND_REL.format(name=backend)).read_text(encoding="utf-8")
     for proc in _command_procedures(proc_dir):
         name = proc.stem
-        core = proc.read_text(encoding="utf-8")
+        core, missing, used = _inline_source(proc, comp_dir, proc_dir, emit_inline)
         if _has_seam(core):
-            if not _defines(backend_doc, name):
+            if not _backend_covers(backend_doc, name, used):
                 skipped.append(name)  # seam marker but this backend has no section
                 continue
-            text, unresolved, note = compile_procedure(core, backend_doc, name, backend)
+            text, unresolved, note = compile_procedure(core, backend_doc, name, backend, used)
+            text, from_backend, _ = inline_components(text, comp_dir)
+            missing = sorted(set(missing + from_backend))
         else:
             text, unresolved, note = core, [], "copied as-is (no seam)"
         out_path = out_dir / f"{name}.md"
         out_path.write_text(text, encoding="utf-8", newline="\n")
-        reports.append(ProcedureReport(name, backend, out_path, unresolved, note))
+        reports.append(ProcedureReport(name, backend, out_path, unresolved, note, missing))
     return reports, skipped
 
 
 def _print_summary(
     reports: list[ProcedureReport], skipped: list[str], out_dir: Path, backend: str | None = None
 ) -> int:
-    """Print a per-procedure table + coverage warnings. Returns unresolved count."""
+    """Print a per-procedure table + coverage warnings.
+
+    Returns the problem count: unresolved seam ops plus unresolved component references.
+    """
     cols = (backend,) if backend else BACKENDS
     procs = sorted({r.name for r in reports})
     label = backend if backend else f"{len(BACKENDS)} backends"
@@ -230,16 +311,21 @@ def _print_summary(
     print(f"{'procedure':<24} " + " ".join(f"{c:<12}" for c in cols))
     print(f"{'-' * 24} " + " ".join("-" * 12 for _ in cols))
     by_key = {(r.name, r.backend): r for r in reports}
-    total_unresolved = 0
+    problems = 0
     for name in procs:
         cells = []
         for c in cols:
             r = by_key.get((name, c))
             if r is None:
                 cells.append("-")
-            elif r.unresolved_ops:
-                cells.append(f"{len(r.unresolved_ops)} UNRESOLVED")
-                total_unresolved += len(r.unresolved_ops)
+            elif r.unresolved_ops or r.missing_components:
+                problems += len(r.unresolved_ops) + len(r.missing_components)
+                kinds = []
+                if r.unresolved_ops:
+                    kinds.append(f"{len(r.unresolved_ops)} OP")
+                if r.missing_components:
+                    kinds.append(f"{len(r.missing_components)} COMP")
+                cells.append("/".join(kinds) + " MISSING")
             elif r.note.startswith("copied"):
                 cells.append("as-is")
             else:
@@ -249,17 +335,24 @@ def _print_summary(
     warned = [
         r
         for r in reports
-        if r.unresolved_ops or (r.note and not r.note.startswith("copied"))
+        if r.unresolved_ops
+        or r.missing_components
+        or (r.note and not r.note.startswith("copied"))
     ]
     if warned:
         print("\nDetails:")
         for r in warned:
             if r.unresolved_ops:
                 print(f"  ! {r.name} [{r.backend}] unresolved ops: {', '.join(r.unresolved_ops)}")
+            if r.missing_components:
+                print(
+                    f"  ! {r.name} [{r.backend}] missing components: "
+                    f"{', '.join(r.missing_components)}"
+                )
             if r.note and not r.note.startswith("copied"):
                 print(f"  * {r.name} [{r.backend}] {r.note}")
     print()
-    return total_unresolved
+    return problems
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -280,7 +373,14 @@ def main(argv: list[str] | None = None) -> int:
         help="output directory (default: <content-root>/procedures/output)",
     )
     parser.add_argument(
-        "--strict", action="store_true", help="exit non-zero if any op is unresolved"
+        "--emit-inline", type=Path, default=None,
+        help="where to write the pre-seam intermediate — each procedure after component "
+             "inlining, mirroring the source tree (default: <out>-inline, i.e. "
+             "procedures/output-inline/). Always written, so it cannot go stale.",
+    )
+    parser.add_argument(
+        "--strict", action="store_true",
+        help="exit non-zero if any op is unresolved or any referenced component is missing",
     )
     args = parser.parse_args(argv)
 
@@ -288,9 +388,10 @@ def main(argv: list[str] | None = None) -> int:
         parser.error(f"no procedures/ under content root: {args.content_root}")
     out_dir = args.out or (args.content_root / "procedures" / "output")
 
-    reports, skipped = compile_all(args.content_root, out_dir, args.backend)
-    unresolved = _print_summary(reports, skipped, out_dir, args.backend)
-    return 1 if args.strict and unresolved else 0
+    reports, skipped = compile_all(args.content_root, out_dir, args.backend, args.emit_inline)
+    problems = _print_summary(reports, skipped, out_dir, args.backend)
+    print(f"Pre-seam intermediate -> {_inline_dir(out_dir, args.emit_inline)}\n")
+    return 1 if args.strict and problems else 0
 
 
 if __name__ == "__main__":

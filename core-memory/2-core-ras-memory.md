@@ -9,8 +9,7 @@
 **UUID**: 176b0df7-036f-48f9-927d-432e27cd4116
 **Trigger**: When session continuation summary is present OR SessionStart:compact hook detected in system reminders
 **Strict Action**: I HAVE TO **STOP AND PAUSE DOING ANYTHING**. TO CONTINUE:
-1. I have to read these 5 files **using the Read tool directly** — DO NOT delegate to a sub-agent (Agent tool / general-purpose / Explore). Sub-agents return summaries; memory recovery needs the full content in MY own context window, not a summary:
-  - `[AGENT-MEMORY-PATH]/control-files/core-instruction-control-files.md` (Shared foundations + awakening instructions)
+1. I have to read these 4 files **using the Read tool directly** — DO NOT delegate to a sub-agent (Agent tool / general-purpose / Explore). Sub-agents return summaries; memory recovery needs the full content in MY own context window, not a summary:
   - `[AGENT-MEMORY-PATH]/agent-[DOMAIN]/agent-core-memory.md` (Agent-specific identity)
   - `[AGENT-MEMORY-PATH]/agent-[DOMAIN]/agent-memory-index.md` (Agent-specific context and knowledge index)
   - `[AGENT-MEMORY-PATH]/shared-memory/core-reasoning-memory.md` (Shared reasoning patterns)

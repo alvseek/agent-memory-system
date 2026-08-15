@@ -21,6 +21,10 @@ _spec.loader.exec_module(si)
 _KNOWN = {"awaken-agent", "wrap-up", "add-reasoning", "update-episodic", "load-knowledge"}
 _NON_SEAM = {"refresh-memory", "push-memory", "pull-memory"}
 
+# of those, the ones referencing no component either — installing is then a pure copy.
+# (`refresh-memory` inlines a component, so its installed form legitimately differs.)
+_VERBATIM = {"push-memory", "pull-memory"}
+
 
 def test_installs_full_command_set(tmp_path: Path) -> None:
     target = tmp_path / "commands"
@@ -47,10 +51,20 @@ def test_seam_command_is_compiled_not_raw(tmp_path: Path) -> None:
 def test_non_seam_command_is_verbatim_source(tmp_path: Path) -> None:
     target = tmp_path / "commands"
     si.install(target, content_root=CF, output_dir=tmp_path / "out")
-    for name in _NON_SEAM:
+    for name in _VERBATIM:
         installed = (target / f"{name}.md").read_bytes()
         source = (CF / "procedures" / f"{name}.md").read_bytes()
         assert installed == source  # byte-for-byte, LF preserved
+
+
+def test_installed_command_carries_no_component_reference(tmp_path: Path) -> None:
+    # components are dev-time source: the installed command must be self-contained
+    target = tmp_path / "commands"
+    installed, _, _ = si.install(target, content_root=CF, output_dir=tmp_path / "out")
+    for name in installed:
+        assert "components/" not in (target / f"{name}.md").read_text(encoding="utf-8"), name
+    text = (target / "refresh-memory.md").read_text(encoding="utf-8")
+    assert "sub-agents return summaries" in text.lower()  # component body inlined instead
 
 
 def test_reinstall_cleans_stale_and_is_idempotent(tmp_path: Path) -> None:

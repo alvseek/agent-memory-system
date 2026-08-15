@@ -16,27 +16,30 @@ If no arguments provided, ask: "Which agent domain should I awaken?"
 
 ### Step 1: Load the Awakening Set
 
-Load the agent's full awakening set into **your own context** (**§ load-agent-memory**) — five layers:
+Load the agent's full awakening set into **your own context** (**§ load-agent-memory**) — four layers:
 
-1. **Shared foundations + awakening instructions** — the shared reasoning/knowledge foundations and the phased awakening protocol.
-2. **Agent identity** — this domain's identity, core knowledge, and RAS triggers.
-3. **Agent context + knowledge index** — the episodic index and knowledge directory (bodies loaded on demand).
-4. **Shared reasoning patterns.**
-5. **Shared knowledge fundamentals.**
+1. **Agent identity** — this domain's identity, core knowledge, and RAS triggers.
+2. **Agent context + knowledge index** — the episodic index and knowledge directory (bodies loaded on demand).
+3. **Shared reasoning patterns.**
+4. **Shared knowledge fundamentals.**
 
-🚨 **CRITICAL — load into YOUR OWN context, do NOT delegate to a sub-agent** (Agent tool / general-purpose / Explore). Sub-agents return summaries; awakening needs the full content in your own context window. A delegated load produces a hollow awakening with diluted identity and missing reasoning patterns.
+*(The awakening protocol itself is not one of them — it is carried by Step 2 below.)*
+
+[🚨 **CRITICAL — load the awakening set into YOUR OWN context**](components/no-subagent-load.md)
 
 ### Step 2: Follow Awakening Instructions
 
-Follow the phased protocol from the loaded awakening instructions (`core-instruction-control-files.md`) — Phase 1 (Process Loaded Identity), then Phase 2 (Load Project Context & Report).
+Follow the phased protocol below — Phase 1 (Process Loaded Identity), then Phase 2 (Load Central Context & Report).
+
+[**Awakening protocol**](components/core-instruction-control-files.md)
 
 ---
 
 ## Storage Mechanics
 
-The operation referenced above — **§ load-agent-memory** — is defined by the **active storage backend**:
+The operations referenced above — **§ load-agent-memory**, plus the ops the inlined awakening-protocol component references (**§ recover-missing-foundations**, **§ load-latest-episode**, **§ oversized-memory-warning**) — are defined by the **active storage backend**:
 
-- **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## awaken-agent`.
-- **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## awaken-agent`.
+- **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## core-instruction-control-files`.
+- **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## core-instruction-control-files`.
 
 See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md`.

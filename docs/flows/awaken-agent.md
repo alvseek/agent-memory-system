@@ -46,8 +46,8 @@ sequenceDiagram
 ## Steps
 
 1. **Trigger** — user fires `Awaken Agent [DOMAIN]!` or `/awaken-agent [domain]`. If no domain is given, the agent asks for one ([awaken-agent.md](../../procedures/awaken-agent.md) Arguments).
-2. **Load 5 core files** — the agent reads all five **in parallel, via the Read tool directly** (never a sub-agent — sub-agent summaries produce a hollow awakening): `core-instruction-control-files.md`, `agent-[DOMAIN]/agent-core-memory.md`, `agent-[DOMAIN]/agent-memory-index.md`, `shared-memory/core-reasoning-memory.md`, `shared-memory/core-knowledge-memory.md` ([awaken-agent.md](../../procedures/awaken-agent.md) Step 1).
-3. **Phase 1 — process loaded identity** — process shared reasoning + shared knowledge, then the user profile + domain identity / emotional / core-knowledge ([core-instruction-control-files.md](../../core-instruction-control-files.md) Phase 1). If `shared-memory/` failed to load, offer the A/B fallback.
+2. **Load 4 memory files** — the agent reads all four **in parallel, via the Read tool directly** (never a sub-agent — sub-agent summaries produce a hollow awakening): `agent-[DOMAIN]/agent-core-memory.md`, `agent-[DOMAIN]/agent-memory-index.md`, `shared-memory/core-reasoning-memory.md`, `shared-memory/core-knowledge-memory.md` ([awaken-agent.md](../../procedures/awaken-agent.md) Step 1). The awakening protocol is not among them — it is inlined into the command itself.
+3. **Phase 1 — process loaded identity** — process shared reasoning + shared knowledge, then the user profile + domain identity / emotional / core-knowledge ([core-instruction-control-files.md](../../procedures/components/core-instruction-control-files.md) Phase 1). If `shared-memory/` failed to load, offer the A/B fallback.
 4. **Phase 2 — load recent context (project-blind)** — detect the project from cwd and load the latest project-scoped episodic entry (fallback to absolute-latest, flagged non-project-specific). The core does **not** load project context or the fleet roster — those are the coding overlay's job.
 5. **Report** — emit one consolidated status block: identity, latest episodic + carried-forward open items, current project, knowledge base.
 
@@ -63,5 +63,5 @@ sequenceDiagram
 ## Related
 
 - [awaken-agent.md](../../procedures/awaken-agent.md) — the dispatcher procedure
-- [core-instruction-control-files.md](../../core-instruction-control-files.md) — the Phase 1 / Phase 2 awakening instructions
+- [core-instruction-control-files.md](../../procedures/components/core-instruction-control-files.md) — the Phase 1 / Phase 2 awakening instructions (a component, inlined into the command)
 - [ADR-003: Four-File Flattened Architecture](../../../docs/adr/2025-11-28-four-file-flattened-architecture.md) — why awakening loads a flattened file set

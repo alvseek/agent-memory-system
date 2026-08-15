@@ -100,17 +100,29 @@ The agent who runs `/map-orientation create` for the first time scans ALL orient
 - **update_trigger**: "when contribution rules, scope, or license change"
 - **notes**: "Contribution guide for the public agent-memory-system framework: ways to contribute, guidelines, scope, license."
 
-### `core-instruction-control-files.md`
+### `procedures/components/core-instruction-control-files.md`
 
 - **type**: other
 - **scope**: shared
 - **roles**: []
-- **status**: unverified
-- **tags**: [awakening, dispatcher, user-profile, shared-memory]
-- **last_verified**: ""
-- **verified_by**: ""
+- **status**: useful
+- **tags**: [awakening, component, inlined, user-profile, shared-memory]
+- **last_verified**: "2026-08-15"
+- **verified_by**: "meta"
 - **update_trigger**: "when awakening protocol changes, phase structure changes, or user profile schema changes"
-- **notes**: "Shared dispatcher loaded by every agent at awakening. Holds the phased awakening instructions and the user profile section; dispatches to shared-memory/core-reasoning-memory.md and shared-memory/core-knowledge-memory.md."
+- **notes**: "The phased awakening protocol (Phase 1 identity + Phase 2 central context & report) and the user-profile precondition. A **component**, not a file agents load: inlined into /awaken-agent and /refresh-memory at compile time, which is why the awakening set is 4 memory files rather than 5. Moved here from the repo root 2026-08-15."
+
+### `procedures/components/README.md`
+
+- **type**: other
+- **scope**: shared
+- **roles**: []
+- **status**: useful
+- **tags**: [components, contract, inlining, compile, dry]
+- **last_verified**: "2026-08-15"
+- **verified_by**: "meta"
+- **update_trigger**: "when the component model changes (what qualifies, file shape, reference form, or delivery)"
+- **notes**: "Component contract: what qualifies as a component vs a command/template/seam section, the header + `---` + body file shape, the `components/<name>.md` link form, and delivery (inlined before seam substitution by inline.py, imported by both compile-procedures.py and Munnin's ContentLoader)."
 
 ### `docs/document-quality-standard.md`
 

@@ -194,17 +194,32 @@ Read the newest sub-episode: the top H3 block of the top episode file in `[AGENT
 
 ---
 
-## awaken-agent
+## core-instruction-control-files
 
 ### § load-agent-memory
 
-Use the **Read tool directly** and read all 5 files in parallel:
+Use the **Read tool directly** and read all 4 files in parallel:
 
-- `[AGENT-MEMORY-PATH]/control-files/core-instruction-control-files.md` (Shared foundations + awakening instructions)
-- `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` (Agent-specific identity)
-- `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` (Agent-specific context and knowledge index)
+- `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` (Identity — agent identity, core knowledge, RAS triggers)
+- `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` (Context + knowledge index)
 - `[AGENT-MEMORY-PATH]/shared-memory/core-reasoning-memory.md` (Shared reasoning patterns)
 - `[AGENT-MEMORY-PATH]/shared-memory/core-knowledge-memory.md` (Shared knowledge fundamentals)
+
+### § recover-missing-foundations
+
+The `shared-memory/` directory was not found on disk. Ask [USER-NAME]:
+
+"shared-memory/ not found. Would you like me to:
+A) Copy blank templates from `[AGENT-MEMORY-PATH]/control-files/new-agent-template/shared-memory/`
+B) Create empty shared-memory/ files with section headers only"
+
+### § load-latest-episode
+
+Read the episode file named by the index entry from `[AGENT-MEMORY-PATH]/agent-[domain]/episodes/`.
+
+### § oversized-memory-warning
+
+A file that exceeded the single-Read limit came back partial. Name it and warn: *"⚠️ `[filename]` exceeded the read limit during loading — consider `/archive-old-memories` to reduce its size."*
 
 ---
 

@@ -4,6 +4,12 @@ Each memory procedure carries one ``## Storage Mechanics`` section; serving/prev
 swaps that section's body for a backend's ``## [procedure]`` section — markdown
 mechanics for the native fleet, DB tools for Munnin. Pure text ops.
 
+A procedure may also inline **components** (shared fragments), and a component can
+reference storage ops of its own. Those are defined once under the component's own
+``## [component]`` section rather than repeated under every procedure that inlines it;
+``compose_backend_section`` assembles the procedure's section plus its components' into
+the single body that gets substituted.
+
 This is the framework's single home for that logic, defined once beside the seam
 contract (``README.md``). It is Munnin-agnostic. Every consumer imports it:
 
@@ -15,6 +21,7 @@ contract (``README.md``). It is Munnin-agnostic. Every consumer imports it:
 from __future__ import annotations
 
 import re
+from collections.abc import Sequence
 
 STORAGE_MARKER = "## Storage Mechanics"
 
@@ -48,6 +55,40 @@ def extract_section(doc: str, title: str) -> str:
             end = j
             break
     return "".join(lines[start:end]).strip("\n")
+
+
+def defines_section(doc: str, title: str) -> bool:
+    """True when ``doc`` carries a ``## {title}`` header."""
+    header = f"## {title}"
+    return any(line.strip() == header for line in doc.splitlines())
+
+
+def compose_backend_section(
+    doc: str, procedure: str, components: Sequence[str] = ()
+) -> str:
+    """The backend body for one compiled procedure: its own ``## {procedure}`` section
+    followed by a ``## {component}`` section for each component inlined into it.
+
+    A component's ops live **once**, under the component's own name, instead of being
+    repeated under every procedure that inlines it — the same single-home rule the seam
+    itself follows. Order is procedure first, then components as they were inlined;
+    repeats and components the backend says nothing about are skipped.
+
+    Raises ``KeyError`` when the backend defines nothing at all for this procedure.
+    """
+    parts: list[str] = []
+    seen: set[str] = set()
+    for title in (procedure, *components):
+        if title in seen:
+            continue
+        seen.add(title)
+        try:
+            parts.append(extract_section(doc, title))
+        except KeyError:
+            continue
+    if not parts:
+        raise KeyError(f"backend defines no section for: {procedure}")
+    return "\n\n".join(parts)
 
 
 def substitute_storage_mechanics(core: str, backend_section: str) -> str:
