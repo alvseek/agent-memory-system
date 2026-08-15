@@ -47,7 +47,7 @@ The agent who runs `/map-orientation create` for the first time scans ALL orient
 - **roles**: []
 - **status**: useful
 - **tags**: [overview, entry-point, framework]
-- **last_verified**: "2026-08-14"
+- **last_verified**: "2026-08-15"
 - **verified_by**: "meta"
 - **update_trigger**: "when framework procedures, slash commands, wizard hierarchy, or setup steps change"
 - **notes**: "Top-level framework README. 7Q-style: What Is This / How Do I Set It Up / How Do I Use It / How Does It Work Inside / What Decisions Were Made. First read for new contributors and agents."
