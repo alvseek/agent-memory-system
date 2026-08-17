@@ -19,11 +19,11 @@ sys.modules["cf_setup"] = si
 _spec.loader.exec_module(si)
 
 _KNOWN = {"awaken-agent", "wrap-up", "add-reasoning", "update-episodic", "load-knowledge"}
-_NON_SEAM = {"refresh-memory", "push-memory", "pull-memory"}
+_NON_SEAM = {"refresh-memory", "push-memory", "pull-memory", "wait-options"}
 
 # of those, the ones referencing no component either — installing is then a pure copy.
 # (`refresh-memory` inlines a component, so its installed form legitimately differs.)
-_VERBATIM = {"push-memory", "pull-memory"}
+_VERBATIM = {"push-memory", "pull-memory", "wait-options"}
 
 
 def test_installs_full_command_set(tmp_path: Path) -> None:

@@ -31,6 +31,8 @@ control-files/
 │   ├── wrap-up.md                     # End-of-session memory capture (memory-only)
 │   ├── push-memory.md                 # Persist the memory store (git push)
 │   ├── pull-memory.md                 # Sync the memory store (git pull + submodule)
+│   ├── list-agents.md                 # Roster of every agent in the store
+│   ├── wait-options.md                # How a decision is presented for an answer
 │   ├── memory/                        # Memory management (10 procedures) + resources/ (entry templates) + storage-backends/
 │   ├── components/                    # Shared fragments, inlined into the procedures that reference them
 │   └── setup-scripts/                 # 2-repo-aware setup orchestrators (core / core+skill)

@@ -14,6 +14,8 @@ CORE_FILES=(
   "$ROOT/procedures/wrap-up.md"
   "$ROOT/procedures/push-memory.md"
   "$ROOT/procedures/pull-memory.md"
+  "$ROOT/procedures/list-agents.md"
+  "$ROOT/procedures/wait-options.md"
 )
 
 # A file named here that no longer exists must fail LOUD. Skipping it silently is how the
@@ -34,7 +36,7 @@ while IFS= read -r f; do CORE_FILES+=("$f"); done < <(find "$ROOT/procedures/com
 while IFS= read -r f; do CORE_FILES+=("$f"); done < <(find "$ROOT/core-memory" -maxdepth 1 -name '*.md' 2>/dev/null || true)
 
 # --- Add-on procedure names the core must NOT reference ---
-ADDON='/(awaken-coder|project-wrap-up|localize-context|localized-memory-workflow|map-orientation|high-wizard|quick-wizard|council-of-wizards|rite-of-creation|forge-of-covenant|implement-plan|generate-readme|generate-docs|generate-architecture-docs|generate-domain-docs|generate-flow-docs|discovery-contract|analyze-code-quality|generate-standard|integration-test|setup-qa-instrument|setup-qa-visual-instrument|pixel-wizard|pull-all|pull-project|push-all|push-project|push-agent-work|push-exclude-policy|wait-options|ask-agent|delegate-agent|setup-fleet|update-project-context|load-project-context)\b'
+ADDON='/(awaken-coder|project-wrap-up|localize-context|localized-memory-workflow|map-orientation|high-wizard|quick-wizard|council-of-wizards|rite-of-creation|forge-of-covenant|implement-plan|generate-readme|generate-docs|generate-architecture-docs|generate-domain-docs|generate-flow-docs|discovery-contract|analyze-code-quality|generate-standard|integration-test|setup-qa-instrument|setup-qa-visual-instrument|pixel-wizard|pull-all|pull-project|push-all|push-project|push-agent-work|push-exclude-policy|wait-options-coding|ask-agent|delegate-agent|setup-fleet|update-project-context|load-project-context)\b'
 
 leaks=0
 for f in "${CORE_FILES[@]}"; do

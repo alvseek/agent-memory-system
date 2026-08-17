@@ -80,6 +80,8 @@ control-files/
 │   ├── wrap-up.md                     # End-of-session memory capture (memory-only)
 │   ├── push-memory.md                 # Persist the memory store (git push)
 │   ├── pull-memory.md                 # Sync the memory store (git pull + submodule)
+│   ├── list-agents.md                 # Roster of every agent in the store
+│   ├── wait-options.md                # How a decision is presented for an answer
 │   ├── memory/                        # Memory management procedures
 │   │   ├── update-memory.md           # Comprehensive memory update
 │   │   ├── update-episodic.md         # Episodic memory update
