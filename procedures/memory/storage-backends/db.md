@@ -197,3 +197,43 @@ There is no per-file read limit here; the cap applies to the **whole payload** (
 ### § read-agent-identity
 
 **Deferred.** Once enumeration exists, map to `awaken(domain)` (or a `get`/`query` on the agent's identity record) to read the agent's Name + Role from its `identity` layer server-side — no file read.
+
+---
+
+## create-agent
+
+> Unlike `list-agents`, this **is** implementable on the current tool surface. Enumeration needs a "distinct `agent_id`" primitive that does not exist; creation only needs to write records under a domain you already named, and `insert` accepts any `agent_id`. An agent exists exactly when it has records — there is no directory to make.
+
+### § check-agent-exists
+
+`query(agent_id="<domain>", record_type="identity")`. A non-empty result means the agent already exists; an empty one means the domain is free. This is a targeted lookup, not an enumeration, which is why it works here.
+
+### § generate-uuid
+
+**No shell command.** The agent's UUID is *content* — it lives in the identity record's body as the agent's digital soul. Generate any UUID for it; the record's own storage `uuid` returned by `insert` is a separate identifier and not a substitute.
+
+### § create-agent-store
+
+**No action.** There is no home to seed — no folder, no file copy, no template tree. The record types (`identity` · `reasoning` · `emotional` · `knowledge` · `episode`) already *are* the skeleton the markdown template provides, so the agent comes into being with its first insert in **§ persist-identity**.
+
+### § persist-identity
+
+Insert **three** `identity` records, mirroring the three sections the markdown template ships:
+
+- `insert(agent_id="<domain>", record_type="identity", title="Agent Identity", content="<name, role, main purpose, the three responsibilities, created date, UUID>")`
+- `insert(agent_id="<domain>", record_type="identity", title="Core Domain Knowledge", content="<empty — the agent grows this through use>")`
+- `insert(agent_id="<domain>", record_type="identity", title="Domain RAS", content="<empty — triggers are added as they emerge>")`
+
+Three records, not one: `awaken` returns `identity` as the agent's whole always-load private layer, and keeping the split means a DB-born agent and a markdown-born agent wake up with the same shape.
+
+Shared memory needs nothing — the `__shared__` records already exist for the fleet and every agent reads them through `awaken`.
+
+### § initialize-index
+
+**No action.** The episodic and knowledge indexes are derived `SELECT`s over the agent's records; an agent with no episodes simply returns empty ones. There is no index file to seed.
+
+### § verify-agent
+
+`awaken("<domain>")` and confirm the payload comes back with: three `identity` items, the UUID present and matching 8-4-4-4-12 in the identity body, empty `episodic_index` / `knowledge_index` (correct for a new agent), and the `__shared__` layers populated — an empty `shared` here means the store's foundations are missing, which is a fleet-level problem and not this agent's.
+
+If `awaken` returns nothing for the domain, the inserts did not land. Report that rather than retrying blindly — a half-inserted agent will read as existing to the next **§ check-agent-exists**.

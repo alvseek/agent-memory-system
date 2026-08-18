@@ -241,3 +241,70 @@ For each domain, read the identity header at the top of `[AGENT-MEMORY-PATH]/age
 - **Role** — the `**Role**:` line value; if absent, fall back to the first line of `**Main Purpose**:`.
 
 Read only the header region (roughly the first 15 lines) rather than the whole file — the scan spans ~30 agents, so keep each read cheap.
+
+---
+
+## create-agent
+
+### § check-agent-exists
+
+Check for an identity file at the agent's home:
+
+- **Windows**: `Test-Path "[AGENT-MEMORY-PATH]\agent-[domain]\agent-core-memory.md"`
+- **Linux/macOS**: `test -f "[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md"`
+
+A directory that exists but holds no identity file is a **partial creation**, not an agent — report it rather than silently completing it.
+
+### § generate-uuid
+
+Generate a unique identifier:
+- **Windows**: `powershell -c "[guid]::NewGuid().ToString()"`
+- **Linux/macOS**: `uuidgen` or `cat /proc/sys/kernel/random/uuid`
+
+### § create-agent-store
+
+Seed the home by copying the **two per-agent files** out of the template, then creating the two memory directories:
+
+- **Windows**:
+  ```
+  New-Item -ItemType Directory -Force "[AGENT-MEMORY-PATH]\agent-[domain]\episodes", "[AGENT-MEMORY-PATH]\agent-[domain]\knowledge-base"
+  Copy-Item "[AGENT-MEMORY-PATH]\control-files\new-agent-template\agent-core-memory.md" "[AGENT-MEMORY-PATH]\agent-[domain]\"
+  Copy-Item "[AGENT-MEMORY-PATH]\control-files\new-agent-template\agent-memory-index.md" "[AGENT-MEMORY-PATH]\agent-[domain]\"
+  ```
+- **Linux/macOS**:
+  ```
+  mkdir -p "[AGENT-MEMORY-PATH]/agent-[domain]/episodes" "[AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base"
+  cp "[AGENT-MEMORY-PATH]/control-files/new-agent-template/agent-core-memory.md" "[AGENT-MEMORY-PATH]/agent-[domain]/"
+  cp "[AGENT-MEMORY-PATH]/control-files/new-agent-template/agent-memory-index.md" "[AGENT-MEMORY-PATH]/agent-[domain]/"
+  ```
+
+Copy those two files **only**. `new-agent-template/shared-memory/` is a virgin-store seed for a fleet that has no shared memory yet (see `§ recover-missing-foundations`) — shared memory is fleet-wide, lives once at the store root, and must never be copied into an agent's folder.
+
+### § persist-identity
+
+Substitute the drafted values throughout the two seeded files:
+
+- `[DOMAIN]` → the domain in display form (`frontend-react` → `Frontend React`)
+- `[domain]` on the **Folder** line → the domain slug
+- `[USER-NAME]` → the user's name, matching the rest of the fleet
+- `[DATE]` → today's date, `date '+%Y-%m-%d'`
+- `[CLEAR MISSION STATEMENT - What specific value this agent provides]` → the Main Purpose
+- `[Key responsibility 1]` / `[Key responsibility 2]` / `[Key responsibility 3]` → the three responsibilities
+- `[GENERATE-NEW-UUID]` → the UUID from **§ generate-uuid**
+
+Leave the `<!-- content here -->` markers and the RAS / emotional example blocks in place — they are the shape the agent grows into, not unfinished work.
+
+### § initialize-index
+
+Nothing beyond the copy: `agent-memory-index.md` arrives from the template with both index sections (`# Recent Context Episodes`, `# Core Knowledge Base`) present and empty. Its `[DOMAIN]` placeholders are replaced as part of **§ persist-identity**.
+
+### § verify-agent
+
+Read `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` back and confirm:
+
+- the `**Name**:`, `**Role**:` and `**UUID**:` lines carry real values;
+- the UUID matches 8-4-4-4-12;
+- **no placeholder survives** in either file — `grep -n '\[DOMAIN\]\|\[domain\]\|\[GENERATE-NEW-UUID\]\|\[DATE\]\|\[USER-NAME\]'` returns nothing;
+- `episodes/` and `knowledge-base/` both exist.
+
+Report any failure precisely. A partially-created agent is worse than none, because the next **§ check-agent-exists** will treat it as already existing.

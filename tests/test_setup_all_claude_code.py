@@ -18,7 +18,10 @@ si = importlib.util.module_from_spec(_spec)
 sys.modules["cf_setup"] = si
 _spec.loader.exec_module(si)
 
-_KNOWN = {"awaken-agent", "wrap-up", "add-reasoning", "update-episodic", "load-knowledge"}
+_KNOWN = {
+    "awaken-agent", "wrap-up", "add-reasoning", "update-episodic",
+    "load-knowledge", "create-agent",
+}
 _NON_SEAM = {"refresh-memory", "push-memory", "pull-memory", "wait-options"}
 
 # of those, the ones referencing no component either — installing is then a pure copy.

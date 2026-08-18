@@ -14,6 +14,7 @@ CORE_FILES=(
   "$ROOT/procedures/wrap-up.md"
   "$ROOT/procedures/push-memory.md"
   "$ROOT/procedures/pull-memory.md"
+  "$ROOT/procedures/create-agent.md"
   "$ROOT/procedures/list-agents.md"
   "$ROOT/procedures/wait-options.md"
 )

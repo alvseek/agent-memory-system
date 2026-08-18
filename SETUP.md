@@ -150,27 +150,14 @@ For detailed architecture information, see the [Architecture Documentation](ARCH
 
 ## Creating New Agents
 
-### Step 1: Copy the Template
-1. Copy the entire `new-agent-template/` folder and subfolder:
-   `cp -r control-files/new-agent-template agent-[DOMAIN]`
-2. Replace `[DOMAIN]` with your specific domain (e.g., `frontend`, `backend`, `qa`)
-3. Navigate into your new agent folder
+Run `/create-agent [domain]` — it seeds the agent's memory home, writes its identity, and verifies the result can be awakened. The command drafts the four identity fields (name, role, main purpose, three responsibilities) from the domain name and asks you to correct them, generates the UUID, and confirms before writing anything.
 
-### Step 2: Replace Domain Placeholders
-Replace all instances of `[DOMAIN]` with your specific domain:
-- `agent-core-memory.md` - Main flattened agent file (identity + knowledge + RAS + emotional)
-- `agent-memory-index.md` - Episode list and knowledge directory
-- Inside all the copied `.md` files, replace `[DOMAIN]` with your domain name
-
-### Step 3: Update Agent Identity
-- Update agent identity, role, and purpose in `agent-core-memory.md`
-- Generate a new UUID for the agent
-
-**Key Placeholders to Replace in `agent-core-memory.md`:**
-```markdown
-# Core Instruction - [DOMAIN] Agent -> # Core Instruction - Frontend Agent
-**Name**: Agent [DOMAIN] -> **Name**: Agent Frontend
-**Role**: [DOMAIN] Agent -> **Role**: Frontend Agent
-**Main Purpose**: [Description] -> **Main Purpose**: [Domain specific purpose]
-**UUID**: [GENERATE-NEW-UUID] -> **UUID**: [Your new UUID]
 ```
+/create-agent frontend-react
+```
+
+Everything else in a new agent — core domain knowledge, RAS triggers, reasoning patterns, emotional moments — starts empty by design and grows through use. Bring the agent up for the first time with `/awaken-agent [domain]`.
+
+The command works on either storage backend: on the markdown fleet it copies the two per-agent files out of `new-agent-template/` and creates the agent's `episodes/` and `knowledge-base/` directories; on the DB backend it inserts the agent's identity records, since there is no folder to make. Note that `new-agent-template/shared-memory/` is **not** part of an agent — it is a virgin-store seed for a fleet that has no shared memory yet, and shared memory lives once at the store root.
+
+If you need to do it by hand — recovering a partially-created agent, or working without the installed commands — the concrete steps for each backend are in `procedures/memory/storage-backends/markdown.md` and `db.md`, under `## create-agent`.

@@ -22,7 +22,10 @@ _spec.loader.exec_module(cc)
 
 # procedures every healthy tree carries — asserted by presence, not exact count (a WIP
 # copy or a newly-added procedure shouldn't break the suite).
-_KNOWN = {"add-reasoning", "awaken-agent", "wrap-up", "update-episodic", "load-knowledge"}
+_KNOWN = {
+    "add-reasoning", "awaken-agent", "wrap-up", "update-episodic",
+    "load-knowledge", "create-agent",
+}
 
 # command procedures with no seam — compiled without seam composition.
 _NON_SEAM = {"refresh-memory", "push-memory", "pull-memory"}
