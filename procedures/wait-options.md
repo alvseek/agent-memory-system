@@ -72,10 +72,15 @@ For each decision:
 - Mark recommended default with **confidence signal**: `✓✓` (strong, clear evidence) or `✓?` (uncertain, genuine tradeoff)
 - Include **per-option analysis** (pros/cons) on indented lines below each option — only when applicable (skip for self-explanatory options)
 - After the options, include a **reason paragraph** explaining the recommendation and tradeoffs
-- If any questions remain that don't fit into options format, collect them as **named open questions** (OQ1, OQ2, ...) to present alongside decisions
 - Include the mandatory technical disclosure in the decision context whenever the decision commits to a mechanism — expressed at the altitude that decision lives
 
 Order decisions by dependency (foundational choices first, dependent ones after).
+
+### Decisions vs Open Questions
+
+Not everything you need from [USER-NAME] is a decision. The test is whether answering requires him to choose between alternatives you have to lay out: two to four **distinct courses of action** earn the options block above, while anything he can answer without reading one is a **named open question** (OQ1, OQ2, ...), collected after the decisions. That covers the genuinely open point the name comes from — no settled answer yet, needs discussion — and equally the plain binary, since "no" is only the absence of "yes" and rendering it as `A) yes  B) no` adds ceremony without adding information.
+
+A binary still owes what any decision owes. Name the mechanism on its line when it commits to one, and give it the full decision shape anyway when it lands in Zone E — risky, irreversible, or depended on by others — because the cost asymmetry that justifies asking is the same asymmetry that justifies the disclosure.
 
 ---
 
@@ -90,7 +95,7 @@ These formatting rules ensure WAIT Options are scannable and readable:
 5. **Per-option pros/cons** as indented lines under each option inside the blockquote (`> - pro/con`) — only when applicable
 6. **Reason paragraph** as bullet-indented text after the options block, analyzing the recommendation
 7. **Context group separators** — use `---` between different context groups
-8. **Open questions** — listed after the last context group, before the reply instruction
+8. **Open questions** — plain lines after the last context group, before the reply instruction; no blockquote and no confidence marks, since the absence of an options block is what distinguishes them from decisions
 
 ---
 
@@ -150,8 +155,8 @@ Use this template when presenting decisions to [USER-NAME]. Replace `[preamble]`
   ([Reason explaining the uncertainty.])
 
 **Open questions:** (if any)
-- OQ1: [Question about ambiguous aspect that doesn't fit options]
-- OQ2: [Question about missing context]
+- OQ1: [Open point with no settled answer yet — needs discussion, not a choice]
+- OQ2: [Plain binary — yes/no or do/don't, naming the mechanism if it commits to one]
 
 Reply with changes (e.g., "change 2 to B", "OQ1: answer") or "let's proceed" to accept all defaults.
 ````
