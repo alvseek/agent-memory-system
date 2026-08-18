@@ -47,10 +47,10 @@ The agent who runs `/map-orientation create` for the first time scans ALL orient
 - **roles**: []
 - **status**: useful
 - **tags**: [overview, entry-point, framework]
-- **last_verified**: "2026-08-17"
-- **verified_by**: "meta"
+- **last_verified**: "2026-08-18"
+- **verified_by**: "meta / create-agent session"
 - **update_trigger**: "when framework procedures, slash commands, wizard hierarchy, or setup steps change"
-- **notes**: "Top-level framework README. 7Q-style: What Is This / How Do I Set It Up / How Do I Use It / How Does It Work Inside / What Decisions Were Made. First read for new contributors and agents."
+- **notes**: "Top-level framework README. 7Q-style: What Is This / How Do I Set It Up / How Do I Use It / How Does It Work Inside / What Decisions Were Made. First read for new contributors and agents. 2026-08-18: the Core Operational Commands table had drifted — it listed neither `/list-agents` nor `/wait-options`; all three (with the new `/create-agent`) are now present, core command set 15 -> 16."
 
 ### `ARCHITECTURE.md`
 
@@ -71,10 +71,10 @@ The agent who runs `/map-orientation create` for the first time scans ALL orient
 - **roles**: []
 - **status**: useful
 - **tags**: [setup, installation, environment, claude-code, codex, new-agent]
-- **last_verified**: "2026-08-14"
-- **verified_by**: "meta"
+- **last_verified**: "2026-08-18"
+- **verified_by**: "meta / create-agent session"
 - **update_trigger**: "when setup scripts change, supported environments change, or agent creation procedure changes"
-- **notes**: "Step-by-step setup guide for Claude Code and Codex; includes environment setup, tool output token limits, manual setup, and creating new agents."
+- **notes**: "Step-by-step setup guide for Claude Code and Codex; includes environment setup, tool output token limits, manual setup, and creating new agents. 2026-08-18: the Creating New Agents section was rewritten around `/create-agent` — it previously gave a three-step manual recipe whose `cp -r new-agent-template agent-[DOMAIN]` wrongly copied the fleet-wide `shared-memory/` into the agent; the manual steps are now demoted to a recovery path pointing at the two storage-backend files."
 
 ### `MCP.md`
 
