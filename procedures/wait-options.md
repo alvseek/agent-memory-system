@@ -2,13 +2,13 @@
 
 Reusable format definition for **WAIT Options** (What Am I Thinking? Options) — the structured pattern for surfacing a decision to [USER-NAME] and collecting an answer. It is the single source of truth for that format, so any procedure that needs to ask something references it instead of defining the format inline.
 
-What it defines is **how** to present a decision, never **which** decisions are yours. This file is deliberately caller-blind: it does not know who invoked it, what scope that caller works at, or what belongs in their decision set — a caller that needs to bound its own decision set declares that in its own procedure. The same blindness applies to altitude: it requires that the technical core of a decision be named, without assuming what nouns that decision is made of.
+What it defines is **how** to present a decision. This file is deliberately caller-blind: it does not know who invoked it, what scope that caller works at, or what belongs in their decision set — a caller that needs to bound its own decision set declares that in its own procedure. The same blindness applies to altitude: it requires that the technical core of a decision be named, without assuming what nouns that decision is made of.
 
 ---
 
 ## What to Surface
 
-Not every decision warrants WAIT Options. Use this taxonomy to decide which of *your* decisions to surface and which to write directly into the plan. It classifies a decision you already hold — one that is not yours at this altitude should not be zoned here at all, but handed to whoever owns it.
+Not every decision warrants a question to be presented in WAIT Options. Use this taxonomy to decide which of *your* decisions to surface and which to write directly into the plan. It classifies a decision you already hold — one that is not yours at this altitude should not be zoned here at all, but handed to whoever owns it.
 
 ### Zone Taxonomy
 
@@ -37,11 +37,13 @@ Decisions in Zone A and Zone B (written through, not asked) still belong in the 
 
 ### Context Grouping
 
-Always group decisions under at least one **context heading** — a bold label + brief explanation of what area the decisions relate to. When decisions span multiple topics, use multiple context headings separated by `---`. Each heading names the area and explains *why* these decisions are needed.
+Always group decisions under at least one **context heading** — a bold label plus a brief explanation of what area the decisions relate to and *why* they are needed. When decisions span multiple topics, use multiple context headings separated by `---`.
+
+What the groups are organized *by* is the caller's to choose: a findings review may group by severity, a plan by milestone or phase. Any axis works, as long as each group carries a heading and the per-decision format below is preserved.
 
 ### Context Depth
 
-For each decision, provide context so [USER-NAME] can evaluate options without scrolling back to the investigation. Use this checklist — include each item that applies:
+For each decision, provide a short clean, slim, lean, effective, and in plain words context so [USER-NAME] can evaluate options without scrolling back to the investigation. Use this checklist — include each item that applies:
 
 1. **Problem statement** — What is the issue or gap being decided on
 2. **Evidence / code references** — What was found in the codebase, architecture, or docs that informs this
@@ -56,9 +58,7 @@ Not every decision needs all 4 — a simple naming choice may only need the prob
 
 Even when the direction is already clear to the agent, [USER-NAME] still needs visibility into the core of what is being committed to. Always name the concrete mechanism in the decision context — named, not gestured at.
 
-**Express it at the altitude the decision lives.** The calling procedure defines that altitude; this file does not. A decision about where a milestone boundary falls and a decision about how a function is written both have a technical core, but they are not made of the same nouns — disclosing one in the vocabulary of the other either commits prematurely or invents detail.
-
-Do not hide the mechanism just because there is no ambiguity. WAIT Options should surface it so [USER-NAME] can make informed decisions.
+Do not hide the mechanism, jargon, and project specific terms just because there is no ambiguity. WAIT Options should surface it so [USER-NAME] can make informed decisions.
 
 ### Concrete Examples & Visualizations
 
@@ -76,11 +76,28 @@ For each decision:
 
 Order decisions by dependency (foundational choices first, dependent ones after).
 
-### Decisions vs Open Questions
+### Open Questions
 
-Not everything you need from [USER-NAME] is a decision. The test is whether answering requires him to choose between alternatives you have to lay out: two to four **distinct courses of action** earn the options block above, while anything he can answer without reading one is a **named open question** (OQ1, OQ2, ...), collected after the decisions. That covers the genuinely open point the name comes from — no settled answer yet, needs discussion — and equally the plain binary, since "no" is only the absence of "yes" and rendering it as `A) yes  B) no` adds ceremony without adding information.
+Not everything you need from [USER-NAME] is a decision, and the two blur because both
+arrive on the page as a question. What separates them is whether you can write the
+answers down. A decision is a choice between courses of action you have already worked
+out: you did the investigation, you hold the alternatives, and what remains is the
+judgment only he can apply. A yes/no or do/don't is one of these — two courses of action
+is two, and presenting it as a decision gives him the confidence mark and the reason that
+a bare question would drop. An open question asks for something that was never yours to
+work out — how the app is really used, how much a feature matters to him, what he intends
+by something you have no way to derive. There is nothing to enumerate because the answer
+lives with him.
 
-A binary still owes what any decision owes. Name the mechanism on its line when it commits to one, and give it the full decision shape anyway when it lands in Zone E — risky, irreversible, or depended on by others — because the cost asymmetry that justifies asking is the same asymmetry that justifies the disclosure.
+So the test, run before you write either shape: **can I set out the answers?** Two to four
+real courses of action means you have a decision and owe him the options block above. An
+answer he would have to tell you — a fact about his world, a priority, an intent — means
+you owe him a plain question instead.
+
+Open questions are collected as `OQ1, OQ2, ...` after the decisions, each a plain line: no
+blockquote, no confidence mark, no options. The absence of an options block is what tells
+him at a glance which shape he is looking at, and there is nothing to be confident *about*
+when you are asking him to tell you something only he knows.
 
 ---
 
@@ -156,7 +173,7 @@ Use this template when presenting decisions to [USER-NAME]. Replace `[preamble]`
 
 **Open questions:** (if any)
 - OQ1: [Open point with no settled answer yet — needs discussion, not a choice]
-- OQ2: [Plain binary — yes/no or do/don't, naming the mechanism if it commits to one]
+- OQ2: [Something only he can tell you — how this is used in practice, how much it matters to him]
 
 Reply with changes (e.g., "change 2 to B", "OQ1: answer") or "let's proceed" to accept all defaults.
 ````
@@ -166,20 +183,3 @@ Reply with changes (e.g., "change 2 to B", "OQ1: answer") or "let's proceed" to 
 ## Re-evaluation Rule
 
 If [USER-NAME] changes a foundational decision that affects downstream decisions, re-evaluate and re-present affected decisions before continuing.
-
----
-
-## Customization Guidance
-
-The split is between **shape** and **scope**: the shape of a presented decision is fixed so every procedure looks the same to [USER-NAME]; the scope — *which* decisions belong in the set at all — is the caller's, and this file has no opinion on it.
-
-**Fixed — do not modify per-procedure:**
-- **Core format** — context depth + options + confidence signals + per-option analysis + reason + open questions
-- **Presentation style** — bullet-indented explanation, blockquoted options, bullet-indented reason
-- **Reply instruction** — always include it so [USER-NAME] knows how to respond
-
-**Caller-owned — decide these in your own procedure:**
-- **Scope** — which decisions belong at your altitude, and which belong to something you delegate to. This file cannot know that; do not read the fixed shape above as a claim that it can.
-- **Technical disclosure vocabulary** — the mechanism you name is the one your altitude is made of (see *Critical Technical Disclosure*)
-- **Preamble text** — match it to your context (planning decisions, requirements, quality findings, gap analysis, etc.)
-- **Context grouping** — a findings review may group by severity, a plan by milestone or phase, as long as each group has a heading and the per-decision format is preserved
