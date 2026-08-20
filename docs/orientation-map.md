@@ -70,11 +70,11 @@ The agent who runs `/map-orientation create` for the first time scans ALL orient
 - **scope**: shared
 - **roles**: []
 - **status**: useful
-- **tags**: [setup, installation, environment, claude-code, codex, new-agent]
-- **last_verified**: "2026-08-18"
-- **verified_by**: "meta / create-agent session"
+- **tags**: [setup, installation, environment, claude-code, codex, new-agent, remote-control]
+- **last_verified**: "2026-08-20"
+- **verified_by**: "meta"
 - **update_trigger**: "when setup scripts change, supported environments change, or agent creation procedure changes"
-- **notes**: "Step-by-step setup guide for Claude Code and Codex; includes environment setup, tool output token limits, manual setup, and creating new agents. 2026-08-18: the Creating New Agents section was rewritten around `/create-agent` — it previously gave a three-step manual recipe whose `cp -r new-agent-template agent-[DOMAIN]` wrongly copied the fleet-wide `shared-memory/` into the agent; the manual steps are now demoted to a recovery path pointing at the two storage-backend files."
+- **notes**: "Step-by-step setup guide for Claude Code and Codex; includes environment setup, tool output token limits, Remote Control, manual setup, and creating new agents. 2026-08-18: the Creating New Agents section was rewritten around `/create-agent` — it previously gave a three-step manual recipe whose `cp -r new-agent-template agent-[DOMAIN]` wrongly copied the fleet-wide `shared-memory/` into the agent; the manual steps are now demoted to a recovery path pointing at the two storage-backend files. 2026-08-20: a Remote Control section was added covering `remoteControlAtStartup: false`, the project-level override that wins in the disabling direction, and the fact that the Claude Code settings step now writes the key itself."
 
 ### `MCP.md`
 
