@@ -40,7 +40,7 @@ Innermost submodule first:
 2. `git diff --cached --stat` to confirm. **If nothing staged AND branch not ahead** (`git status -sb` shows no `[ahead N]`), this repo/submodule is already done → skip silently.
 3. Otherwise **commit** (provided message, or auto-generate — e.g. `update: episodic memories + reasoning patterns`), then **`git push`**.
 
-> **Message style — self-contained.** Describe *what changed + why* in plain prose. Never reference plan-internal or process artifacts — decision letters (`A1`, `OQ2`), ADR numbers (`ADR-10`), or plan step/phase numbers. A `git log` reader won't have the plan open. (See the *Commit Message — Self-Contained* git fundamental.)
+> **Message style — self-contained.** Describe *what changed + why* in plain prose. Never reference plan-internal or process artifacts — decision letters (`A1`, `OQ2`), ADR numbers (`ADR-10`), or plan step/phase numbers. A `git log` reader won't have the plan open.
 
 4. After pushing the **`control-files/` submodule**, stage + commit its updated pointer in the agent-memory superproject.
 5. Treat a **non-zero `git push` exit** as a failure — carry it to Step 4.
