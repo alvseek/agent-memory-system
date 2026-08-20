@@ -2,7 +2,7 @@
 
 Concrete storage mechanics for the **DB-backed** world. Each `## [procedure]` section maps the procedure's `§ op`s onto the 8 generic Munnin data tools: `awaken` · `get` · `query` · `search` · `insert` · `edit` · `archive` · `soft_delete`. See the [seam contract](README.md).
 
-> **Model**: one uniform record per memory item (`user_id`/`agent_id`/`record_type`/`project`/`title`/`tags`/dates + `full_content`). `user_id` is stamped server-side. The index is a **derived `SELECT`** (`query`), never a hand-edited file — so index-maintenance steps in the markdown backend become **no-ops** here. `agent_id` = a kebab domain or the reserved `__shared__`. Episodes are stored **one record per episode file** (a rolling body of newest-first `---`-separated H3 sub-episodes).
+> **Model**: an **agent** is an entity with a row of its own, and memory belongs to it. One uniform record per memory item (`user_id`/`agent_id`/`record_type`/`project`/`title`/`tags`/dates + `full_content`), where `agent_id` is always a real kebab domain the store checks against the agent table — there is no sentinel value. **Fleet-shared memory** (reasoning + knowledge that belongs to no agent) lives apart and is written with `scope="shared"`, which takes no `agent_id` at all. `user_id` is stamped server-side. The index is a **derived `SELECT`** (`query`), never a hand-edited file — so index-maintenance steps in the markdown backend become **no-ops** here. Episodes are stored **one record per episode file** (a rolling body of newest-first `---`-separated H3 sub-episodes).
 
 ---
 
@@ -158,7 +158,7 @@ The records you wrote this session ARE the promotions — list the reasoning / k
 
 **One call** — `awaken(domain)` (MCP tool) or `GET /api/awaken?agent_id=<domain>` (HTTP). It assembles and returns the agent's memory payload from Valaskjalf server-side:
 
-- `shared.reasoning` + `shared.knowledge` — the `__shared__` always-load layer (layer i).
+- `shared.reasoning` + `shared.knowledge` — the fleet-shared always-load layer (layer i), read from the shared table rather than from any agent.
 - `identity` + `reasoning` + `emotional` — this agent's own records, whole (layer ii). `identity` includes the agent's core knowledge and RAS triggers.
 - `knowledge_index` + `episodic_index` — metadata-only indexes; bodies via `get(uuid)` / `search(text)` on demand (layer iii).
 - `latest_episode` — the newest episode's full body.
@@ -169,10 +169,10 @@ No file reads, no parallel Reads — the 4-layer assembly is a single derived ca
 
 ### § recover-missing-foundations
 
-Nothing is missing *from disk* — this backend has no `shared-memory/` directory. The shared foundations are the `__shared__` records inside `awaken`'s payload, and a store with none returns **200 with empty fields** rather than failing, so there is no error to notice. Diagnose before acting:
+Nothing is missing *from disk* — this backend has no `shared-memory/` directory. The shared foundations are the fleet-shared records inside `awaken`'s payload, and a store with none returns **200 with empty fields** rather than failing, so there is no error to notice. Diagnose before acting:
 
 - **Other layers also short or cut mid-record** → the payload was **truncated in transit** (the MCP tool-result cap), not empty at rest. The store is probably fine; the transport is not.
-- **Only `shared.reasoning` / `shared.knowledge` empty** → the store genuinely holds no `__shared__` records for this user (importer never run, or the wrong `agent_id`).
+- **Only `shared.reasoning` / `shared.knowledge` empty** → the store genuinely holds no fleet-shared records for this user (importer never run, or the wrong tenant). Note this is **not** an agent-scoping mistake: fleet memory has no `agent_id` to get wrong.
 
 Recovery is **server-side** — seed the records (importer / `insert`). A file copy is meaningless here; never offer one. Report which of the two it is and STOP: do not fabricate the foundations and do not continue on partial context (`c4e7a19f`).
 
@@ -192,11 +192,11 @@ There is no per-file read limit here; the cap applies to the **whole payload** (
 
 ### § list-agent-domains
 
-`list_agents()`. Returns one entry per agent — `agent_id`, `name`, `role` — sorted by domain, with the reserved `__shared__` sentinel excluded. An agent exists exactly when it has records, archived ones included: archiving retires a memory *item* from the hot index, and there is no operation that retires an agent.
+`list_agents()`. Returns one entry per agent — `agent_id`, `name`, `role` — sorted by domain. An agent appears because it **has a row**, not because memory happens to mention it, so a newly created agent with no memory yet is listed from the moment it exists, and an agent whose every record is archived or tombstoned is still listed. Archiving and deleting retire a memory *item*; no operation retires an agent.
 
 ### § read-agent-identity
 
-**Already answered** — the `name` and `role` fields come back on each entry from **§ list-agent-domains**, read server-side from the agent's `identity` layer. Do not call `awaken(domain)` per agent to fill them in: `awaken` returns that agent's whole always-load payload including the fleet-shared layers, so a roster built that way costs the entire store and overruns the client's output cap.
+**Already answered** — the `name` and `role` fields come back on each entry from **§ list-agent-domains**, read straight off the agent's own columns (they are parsed once, at import, not on every call). Do not call `awaken(domain)` per agent to fill them in: `awaken` returns that agent's whole always-load payload including the fleet-shared layers, so a roster built that way costs the entire store and overruns the client's output cap.
 
 An agent with no readable identity returns `name` and `role` as `null`. Keep it in the roster with role `(no identity recorded)` — that state is a finding worth seeing, not a row to drop.
 
@@ -204,23 +204,27 @@ An agent with no readable identity returns `name` and `role` as `null`. Keep it 
 
 ## create-agent
 
-> Unlike `list-agents`, this **is** implementable on the current tool surface. Enumeration needs a "distinct `agent_id`" primitive that does not exist; creation only needs to write records under a domain you already named, and `insert` accepts any `agent_id`. An agent exists exactly when it has records — there is no directory to make.
+> Creation here is genuinely two steps, and the order is enforced by the store rather than by convention: an agent is a **row**, and every memory record names an owner the store checks against it. So `create_agent` comes first and `insert` cannot run before it. There is still no directory to make — but there is now something to create, which is the difference between this backend and the one it replaced, where an agent existed only as a side effect of having records.
 
 ### § check-agent-exists
 
-`query(agent_id="<domain>", record_type="identity")`. A non-empty result means the agent already exists; an empty one means the domain is free. This is a targeted lookup, not an enumeration, which is why it works here.
+`list_agents()` and look for the domain. This reads the agent table directly, so it answers about the *entity* rather than about whether any memory happens to mention it — which also means it correctly reports an agent that exists but has written nothing yet.
+
+You may skip the lookup and let **§ create-agent-store** fail instead: creation refuses a domain that is taken, so the check is a courtesy that gives a clearer message, never the thing keeping the store consistent.
 
 ### § generate-uuid
 
-**No shell command.** The agent's UUID is *content* — it lives in the identity record's body as the agent's digital soul. Generate any UUID for it; the record's own storage `uuid` returned by `insert` is a separate identifier and not a substitute.
+**No shell command.** The agent's UUID is *content* — its digital soul, carried in the identity body and stored on the agent row's `uuid` column. Generate any UUID for it; a memory record's own storage `uuid` is a separate identifier and not a substitute.
 
 ### § create-agent-store
 
-**No action.** There is no home to seed — no folder, no file copy, no template tree. The record types (`identity` · `reasoning` · `emotional` · `knowledge` · `episode`) already *are* the skeleton the markdown template provides, so the agent comes into being with its first insert in **§ persist-identity**.
+`create_agent(agent_id="<domain>", name="<name>", role="<role>", uuid="<the generated UUID>")`.
+
+This is the agent coming into being — the row its memory will point at. It **refuses a domain that already exists** rather than refreshing it, so re-running creation over a live agent raises instead of silently rewriting that agent's name. Nothing else needs seeding: the record types (`identity` · `reasoning` · `emotional` · `knowledge` · `episode`) already *are* the skeleton the markdown template provides as files.
 
 ### § persist-identity
 
-Insert **three** `identity` records, mirroring the three sections the markdown template ships:
+With the agent created, insert **three** `identity` records, mirroring the three sections the markdown template ships:
 
 - `insert(agent_id="<domain>", record_type="identity", title="Agent Identity", content="<name, role, main purpose, the three responsibilities, created date, UUID>")`
 - `insert(agent_id="<domain>", record_type="identity", title="Core Domain Knowledge", content="<empty — the agent grows this through use>")`
@@ -228,7 +232,9 @@ Insert **three** `identity` records, mirroring the three sections the markdown t
 
 Three records, not one: `awaken` returns `identity` as the agent's whole always-load private layer, and keeping the split means a DB-born agent and a markdown-born agent wake up with the same shape.
 
-Shared memory needs nothing — the `__shared__` records already exist for the fleet and every agent reads them through `awaken`.
+If any of these is refused with a foreign-key error, **§ create-agent-store** did not run or did not succeed — fix that rather than retrying the insert.
+
+Fleet-shared memory needs nothing: it belongs to no agent, lives in its own table, and every agent already reads it through `awaken`.
 
 ### § initialize-index
 
@@ -236,6 +242,8 @@ Shared memory needs nothing — the `__shared__` records already exist for the f
 
 ### § verify-agent
 
-`awaken("<domain>")` and confirm the payload comes back with: three `identity` items, the UUID present and matching 8-4-4-4-12 in the identity body, empty `episodic_index` / `knowledge_index` (correct for a new agent), and the `__shared__` layers populated — an empty `shared` here means the store's foundations are missing, which is a fleet-level problem and not this agent's.
+`awaken("<domain>")` and confirm the payload comes back with: three `identity` items, the UUID present and matching 8-4-4-4-12 in the identity body, empty `episodic_index` / `knowledge_index` (correct for a new agent), and the fleet-shared layers populated — an empty `shared` here means the store's foundations are missing, which is a fleet-level problem and not this agent's.
 
-If `awaken` returns nothing for the domain, the inserts did not land. Report that rather than retrying blindly — a half-inserted agent will read as existing to the next **§ check-agent-exists**.
+Also confirm the domain now appears in `list_agents()` with its `name` and `role`, which is the entity half and the half `awaken` cannot report on.
+
+If `awaken` returns nothing for the domain, the inserts did not land. Report that rather than retrying blindly — the agent row will already exist, so a blind retry now fails at **§ create-agent-store** instead of at the step that actually went wrong.
