@@ -6,6 +6,7 @@
 #   - SessionStart:compact hook: Memory refresh after context compaction
 #   - Bypass permissions: Skip permission prompts for tool executions (prompted)
 #   - Disable attribution: Removes Co-Authored-By trailer from commits and PRs
+#   - Disable Remote Control: Stops the bridge auto-connecting at every session start
 #   - Read tool token limit: Increases from 10K to 64K in ~/.claude.json Statsig flag
 #
 # Uses Node.js for safe JSON merging (guaranteed available — Claude Code requires it)
@@ -113,6 +114,15 @@ if (!settings.attribution || settings.attribution.commit !== '' || settings.attr
     changed = true;
 } else {
     console.log('  = Attribution already disabled — skipping');
+}
+
+// --- Remote Control (bridge that auto-connects at every session start) ---
+if (settings.remoteControlAtStartup !== false) {
+    settings.remoteControlAtStartup = false;
+    console.log('  + Remote Control disabled (no bridge connects at session start)');
+    changed = true;
+} else {
+    console.log('  = Remote Control already disabled — skipping');
 }
 
 // --- Stop hook (audio notification with stop.wav) ---
