@@ -78,7 +78,7 @@ For a detailed breakdown of the file structure, compilation system, and memory a
 - **Bypass permissions** - prompts whether to skip permission prompts for tool executions (recommended)
 - **Disable attribution** - removes the `Co-Authored-By: Claude` trailer from commits and PRs
 - **Disable Remote Control** - sets `remoteControlAtStartup: false` so no bridge connects at session start (see [Remote Control](#remote-control))
-- **Read tool 64K limit** - increases `tengu_amber_wren.maxTokens` from 10K to 64K in `~/.claude.json` (requires restart)
+- **Read tool 64K limit** - sets `CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS` to 64K in `settings.json`, and raises `tengu_amber_wren.maxTokens` in `~/.claude.json` as a fallback (requires restart)
 
 ## Codex Setup Details
 
@@ -103,7 +103,7 @@ Claude Code's Read tool caps how many tokens a single file read returns, and an 
 
 There are two independent levers for this cap, both requiring a **Claude Code restart** to take effect. Prefer the environment variable — it is a documented, stable key that CLI updates do not reset; the Statsig flag is an internal name that updates can revert.
 
-**Recommended — environment variable** in `~/.claude/settings.json` (where the setup step already writes hooks and permissions):
+**Recommended — environment variable** in `~/.claude/settings.json` (where the setup step already writes hooks and permissions). This is the route the setup script sets first:
 
 ```json
 "env": {
@@ -111,7 +111,7 @@ There are two independent levers for this cap, both requiring a **Claude Code re
 }
 ```
 
-**Alternative — Statsig feature flag** in `~/.claude.json` (Claude Code's internal config, under `statsigValues`; default may be as low as 10K). This is the route the setup script currently automates:
+**Fallback — Statsig feature flag** in `~/.claude.json` (Claude Code's internal config, under `statsigValues`; default may be as low as 10K). The setup script raises this too, but only when the flag already exists — it cannot create it:
 
 ```json
 "tengu_amber_wren": {

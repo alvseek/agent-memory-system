@@ -125,6 +125,20 @@ if (settings.remoteControlAtStartup !== false) {
     console.log('  = Remote Control already disabled — skipping');
 }
 
+// --- Read tool file-load token cap (stable env-var lever) ---
+// The Read tool silently truncates a file over this cap, so a partial memory load
+// reads as complete. Two keys drive the same limit: this env var, and the
+// tengu_amber_wren Statsig flag in ~/.claude.json (set further below). Only this one
+// survives a CLI update — the flag has been observed reset to 25000 within hours.
+if (!settings.env) settings.env = {};
+if (!(parseInt(settings.env.CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS, 10) >= 64000)) {
+    settings.env.CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS = '64000';
+    console.log('  + Read tool token cap set to 64K (CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS in settings.json)');
+    changed = true;
+} else {
+    console.log('  = Read tool token cap already >= 64K in settings.json — skipping');
+}
+
 // --- Stop hook (audio notification with stop.wav) ---
 const hasStopHook = (settings.hooks.Stop || []).some(entry =>
     (entry.hooks || []).some(h => h.command && h.command.includes('stop.wav'))
@@ -188,7 +202,9 @@ if [ $settings_status -ne 0 ]; then
     exit $settings_status
 fi
 
-# --- Read tool token limit (64K) in ~/.claude.json ---
+# --- Read tool token limit (64K) in ~/.claude.json — FALLBACK lever ---
+# Secondary to the settings.json env var set above: this Statsig flag is reset by CLI
+# updates, and cannot be created here if it is absent (only raised when already present).
 CLAUDE_JSON_PATH="$(node -e "console.log(require('path').join(require('os').homedir(), '.claude.json'))")"
 
 if [ -f "$CLAUDE_JSON_PATH" ]; then
@@ -232,6 +248,6 @@ try {
 }
 NODEJS_READ_LIMIT
 else
-    echo "  ! ~/.claude.json not found — Read tool limit cannot be set before first Claude Code run."
-    echo "    After first run, re-run this script or manually set tengu_amber_wren.maxTokens to 64000."
+    echo "  = ~/.claude.json not found (before first Claude Code run) — skipping the fallback lever."
+    echo "    The settings.json env var set above already raises the cap; no action needed."
 fi
