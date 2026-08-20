@@ -83,6 +83,8 @@ bash /path/to/agent-memory-coding-skill/setup-scripts/setup-all-claude-code.sh
 
 Each repo installs itself — a coding agent runs both installers (they use separate manifests and coexist). For detailed setup options and manual alternatives, see the [Setup Guide](SETUP.md).
 
+> **Large memory files & the Read cap**: awakening reads a large identity file (`agent-core-memory.md`), and Claude Code's Read tool **silently truncates** an oversized read rather than erroring — so a partial identity can load looking complete. Raise the cap (the `CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS` env var, or the `tengu_amber_wren` Statsig flag) and restart. See [Setup Guide → Tool Output Token Limits](SETUP.md#tool-output-token-limits).
+
 ### Updating the Submodule
 
 Pull the latest control-files updates:

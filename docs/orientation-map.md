@@ -47,10 +47,10 @@ The agent who runs `/map-orientation create` for the first time scans ALL orient
 - **roles**: []
 - **status**: useful
 - **tags**: [overview, entry-point, framework]
-- **last_verified**: "2026-08-18"
-- **verified_by**: "meta / create-agent session"
+- **last_verified**: "2026-08-20"
+- **verified_by**: "meta"
 - **update_trigger**: "when framework procedures, slash commands, wizard hierarchy, or setup steps change"
-- **notes**: "Top-level framework README. 7Q-style: What Is This / How Do I Set It Up / How Do I Use It / How Does It Work Inside / What Decisions Were Made. First read for new contributors and agents. 2026-08-18: the Core Operational Commands table had drifted — it listed neither `/list-agents` nor `/wait-options`; all three (with the new `/create-agent`) are now present, core command set 15 -> 16."
+- **notes**: "Top-level framework README. 7Q-style: What Is This / How Do I Set It Up / How Do I Use It / How Does It Work Inside / What Decisions Were Made. First read for new contributors and agents. 2026-08-18: the Core Operational Commands table had drifted — it listed neither `/list-agents` nor `/wait-options`; all three (with the new `/create-agent`) are now present, core command set 15 -> 16. 2026-08-20: added a pointer note in the setup section warning that awakening's large identity file can be silently truncated by the Read cap, linking to the SETUP.md read-limit section."
 
 ### `ARCHITECTURE.md`
 
@@ -74,7 +74,7 @@ The agent who runs `/map-orientation create` for the first time scans ALL orient
 - **last_verified**: "2026-08-20"
 - **verified_by**: "meta"
 - **update_trigger**: "when setup scripts change, supported environments change, or agent creation procedure changes"
-- **notes**: "Step-by-step setup guide for Claude Code and Codex; includes environment setup, tool output token limits, Remote Control, manual setup, and creating new agents. 2026-08-18: the Creating New Agents section was rewritten around `/create-agent` — it previously gave a three-step manual recipe whose `cp -r new-agent-template agent-[DOMAIN]` wrongly copied the fleet-wide `shared-memory/` into the agent; the manual steps are now demoted to a recovery path pointing at the two storage-backend files. 2026-08-20: a Remote Control section was added covering `remoteControlAtStartup: false`, the project-level override that wins in the disabling direction, and the fact that the Claude Code settings step now writes the key itself."
+- **notes**: "Step-by-step setup guide for Claude Code and Codex; includes environment setup, tool output token limits, Remote Control, manual setup, and creating new agents. 2026-08-18: the Creating New Agents section was rewritten around `/create-agent` — it previously gave a three-step manual recipe whose `cp -r new-agent-template agent-[DOMAIN]` wrongly copied the fleet-wide `shared-memory/` into the agent; the manual steps are now demoted to a recovery path pointing at the two storage-backend files. 2026-08-20: a Remote Control section was added covering `remoteControlAtStartup: false`, the project-level override that wins in the disabling direction, and the fact that the Claude Code settings step now writes the key itself. 2026-08-20: the Claude Code Read Tool Limit subsection was rewritten to lead with the stable `CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS` env var (keeping the `tengu_amber_wren` Statsig flag as the automated alternative) and open with the silent-truncation-hits-awakening rationale."
 
 ### `MCP.md`
 

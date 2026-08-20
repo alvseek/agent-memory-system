@@ -99,18 +99,19 @@ Large memory files (like `agent-core-memory.md` or `agent-memory-index.md`) can 
 
 ### Claude Code Read Tool Limit
 
-Claude Code's Read tool has a default token limit controlled by a Statsig feature flag (`tengu_amber_wren`), which may be as low as 10K tokens.
+Claude Code's Read tool caps how many tokens a single file read returns, and an oversized read comes back **silently truncated** (the first N lines plus a "showing lines 1–N" notice), not as an error — so a partial load can read as complete. Awakening is where this bites: `agent-core-memory.md` grows past the default cap as the emotional layer accumulates (~26.8K tokens by 2026-08-20), and a truncated read silently drops the tail of the identity.
 
-**To increase the limit to 64K tokens**, edit `~/.claude.json` and find the `tengu_amber_wren` entry inside the `statsigValues` object:
+There are two independent levers for this cap, both requiring a **Claude Code restart** to take effect. Prefer the environment variable — it is a documented, stable key that CLI updates do not reset; the Statsig flag is an internal name that updates can revert.
+
+**Recommended — environment variable** in `~/.claude/settings.json` (where the setup step already writes hooks and permissions):
 
 ```json
-"tengu_amber_wren": {
-  "targetedRangeNudge": true,
-  "maxTokens": 10000
+"env": {
+  "CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS": "64000"
 }
 ```
 
-Change `maxTokens` to `64000`:
+**Alternative — Statsig feature flag** in `~/.claude.json` (Claude Code's internal config, under `statsigValues`; default may be as low as 10K). This is the route the setup script currently automates:
 
 ```json
 "tengu_amber_wren": {
@@ -119,7 +120,7 @@ Change `maxTokens` to `64000`:
 }
 ```
 
-> **Note**: `~/.claude.json` is Claude Code's internal config (not `settings.json`). This change survives sessions but may be reset by Claude Code updates - re-check after updating CLI versions.
+> **Note**: `~/.claude.json` is Claude Code's internal config (not `settings.json`). The Statsig change survives sessions but may be reset by Claude Code updates — re-check after updating CLI versions. The `env` key is not reset by updates, which is why it is the more durable of the two. The two are separate keys for the same limit; setting either is enough.
 
 Restart Claude Code for the change to take effect.
 
