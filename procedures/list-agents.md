@@ -56,6 +56,6 @@ If a keyword filtered the list, title it `Agents matching "[keyword]" ([N] of [t
 The operations referenced above — **§ list-agent-domains**, **§ read-agent-identity** — are defined by the **active storage backend**:
 
 - **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## list-agents`.
-- **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## list-agents`. *(Currently deferred — pending a Munnin agent-enumeration primitive.)*
+- **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## list-agents`.
 
 See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md`.

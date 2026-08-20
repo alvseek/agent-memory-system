@@ -188,15 +188,17 @@ There is no per-file read limit here; the cap applies to the **whole payload** (
 
 ## list-agents
 
-> **⚠ Deferred — not yet implementable on the DB backend.** Listing agents means enumerating *distinct* `agent_id`s across the store, but the 8 generic data tools are all **agent-scoped** (`query(agent_id=…)`, `get(uuid)`, …) — there is no "list distinct agents" primitive yet. These ops are specified here for seam parity and will be filled in when Munnin gains an agent-enumeration capability. Until then the DB face does not serve `list-agents` (it is not registered as a Prompt).
+> Both ops are answered by a **single** `list_agents()` call. Every other read here is agent-scoped — you name a domain and get its records — so enumeration needed a primitive of its own, and that primitive assembles the roster server-side rather than handing back rows to join. Discovery and identity arrive together, which is why there is one call below and not two.
 
 ### § list-agent-domains
 
-**Deferred.** Will map to a Munnin agent-enumeration call (e.g. a `SELECT DISTINCT agent_id` projection exposed as a data tool), returning each `agent_id` and excluding the reserved `__shared__` sentinel. Not available in the current 8-tool surface.
+`list_agents()`. Returns one entry per agent — `agent_id`, `name`, `role` — sorted by domain, with the reserved `__shared__` sentinel excluded. An agent exists exactly when it has records, archived ones included: archiving retires a memory *item* from the hot index, and there is no operation that retires an agent.
 
 ### § read-agent-identity
 
-**Deferred.** Once enumeration exists, map to `awaken(domain)` (or a `get`/`query` on the agent's identity record) to read the agent's Name + Role from its `identity` layer server-side — no file read.
+**Already answered** — the `name` and `role` fields come back on each entry from **§ list-agent-domains**, read server-side from the agent's `identity` layer. Do not call `awaken(domain)` per agent to fill them in: `awaken` returns that agent's whole always-load payload including the fleet-shared layers, so a roster built that way costs the entire store and overruns the client's output cap.
+
+An agent with no readable identity returns `name` and `role` as `null`. Keep it in the roster with role `(no identity recorded)` — that state is a finding worth seeing, not a row to drop.
 
 ---
 
