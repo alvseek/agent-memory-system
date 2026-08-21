@@ -159,13 +159,14 @@ The records you wrote this session ARE the promotions — list the reasoning / k
 **One call** — `awaken(domain)` (MCP tool) or `GET /api/awaken?agent_id=<domain>` (HTTP). It assembles and returns the agent's memory payload from Valaskjalf server-side:
 
 - `shared.reasoning` + `shared.knowledge` — the fleet-shared always-load layer (layer i), read from the shared table rather than from any agent.
+- `shared.user_profile` — who [USER-NAME] is (name, philosophy, agent vision), as a single whole record or `null`. Fleet memory too: it does not vary by agent. `null` means nobody has been asked yet, which is the first-run branch in Phase 1 — a record that exists with an empty value inside it is a deliberate blank and is **not** that case.
 - `identity` + `reasoning` + `emotional` — this agent's own records, whole (layer ii). `identity` includes the agent's core knowledge and RAS triggers.
 - `knowledge_index` + `episodic_index` — metadata-only indexes; bodies via `get(uuid)` / `search(text)` on demand (layer iii).
 - `latest_episode` — the newest episode's full body.
 
 No file reads, no parallel Reads — the 4-layer assembly is a single derived call.
 
-> **Not covered by the payload — and no longer needs to be**: the **awakening instructions** (the Phase 1/Phase 2 protocol) are not a record and are not served, because they are a **component** inlined into this procedure at compile time — the process rides in the prompt, the data comes from `awaken`. The **user profile** is likewise a precondition, not a substitution: it is already in the agent's context before this procedure runs (from the global instructions file on the markdown path, from `awaken`'s `user-profile` record on the DB path). See `docs/flows/awaken-db.md`.
+> **Not covered by the payload — and no longer needs to be**: the **awakening instructions** (the Phase 1/Phase 2 protocol) are not a record and are not served, because they are a **component** inlined into this procedure at compile time — the process rides in the prompt, the data comes from `awaken`. That is the whole of what the payload leaves out; the user profile used to be listed here too, and is now a record like any other (`shared.user_profile`, above). See `docs/flows/awaken-db.md` in the memory-server repo.
 
 ### § recover-missing-foundations
 
@@ -175,6 +176,14 @@ Nothing is missing *from disk* — this backend has no `shared-memory/` director
 - **Only `shared.reasoning` / `shared.knowledge` empty** → the store genuinely holds no fleet-shared records for this user (importer never run, or the wrong tenant). Note this is **not** an agent-scoping mistake: fleet memory has no `agent_id` to get wrong.
 
 Recovery is **server-side** — seed the records (importer / `insert`). A file copy is meaningless here; never offer one. Report which of the two it is and STOP: do not fabricate the foundations and do not continue on partial context (`c4e7a19f`).
+
+### § load-user-profile
+
+Already in the `awaken` payload: `shared.user_profile` is the whole record, or `null`. `null` means no profile has ever been written for this user, which is Phase 1's first-run branch. A record that exists with an empty value inside it is **not** that case — that is a deliberate blank, and re-asking it turns a one-time courtesy into a nag.
+
+### § persist-user-profile
+
+`insert(scope="shared", record_type="user_profile", title="User Profile", content="<the profile markdown>")`. No `agent_id`: the profile has no owner, and `scope="shared"` forbids one. Write **one** record carrying all three values in the same bullet form the markdown backend uses — never one record per field, because presence is answered by a row count and three rows would admit partial states with no rule for resolving them.
 
 ### § load-latest-episode
 

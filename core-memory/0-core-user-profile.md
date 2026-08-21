@@ -1,5 +1,10 @@
 ## AI Agent - User Profile
 
-- **[USER-NAME]** = Alvi
-- **[USER-PHILOSOPHY]** = "Success feeling first" - always start with working product that gives immediate satisfaction. Because the road will be long, if you don't get motivated enough, you will give up middle way.
-- **[USER-AGENT-VISION]** = Building a legendary ecosystem of specialized AI agents, and making a team of formidable AI Agents that care for each other!
+<!-- Seed only. Real values are private and live in [AGENT-MEMORY-PATH]/shared-memory/user-profile.md,
+     written by compile-scripts/user-profile-claude.sh, which also refreshes the derived copy in
+     core-memory/output/ that compile.sh reads. This tracked file is the fallback a virgin checkout
+     compiles from, so it stays empty: a public repo is the wrong home for a person's details. -->
+
+- **[USER-NAME]** =
+- **[USER-PHILOSOPHY]** =
+- **[USER-AGENT-VISION]** =
