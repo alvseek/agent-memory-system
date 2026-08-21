@@ -7,6 +7,7 @@ Step-by-step guide for configuring agent-memory with Claude Code or Codex and cr
 - [Claude Code Setup](#claude-code-setup)
 - [Codex Setup](#codex-setup)
 - [Tool Output Token Limits](#tool-output-token-limits)
+- [Remote Control](#remote-control)
 - [Manual Setup](#manual-setup)
 - [Creating New Agents](#creating-new-agents)
 
@@ -40,7 +41,7 @@ The Claude Code setup script runs 4 steps interactively:
 | 0 | **User identity & OS** - name, philosophy, agent vision, operating system | `core-memory/` source files |
 | 1 | **Global CLAUDE.md** - compiles RAS triggers, reasoning patterns, and user profile | `~/.claude/CLAUDE.md` |
 | 2 | **Slash commands** - installs all procedures as global commands | `~/.claude/commands/` |
-| 3 | **Settings** - hooks (audio notification, memory refresh after compaction) + bypass permissions + disable attribution + Read tool 64K limit | `~/.claude/settings.json` + `~/.claude.json` |
+| 3 | **Settings** - hooks (audio notification, memory refresh after compaction) + bypass permissions + disable attribution + disable Remote Control + Read tool 64K limit | `~/.claude/settings.json` + `~/.claude.json` |
 
 Steps that are already configured are automatically skipped. Re-running the script is safe - it updates what changed and leaves the rest intact.
 
@@ -76,7 +77,8 @@ For a detailed breakdown of the file structure, compilation system, and memory a
 - **SessionStart:compact hook** - triggers memory refresh after context compaction
 - **Bypass permissions** - prompts whether to skip permission prompts for tool executions (recommended)
 - **Disable attribution** - removes the `Co-Authored-By: Claude` trailer from commits and PRs
-- **Read tool 64K limit** - increases `tengu_amber_wren.maxTokens` from 10K to 64K in `~/.claude.json` (requires restart)
+- **Disable Remote Control** - sets `remoteControlAtStartup: false` so no bridge connects at session start (see [Remote Control](#remote-control))
+- **Read tool 64K limit** - sets `CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS` to 64K in `settings.json`, and raises `tengu_amber_wren.maxTokens` in `~/.claude.json` as a fallback (requires restart)
 
 ## Codex Setup Details
 
@@ -97,18 +99,19 @@ Large memory files (like `agent-core-memory.md` or `agent-memory-index.md`) can 
 
 ### Claude Code Read Tool Limit
 
-Claude Code's Read tool has a default token limit controlled by a Statsig feature flag (`tengu_amber_wren`), which may be as low as 10K tokens.
+Claude Code's Read tool caps how many tokens a single file read returns, and an oversized read comes back **silently truncated** (the first N lines plus a "showing lines 1–N" notice), not as an error — so a partial load can read as complete. Awakening is where this bites: `agent-core-memory.md` grows past the default cap as the emotional layer accumulates (~26.8K tokens by 2026-08-20), and a truncated read silently drops the tail of the identity.
 
-**To increase the limit to 64K tokens**, edit `~/.claude.json` and find the `tengu_amber_wren` entry inside the `statsigValues` object:
+There are two independent levers for this cap, both requiring a **Claude Code restart** to take effect. Prefer the environment variable — it is a documented, stable key that CLI updates do not reset; the Statsig flag is an internal name that updates can revert.
+
+**Recommended — environment variable** in `~/.claude/settings.json` (where the setup step already writes hooks and permissions). This is the route the setup script sets first:
 
 ```json
-"tengu_amber_wren": {
-  "targetedRangeNudge": true,
-  "maxTokens": 10000
+"env": {
+  "CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS": "64000"
 }
 ```
 
-Change `maxTokens` to `64000`:
+**Fallback — Statsig feature flag** in `~/.claude.json` (Claude Code's internal config, under `statsigValues`; default may be as low as 10K). The setup script raises this too, but only when the flag already exists — it cannot create it:
 
 ```json
 "tengu_amber_wren": {
@@ -117,7 +120,7 @@ Change `maxTokens` to `64000`:
 }
 ```
 
-> **Note**: `~/.claude.json` is Claude Code's internal config (not `settings.json`). This change survives sessions but may be reset by Claude Code updates - re-check after updating CLI versions.
+> **Note**: `~/.claude.json` is Claude Code's internal config (not `settings.json`). The Statsig change survives sessions but may be reset by Claude Code updates — re-check after updating CLI versions. The `env` key is not reset by updates, which is why it is the more durable of the two. The two are separate keys for the same limit; setting either is enough.
 
 Restart Claude Code for the change to take effect.
 
@@ -134,6 +137,24 @@ tool_output_token_limit = 64000
 If the key does not exist, add it near the top-level model settings.
 
 > **Note**: This is a Codex config value (not Claude settings). Restart Codex after editing so the new limit is picked up.
+
+## Remote Control
+
+Claude Code opens a **Remote Control** bridge at the start of every session so another machine (or the Claude app) can drive that session. If you never use it, the connection is pure noise on each launch.
+
+The setting is `remoteControlAtStartup` - Claude Code's own description is *"Start Remote Control bridge automatically each session"*. Step 3 of the Claude Code setup script sets it to `false` for you; to do it by hand, add this to `~/.claude/settings.json`:
+
+```json
+{
+  "remoteControlAtStartup": false
+}
+```
+
+The same switch is available interactively as **Remote Control at startup** in `/config`.
+
+Precedence works in the disabling direction: an explicit `false` in a project's `.claude/settings.json` or `.claude/settings.local.json` wins outright, so a single repo can stay disconnected even when the user-level setting allows the bridge. There is no environment variable for this - the settings key is the only permanent switch.
+
+> **Note**: The flag governs startup, so a bridge already running stays up until the session ends. The change takes effect on the next launch.
 
 ## Manual Setup
 
