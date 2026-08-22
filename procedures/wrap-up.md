@@ -48,10 +48,9 @@ Memory update:
 - Phase 2 — Session captured: [appended to / created] [name] ([timestamp]) — [brief theme]; carry-forward: [N items / N/A]; promotions: [N markers / none]
 - Phase 3 — Feeling captured: emotional [captured — polarity + clearest criterion / skipped — brief reason]
 
-Memory persisted:
-- [repo]: ✅ [commit-hash] pushed / no changes [— agent mode: other agents' files left untouched]
-  (or, on a store that is durable at write time)
-- store: ✅ durable at write time — nothing to push
+Memory persisted — print the line matching this backend, not both:
+- (git-backed store) [repo]: ✅ [commit-hash] pushed / no changes [— agent mode: other agents' files left untouched]
+- (store durable at write time) ✅ nothing to push — the write was already saved
 
 📋 Open items going forward:
 
