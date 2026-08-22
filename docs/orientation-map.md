@@ -47,10 +47,10 @@ The agent who runs `/map-orientation create` for the first time scans ALL orient
 - **roles**: []
 - **status**: useful
 - **tags**: [overview, entry-point, framework]
-- **last_verified**: "2026-08-20"
+- **last_verified**: "2026-08-23"
 - **verified_by**: "meta"
 - **update_trigger**: "when framework procedures, slash commands, wizard hierarchy, or setup steps change"
-- **notes**: "Top-level framework README. 7Q-style: What Is This / How Do I Set It Up / How Do I Use It / How Does It Work Inside / What Decisions Were Made. First read for new contributors and agents. 2026-08-18: the Core Operational Commands table had drifted — it listed neither `/list-agents` nor `/wait-options`; all three (with the new `/create-agent`) are now present, core command set 15 -> 16. 2026-08-20: added a pointer note in the setup section warning that awakening's large identity file can be silently truncated by the Read cap, linking to the SETUP.md read-limit section."
+- **notes**: "Top-level framework README. 7Q-style: What Is This / How Do I Set It Up / How Do I Use It / How Does It Work Inside / What Decisions Were Made. First read for new contributors and agents. 2026-08-18: the Core Operational Commands table had drifted — it listed neither `/list-agents` nor `/wait-options`; all three (with the new `/create-agent`) are now present, core command set 15 -> 16. 2026-08-20: added a pointer note in the setup section warning that awakening's large identity file can be silently truncated by the Read cap, linking to the SETUP.md read-limit section. 2026-08-23: the `/wrap-up` row changed meaning — it now takes `[all|agent]` and **persists the store** after capturing memory, rather than capturing only; the coding-overlay sentence was corrected to describe what `/project-wrap-up` actually composes."
 
 ### `ARCHITECTURE.md`
 
@@ -59,10 +59,10 @@ The agent who runs `/map-orientation create` for the first time scans ALL orient
 - **roles**: []
 - **status**: useful
 - **tags**: [architecture, file-structure, loading-flow, memory-layers, wizard-hierarchy, core-memory-config]
-- **last_verified**: "2026-08-17"
+- **last_verified**: "2026-08-23"
 - **verified_by**: "meta"
 - **update_trigger**: "when file structure changes, awakening flow changes, 5-layer memory layout changes, or wizard hierarchy changes"
-- **notes**: "Single-deep architecture doc: file structure, agent + shared-memory directory layouts, awakening flow, 5-layer memory system, write procedures table, wizard protocol hierarchy. Core-memory section now documents the three split configurators (profile / env / orchestrator) and the single-writer rule for runtime files."
+- **notes**: "Single-deep architecture doc: file structure, agent + shared-memory directory layouts, awakening flow, 5-layer memory system, write procedures table, wizard protocol hierarchy. Core-memory section now documents the three split configurators (profile / env / orchestrator) and the single-writer rule for runtime files. 2026-08-23: seven lines corrected for the wrap-up/push change — the Session Wrap-Up row now names `§ persist-store`, both file-tree lines and both command-list lines describe the new behaviour, and two inventory lines that still advertised the deleted `push-agent-work` / `push-exclude-policy` were cleaned up."
 
 ### `SETUP.md`
 
