@@ -188,9 +188,9 @@ Identify cross-layer files written this session, by path:
 
 ## wrap-up
 
-### § read-newest-episode
+### § persist-store
 
-Read the newest sub-episode: the top H3 block of the top episode file in `[AGENT-MEMORY-PATH]/agent-[domain]/episodes/` (per the episodic index ordering).
+This store is a git repository, so capturing memory is not the same as saving it. Execute `/push-memory <mode>` with the mode `/wrap-up` resolved, and carry its per-repo result back as the persistence outcome — pushed with its commit hash, no changes, or failed, including any branch left ahead of its remote.
 
 ---
 

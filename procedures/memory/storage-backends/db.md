@@ -146,9 +146,9 @@ The records you wrote this session ARE the promotions — list the reasoning / k
 
 ## wrap-up
 
-### § read-newest-episode
+### § persist-store
 
-`query(agent_id="<domain>", record_type="episode")` → newest; `get(uuid)` its body; read the top sub-episode block for `Tech Debts` + `Next Steps`.
+No action. A write through the memory tools lands in the database as it happens, so there is nothing to push and no separate save step that could fail. Report the persistence outcome as already durable.
 
 ---
 

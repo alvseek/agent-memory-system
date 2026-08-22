@@ -77,7 +77,7 @@ control-files/
 ├── procedures/                         # Memory-primitive procedures (also work as slash commands)
 │   ├── awaken-agent.md                # Load agent identity + central memory
 │   ├── refresh-memory.md              # Recover agent memory after context compaction
-│   ├── wrap-up.md                     # End-of-session memory capture (memory-only)
+│   ├── wrap-up.md                     # End-of-session memory capture + store persistence
 │   ├── push-memory.md                 # Persist the memory store (git push)
 │   ├── pull-memory.md                 # Sync the memory store (git pull + submodule)
 │   ├── list-agents.md                 # Roster of every agent in the store
@@ -119,12 +119,12 @@ control-files/
 agent-memory-coding-skill/
 ├── procedures/                         # All coding/repo slash commands (depend on the core)
 │   ├── awaken-coder.md                # Coding awakening overlay (composes core /awaken-agent)
-│   ├── project-wrap-up.md             # Full wrap-up: core /wrap-up + push + /map-orientation
+│   ├── project-wrap-up.md             # Full wrap-up: project push + /update-memory + /map-orientation + /push-all
 │   ├── localized-memory-workflow.md   # Repo-authoritative localized memory behavior
 │   ├── high-wizard · quick-wizard · council-of-wizards · rite-of-creation · forge-of-covenant · implement-plan
 │   ├── generate-readme · generate-docs · generate-architecture-docs · generate-domain-docs · generate-flow-docs · discovery-contract
 │   ├── analyze-code-quality · generate-standard · integration-test · setup-qa-instrument · setup-qa-visual-instrument · pixel-wizard
-│   ├── map-orientation · localize-context · pull-* · push-* · push-exclude-policy
+│   ├── map-orientation · localize-context · pull-* · push-*
 │   ├── ask-agent · delegate-agent · setup-fleet
 │   └── wait-options.md                # WAIT Options reference (consumed by wizards)
 ├── plan-templates/                     # Wizard/QA plan templates (high-wizard, council, rite, forge, code-quality)
@@ -399,7 +399,7 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 | Episodic (load) | `procedures/memory/load-episodic.md` | `/load-episodic` |
 | Knowledge (load) | `procedures/memory/load-knowledge.md` | `/load-knowledge` |
 | Archiving | `procedures/memory/archive-old-memories.md` | `/archive-old-memories` |
-| **Session Wrap-Up (memory-only)** | `procedures/wrap-up.md` | `/wrap-up` — memory capture only; the overlay's `/project-wrap-up` adds push + `/map-orientation` |
+| **Session Wrap-Up** | `procedures/wrap-up.md` | `/wrap-up` — captures the session's memory and persists the store (`§ persist-store`); the overlay's `/project-wrap-up` adds the project push + `/map-orientation` |
 | **Awaken Agent** | `procedures/awaken-agent.md` | `/awaken-agent` |
 | **Refresh Memory** | `procedures/refresh-memory.md` | `/refresh-memory` |
 
@@ -411,7 +411,7 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 # --- Memory core (installed for every agent) ---
 /awaken-agent [domain]   # Load agent memory and activate domain agent (central)
 /refresh-memory [domain] # Recover agent memory after context compaction
-/wrap-up                 # End-of-session memory capture only (via /update-memory + surface open items)
+/wrap-up [all|agent]     # End-of-session memory capture + persist the store (via /update-memory, then § persist-store)
 /update-memory [new]     # Comprehensive update (all layers evaluated)
 /update-episodic [new]   # Episodic only
 /add-reasoning           # Add reasoning pattern
@@ -423,14 +423,14 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 
 # --- Coding overlay (agent-memory-coding-skill; coding agents only) ---
 /awaken-coder            # Coding awakening: composes core /awaken-agent + localized/map/fleet
-/project-wrap-up         # Full wrap-up: /wrap-up memory + push agent work + /map-orientation
+/project-wrap-up         # Full wrap-up: project push + /update-memory + /map-orientation + /push-all
 /implement-plan          # Start implementing approved plan with Execution Protocol
 /quick-wizard · /high-wizard · /council-of-wizards · /rite-of-creation · /forge-of-covenant
 /generate-readme · /generate-docs · /generate-architecture-docs · /generate-domain-docs · /generate-flow-docs
 /generate-standard · /analyze-code-quality · /integration-test · /pixel-wizard · /setup-qa-instrument · /setup-qa-visual-instrument
 /map-orientation · /localize-context · /update-project-context · /load-project-context
 /ask-agent · /delegate-agent · /setup-fleet
-/push-project · /push-memory · /push-all · /push-agent-work
+/push-project · /push-memory · /push-all
 /pull-project · /pull-memory · /pull-all
 ```
 

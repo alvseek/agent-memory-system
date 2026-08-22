@@ -28,7 +28,7 @@ control-files/
 ├── procedures/                         # Memory-primitive procedures (also work as slash commands)
 │   ├── awaken-agent.md                # Load agent identity + central memory
 │   ├── refresh-memory.md              # Post-compaction recovery
-│   ├── wrap-up.md                     # End-of-session memory capture (memory-only)
+│   ├── wrap-up.md                     # End-of-session memory capture + store persistence
 │   ├── push-memory.md                 # Persist the memory store (git push)
 │   ├── pull-memory.md                 # Sync the memory store (git pull + submodule)
 │   ├── list-agents.md                 # Roster of every agent in the store
@@ -121,12 +121,12 @@ The core installs as slash commands to `~/.claude/commands/`. These are the **me
 |---------|---------|
 | `/awaken-agent [domain]` | Load agent memory and activate (central) |
 | `/refresh-memory [domain]` | Recover memory after context compaction |
-| `/wrap-up` | End-of-session **memory capture only** (via `/update-memory` + surface open items) |
+| `/wrap-up [all\|agent]` | End-of-session **memory capture + store persistence** (via `/update-memory`, then `§ persist-store`) |
 | `/create-agent [domain]` | Create a new domain agent — seed its memory, write its identity, verify |
 | `/list-agents` | List every agent in the ecosystem with a one-line role |
 | `/wait-options` | Present a decision and collect an answer (universal format) |
 
-> **Coding agents**: the overlay adds `/project-wrap-up` (composes `/wrap-up`, then push + `/map-orientation`), the wizard protocols (`/quick-wizard` → `/forge-of-covenant`), `/implement-plan`, doc generation (`/generate-readme`, `/generate-docs`, …), QA (`/analyze-code-quality`, `/integration-test`, …), fleet (`/ask-agent`, `/delegate-agent`, `/setup-fleet`), `/map-orientation`, `/localize-context`, and push/pull. See the [overlay repo](https://github.com/alvseek/agent-memory-coding-skill).
+> **Coding agents**: the overlay adds `/project-wrap-up` (project push, then `/update-memory`, `/map-orientation` and `/push-all`), the wizard protocols (`/quick-wizard` → `/forge-of-covenant`), `/implement-plan`, doc generation (`/generate-readme`, `/generate-docs`, …), QA (`/analyze-code-quality`, `/integration-test`, …), fleet (`/ask-agent`, `/delegate-agent`, `/setup-fleet`), `/map-orientation`, `/localize-context`, and push/pull. See the [overlay repo](https://github.com/alvseek/agent-memory-coding-skill).
 
 ### Compilation
 
