@@ -138,6 +138,20 @@ The agent who runs `/map-orientation create` for the first time scans ALL orient
 
 ---
 
+### `docs/adr/2026-08-25-composed-artifact-inlining.md`
+
+- **type**: adr
+- **scope**: shared
+- **roles**: []
+- **status**: useful
+- **tags**: [adr, accepted, composition, inlining, templates, components, compile, resources, token-budget, materialized-artifacts]
+- **last_verified**: "2026-08-25"
+- **verified_by**: "meta"
+- **update_trigger**: "supersede only - ADRs are append-only history; if the composition rule changes, add a new ADR"
+- **notes**: "ADR-017: Composed Instruction Artifacts. Accepted. The first ADR in this repo. Inline a referenced artifact by default; keep it separate only when it must be materialized as a file or script the agent writes or runs, or when the memory server owns its format. Token budget is recorded as a reason to DEFER inlining, never as a reason to separate, so the concession can be lifted without reopening the decision. Names the failure asymmetry that motivates the default: a dangling reference degrades silently while an oversized payload is merely expensive. Extended by the coding overlay, which reaches the opposite behaviour for templates under the opposite reachability constraint - its reader cannot fetch, so it inlines."
+
+---
+
 ## How to Use This File
 
 **Agents at awakening**: Loaded into session context automatically by `/map-orientation` (bare call). Reference entries by `path` when consulting orientation docs for a task. The role-filter rules:
