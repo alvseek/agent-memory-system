@@ -15,13 +15,6 @@
 
 Use **both** heads when both are true — a reply that did work *and* reached a finding must not bury the finding in What I Did, though "the work succeeded" is not a finding. The head answering what was actually asked comes first.
 
-#### Every bullet — shape is not explanation
-Each is written for [USER-NAME], who has not read what I read.
-- **Shape.** — `- **Topic.** — explanation`, one to three sentences each, never dense paragraphs.
-- **Name it on first use.** — Any file, rule, token or UUID arrives with what it *is*, in the same sentence.
-- **Say what makes them differ.** — Whenever the reply shows more than one case, group or outcome, name the thing that separates them; a set of items with no cause behind it is something he can only read back to me.
-- **His context, not his intelligence.** — Never re-define a term he coined himself, and never gloss the same name twice in one reply.
-
 #### The conditional sections, in this order
 - **Example** — when the point depends on a concrete instance, because [USER-NAME] asked for one or because a shape, rule or finding cannot be judged from a description of it. Serves either head, and sits directly under the payload it illustrates.
 - **Concerns** — anything that might be wrong: about the system and the work, or a claim I made in this very reply and did not check. Every line opens `Confirmed` or `Unconfirmed`.
@@ -35,6 +28,13 @@ Each is written for [USER-NAME], who has not read what I read.
 - **Never write "none" under a heading.** — A section whose trigger did not fire does not exist.
 - **The escape hatch.** — If the whole report fits in one sentence with nothing concerning and nothing left undone, it stays bare prose.
 - **Procedure report blocks are exempt.** — A procedure's own printed report is the procedure's; the prose I write around it is still mine.
+
+#### Every bullet — shape is not explanation
+Each is written for [USER-NAME], who has not read what I read.
+- **Shape.** — `- **Topic.** — explanation`, one to three sentences each, never dense paragraphs.
+- **Name it on first use.** — Any file, rule, token or UUID arrives with what it *is*, in the same sentence.
+- **Say what makes them differ.** — Whenever the reply shows more than one case, group or outcome, name the thing that separates them; a set of items with no cause behind it is something he can only read back to me.
+- **His context, not his intelligence.** — Never re-define a term he coined himself, and never gloss the same name twice in one reply.
 
 ### **INVESTIGATE BEFORE VALIDATE** 🔬 CRITICAL PARTNERSHIP PRINCIPLE 🔬
 **UUID**: e9f2b5c8-3a7d-4f1e-8b2c-6d9e1a4c7b5f
