@@ -2,7 +2,7 @@
 
 Concrete storage mechanics for the **DB-backed** world. Each `## [procedure]` section maps the procedure's `§ op`s onto the 8 generic Munnin data tools: `awaken` · `get` · `query` · `search` · `insert` · `edit` · `archive` · `soft_delete`. See the [seam contract](README.md).
 
-> **Model**: an **agent** is an entity with a row of its own, and memory belongs to it. One uniform record per memory item (`user_id`/`agent_id`/`record_type`/`project`/`title`/`tags`/dates + `full_content`), where `agent_id` is always a real kebab domain the store checks against the agent table — there is no sentinel value. **Fleet-shared memory** (reasoning + knowledge that belongs to no agent) lives apart and is written with `scope="shared"`, which takes no `agent_id` at all. `user_id` is stamped server-side. The index is a **derived `SELECT`** (`query`), never a hand-edited file — so index-maintenance steps in the markdown backend become **no-ops** here. Episodes are stored **one record per episode file** (a rolling body of newest-first `---`-separated H3 sub-episodes).
+> **Model**: an **agent** is an entity with a row of its own, and memory belongs to it. One uniform record per memory item (`user_id`/`agent_id`/`record_type`/`project`/`title`/`tags`/dates + `full_content`), where `agent_id` is always a real kebab domain the store checks against the agent table — there is no sentinel value. **Fleet-shared memory** (reasoning + knowledge that belongs to no agent) lives apart and is written with `scope="shared"`, which takes no `agent_id` at all. `user_id` is stamped server-side. The index is a **derived `SELECT`** (`query`), not a stored artifact — so there are no index-maintenance steps to perform. Episodes are stored **one record per episode** (a rolling body of newest-first `---`-separated H3 sub-episodes).
 
 ---
 
@@ -14,7 +14,7 @@ Concrete storage mechanics for the **DB-backed** world. Each `## [procedure]` se
 
 ### § list-candidate-episodes
 
-`query(agent_id="<domain>", record_type="episode", project="<project>")` → returns the derived index projection (uuid, title, tags, dates) for the agent's active episodes. Theme-match against `title`/`tags` exactly as the markdown flow matches filename/summary. (Archived episodes are excluded by default — pass `include_archived=True` only to reach them.)
+`query(agent_id="<domain>", record_type="episode", project="<project>")` → returns the derived index projection (uuid, title, tags, dates) for the agent's active episodes. Theme-match against `title`/`tags`. (Archived episodes are excluded by default — pass `include_archived=True` only to reach them.)
 
 ### § append-sub-episode
 
@@ -170,12 +170,12 @@ No file reads, no parallel Reads — the 4-layer assembly is a single derived ca
 
 ### § recover-missing-foundations
 
-Nothing is missing *from disk* — this backend has no `shared-memory/` directory. The shared foundations are the fleet-shared records inside `awaken`'s payload, and a store with none returns **200 with empty fields** rather than failing, so there is no error to notice. Diagnose before acting:
+The shared foundations are the fleet-shared records (`shared.reasoning` + `shared.knowledge`) that `awaken` returns, and a store holding none returns them as **empty fields on a 200** rather than failing — so nothing raises an error, and this check is all that stands between a hollow awakening and continuing as if the foundations were there. Diagnose before acting:
 
-- **Other layers also short or cut mid-record** → the payload was **truncated in transit** (the MCP tool-result cap), not empty at rest. The store is probably fine; the transport is not.
-- **Only `shared.reasoning` / `shared.knowledge` empty** → the store genuinely holds no fleet-shared records for this user (importer never run, or the wrong tenant). Note this is **not** an agent-scoping mistake: fleet memory has no `agent_id` to get wrong.
+- **Other layers also short or cut mid-record** → the payload was **truncated in transit** (the MCP tool-result cap), not empty at rest. The store is fine; the transport is not.
+- **Only `shared.reasoning` / `shared.knowledge` empty** → the store genuinely holds no fleet-shared records for this user (importer never run, or the wrong tenant). This is **not** an agent-scoping mistake: fleet memory has no `agent_id` to get wrong.
 
-Recovery is **server-side** — seed the records (importer / `insert`). A file copy is meaningless here; never offer one. Report which of the two it is and STOP: do not fabricate the foundations and do not continue on partial context (`c4e7a19f`).
+Recovery is **server-side** — seed the records (importer / `insert`); there is nothing to create on this end. Report which of the two it is and STOP: do not fabricate the foundations and do not continue on partial context (`c4e7a19f`).
 
 ### § load-user-profile
 
@@ -191,7 +191,7 @@ Already present as `latest_episode` in the `awaken` payload — no extra call. U
 
 ### § oversized-memory-warning
 
-There is no per-file read limit here; the cap applies to the **whole payload** (the MCP tool-result limit), and exceeding it truncates **silently** — no error is raised. If any layer looks cut off mid-record, say so explicitly and treat it as a load failure (`c4e7a19f`). `/archive-old-memories` reduces the store, but narrowing what is requested is the more direct fix.
+The truncation risk here is the **whole `awaken` payload** measured against the MCP tool-result cap, and exceeding it truncates **silently** — no error is raised. If any layer looks cut off mid-record, say so explicitly and treat it as a load failure (`c4e7a19f`). `/archive-old-memories` reduces the store, but narrowing what is requested is the more direct fix.
 
 ### Resolving references to other procedures and templates
 
@@ -233,7 +233,7 @@ You may skip the lookup and let **§ create-agent-store** fail instead: creation
 
 `create_agent(agent_id="<domain>", name="<name>", role="<role>", uuid="<the generated UUID>")`.
 
-This is the agent coming into being — the row its memory will point at. It **refuses a domain that already exists** rather than refreshing it, so re-running creation over a live agent raises instead of silently rewriting that agent's name. Nothing else needs seeding: the record types (`identity` · `reasoning` · `emotional` · `knowledge` · `episode`) already *are* the skeleton the markdown template provides as files.
+This is the agent coming into being — the row its memory will point at. It **refuses a domain that already exists** rather than refreshing it, so re-running creation over a live agent raises instead of silently rewriting that agent's name. Nothing else needs seeding: the five record types (`identity` · `reasoning` · `emotional` · `knowledge` · `episode`) are the whole skeleton, each created on first write.
 
 ### § persist-identity
 
