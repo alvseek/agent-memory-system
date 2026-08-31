@@ -193,6 +193,10 @@ Already present as `latest_episode` in the `awaken` payload — no extra call. U
 
 There is no per-file read limit here; the cap applies to the **whole payload** (the MCP tool-result limit), and exceeding it truncates **silently** — no error is raised. If any layer looks cut off mid-record, say so explicitly and treat it as a load failure (`c4e7a19f`). `/archive-old-memories` reduces the store, but narrowing what is requested is the more direct fix.
 
+### Resolving references to other procedures and templates
+
+Everything served here is composed for Munnin, and the slash commands installed beside you are the **markdown** compilation of the same procedures — they would write files where this store holds records. So when a served procedure tells you to **execute, invoke or run** `/<name>`, do not invoke the slash command: call `read_procedure("<name>")` and follow what it returns, passing what the command would have taken (a domain, a mode) as `argument`. When one points at a template by relative path (`resources/<stem>.md`), call `read_resource("<stem>")`. This applies to instructions to *act*; prose that merely names a procedure needs no call. Unsure what is served — `list_procedures()` and `list_resources()`. If a named procedure is not served, say so rather than substituting another.
+
 ---
 
 ## list-agents

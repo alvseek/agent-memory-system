@@ -18,11 +18,12 @@ under ``procedures/components/``, replaced at its reference point so the deliver
 procedure is self-contained). Components are inlined first so an ``§ op`` arriving inside
 one is counted by the coverage check below.
 
-Neither substitution is implemented here: the seam lives once in
-``../memory/storage-backends/seam.py`` and component inlining once in
-``../components/inline.py``, each beside its own contract; this script imports both, as
-Munnin's ``ContentLoader`` does. Deliberately independent of Munnin so the public
-framework tree can be verified without the server.
+None of the framework's definitions are implemented here: the seam lives once in
+``../memory/storage-backends/seam.py``, component inlining once in
+``../components/inline.py``, and the command set — which ``*.md`` files install as
+commands — once in ``../command_set.py``, each beside its own contract; this script
+imports all three, as Munnin's ``ContentLoader`` does. Deliberately independent of Munnin
+so the public framework tree can be verified without the server.
 
 Run (from the control-files root)::
 
@@ -60,16 +61,20 @@ def _load(name: str, rel: str):
     return module
 
 
-# Both substitutions live once, beside their contracts; import them from there.
+# Every definition lives once, beside its contract; import them from there.
 _seam = _load("cf_seam", "procedures/memory/storage-backends/seam.py")
 STORAGE_MARKER = _seam.STORAGE_MARKER
 extract_section = _seam.extract_section
 substitute_storage_mechanics = _seam.substitute_storage_mechanics
 compose_backend_section = _seam.compose_backend_section
 defines_section = _seam.defines_section
+has_seam = _seam.has_seam
 
 _inline = _load("cf_inline", "procedures/components/inline.py")
 inline_components = _inline.inline_components
+
+_command_set = _load("cf_command_set", "procedures/command_set.py")
+command_procedures = _command_set.command_procedures
 
 BACKENDS = ("markdown", "db")
 _BACKEND_REL = "procedures/memory/storage-backends/{name}.md"
@@ -92,12 +97,6 @@ class ProcedureReport:
     unresolved_ops: list[str] = field(default_factory=list)
     note: str = ""
     missing_components: list[str] = field(default_factory=list)
-
-
-def _has_seam(text: str) -> bool:
-    """True when a doc carries the seam as an actual ``## Storage Mechanics`` header
-    (not merely the phrase in prose, as the backend contract README does)."""
-    return any(line.strip() == STORAGE_MARKER for line in text.splitlines())
 
 
 def _seam_procedures(proc_dir: Path, generated: tuple[Path, ...] = ()) -> list[Path]:
@@ -126,27 +125,8 @@ def _seam_procedures(proc_dir: Path, generated: tuple[Path, ...] = ()) -> list[P
         for p in proc_dir.rglob("*.md")
         if not skip & set(p.parts)
         and not _is_generated(p)
-        and _has_seam(p.read_text(encoding="utf-8"))
+        and has_seam(p.read_text(encoding="utf-8"))
     )
-
-
-# The dirs whose ``*.md`` install as slash commands: top-level ``procedures/`` and
-# ``procedures/memory/`` (non-recursive) — the exact set the Claude Code installer copies.
-_COMMAND_SUBDIRS = ("", "memory")
-
-
-def _command_procedures(proc_dir: Path) -> list[Path]:
-    """The installable command set — ``*.md`` directly in ``procedures/`` and
-    ``procedures/memory/``, sorted.
-
-    Used for single-backend output: seam-bearing commands get composed, the rest are
-    copied as-is, so the output equals the command set with no extras (the installer can
-    then copy every plain ``<name>.md`` blindly).
-    """
-    files: list[Path] = []
-    for sub in _COMMAND_SUBDIRS:
-        files.extend((proc_dir / sub).glob("*.md"))
-    return sorted(files)
 
 
 def _core_without_mechanics(core: str) -> str:
@@ -277,10 +257,10 @@ def compile_all(
         return reports, skipped
 
     backend_doc = (content_root / _BACKEND_REL.format(name=backend)).read_text(encoding="utf-8")
-    for proc in _command_procedures(proc_dir):
+    for proc in command_procedures(proc_dir):
         name = proc.stem
         core, missing, used = _inline_source(proc, comp_dir, proc_dir, emit_inline)
-        if _has_seam(core):
+        if has_seam(core):
             if not _backend_covers(backend_doc, name, used):
                 skipped.append(name)  # seam marker but this backend has no section
                 continue

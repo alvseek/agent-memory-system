@@ -63,6 +63,12 @@ def defines_section(doc: str, title: str) -> bool:
     return any(line.strip() == header for line in doc.splitlines())
 
 
+def has_seam(doc: str) -> bool:
+    """True when ``doc`` carries the seam as an actual ``## Storage Mechanics`` header —
+    not merely the phrase in prose, as the backend contract README does."""
+    return any(line.strip() == STORAGE_MARKER for line in doc.splitlines())
+
+
 def compose_backend_section(
     doc: str, procedure: str, components: Sequence[str] = ()
 ) -> str:
