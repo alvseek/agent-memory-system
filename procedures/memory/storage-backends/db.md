@@ -10,7 +10,7 @@ Concrete storage mechanics for the **DB-backed** world. Each `## [procedure]` se
 
 ### § stamp-date
 
-**No action.** The server stamps `created_date` / `updated_date` on write. Use the block's H3 timestamp as authored; you do not shell out to `date`.
+**No action.** The server stamps `created_date` / `updated_date` on write; use the block's H3 timestamp as authored.
 
 ### § list-candidate-episodes
 
@@ -22,19 +22,19 @@ An episode is a single record whose body is the rolling, newest-first sub-episod
 1. `get(uuid)` the matched episode to read its current body.
 2. `edit(uuid, old_string="<the current top of the body>", new_string="<new H3 block>\n\n---\n\n<the current top of the body>")` — prepends the new block above the previous newest, preserving the `---` separator (Edit-tool parity: `old_string` must uniquely match the body's opening).
 
-The index reflects the change automatically (derived `SELECT`) — **no manual index maintenance**.
+The index reflects the change automatically (derived `SELECT`).
 
 ### § create-episode
 
-`insert(agent_id="<domain>", record_type="episode", project="<project>", title="<project-theme>", tags=[…], content="<first sub-episode block>")`. The record is assembled and `uuid`-stamped server-side and appears in the index projection immediately — **no file scaffold, no index entry to add**.
+`insert(agent_id="<domain>", record_type="episode", project="<project>", title="<project-theme>", tags=[…], content="<first sub-episode block>")`. The record is assembled and `uuid`-stamped server-side and appears in the index projection immediately.
 
 ### § housekeeping
 
-**No-op.** Records are not line-bounded files: there is no 1000-line split (a large body is fine; shortening is a later curation *policy*, not a write mechanic) and no filename migration (records are keyed by `uuid`, not filenames).
+**No-op.** A record body has no length limit — a large body is fine; shortening is a later curation *policy*, not a write mechanic — and records are keyed by `uuid`, so there is no split or rename to perform.
 
 ### § template
 
-**No file.** The sub-episode-block template is served as an MCP **Resource** (`episodic-entry-template`) — read it from resources, not a path. (There is no separate file-scaffold template: `§ create-episode` is an `insert`, not a `cp`.)
+**Served as an MCP Resource** (`episodic-entry-template`) — read it from resources. (`§ create-episode` inserts the record directly, so there is no separate scaffold template.)
 
 ---
 
@@ -46,7 +46,7 @@ The index reflects the change automatically (derived `SELECT`) — **no manual i
 
 ### § generate-uuid
 
-**No shell command.** The pattern's cited UUID is content — generate any UUID for it; the `insert` response also returns the record's own `uuid` if you prefer to cite that.
+The pattern's cited UUID is content — generate any UUID for it; the `insert` response also returns the record's own `uuid` if you prefer to cite that.
 
 ### § persist-reasoning
 
@@ -54,7 +54,7 @@ The index reflects the change automatically (derived `SELECT`) — **no manual i
 
 ### § template
 
-**No file.** The reasoning-pattern template is served as an MCP **Resource** (`reasoning-pattern-template`) — read it from resources, not a path.
+**Served as an MCP Resource** (`reasoning-pattern-template`) — read it from resources.
 
 ---
 
@@ -66,11 +66,11 @@ The index reflects the change automatically (derived `SELECT`) — **no manual i
 
 ### § persist-emotional
 
-`insert(agent_id="<domain>", record_type="emotional", title="<moment title>", content="<moment block>")`. **Newest-first is a read concern** — the index projection orders by date, so there is no manual top-insert.
+`insert(agent_id="<domain>", record_type="emotional", title="<moment title>", content="<moment block>")`. **Newest-first is a read concern** — the index projection orders by date, so ordering is automatic.
 
 ### § template
 
-**No file.** The emotional-moment template is served as an MCP **Resource** (`emotional-moment-template`) — read it from resources, not a path.
+**Served as an MCP Resource** (`emotional-moment-template`) — read it from resources.
 
 ---
 
@@ -82,11 +82,11 @@ The index reflects the change automatically (derived `SELECT`) — **no manual i
 
 ### § update-knowledge-index
 
-**No-op.** The knowledge directory is a derived `query(record_type="knowledge")` — nothing to hand-edit.
+**No-op.** The knowledge directory is a derived `query(record_type="knowledge")` — it reflects every insert automatically.
 
 ### § template
 
-**No file.** The knowledge-file template is served as an MCP **Resource** (`knowledge-file-template`) — read it from resources, not a path.
+**Served as an MCP Resource** (`knowledge-file-template`) — read it from resources.
 
 ---
 
@@ -122,7 +122,7 @@ The index reflects the change automatically (derived `SELECT`) — **no manual i
 
 ### § archive-episodes
 
-`archive(uuid)` per episode past the cutoff — sets `archived_date`, drops it from the hot index, body retained + still `search`-able. **No file moves, no index edits.**
+`archive(uuid)` per episode past the cutoff — sets `archived_date`, drops it from the hot index (a derived `SELECT`, so it updates itself), body retained + still `search`-able.
 
 ### § archive-emotional-apply
 
@@ -164,7 +164,7 @@ No action. A write through the memory tools lands in the database as it happens,
 - `knowledge_index` + `episodic_index` — metadata-only indexes; bodies via `get(uuid)` / `search(text)` on demand (layer iii).
 - `latest_episode` — the newest episode's full body.
 
-No file reads, no parallel Reads — the 4-layer assembly is a single derived call.
+The 4-layer assembly is a single derived call.
 
 > **Not covered by the payload — and no longer needs to be**: the **awakening instructions** (the Phase 1/Phase 2 protocol) are not a record and are not served, because they are a **component** inlined into this procedure at compile time — the process rides in the prompt, the data comes from `awaken`. That is the whole of what the payload leaves out; the user profile used to be listed here too, and is now a record like any other (`shared.user_profile`, above). See `docs/flows/awaken-db.md` in the memory-server repo.
 
@@ -217,7 +217,7 @@ An agent with no readable identity returns `name` and `role` as `null`. Keep it 
 
 ## create-agent
 
-> Creation here is genuinely two steps, and the order is enforced by the store rather than by convention: an agent is a **row**, and every memory record names an owner the store checks against it. So `create_agent` comes first and `insert` cannot run before it. There is still no directory to make — but there is now something to create, which is the difference between this backend and the one it replaced, where an agent existed only as a side effect of having records.
+> Creation here is genuinely two steps, and the order is enforced by the store rather than by convention: an agent is a **row**, and every memory record names an owner the store checks against it. So `create_agent` comes first and `insert` cannot run before it. The agent now has an existence of its own — a row that must be created before any record can point at it.
 
 ### § check-agent-exists
 
@@ -227,7 +227,7 @@ You may skip the lookup and let **§ create-agent-store** fail instead: creation
 
 ### § generate-uuid
 
-**No shell command.** The agent's UUID is *content* — its digital soul, carried in the identity body and stored on the agent row's `uuid` column. Generate any UUID for it; a memory record's own storage `uuid` is a separate identifier and not a substitute.
+The agent's UUID is *content* — its digital soul, carried in the identity body and stored on the agent row's `uuid` column. Generate any UUID for it; a memory record's own storage `uuid` is a separate identifier and not a substitute.
 
 ### § create-agent-store
 
@@ -251,7 +251,7 @@ Fleet-shared memory needs nothing: it belongs to no agent, lives in its own tabl
 
 ### § initialize-index
 
-**No action.** The episodic and knowledge indexes are derived `SELECT`s over the agent's records; an agent with no episodes simply returns empty ones. There is no index file to seed.
+**No action.** The episodic and knowledge indexes are derived `SELECT`s over the agent's records; an agent with no episodes simply returns empty ones — nothing to seed.
 
 ### § verify-agent
 
