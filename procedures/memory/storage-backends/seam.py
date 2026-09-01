@@ -105,8 +105,10 @@ def compose_backend_section(
             continue
     if not parts:
         raise KeyError(f"backend defines no section for: {procedure}")
-    if defines_section(doc, PREAMBLE_SECTION):
+    try:
         parts.insert(0, extract_section(doc, PREAMBLE_SECTION))
+    except KeyError:
+        pass  # this backend owes its procedures no preamble
     return "\n\n".join(parts)
 
 
