@@ -43,4 +43,4 @@ This repository contains the **public control files** (procedures, templates, sc
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the [CC BY 4.0](LICENSE) license.
+By contributing, you agree that your contributions will be licensed under the [Apache License 2.0](LICENSE) — the same licence as the rest of the repository, procedures and templates included, since an agent executes them the way a runtime executes code.

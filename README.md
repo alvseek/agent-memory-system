@@ -214,3 +214,9 @@ For the complete loading flow, memory layer details, and the coding overlay, see
 - **[MCP.md](MCP.md)** — Connect agents to databases, APIs, and tools via MCP
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** — How to contribute to the shared framework
 - **[docs/document-quality-standard.md](docs/document-quality-standard.md)** — Lean/clear/precise/self-contained rules for writing & reviewing framework prose
+
+---
+
+## License
+
+[Apache License 2.0](LICENSE) — Copyright 2026 Alviandi Widiasto. One licence for the whole repository: the Python and shell tooling, and the Markdown procedures and templates alike, because an agent executes a procedure the way a runtime executes code. Attribution travels with redistributions through [NOTICE](NOTICE).
