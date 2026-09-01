@@ -285,6 +285,56 @@ def test_component_can_supply_ops_for_a_procedure_the_backend_never_names(tmp_pa
     assert "read the file" in text
 
 
+# --- the backend preamble (`## all-procedures` opens every composed procedure) ---
+
+# the one sentence db.md owes every procedure: what `<domain>` in its ops means
+_PREAMBLE_MARKER = "`<domain>` in the ops below is the agent you are acting as"
+
+
+def test_db_preamble_opens_every_composed_procedure(tmp_path: Path) -> None:
+    cc.compile_all(CF, tmp_path)
+    for name in ("update-episodic", "wrap-up", "awaken-agent", "load-knowledge"):
+        db = (tmp_path / f"{name}.db.md").read_text(encoding="utf-8")
+        assert _PREAMBLE_MARKER in db, name
+        # ahead of the procedure's own mechanics, where the placeholder is first met
+        assert db.index(_PREAMBLE_MARKER) < db.index("### §"), name
+
+
+def test_markdown_defines_no_preamble_and_is_unchanged_by_it(tmp_path: Path) -> None:
+    # the installed command set must not move: markdown.md defines no `## all-procedures`,
+    # so its compositions carry nothing of it
+    backend = (CF / "procedures/memory/storage-backends/markdown.md").read_text(encoding="utf-8")
+    assert not cc._seam.defines_section(backend, cc._seam.PREAMBLE_SECTION)
+    cc.compile_all(CF, tmp_path, backend="markdown")
+    for path in tmp_path.glob("*.md"):
+        assert _PREAMBLE_MARKER not in path.read_text(encoding="utf-8"), path.name
+
+
+def test_preamble_rides_along_but_never_wires_a_procedure(tmp_path: Path) -> None:
+    root = tmp_path / "cf"
+    mem = root / "procedures" / "memory"
+    backends = mem / "storage-backends"
+    backends.mkdir(parents=True)
+    seam = "## Storage Mechanics\n\n(placeholder)\n"
+    (mem / "foo.md").write_text(f"# Foo\n\nDo x (**§ x**).\n\n{seam}", encoding="utf-8")
+    (mem / "ghost.md").write_text(f"# Ghost\n\n{seam}", encoding="utf-8")
+    (backends / "markdown.md").write_text("## foo\n\n### § x\ndo x\n", encoding="utf-8")
+    (backends / "db.md").write_text(
+        "## all-procedures\n\n> what <domain> means\n\n## foo\n\n### § x\ntool x\n",
+        encoding="utf-8",
+    )
+
+    reports, skipped = cc.compile_all(root, tmp_path / "out")
+    # ghost has no `## ghost` in either backend: the preamble alone does not wire it
+    assert "ghost" in skipped
+    assert {r.name for r in reports} == {"foo"}
+    db = (tmp_path / "out" / "foo.db.md").read_text(encoding="utf-8")
+    md = (tmp_path / "out" / "foo.markdown.md").read_text(encoding="utf-8")
+    assert db.index("what <domain> means") < db.index("### § x")  # preamble first
+    assert "what <domain> means" not in md  # the other backend defines none
+    assert [r.unresolved_ops for r in reports] == [[], []]  # prose satisfies no op
+
+
 def test_missing_component_is_reported_and_fails_strict(tmp_path: Path) -> None:
     root = tmp_path / "cf"
     mem = root / "procedures" / "memory"

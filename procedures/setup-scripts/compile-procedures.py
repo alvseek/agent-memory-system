@@ -161,7 +161,8 @@ def compile_procedure(
 
     The backend body is the procedure's own ``## [procedure]`` section plus a
     ``## [component]`` section for each component inlined into it, so ops arriving via a
-    component resolve without being restated under every caller.
+    component resolve without being restated under every caller — opened by the backend's
+    ``## all-procedures`` section when it defines one.
 
     Returns (text, unresolved_ops, note). ``§ template`` is left as a reference —
     templates live once as a separate Resource / file, never inlined here.

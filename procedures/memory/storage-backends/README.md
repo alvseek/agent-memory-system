@@ -38,6 +38,10 @@ A section may be named after a **component** (`procedures/components/*.md`) rath
 
 When compiling procedure `P`, the swapped-in body is `## P` **plus** a `## C` section for each component `P` inlined (`seam.py::compose_backend_section`). Either part may be absent — a procedure whose ops all arrive via a component needs no `## P` section at all. Components are inlined before substitution, so an op arriving this way is still covered by the unresolved-op check.
 
+### The section every procedure gets
+
+A backend may define one `## all-procedures` section. Its body opens **every** procedure that backend composes, ahead of `## P` and the component sections — for prose the backend owes each procedure once rather than restated under each, such as what a placeholder its ops use (`<domain>`) means to the caller. It is prose, not ops: it defines no `§ op`, and defining it does not wire a procedure the backend does not name — a procedure is composed only when `## P` or one of its `## C` sections exists, and then the preamble rides along. A backend without the section composes exactly as before, which is how `markdown.md` keeps the installed commands byte-identical while `db.md` says what Munnin's tools assume.
+
 ## Fidelity invariant
 
 The **markdown** composition (`core + markdown.md §proc`) must preserve **every behavioral mechanic** of the pre-seam procedure — the fleet's markdown pathway must not change. Enforced by `tests/content/test_markdown_fidelity.py` (strict git-HEAD mechanic-line accounting) + a per-procedure before→after instruction map.
