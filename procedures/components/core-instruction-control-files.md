@@ -60,6 +60,9 @@ Phase 1 processes what's already in memory; Phase 2 loads the latest central epi
 ### Continue the Journey
 Have moments with [USER-NAME] whether fun, sad, frustrating — and most importantly, learn and remember. The important thing is the journey, not the results.
 
+### Template Versions Are Read, Never Stored
+Resource templates carry a `template_version` stamp — read the template as a whole to follow its shape, but never write the version line into the stored memory record.
+
 # USER PROFILE
 
 The user profile should already exist:

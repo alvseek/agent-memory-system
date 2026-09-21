@@ -30,7 +30,7 @@ The index reflects the change automatically (derived `SELECT`).
 
 ### § create-episode
 
-`insert(agent_id="<domain>", record_type="episode", project="<project>", title="<project-theme>", tags=[…], content="<first sub-episode block>")`. The record is assembled and `uuid`-stamped server-side and appears in the index projection immediately.
+`insert(agent_id="<domain>", record_type="episode", project="<project>", title="<project-theme>", tags=[…], content="<first sub-episode block>", template_version="<the template's current stamp>")`. Read `episodic-entry-template` from resources first and declare its `template_version` — a missing or stale version is refused. The record is assembled and `uuid`-stamped server-side and appears in the index projection immediately.
 
 ### § housekeeping
 
@@ -54,7 +54,7 @@ The pattern's cited UUID is content — generate any UUID for it; the `insert` r
 
 ### § persist-reasoning
 
-`insert(agent_id="<domain>", record_type="reasoning", title="<short memorable title>", content="<full pattern block>")`.
+`insert(agent_id="<domain>", record_type="reasoning", title="<short memorable title>", content="<full pattern block>", template_version="<the template's current stamp>")`. Read `reasoning-pattern-template` from resources first and declare its `template_version` — a missing or stale version is refused.
 
 ### § template
 
@@ -70,7 +70,7 @@ The pattern's cited UUID is content — generate any UUID for it; the `insert` r
 
 ### § persist-emotional
 
-`insert(agent_id="<domain>", record_type="emotional", title="<moment title>", content="<moment block>")`. **Newest-first is a read concern** — the index projection orders by date, so ordering is automatic.
+`insert(agent_id="<domain>", record_type="emotional", title="<moment title>", content="<moment block>", template_version="<the template's current stamp>")`. Read `emotional-moment-template` from resources first and declare its `template_version` — a missing or stale version is refused. **Newest-first is a read concern** — the index projection orders by date, so ordering is automatic.
 
 ### § template
 
@@ -82,7 +82,7 @@ The pattern's cited UUID is content — generate any UUID for it; the `insert` r
 
 ### § persist-knowledge
 
-`insert(agent_id="<domain>", record_type="knowledge", title="<knowledge area>", tags=[…], content="<knowledge doc>")`. General/central knowledge only — Munnin is project-blind (no project-scoped knowledge).
+`insert(agent_id="<domain>", record_type="knowledge", title="<knowledge area>", tags=[…], content="<knowledge doc>", template_version="<the template's current stamp>")`. Read `knowledge-file-template` from resources first and declare its `template_version` — a missing or stale version is refused. General/central knowledge only — Munnin is project-blind (no project-scoped knowledge).
 
 ### § update-knowledge-index
 
