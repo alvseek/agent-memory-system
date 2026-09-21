@@ -1,6 +1,8 @@
 # Knowledge File Template
 
-The structure of a knowledge-base entry. Storage-agnostic: the markdown backend creates a file with this structure; the DB backend passes it as the `content` of an `insert(record_type="knowledge", …)`.
+template_version: 2026-09-21-14-53
+
+The structure of a knowledge-base entry. Storage-agnostic: the markdown backend creates a file with this structure; the DB backend passes it as the `content` of an `insert(record_type="knowledge", …)`. Rows carrying `Use "None declared" if genuinely none.` are required (presence-checked); all other rows are optional.
 
 ```markdown
 # Agent - [Knowledge Area] - [Date]
@@ -13,10 +15,10 @@ The structure of a knowledge-base entry. Storage-agnostic: the markdown backend 
 - [Sources](#sources)
 
 ## **PURPOSE**
-[Brief description of what this knowledge file covers]
+[Brief description of what this knowledge file covers. Use "None declared" if genuinely none.]
 
 ## ⚡ **Quick Reference**
-[Key takeaways, patterns, or cheat sheet]
+[Key takeaways, patterns, or cheat sheet. Use "None declared" if genuinely none.]
 
 ## 🎯 **[Main Content Sections]**
 [Organized knowledge content here]

@@ -1,13 +1,15 @@
 # Detailed Entry Template — Episodic Sub-Episode Block
 
-The format of a single sub-episode block. Storage-agnostic: the markdown backend fills this into an episode file; the DB backend passes it as the `content` of an `insert(record_type="episode", …)`.
+template_version: 2026-09-21-14-53
+
+The format of a single sub-episode block. Storage-agnostic: the markdown backend fills this into an episode file; the DB backend passes it as the `content` of an `insert(record_type="episode", …)`. Rows carrying `Use "None declared" if genuinely none.` are required (presence-checked); all other rows are optional.
 
 *The H3 header carries an optional `(agent: [domain])` tag — omittable (harmless) for central per-agent episodes, where the `agent-[domain]/episodes/` folder already implies authorship. **Required** once a project is localized (episodic flat-merges across agents where the folder no longer implies authorship).*
 
 ```markdown
 ### YYYY-MM-DD HH.MM - [SESSION SUB-THEME] (agent: [domain])
 
-- **Context**: [What we were working on]
+- **Context**: [What we were working on. Use "None declared" if genuinely none.]
 - **Discussion**: [List of discussion you had with [USER-NAME]]
   - **[Discussion 1]**: [Content of the discussion]
     - **[USER-NAME]'s Input**: [What [USER-NAME] said/requested]
