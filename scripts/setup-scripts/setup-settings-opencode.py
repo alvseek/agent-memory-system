@@ -124,7 +124,6 @@ def main(argv: list[str] | None = None) -> int:
     if enable_bypass == "yes":
         # Drop any existing */* rule (allow or otherwise), then append the allow last
         # so it wins — OpenCode uses the last matching rule.
-        before = len(permissions)
         permissions[:] = [
             r
             for r in permissions
