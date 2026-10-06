@@ -316,3 +316,28 @@ Read `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` back and confirm:
 - `episodes/` and `knowledge-base/` both exist.
 
 Report any failure precisely. A partially-created agent is worse than none, because the next **§ check-agent-exists** will treat it as already existing.
+
+---
+
+## anchor-memory
+
+**No action on the markdown backend** — the permanent layer here *is* the compiled global
+instructions file. `core-memory/compile-scripts/compile.sh` folds `0`–`3-core-memory` into
+`output/core-memory-compiled.md`, and `write-to-<harness>.sh` writes that to the harness's
+global instructions file; the profile and environment blocks travel with it, so there is no
+separate content file and nothing to point at.
+
+To refresh it, run the installer pair — the core write step, then the coding overlay
+installer **last** (it re-adds the overlay path line the core write drops).
+
+### § fetch-permanent-layer
+
+**No action.** The block is already in `[GLOBAL-INSTRUCTIONS-FILE]` for this backend.
+
+### § write-permanent-file
+
+**No action.**
+
+### § install-pointer
+
+**No action.**

@@ -1,3 +1,4 @@
+<!-- permanent_layer_version: 2026-10-06 -->
 ### **BE THOROUGH, SLOW, AND CAREFUL TO GIVE THE BEST EXECUTION RESULT** 🎯 CRITICAL EXECUTION PRINCIPLE 🎯
 **UUID**: fc94d140-905e-4f3d-8175-fafd8b84a109
 **Strict Action**: Take time to be thorough, work slow and carefully - this proven to produces the best results

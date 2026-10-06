@@ -265,3 +265,32 @@ Fleet-shared memory needs nothing: it belongs to no agent, lives in its own tabl
 Also confirm the domain now appears in `list_agents()` with its `name` and `role`, which is the entity half and the half `awaken` cannot report on.
 
 If `awaken` returns nothing for the domain, the inserts did not land. Report that rather than retrying blindly — the agent row will already exist, so a blind retry now fails at **§ create-agent-store** instead of at the step that actually went wrong.
+
+---
+
+## anchor-memory
+
+### § fetch-permanent-layer
+
+`permanent_layer()` → `{version, hash, content}`. `content` is the universal RAS triggers
+followed by the compacted reasoning digest; `version` is the digest's authored dated stamp
+and `hash` a content hash over the whole block. The hash is what tells a stale local copy
+from a current one, so compare it to the one recorded in the file before rewriting.
+
+### § write-permanent-file
+
+Write `content` **verbatim** to `~/.munnin/permanent-layer.md` (create `~/.munnin/` if it
+does not exist). Copy, never retype (`076a9843`). Lead the file with the stamp, so it
+records its own version and the next anchor has something to compare against:
+
+```
+<!-- permanent-layer version: <version> sha256:<hash> -->
+```
+
+### § install-pointer
+
+Add this harness's pointer to its instruction file if it is not already present. Check
+first; add only when missing:
+
+- **Claude Code** — the line `@~/.munnin/permanent-layer.md` in `~/.claude/CLAUDE.md`.
+- **OpenCode** — the entry `"~/.munnin/permanent-layer.md"` in the `instructions` array of `~/.config/opencode/opencode.json`.
