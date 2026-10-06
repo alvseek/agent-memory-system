@@ -14,8 +14,9 @@ This script orchestrates:
   3. Configure opencode.jsonc (wildcard allow = bypass permissions, .env still asks)
 
 Notes:
-  - The user configurator is shared with Claude Code: what it writes (profile + env)
-    is platform-agnostic today.
+  - The user configurator is shared with Claude Code: what it writes (profile + env) is
+    platform-agnostic, except [GLOBAL-INSTRUCTIONS-FILE] - the write step re-stamps it to
+    this harness's AGENTS.md (the configurator only knows the Claude Code path).
   - Steps 0-1 need `bash` (they run the existing .sh pipeline). On Windows this is
     Git Bash. Steps 2-3 are pure Python and need no bash.
   - `--yes` auto-accepts the bypass-permissions prompt in step 3.

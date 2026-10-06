@@ -70,9 +70,9 @@ control-files/
 │   │   ├── user-profile-claude.sh     # Interactive user identity setup
 │   │   ├── user-env-claude.sh         # Interactive OS + agent memory path setup
 │   │   ├── compile.sh                 # Compile to output/
-│   │   ├── compile-write-to-claude.sh # Compile AND write to CLAUDE.md
-│   │   ├── write-to-claude.sh         # Write compiled output to CLAUDE.md
-│   │   └── write-to-gemini.sh         # Write compiled output to GEMINI.md
+│   │   ├── compile-write-to-*.sh      # Compile AND write to one harness file
+│   │   ├── write-to-*.sh              # Write output to a harness file + stamp its path
+│   │   └── set-global-instructions-file.sh # Per-harness [GLOBAL-INSTRUCTIONS-FILE] stamp
 │   └── output/                        # Runtime-resolved files + compiled output (gitignored)
 ├── procedures/                         # Memory-primitive procedures (also work as slash commands)
 │   ├── awaken-agent.md                # Load agent identity + central memory
@@ -320,9 +320,9 @@ control-files/core-memory/
 │   ├── user-profile-claude.sh     # Interactive user identity setup
 │   ├── user-env-claude.sh         # Interactive OS + agent memory path setup
 │   ├── compile.sh                 # Compile to output/ folder
-│   ├── compile-write-to-claude.sh # Compile AND write to CLAUDE.md
-│   ├── write-to-claude.sh         # Write compiled output to CLAUDE.md
-│   └── write-to-gemini.sh         # Write compiled output to GEMINI.md
+│   ├── compile-write-to-*.sh      # Compile AND write to one harness file
+│   ├── write-to-*.sh              # Write output to a harness file + stamp its path
+│   └── set-global-instructions-file.sh # Per-harness [GLOBAL-INSTRUCTIONS-FILE] stamp
 └── output/                        # Runtime-resolved files + compiled output (gitignored)
 ```
 
@@ -340,8 +340,9 @@ control-files/core-memory/
 | Script | Purpose |
 |--------|---------|
 | `compile.sh` | Step 1: Compiles source files → `output/core-memory-compiled.md` |
-| `write-to-claude.sh` | Step 2: Writes compiled output → `~/.claude/CLAUDE.md` |
-| `compile-write-to-claude.sh` | Runs both Step 1 + Step 2 sequentially |
+| `write-to-<platform>.sh` | Step 2: Writes compiled output to that harness's file (`claude` → `~/.claude/CLAUDE.md`, `opencode` → `~/.config/opencode/AGENTS.md`, `codex` → `~/.codex/AGENTS.md`, `antigravity` → `~/.gemini/GEMINI.md`) and stamps it with that same path |
+| `compile-write-to-<platform>.sh` | Runs both Step 1 + Step 2 sequentially for that harness |
+| `set-global-instructions-file.sh` | Helper: re-points `[GLOBAL-INSTRUCTIONS-FILE]` in a written file to that harness's own destination |
 
 **Configuration Scripts** (in `compile-scripts/`) — each owns exactly one runtime file and can be run on its own:
 
@@ -351,7 +352,7 @@ control-files/core-memory/
 | `user-env-claude.sh` | `output/1-core-environment-memory.md` (OS, agent memory path) |
 | `user-config-claude.sh` | Thin orchestrator: runs both, in that order |
 
-`compile.sh` uses runtime files from `output/` first, then falls back to templates when runtime files are missing. Each configurator is the **single writer** of its runtime file — anything the compiled memory must carry has to be emitted by the script, because a template-only edit is discarded the next time the configurator runs.
+`compile.sh` uses runtime files from `output/` first, then falls back to templates when runtime files are missing. Each configurator is the **single writer** of its runtime file — anything the compiled memory must carry has to be emitted by the script, because a template-only edit is discarded the next time the configurator runs. `[GLOBAL-INSTRUCTIONS-FILE]` is the one line the configurator cannot set correctly for every harness, because the compiled artifact is shared: each `write-to-<platform>.sh` calls `set-global-instructions-file.sh` to stamp its own destination.
 
 **Option A: Run both steps at once**
 ```bash

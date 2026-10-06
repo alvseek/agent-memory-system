@@ -11,8 +11,8 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONTROL_FILES_DIR="$(dirname "$SCRIPT_DIR")"
-# Shares the Claude configurator: what it writes (profile + env) is platform-agnostic today.
-# An Antigravity-specific configurator is deferred.
+# Shares the Claude configurator: what it writes (profile + env) is platform-agnostic, except
+# [GLOBAL-INSTRUCTIONS-FILE] - compile-write-to-antigravity.sh re-stamps it to GEMINI.md.
 USER_CONFIG_SCRIPT="$CONTROL_FILES_DIR/core-memory/compile-scripts/user-config-claude.sh"
 USER_PROFILE_FILE="$CONTROL_FILES_DIR/core-memory/0-core-user-profile.md"
 COMPILE_WRITE_SCRIPT="$CONTROL_FILES_DIR/core-memory/compile-scripts/compile-write-to-antigravity.sh"

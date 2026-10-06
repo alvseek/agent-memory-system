@@ -55,5 +55,9 @@ else
     echo "CLAUDE.md created successfully."
 fi
 
+# [GLOBAL-INSTRUCTIONS-FILE] is the one platform-specific line in the compiled memory;
+# stamp this harness's own destination now that the file is in place.
+bash "$SCRIPT_DIR/set-global-instructions-file.sh" "$TARGET_FILE" || exit 1
+
 echo ""
 echo "Done! Total lines: $(wc -l < "$TARGET_FILE")"

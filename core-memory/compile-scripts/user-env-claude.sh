@@ -120,9 +120,11 @@ echo "Step 2/2: Set agent memory path"
 echo "------------------------------------------"
 echo ""
 
-# Auto-detect based on OS choice. GLOBAL_INSTRUCTIONS_FILE is derived the same way -
-# it is where write-to-claude.sh lands the compiled core memory ($HOME/.claude/CLAUDE.md),
-# written in the selected OS's native form.
+# Auto-detect based on OS choice. GLOBAL_INSTRUCTIONS_FILE is derived the same way - it is
+# where write-to-claude.sh lands the compiled core memory ($HOME/.claude/CLAUDE.md), written
+# in the selected OS's native form. This is the Claude Code value: the compiled memory is
+# shared by every harness, so each write-to-<platform>.sh re-stamps its own destination via
+# set-global-instructions-file.sh.
 case "$OS_CHOICE" in
     1) DETECTED_PATH="C:\\Users\\$(whoami)\\.claude\\@agent-memory\\"
        GLOBAL_INSTRUCTIONS_FILE="C:\\Users\\$(whoami)\\.claude\\CLAUDE.md" ;;
