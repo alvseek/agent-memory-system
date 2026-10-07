@@ -10,6 +10,10 @@
 # silently discarded on the next run).
 #
 # Idempotent: can be re-run to change values. Runs standalone or via user-config-claude.sh.
+#
+# [CORE-ACCESS] / [CORE-MCP-URL] are emitted with a default rather than prompted: the file form
+# is the default everywhere. A served core is declared by setting CORE_ACCESS=mcp and
+# CORE_MCP_URL=<endpoint> in the environment when running this script.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CORE_MEMORY_DIR="$(dirname "$SCRIPT_DIR")"
@@ -29,6 +33,15 @@ fi
 # Anchored to the DEFINITION line: [STORAGE-BACKENDS-PATH] quotes [AGENT-MEMORY-PATH]
 # inside its own value, so an unanchored match would return two lines.
 CURRENT_PATH=$(grep '^- \*\*\[AGENT-MEMORY-PATH\]\*\* = ' "$ENV_FILE" 2>/dev/null | head -1 | sed 's/.*\*\* = `//;s/`$//')
+
+# How the core is reached is carried the same way: read the current value so a re-run keeps
+# it, default to the file form, and let an environment variable set it for a machine that
+# runs the core served. Neither is prompted - the file form is the default everywhere, and
+# the endpoint is only meaningful once something actually connects.
+CURRENT_ACCESS=$(grep '^- \*\*\[CORE-ACCESS\]\*\* = ' "$ENV_FILE" 2>/dev/null | head -1 | sed 's/.*\*\* = `//;s/`$//')
+CURRENT_MCP_URL=$(grep '^- \*\*\[CORE-MCP-URL\]\*\* = ' "$ENV_FILE" 2>/dev/null | head -1 | sed 's/.*\*\* = `//;s/`$//')
+CORE_ACCESS="${CORE_ACCESS:-${CURRENT_ACCESS:-markdown}}"
+CORE_MCP_URL="${CORE_MCP_URL:-${CURRENT_MCP_URL:-<unset>}}"
 
 # Auto-detect OS
 case "$(uname -s)" in
@@ -156,9 +169,12 @@ cat >> "$ENV_FILE" << EOF
 - **[AGENT-MEMORY-PATH]** = \`${AGENT_MEMORY_PATH_INPUT}\`
 - **[STORAGE-BACKENDS-PATH]** = \`[AGENT-MEMORY-PATH]${STORAGE_BACKENDS_SUFFIX}\` (memory procedures' concrete \`§ op\`s per storage backend — absolute so the pointer survives slash-command install)
 - **[GLOBAL-INSTRUCTIONS-FILE]** = \`${GLOBAL_INSTRUCTIONS_FILE}\` (this compiled file's own destination — post-compaction recovery rereads it to restore attention position)
+- **[CORE-ACCESS]** = \`${CORE_ACCESS}\` (which form of the memory core this machine uses: \`markdown\` for the installed commands, \`mcp\` for the procedures served over a connected server)
+- **[CORE-MCP-URL]** = \`${CORE_MCP_URL}\` (the endpoint the served core is reached at; only the layer that opens the connection acts on this, never the agent)
 EOF
 
 echo "✓ Agent memory path saved"
 echo "✓ Storage backends path derived"
 echo "✓ Global instructions file derived"
+echo "✓ Core access: $CORE_ACCESS"
 echo "✓ Environment saved: $ENV_FILE"
