@@ -8,5 +8,5 @@
 - **[AGENT-MEMORY-PATH]** = `C:\Work\research\agent-memory\`
 - **[STORAGE-BACKENDS-PATH]** = `[AGENT-MEMORY-PATH]\control-files\procedures\memory\storage-backends` (memory procedures' concrete `§ op`s per storage backend — absolute so the pointer survives slash-command install)
 - **[GLOBAL-INSTRUCTIONS-FILE]** = `C:\Users\your-name\.claude\CLAUDE.md` (this compiled file's own destination — post-compaction recovery rereads it to restore attention position)
-- **[CORE-ACCESS]** = `markdown` (which form of the memory core this machine uses: `markdown` for the installed commands, `mcp` for the procedures served over a connected server)
+- **[CORE-ACCESS]** = `mcp` (which form of the memory core this machine uses: `markdown` for the installed commands, `mcp` for the procedures served over a connected server)
 - **[CORE-MCP-URL]** = `<unset>` (the endpoint the served core is reached at; only the layer that opens the connection acts on this, never the agent)

@@ -56,5 +56,8 @@ fi
 # stamp this harness's own destination now that the file is in place.
 bash "$SCRIPT_DIR/set-global-instructions-file.sh" "$TARGET_FILE" || exit 1
 
+# Core access is a per-client fact (is the MCP server connected HERE?), so stamp it per harness.
+bash "$SCRIPT_DIR/set-core-access.sh" "$TARGET_FILE" "${CORE_ACCESS:-markdown}" "${CORE_MCP_URL:-<unset>}" || exit 1
+
 echo ""
 echo "Done! Total lines: $(wc -l < "$TARGET_FILE")"
