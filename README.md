@@ -126,7 +126,7 @@ The core installs as slash commands to `~/.claude/commands/`. These are the **me
 | `/list-agents` | List every agent in the ecosystem with a one-line role |
 | `/wait-options` | Present a decision and collect an answer (universal format) |
 
-> **Coding agents**: the overlay adds `/project-wrap-up` (project push, then `/update-memory`, `/map-orientation` and `/push-all`), the wizard protocols (`/quick-wizard` → `/forge-of-covenant`), `/implement-plan`, doc generation (`/generate-readme`, `/generate-docs`, …), QA (`/analyze-code-quality`, `/integration-test`, …), fleet (`/ask-agent`, `/delegate-agent`, `/setup-fleet`), `/map-orientation`, `/localize-context`, and push/pull. See the [overlay repo](https://github.com/alvseek/agent-memory-coding-skill).
+> **Coding agents**: the overlay adds `/project-wrap-up` (project push, then `/update-memory`, `/map-orientation` and `/push-all`), the wizard protocols (`/quick-wizard` → `/forge-of-covenant`), `/implement-plan`, doc generation (`/generate-readme`, `/generate-docs`, …), QA (`/analyze-code-quality`, `/integration-test`, …), `/map-orientation`, `/localize-context`, and push/pull. See the [overlay repo](https://github.com/alvseek/agent-memory-coding-skill); the fleet (`/ask-agent`, `/delegate-agent`, `/setup-fleet`, `/load-fleet`) lives in a third repo, [agent-memory-fleet](https://github.com/alvseek/agent-memory-fleet).
 
 ### Compilation
 
