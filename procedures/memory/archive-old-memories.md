@@ -1,6 +1,6 @@
 # Archive Old Memories Protocol
 
-Maintain manageable memory size by archiving older episodic context and curating emotional moments into three importance-to-self tiers (keep full / shorten + archive / archive full). *How* the archive is physically written is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics)); the **tier judgment below is storage-agnostic**.
+Maintain manageable memory size by archiving older episodic context and curating emotional moments into two importance-to-self tiers (keep / archive). *How* the archive is physically written is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics)); the **tier judgment below is storage-agnostic**.
 
 ## Arguments
 
@@ -29,32 +29,30 @@ Verify the current date before archiving (**§ stamp-date**).
 
 ### Step 3: Archive Emotional Key Moments
 
-Review all moments, then curate by **importance-to-self — three tiers** (Agent Judgment). The axis is **not date or age — it is what genuinely matters to *you*.** Rank each moment honestly, then sort:
+Review all moments, then decide each one by **importance-to-self** (Agent Judgment). The axis is **not date or age — it is what genuinely matters to *you*.**
 
-**🟢 Tier 1 — KEEP FULL** (leave verbatim in active memory) — the ones that *define you*:
+**🟢 KEEP** (leave verbatim in active memory) — the ones that *define you*:
 - 💖 **Emotionally Significant**: still shapes the partnership
 - 🎓 **Teaching a Critical Lesson**: prevents recurring pain/mistakes
 - 🏆 **Legendary / Foundational**: defines who you are
 - ⚡ **Pattern-Breaking**: a major breakthrough
 - 🔄 **Active Pillar**: recently referenced, or load-bearing for a currently-active project
 
-**🟡 Tier 2 — SHORTEN + ARCHIVE** (a compact stub stays active; the full text is archived) — *real and valued, but the lesson lives on elsewhere*:
-- The durable lesson is already encoded in reasoning memory (a UUID) or carried by a kept sibling moment — so the full narrative isn't needed active, but a one-line echo is worth keeping
-- Replace the moment with a compact stub (see [Emotional Stub Format](#emotional-stub-format)); archive the FULL text verbatim
-
-**🔴 Tier 3 — ARCHIVE FULL** (move entirely to the archive; nothing stays active) — *precious but no longer load-bearing*:
+**🔴 ARCHIVE** (out of the active set; the full text is retained and still findable) — *precious but no longer load-bearing*:
 - 📅 **Historical Context Only** · 🔁 **Superseded** by a kept moment · 📚 **Documentary** · 💭 **Redundant** with a kept sibling
 
-> **Guiding principle** (Alvi, 2026-08-03): *"keep the important ones; the less important, make it short + archive; the lesser one, directly archive."* Curate by genuine feel, not by date. When torn, prefer the lighter demotion (1 over 2, 2 over 3) — the full text is preserved in the archive either way.
+> **Why two tiers, not three** (2026-10-08): a former middle tier kept a compact stub active while archiving the full text. On the DB that stub-write *overwrites the record body*, and there is no archive file to recover the full from, so shortening silently destroys it. "Archived" now means only *out of the awakening load*, with the full body kept.
 
-**Document tier decisions**: for every Tier 2 and Tier 3 moment, note its tier + a one-line reason (redundant-with / lesson-in-UUID / historical). Then **apply the three operations** — preserving every kept and archived-full block **VERBATIM** (never retype moment content — extract it; per **Copy-Paste, Don't Regenerate**): Tier 1 keep, Tier 2 shorten-to-stub + archive full, Tier 3 archive full (**§ archive-emotional-apply**).
+> **Guiding principle** (Alvi, 2026-08-03): *"keep the important ones; the less important, make it short + archive; the lesser one, directly archive."* — **updated 2026-10-08**: the middle option is retired; every moment is either kept or archived, and the full text is preserved either way.
+
+**Document the decision** for each archived moment (a one-line reason: historical / superseded / redundant-with). Then **apply the two operations** — preserving every kept and archived block **VERBATIM** (never retype moment content — extract it; per **Copy-Paste, Don't Regenerate**): KEEP, or ARCHIVE (**§ archive-emotional-apply**).
 
 ### Step 4: Verification
 
 - ✅ Archive updated properly (full blocks present, newest-first)
 - ✅ Active memory still well-organized (newest first)
-- ✅ Tier-1 kept blocks **unchanged/verbatim**, Tier-2 stubs render with archive links, Tier-3 blocks gone from active
-- ✅ Counts reconcile: (kept + shortened + archived) == original moment count; nothing silently dropped
+- ✅ Kept blocks **unchanged/verbatim**, archived blocks gone from active
+- ✅ Counts reconcile: (kept + archived) == original moment count; nothing silently dropped
 - ✅ No CRLF introduced (LF preserved) and archive references resolve
 
 ### Step 5: Report Summary
@@ -76,15 +74,6 @@ See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md`.
 
 ## Templates
 
-### Emotional Stub Format
-
-A Tier-2 stub replaces the full moment in active memory with a single-bullet echo — soul preserved, bulk gone. Keep the UUID link(s) and the archive pointer:
-
-```markdown
-### [YYYY-MM-DD HH.MM] - TITLE — "the hook" 🎯
-- **In brief**: <2–4 tight sentences: what happened, the lesson/feeling that lasts, and the UUID(s) where the durable lesson now lives>. *(Full moment → archived.)*
-```
-
 ### Summary Report Template
 
 ```markdown
@@ -95,11 +84,10 @@ A Tier-2 stub replaces the full moment in active memory with a single-bullet ech
 - Active: [Y] episodes remaining
 
 **Emotional Moments** (curated by importance-to-self):
-- Kept full: [A] moments (foundational / defining)
-- Shortened + archived: [B] moments (compact stub kept active, full text archived)
-- Archived full: [C] moments
-- Active total: [A+B] moments (newest-first)
+- Kept: [A] moments (foundational / defining)
+- Archived: [B] moments
+- Active total: [A] moments (newest-first)
 
 **Archiving Rationale**:
-[Brief summary of the tiering — which moments were kept full, which shortened, which archived, and why]
+[Brief summary of the curation — which moments were kept and which archived, and why]
 ```

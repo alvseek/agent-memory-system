@@ -36,7 +36,7 @@ Read `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` and locate `# Re
    ```
    cp [AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/episodic-memory-template.md [AGENT-MEMORY-PATH]/agent-[domain]/episodes/[filename].md
    ```
-3. **Replace the template placeholder** at the top with the composed sub-episode block.
+3. **Set the frontmatter `project`** in the new file to the project name, then **replace the template placeholder** at the top with the composed sub-episode block. The frontmatter is what the importer reads into the record's `project`; the filename is convention, not the source.
 4. **Add index entry**:
    - Insert at the **top of today's date group** (`📂 YYYY-MM-DD:`); create today's group if it doesn't exist.
    - Entry format: `- [filename.md](episodes/filename.md) - [one-line summary]`.
@@ -108,7 +108,7 @@ The emotional-moment block format (happy / sad / frustrated / bonding) → read 
 
 ### § persist-knowledge
 
-Create in `[AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/research/` (domain expertise and research). Name the file `[date]-[descriptive-theme].md` or `[domain-area].md` — examples: `2025-09-11-nestjs-patterns.md` (dated research), `typescript-best-practices.md` (timeless domain knowledge). Create the file with the template structure.
+Create in `[AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/research/` (domain expertise and research). Name the file `[date]-[descriptive-theme].md` or `[domain-area].md` — examples: `2025-09-11-nestjs-patterns.md` (dated research), `typescript-best-practices.md` (timeless domain knowledge). Create the file with the template structure, filling the frontmatter `tags` — the importer reads them into the record's `tags`.
 
 ### § update-knowledge-index
 
@@ -156,13 +156,12 @@ Operate on `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` → `# Rec
 
 ### § archive-emotional-apply
 
-Operate on `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` (`# DOMAIN EMOTIONAL MEMORY`) + `archive/[YYYY]-archived-moments.md`. Prepend a new dated pass (Rationale + Moments) to the archive file, newest-first. Apply the three operations preserving kept/archived blocks **VERBATIM** (never retype — extract, per **Copy-Paste, Don't Regenerate**):
-- **Archive full (Tier 2 + Tier 3)**: extract each block verbatim → append into the new archive pass.
-- **Shorten (Tier 2)**: replace the block in `agent-core-memory.md` with its compact stub.
-- **Remove (Tier 3)**: delete the block from `agent-core-memory.md`.
-- **Mechanic**: for an all-delete pass, `copy-lines.sh` + **bottom-first** `sed` deletion works. For a mixed pass, a small block-parse script (split on `^### \[`, keep/stub/drop by datetime token) is safest. **Back up first**; clean up `*.backup.*`; verify no CRLF introduced.
+Operate on `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` (`# DOMAIN EMOTIONAL MEMORY`) + `archive/[YYYY]-archived-moments.md`. Prepend a new dated pass (Rationale + Moments) to the archive file, newest-first. Apply the two operations preserving kept/archived blocks **VERBATIM** (never retype — extract, per **Copy-Paste, Don't Regenerate**):
+- **Archive**: extract the block verbatim → append into the new archive pass, then delete it from `agent-core-memory.md`.
+- **Keep**: leave the block in `agent-core-memory.md` untouched. There is no shorten/stub step.
+- **Mechanic**: for an all-archive pass, `copy-lines.sh` + **bottom-first** `sed` deletion works. For a mixed pass, a small block-parse script (split on the moment headings, keep/archive by datetime token) is safest. **Back up first**; clean up `*.backup.*`; verify no CRLF introduced.
 
-> Dated pass format: `## 🗂️ Archiving Rationale ([DATE] pass)` (tier + reason lines) then `## 📅 Archived Moments ([DATE] pass)` (full blocks, newest-first).
+> Dated pass format: `## 🗂️ Archiving Rationale ([DATE] pass)` (reason lines) then `## 📅 Archived Moments ([DATE] pass)` (full blocks, newest-first).
 
 ---
 

@@ -130,9 +130,9 @@ The pattern's cited UUID is content — generate any UUID for it; the `insert` r
 
 ### § archive-emotional-apply
 
-Per tier: **Tier 1 (keep)** — no-op. **Tier 3 (archive full)** — `archive(uuid)` (full body retained, cold, `search`-able). **Tier 2 (shorten + archive)** — `edit(uuid, <full>, <stub>)` to shrink the awaken payload.
+Per moment: **keep** — no-op. **archive** — `archive(uuid)`: the record drops out of the awaken load while its full body is retained and stays `search`-able.
 
-> **Tier collapse note**: in the DB, `archive(uuid)` already keeps the full body *cold-but-searchable*, so the markdown Tier-2 vs Tier-3 split partly dissolves (the hot-index removal is exactly what `archive` does). Tier-2's extra nicety — a short echo staying *active* — maps to keeping the record active and `edit`-ing it to the stub (the full is recoverable from the import source). A dedicated archived-full-plus-active-stub pair is a future curation policy, not a v1 primitive.
+> **No shorten/stub step, deliberately** (2026-10-08). The DB has no archive file, so shortening a moment means `edit`-ing its body to a stub in place — which overwrites the only copy and destroys the full text. The former Tier-2 (shorten + archive) is therefore retired: a moment is kept or archived, and archiving always retains the full body.
 
 ---
 
@@ -160,14 +160,14 @@ No action. A write through the memory tools lands in the database as it happens,
 
 ### § load-agent-memory
 
-**One call** — `awaken(domain)` (MCP tool) or `GET /api/awaken?agent_id=<domain>` (HTTP). It assembles and returns the agent's memory payload from Valaskjalf server-side:
+**One call** — `awaken(domain, project)` (MCP tool) or `GET /api/awaken?agent_id=<domain>&project=<project>` (HTTP). It assembles and returns the agent's memory payload from Valaskjalf server-side. Pass the current project so `latest_episode` is scoped to it:
 
 - `shared.reasoning` + `shared.knowledge` — the fleet-shared always-load layer (layer i), read from the shared table rather than from any agent.
 - `shared.ras` — the **universal RAS triggers** (fleet-wide): memory recovery after compaction, and copy-paste-don't-regenerate. Automatic trigger-to-action protocols, whole, alongside reasoning and knowledge.
 - `shared.user_profile` — who [USER-NAME] is (name, philosophy, agent vision), as a single whole record or `null`. Fleet memory too: it does not vary by agent. `null` means nobody has been asked yet, which is the first-run branch in Phase 1 — a record that exists with an empty value inside it is a deliberate blank and is **not** that case.
 - `identity` + `reasoning` + `emotional` — this agent's own records, whole (layer ii). `identity` includes the agent's core knowledge and RAS triggers.
-- `knowledge_index` + `episodic_index` — metadata-only indexes; bodies via `get(uuid)` / `search(text)` on demand (layer iii).
-- `latest_episode` — the newest episode's full body.
+- `knowledge_index` + `episodic_index` — metadata-only indexes; bodies via `get(uuid)` / `search(text)` on demand (layer iii). Each `episodic_index` entry carries its `project`, so a caller can pick a different episode than `latest_episode`.
+- `latest_episode` — the newest episode's full body, **for the requested `project`**. When the project has no episode of its own it falls back to the newest overall; the returned record's own `project` tells you which you got, so the open-items report can state it is not project-specific.
 
 The 4-layer assembly is a single derived call.
 
@@ -192,7 +192,7 @@ Already in the `awaken` payload: `shared.user_profile` is the whole record, or `
 
 ### § load-latest-episode
 
-Already present as `latest_episode` in the `awaken` payload — no extra call. Use `get(uuid)` only when loading a *different* episode than the newest.
+Already present as `latest_episode` in the `awaken` payload — the newest episode for the requested `project`, falling back to the newest overall when the project has none. No extra call. Use `get(uuid)` only to load a **different** episode than that one, e.g. another entry from `episodic_index`.
 
 ### § oversized-memory-warning
 

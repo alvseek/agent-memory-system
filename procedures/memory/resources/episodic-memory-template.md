@@ -1,3 +1,7 @@
+---
+project: "[project-name]"
+---
+
 # Agent [DOMAIN] - Recent Context Episodes 🧠
 
 > **🧠 CRITICAL INSTRUCTION: Follow these rules strictly:**
