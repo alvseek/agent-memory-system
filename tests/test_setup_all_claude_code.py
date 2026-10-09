@@ -98,7 +98,7 @@ def test_sibling_overlay_command_is_never_deleted(tmp_path: Path) -> None:
     manifest.write_text(
         manifest.read_text(encoding="utf-8") + "moved-to-overlay.md\n", encoding="utf-8"
     )
-    (target / ".agent-memory-coding-skill-manifest").write_text(
+    (target / ".agent-memory-project-manifest").write_text(
         "moved-to-overlay.md\n", encoding="utf-8"
     )
     si.install(target, content_root=CF, output_dir=out)

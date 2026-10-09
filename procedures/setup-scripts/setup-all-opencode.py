@@ -33,7 +33,7 @@ from pathlib import Path
 _CF_ROOT = Path(__file__).resolve().parents[2]
 
 _MANIFEST_NAME = ".agent-memory-opencode-manifest"
-_SIBLING_MANIFEST_NAME = ".agent-memory-coding-skill-manifest"
+_SIBLING_MANIFEST_NAME = ".agent-memory-project-opencode-manifest"
 
 _TITLE_RE = re.compile(r"^#\s+(.+?)\s*$", re.MULTILINE)
 

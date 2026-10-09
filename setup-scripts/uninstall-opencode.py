@@ -3,14 +3,14 @@
 
 The inverse of ``setup-opencode.py``, scoped to the **core only**. It removes exactly the
 markdown-backend artifacts the core installer writes for this harness, and nothing the
-sibling overlay (``agent-memory-coding-skill``, "Hermod") owns:
+sibling overlay (``agent-memory-project``, "Hermod") owns:
 
   1. Core skills -- ``~/.config/opencode/skills/agent-memory-*/`` -- the set the core manifest
      (``.agent-memory-opencode-manifest``) claims, never a folder the overlay manifest claims.
   2. Core memory -- the compiled memory content in ``~/.config/opencode/AGENTS.md`` (the user
      profile, the RAS triggers and the reasoning digest). What survives is what Hermod owns:
      the ``[CORE-ACCESS]`` and ``[CORE-MCP-URL]`` declarations, and the overlay's appended
-     ``[path-to-agent-memory-coding-skill]`` line.
+     ``[path-to-agent-memory-project]`` line.
 
 Left in place on purpose:
 
@@ -36,7 +36,7 @@ import sys
 from pathlib import Path
 
 _CORE_MANIFEST_NAME = ".agent-memory-opencode-manifest"
-_SIBLING_MANIFEST_NAME = ".agent-memory-coding-skill-opencode-manifest"
+_SIBLING_MANIFEST_NAME = ".agent-memory-project-opencode-manifest"
 _CORE_SKILL_PREFIX = "agent-memory-"
 _CORE_HEADER = "<!-- COMPILED CORE MEMORY FILE -->"
 _OVERLAY_MARKER = "overlay-path-def"
@@ -149,7 +149,7 @@ def main(argv: list[str] | None = None) -> int:
     print()
     print(f"Core memory: {strip_core_memory(agents_file)}")
     print()
-    print("Left in place: the overlay (agent-memory-coding-skill) skills and its path line,")
+    print("Left in place: the overlay (agent-memory-project) skills and its path line,")
     print("the opencode.jsonc settings, and the data store (~/.claude/@agent-memory).")
     return 0
 

@@ -5,7 +5,7 @@ into ``procedures/output/`` — seam procedures composed + decluttered, non-seam
 copied as-is — then installs the resulting self-contained ``<name>.md`` files. So the
 installed command is the *compiled* procedure (mechanics inlined), not the raw seam source.
 
-Installs ONLY the memory core (this repo). The coding overlay (agent-memory-coding-skill) is
+Installs ONLY the memory core (this repo). The coding overlay (agent-memory-project) is
 a separate repo with its OWN installer; each installer owns its own manifest and cleans up
 independently, so they coexist in the same target dir. This installer never deletes a command
 the sibling overlay manifest claims.
@@ -29,7 +29,7 @@ from pathlib import Path
 _CF_ROOT = Path(__file__).resolve().parents[2]
 
 _MANIFEST_NAME = ".agent-memory-manifest"
-_SIBLING_MANIFEST_NAME = ".agent-memory-coding-skill-manifest"
+_SIBLING_MANIFEST_NAME = ".agent-memory-project-manifest"
 
 
 def _load(name: str, path: Path):
