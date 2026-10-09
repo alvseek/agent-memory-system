@@ -70,7 +70,7 @@ For a detailed breakdown of the file structure, compilation system, and memory a
 
 **Step 1** compiles the `core-memory/` source files (user profile, environment, RAS triggers, reasoning patterns) into a single `CLAUDE.md` and writes it to `~/.claude/CLAUDE.md`. This is where the Awaken trigger, post-compact recovery, and reasoning patterns live.
 
-**Step 2** copies all procedures from `procedures/` to `~/.claude/commands/`, enabling slash commands like `/high-wizard`, `/update-episodic`, `/wrap-up`, etc. Uses a manifest to clean up stale commands from previous installations. See [Architecture Documentation](ARCHITECTURE.md#common-slash-commands) for the full command list.
+**Step 2** copies all procedures from `procedures/` to `~/.claude/commands/`, enabling slash commands like `/awaken-agent`, `/update-episodic`, `/wrap-up`, etc. Uses a manifest to clean up stale commands from previous installations. See [Architecture Documentation](ARCHITECTURE.md#common-slash-commands) for the full command list.
 
 **Step 3** merges hooks and permissions into `~/.claude/settings.json` without overwriting existing settings:
 - **Stop hook** - plays `stop.wav` when Claude finishes responding
