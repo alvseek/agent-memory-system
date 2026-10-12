@@ -4,7 +4,7 @@
 
 The Control Files system provides the **shared memory infrastructure** for all agents. It implements a **5-layer memory architecture** that gives agents persistent, structured memory capabilities.
 
-> **⚠️ Two-repo split (2026-08-06):** `control-files` is now the **memory core** only. Coding/repo procedures — the wizard protocols, doc generation, QA, `map-orientation`, `localize-context`, `wait-options`, push/pull, `project-wrap-up`, **fleet** (`ask-agent`/`delegate-agent`/`setup-fleet`), and **project-context** (`update-project-context`/`load-project-context`) — moved to the standalone [agent-memory-project](https://github.com/alvseek/agent-memory-project) overlay (composes on top of the core for coding agents; a chat agent uses core alone — the memory core is **project-blind**). Some tables/trees below still enumerate the full pre-split command set; entries for the moved procedures now live in the overlay repo. Full section-by-section relocation is in progress. **The fleet moved again on 2026-10-08:** `ask-agent` / `delegate-agent` / `setup-fleet` (plus the new `load-fleet`) now live in a third repo, [agent-memory-fleet](https://github.com/alvseek/agent-memory-fleet) (`hermod-fleet`); the overlay keeps a one-line pointer to it, and a cross-layer handoff resolves through that layer's access declaration (`[PROJECT-ACCESS]` / `[FLEET-ACCESS]`, read by the caller). **The wizards moved out on 2026-10-09:** the wizard protocols, `implement-plan`, the QA pipeline, and `wait-options-coding` now live in a fourth repo, [agent-memory-wizards](https://github.com/alvseek/agent-memory-wizards) (`hermod-wizards`) — a leaf that reads only the core; the overlay keeps the shell (`awaken-coder`, `project-wrap-up`, `dockerize`, push/pull) and the project / doc surface (orientation map, project context, doc generation, localization).
+> **⚠️ Two-repo split (2026-08-06):** `control-files` is now the **memory core** only. Coding/repo procedures — the wizard protocols, doc generation, QA, `map-orientation`, `localize-context`, `wait-options`, push/pull, `project-wrap-up`, **fleet** (`ask-agent`/`delegate-agent`/`setup-fleet`), and **project-context** (`update-project-context`/`load-project-context`) — moved to the standalone [agent-memory-project](https://github.com/alvseek/agent-memory-project) overlay (composes on top of the core for coding agents; a chat agent uses core alone — the memory core is **project-blind**). Some tables/trees below still enumerate the full pre-split command set; entries for the moved procedures now live in the overlay repo. Full section-by-section relocation is in progress. **The fleet moved again on 2026-10-08:** `ask-agent` / `delegate-agent` / `setup-fleet` (plus the new `load-fleet`) now live in a third repo, [agent-memory-fleet](https://github.com/alvseek/agent-memory-fleet) (`hermod-fleet`); the overlay keeps a one-line pointer to it, and a cross-layer handoff resolves through that layer's access declaration (`[PROJECT-ACCESS]` / `[FLEET-ACCESS]`, read by the caller). **The wizards moved out on 2026-10-09:** the wizard protocols, `implement-plan`, the QA pipeline, and `wait-options-coding` now live in a fourth repo, [agent-memory-wizards](https://github.com/alvseek/agent-memory-wizards) (`hermod-wizards`) — a leaf that reads only the core; the overlay keeps the shell (`awaken-coder`, `project-wrap-up`, push/pull) and project memory (the orientation map, project context), plus the storage-backend seam. **The localization lane moved out on 2026-10-09** ([agent-memory-local](https://github.com/alvseek/agent-memory-local), `hermod-local`), leaving the overlay only `awaken-coder`'s detection + handoff. **The doc family and `dockerize` moved out on 2026-10-12** — the generators and `discovery-contract` to [agent-memory-doc](https://github.com/alvseek/agent-memory-doc) (`hermod-doc`), `dockerize` to the wizards — which leaves the overlay at **9 procedures**, the shell plus project memory; the same day gave it a served form, `hermod-server` (local-only, no remote yet), and implemented the `db` backend ADR-023 had deferred.
 
 ## Table of Contents
 - [Architecture Overview](#architecture-overview)
@@ -117,15 +117,28 @@ control-files/
 ### Coding Overlay Directory (`agent-memory-project` — separate repo)
 ```
 agent-memory-project/
-├── procedures/                         # Coding/repo slash commands (depend on the core)
+├── procedures/                         # 9 coding/repo slash commands (depend on the core)
 │   ├── awaken-coder.md                # Coding awakening overlay (composes core /awaken-agent)
-│   ├── project-wrap-up.md             # Full wrap-up: project push + /update-memory + /map-orientation + /push-all
-│   ├── localized-memory-workflow.md   # Repo-authoritative localized memory behavior
-│   ├── generate-readme · generate-docs · generate-architecture-docs · generate-domain-docs · generate-flow-docs · discovery-contract
-│   ├── map-orientation · localize-context · update-project-context · load-project-context
-│   └── dockerize · pull-* · push-*
-├── templates/                          # Doc-gen / orientation / project-context templates
+│   ├── project-wrap-up.md             # Project push + /update-memory + /map-orientation + § persist-store
+│   ├── map-orientation                # Orientation map: load / create / session-touched / rescan
+│   ├── update-project-context · load-project-context
+│   └── push-project · push-all · pull-project · pull-all
+├── components/                         # home-contract · project-identity · push-exclude-policy
+├── storage-backends/                   # The seam (ADR-023): markdown live, db implemented
+├── templates/                          # orientation-map · project-context
 └── setup-scripts/                     # Per-platform installers
+```
+
+### Doc-Generation Family (`agent-memory-doc` — separate repo, `hermod-doc`)
+```
+agent-memory-doc/
+├── procedures/                         # 6 doc procedures (read the core only)
+│   ├── generate-readme · generate-docs · generate-architecture-docs
+│   ├── generate-domain-docs · generate-flow-docs
+│   └── discovery-contract
+├── components/                         # compute-doc-placement · present-doc-for-review
+├── templates/                          # 6 doc templates
+└── setup-scripts/                     # Its own copy-and-adapted tooling (no seam stage)
 ```
 
 ### Wizards Directory (`agent-memory-wizards` — separate repo, `hermod-wizards`)
@@ -413,7 +426,9 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 | **Awaken Agent** | `procedures/awaken-agent.md` | `/awaken-agent` |
 | **Refresh Memory** | `procedures/refresh-memory.md` | `/refresh-memory` |
 
-**Coding overlay commands** (in [agent-memory-project](https://github.com/alvseek/agent-memory-project), installed for coding agents): `/project-wrap-up`, `/generate-readme` · `/generate-docs` · `/generate-architecture-docs` · `/generate-domain-docs` · `/generate-flow-docs`, `/discovery-contract`, `/map-orientation`, `/localize-context`, `/update-project-context` · `/load-project-context`, `/dockerize`, and `/push-*` · `/pull-*`.
+**Coding overlay commands** (in [agent-memory-project](https://github.com/alvseek/agent-memory-project), installed for coding agents): `/awaken-coder`, `/project-wrap-up`, `/map-orientation`, `/update-project-context` · `/load-project-context`, and `/push-*` · `/pull-*`.
+
+**Doc-generation commands** (in [agent-memory-doc](https://github.com/alvseek/agent-memory-doc), `hermod-doc`): `/generate-readme` · `/generate-docs` · `/generate-architecture-docs` · `/generate-domain-docs` · `/generate-flow-docs` · `/discovery-contract`.
 
 **Wizards commands** (in [agent-memory-wizards](https://github.com/alvseek/agent-memory-wizards), `hermod-wizards`): the wizard protocols (`/quick-wizard`, `/high-wizard`, `/pixel-wizard`, `/council-of-wizards`, `/rite-of-creation`, `/forge-of-covenant`), `/implement-plan`, the QA pipeline (`/analyze-code-quality`, `/build-qa-bench`, `/generate-qa-checklist`, `/integration-test`, `/map-qa-instrument`, `/qa-status`, `/run-qa-test`, `/setup-qa-visual-instrument`, `/generate-standard`), and `/wait-options-coding`.
 
@@ -436,13 +451,14 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 /archive-old-memories    # Archive old memories
 
 # --- Coding overlay (agent-memory-project; coding agents only) ---
-/awaken-coder            # Coding awakening: composes core /awaken-agent + localized/map/fleet
-/project-wrap-up         # Full wrap-up: project push + /update-memory + /map-orientation + /push-all
+/awaken-coder            # Coding awakening: composes core /awaken-agent + coding reasoning/map/fleet
+/project-wrap-up         # Project push + /update-memory + /map-orientation + § persist-store
+/map-orientation · /update-project-context · /load-project-context
+/push-project · /push-all · /pull-project · /pull-all
+
+# --- Doc generation (agent-memory-doc; hermod-doc) ---
 /generate-readme · /generate-docs · /generate-architecture-docs · /generate-domain-docs · /generate-flow-docs
-/map-orientation · /localize-context · /update-project-context · /load-project-context
-/dockerize
-/push-project · /push-memory · /push-all
-/pull-project · /pull-memory · /pull-all
+/discovery-contract
 
 # --- Wizards (agent-memory-wizards; hermod-wizards) ---
 /quick-wizard · /high-wizard · /pixel-wizard · /council-of-wizards · /rite-of-creation · /forge-of-covenant
@@ -458,7 +474,7 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 
 ## Wizard Protocols
 
-> **Overlay-provided:** the wizard protocols now live in the [agent-memory-project](https://github.com/alvseek/agent-memory-project) overlay (`agent-memory-project/procedures/`), not the memory core — they're installed for coding agents. The hierarchy below is unchanged.
+> **Overlay-provided:** the wizard protocols now live in the [agent-memory-wizards](https://github.com/alvseek/agent-memory-wizards) repo (`hermod-wizards`), not the memory core — they're installed for coding agents. The hierarchy below is unchanged.
 
 The wizard-based planning procedures dynamically adapt output based on task context — High Wizard can produce implementation plans, analysis documents, brainstorming outputs, or investigation reports by proposing relevant optional sections during the Early Review step.
 

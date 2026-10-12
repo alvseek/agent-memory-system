@@ -2,7 +2,7 @@
 
 The **memory core** of the [Agent Memory](https://github.com/alvseek/agent-memory) architecture — the domain-agnostic memory primitives (awaken, memory read/write, session wrap-up) plus the templates and compilation tooling that every agent needs. Designed to be used as a **git submodule** inside your private agent-memory repository.
 
-Coding- and repo-oriented procedures (wizards, doc generation, QA, localization, push/pull) live in the **separate** [agent-memory-project](https://github.com/alvseek/agent-memory-project) overlay — an independent repo that composes on top of this core for coding agents. A plain chat agent uses this core alone.
+Coding- and repo-oriented procedures live in the **separate** [agent-memory-project](https://github.com/alvseek/agent-memory-project) overlay — an independent repo that composes on top of this core for coding agents. A plain chat agent uses this core alone. **Four sibling repos carry the rest of the add-on surface**: the wizards + QA ([agent-memory-wizards](https://github.com/alvseek/agent-memory-wizards), `hermod-wizards`), the fleet ([agent-memory-fleet](https://github.com/alvseek/agent-memory-fleet), `hermod-fleet`), the localization lane ([agent-memory-local](https://github.com/alvseek/agent-memory-local), `hermod-local`), and doc generation ([agent-memory-doc](https://github.com/alvseek/agent-memory-doc), `hermod-doc`).
 
 ---
 
@@ -59,7 +59,7 @@ The framework is split into two independent, standalone repos with a strict **on
 | Repo | Role | Contents |
 |------|------|----------|
 | **control-files** (this repo) | Memory core | Awaken, memory read/write, session wrap-up, memory templates, compilation. Standalone; MCP-wrappable later. |
-| **[agent-memory-project](https://github.com/alvseek/agent-memory-project)** | Coding overlay | Wizards, doc-gen, QA, fleet, `map-orientation`, `localize-context`, `wait-options`, push/pull, `project-wrap-up`, `awaken-coder`. |
+| **[agent-memory-project](https://github.com/alvseek/agent-memory-project)** | Coding overlay | `awaken-coder`, `project-wrap-up`, `map-orientation`, project context, push/pull — the shell and project memory, plus the storage-backend seam (`markdown` live, `db` implemented). |
 
 - **The overlay depends on the core; the core never references the overlay by name** — enforced by [`scripts/check-core-invariant.sh`](scripts/check-core-invariant.sh).
 - **Composition is agent-side, additive — not override.** The overlay's `awaken-coder` simply orchestrates *"run the core `/awaken-agent`, then localized-home + orientation map + fleet."*
@@ -126,7 +126,7 @@ The core installs as slash commands to `~/.claude/commands/`. These are the **me
 | `/list-agents` | List every agent in the ecosystem with a one-line role |
 | `/wait-options` | Present a decision and collect an answer (universal format) |
 
-> **Coding agents**: the overlay adds `/project-wrap-up` (project push, then `/update-memory`, `/map-orientation` and `/push-all`), doc generation (`/generate-readme`, `/generate-docs`, …), `/map-orientation`, `/localize-context`, `/update-project-context` · `/load-project-context`, `/dockerize`, and push/pull. See the [overlay repo](https://github.com/alvseek/agent-memory-project). Two sibling repos carry the rest: the wizards (`/quick-wizard` → `/forge-of-covenant`, `/implement-plan`, QA) live in [agent-memory-wizards](https://github.com/alvseek/agent-memory-wizards) (`hermod-wizards`), and the fleet (`/ask-agent`, `/delegate-agent`, `/setup-fleet`, `/load-fleet`) in [agent-memory-fleet](https://github.com/alvseek/agent-memory-fleet) (`hermod-fleet`).
+> **Coding agents**: the overlay adds `/awaken-coder`, `/project-wrap-up` (project push, then `/update-memory`, `/map-orientation` and `§ persist-store` → `/push-all`), `/map-orientation`, `/update-project-context` · `/load-project-context`, and push/pull — and it now has a served form, `hermod-server` (local-only, no remote yet). See the [overlay repo](https://github.com/alvseek/agent-memory-project). **Four sibling repos carry the rest**: the wizards (`/quick-wizard` → `/forge-of-covenant`, `/implement-plan`, QA) in [agent-memory-wizards](https://github.com/alvseek/agent-memory-wizards) (`hermod-wizards`); the fleet (`/ask-agent`, `/delegate-agent`, `/setup-fleet`, `/load-fleet`) in [agent-memory-fleet](https://github.com/alvseek/agent-memory-fleet) (`hermod-fleet`); the localization lane in [agent-memory-local](https://github.com/alvseek/agent-memory-local) (`hermod-local`); and doc generation (`/generate-readme` · `/generate-docs` · `/generate-architecture-docs` · `/generate-domain-docs` · `/generate-flow-docs` · `/discovery-contract`) in [agent-memory-doc](https://github.com/alvseek/agent-memory-doc) (`hermod-doc`).
 
 ### Compilation
 
