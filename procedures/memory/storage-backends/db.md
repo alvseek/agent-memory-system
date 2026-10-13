@@ -192,7 +192,7 @@ Already in the `awaken` payload: `shared.user_profile` is the whole record, or `
 
 ### § load-latest-episode
 
-Already present as `latest_episode` in the `awaken` payload — the newest episode for the requested `project`, falling back to the newest overall when the project has none. No extra call. Use `get(uuid)` only to load a **different** episode than that one, e.g. another entry from `episodic_index`.
+Already present as `latest_episode` in the `awaken` payload — the newest episode **overall**, since no project is accepted or resolved. A caller whose own project is not that one selects its entry out of `episodic_index` and loads it with `get(uuid)`; the payload's own is the default, and the fallback when the index holds nothing for the project.
 
 ### § oversized-memory-warning
 
