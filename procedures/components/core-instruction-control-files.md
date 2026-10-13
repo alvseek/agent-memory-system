@@ -31,20 +31,19 @@ Phase 1 processes what's already in memory; Phase 2 loads the latest central epi
 
 ### Phase 2: Load Central Context & Report
 
-3. **Load recent context (central)**: determine the current project (from cwd), then load its latest central memory:
-    - **Episodic**: from the already-loaded episodic index, find the latest entry whose name or summary contains the project name (fallback: absolute latest entry, marked as not project-specific) → load that episode (**§ load-latest-episode**).
+3. **Load recent context (central)**: load the most recent central memory:
+    - **Episodic**: from the already-loaded episodic index, take the newest entry → load that episode (**§ load-latest-episode**). A caller that knows its own project may instead load a different entry out of that index.
 4. **Report**: emit one consolidated block containing:
     - **Identity**: UUID + domain role.
     - **Latest episodic + open items**: filename + newest sub-episode title. Then surface its Tech Debts + Next Steps verbatim:
       ```
-      📋 Carrying forward from last session on this project:
+      📋 Carrying forward from last session:
       Tech debts:
         - [item]
       Next steps:
         - [item]
       ```
-      If the file is non-project-specific (fallback): say so explicitly and skip open items. If Tech Debts + Next Steps are empty: report *"no open items from last session on this project."*
-    - **Current project**: name the project.
+      If the episode is not the one expected for this work, say so explicitly and skip open items. If Tech Debts + Next Steps are empty: report *"no open items from last session."*
     - **Knowledge Base**: if the knowledge index has entries, mention `/load-knowledge` (also auto-loads on relevance). Else skip.
     - **Episodic browsing**: mention `/load-episodic` (also auto-loads on relevance).
     - **Load-integrity report** (UUID `c4e7a19f` — SURFACE LOAD FAILURES): if ANY layer loaded during awakening failed — missing, empty, mis-encoded, or truncated — say so explicitly, naming the layer and the failure mode. For the size case specifically, follow **§ oversized-memory-warning**.
