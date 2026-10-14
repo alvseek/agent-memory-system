@@ -340,3 +340,25 @@ installer **last** (it re-adds the overlay path line the core write drops).
 ### § install-pointer
 
 **No action.**
+
+---
+
+## register-core-access
+
+The declarations travel with the compiled core. `core-memory/compile-scripts/compile.sh` folds
+the core memory into `output/core-memory-compiled.md`, each `write-to-<harness>.sh` writes that
+into the harness's global instructions file, and the same script stamps `[CORE-ACCESS]` /
+`[CORE-MCP-URL]` from `CORE_ACCESS` / `CORE_MCP_URL` through `set-core-access.sh`. On this
+backend the form in force is therefore `markdown`: the client has the installed commands.
+
+### § read-access-pair
+
+**`markdown`**, with the machine's configured `CORE_MCP_URL` (default `<unset>`). Nothing to
+fetch — the value is this backend, and the URL is whatever the installer was given.
+
+### § write-access-lines
+
+**No action needed.** The installer pair writes both lines, and a markdown client has both. To
+re-stamp a value, run `core-memory/compile-scripts/set-core-access.sh <instructions-file> markdown <url>`:
+it rewrites the two lines in place and exits non-zero when either is missing, which is the
+correct loud failure here because the installer always wrote them.

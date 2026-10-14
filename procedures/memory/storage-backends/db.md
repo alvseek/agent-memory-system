@@ -294,3 +294,35 @@ first; add only when missing:
 
 - **Claude Code** — the line `@~/.munnin/permanent-layer.md` in `~/.claude/CLAUDE.md`.
 - **OpenCode** — the entry `"~/.munnin/permanent-layer.md"` in the `instructions` array of `~/.config/opencode/opencode.json`.
+
+---
+
+## register-core-access
+
+### § read-access-pair
+
+`help()` → `{instructions, procedures, access, endpoint}`. `access` is what this server
+declares itself to be — `mcp`, because a procedure only runs on a client that reached it —
+and `endpoint` is the address it is served at, derived from the instance's configured public
+base URL. Read both from that call; neither is [USER-NAME]'s to answer.
+
+### § write-access-lines
+
+Write the pair into this harness's instruction file as two definition lines:
+
+```
+- **[CORE-ACCESS]** = `<access>` (which form the memory core this machine uses: `markdown` for the installed commands, `mcp` for the procedures served over a connected server)
+- **[CORE-MCP-URL]** = `<endpoint>` (the endpoint the served core is reached at; only the layer that opens the connection acts on this, never the agent)
+```
+
+**Rewrite when present, append when absent.** Match each line by its `**[CORE-ACCESS]**` /
+`**[CORE-MCP-URL]**` marker and replace only the backticked value, so position and the
+surrounding prose survive; append the line when the marker is nowhere in the file. A client
+that reached this procedure over MCP may carry no declarations at all — that is the case this
+procedure exists for, and the one where appending is the whole job.
+
+Never touch a sibling layer's declaration (`[PROJECT-ACCESS]`, `[FLEET-ACCESS]`), and leave
+the OS/bash notes and the path definitions around them alone.
+
+- **Claude Code** — `~/.claude/CLAUDE.md`.
+- **OpenCode** — `~/.config/opencode/AGENTS.md`.

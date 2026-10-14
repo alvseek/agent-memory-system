@@ -17,6 +17,8 @@ CORE_FILES=(
   "$ROOT/procedures/create-agent.md"
   "$ROOT/procedures/list-agents.md"
   "$ROOT/procedures/wait-options.md"
+  "$ROOT/procedures/anchor-memory.md"
+  "$ROOT/procedures/register-core-access.md"
 )
 
 # A file named here that no longer exists must fail LOUD. Skipping it silently is how the
