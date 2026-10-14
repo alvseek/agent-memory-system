@@ -5,7 +5,7 @@ Memory procedures are **storage-agnostic**: each one carries its *judgment* (gat
 ## The two backends
 
 - **[markdown.md](markdown.md)** — memory lives as a markdown tree over git (the native fleet world): files under `agent-[domain]/`, a hand-maintained `agent-memory-index.md`, `cp` from templates, `date` for timestamps.
-- **[db.md](db.md)** — memory lives in Valaskjalf via **Munnin**: the 8 generic data tools (`awaken`·`get`·`query`·`search`·`insert`·`edit`·`archive`·`soft_delete`). The index is a derived `SELECT`, so index/housekeeping steps become explicit no-ops.
+- **[db.md](db.md)** — memory lives in Valaskjalf via **Munnin**: the data tools (`awaken`·`get`·`query`·`search`·`insert`·`edit`·`edit_metadata`·`prepend`·`archive`·`soft_delete`). The index is a derived `SELECT`, so index/housekeeping steps become explicit no-ops.
 
 ## The seam (how a procedure connects to a backend)
 

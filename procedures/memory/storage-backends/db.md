@@ -1,6 +1,6 @@
 # Storage Backend — DB (Valaskjalf via Munnin)
 
-Concrete storage mechanics for the **DB-backed** world. Each `## [procedure]` section maps the procedure's `§ op`s onto the 8 generic Munnin data tools: `awaken` · `get` · `query` · `search` · `insert` · `edit` · `archive` · `soft_delete`; the `## all-procedures` section opens every composed procedure with what those ops assume of the caller. See the [seam contract](README.md).
+Concrete storage mechanics for the **DB-backed** world. Each `## [procedure]` section maps the procedure's `§ op`s onto Munnin's data tools — `awaken` · `get` · `query` · `search` · `insert` · `edit` · `edit_metadata` · `prepend` · `archive` · `soft_delete` — with `list_agents`, `create_agent`, `permanent_layer`, `help` and the content tools (`list_procedures` · `read_procedure` · `list_resources` · `read_resource`) where a procedure needs one; the `## all-procedures` section opens every composed procedure with what those ops assume of the caller. See the [seam contract](README.md).
 
 > **Model**: an **agent** is an entity with a row of its own, and memory belongs to it. One uniform record per memory item (`user_id`/`agent_id`/`record_type`/`project`/`title`/`tags`/dates + `full_content`), where `agent_id` is always a real kebab domain the store checks against the agent table — there is no sentinel value. **Fleet-shared memory** (reasoning + knowledge that belongs to no agent) lives apart and is written with `scope="shared"`, which takes no `agent_id` at all. `user_id` is stamped server-side. The index is a **derived `SELECT`** (`query`), not a stored artifact — so there are no index-maintenance steps to perform. Episodes are stored **one record per episode** (a rolling body of newest-first `---`-separated H3 sub-episodes).
 
@@ -22,11 +22,11 @@ Concrete storage mechanics for the **DB-backed** world. Each `## [procedure]` se
 
 ### § append-sub-episode
 
-An episode is a single record whose body is the rolling, newest-first sub-episode list. To append newest-first:
-1. `get(uuid)` the matched episode to read its current body.
-2. `edit(uuid, old_string="<the current top of the body>", new_string="<new H3 block>\n\n---\n\n<the current top of the body>", content_summary="<the record's summary>")` — prepends the new block above the previous newest, preserving the `---` separator (Edit-tool parity: `old_string` must uniquely match the body's opening), and replaces the summary in the same write.
+An episode is a single record whose body is the rolling, newest-first sub-episode list. Newest-first then needs no read and no string match — two writes:
+1. `prepend(uuid, text="<new H3 block>\n\n---\n\n")` — the new block lands above the previous newest, and the separator you include keeps the two apart. Nothing has to match, so there is no `old_string` to get uniquely right.
+2. `edit_metadata(uuid, content_summary="<the record's summary>")` — the summary is metadata and has one writer, so it moves in its own call.
 
-`content_summary` is the whole new summary, not an appended fragment: it describes the record's newest content, so an append that skipped it would leave the listing describing a block the body no longer starts with. Body and summary land in one write, so they cannot disagree.
+`content_summary` is the whole new summary, not an appended fragment: it describes the record's newest content, so skipping step 2 leaves the listing describing a block the body no longer starts with. Two writes can also disagree if the second fails, which is why both steps belong to this op rather than to the caller's judgement — that is the price of one owner per field.
 
 The index reflects the change automatically (derived `SELECT`).
 
