@@ -25,7 +25,7 @@ Read `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` and locate `# Re
    - Locate the existing entry for this file in the index.
    - Delete it from its current date group (if the group becomes empty, remove the group header too).
    - Insert at the **top of today's date group** (`📂 YYYY-MM-DD:`); create today's group if it doesn't exist.
-   - Update the summary by appending `+ [new sub-topic]` (or rewriting it if the new sub-topic shifts the overall theme).
+   - Update the summary from the new block's `**Summary**` row: carry that text verbatim, appended as `+ [new sub-topic]` when the overall theme still holds, or rewritten when the new sub-topic shifts it.
 
    > **Why move?** Awakening's project-scoped episodic load grabs the top entry as "latest episodic." The move preserves the "top = newest" invariant. Edit-in-place would leave a stale top entry and break awakening's selection logic.
 
@@ -39,7 +39,7 @@ Read `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` and locate `# Re
 3. **Set the frontmatter `project`** in the new file to the project name, then **replace the template placeholder** at the top with the composed sub-episode block. The frontmatter is what the importer reads into the record's `project`; the filename is convention, not the source.
 4. **Add index entry**:
    - Insert at the **top of today's date group** (`📂 YYYY-MM-DD:`); create today's group if it doesn't exist.
-   - Entry format: `- [filename.md](episodes/filename.md) - [one-line summary]`.
+   - Entry format: `- [filename.md](episodes/filename.md) - [one-line summary]`, where the summary is the new block's `**Summary**` row copied verbatim. This entry is the record's listed description, so it and the block must not diverge.
 
 ### § housekeeping
 
@@ -112,7 +112,7 @@ Create in `[AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/research/` (domain 
 
 ### § update-knowledge-index
 
-Update `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` knowledge directory — add an entry to the knowledge index for discoverability.
+Update `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` knowledge directory - add an entry to the knowledge index for discoverability, of the form `- **[{Title}]({path})** - [one-line summary]`. Copy the summary from the entry's `**Summary**` row verbatim: this line is the record's listed description on the markdown backend and the `content_summary` on the DB one, so the two must not diverge.
 
 ### § template
 

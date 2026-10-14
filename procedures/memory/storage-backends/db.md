@@ -18,19 +18,21 @@ Concrete storage mechanics for the **DB-backed** world. Each `## [procedure]` se
 
 ### § list-candidate-episodes
 
-`query(agent_id="<domain>", record_type="episode", project="<project>")` → returns the derived index projection (uuid, title, tags, dates) for the agent's active episodes. Theme-match against `title`/`tags`. (Archived episodes are excluded by default — pass `include_archived=True` only to reach them.)
+`query(agent_id="<domain>", record_type="episode", project="<project>")` → returns the derived index projection (uuid, title, content_summary, tags, dates) for the agent's active episodes. Theme-match against `title`/`tags`, and read `content_summary` when the theme alone is ambiguous. (Archived episodes are excluded by default — pass `include_archived=True` only to reach them.)
 
 ### § append-sub-episode
 
 An episode is a single record whose body is the rolling, newest-first sub-episode list. To append newest-first:
 1. `get(uuid)` the matched episode to read its current body.
-2. `edit(uuid, old_string="<the current top of the body>", new_string="<new H3 block>\n\n---\n\n<the current top of the body>")` — prepends the new block above the previous newest, preserving the `---` separator (Edit-tool parity: `old_string` must uniquely match the body's opening).
+2. `edit(uuid, old_string="<the current top of the body>", new_string="<new H3 block>\n\n---\n\n<the current top of the body>", content_summary="<the record's summary>")` — prepends the new block above the previous newest, preserving the `---` separator (Edit-tool parity: `old_string` must uniquely match the body's opening), and replaces the summary in the same write.
+
+`content_summary` is the whole new summary, not an appended fragment: it describes the record's newest content, so an append that skipped it would leave the listing describing a block the body no longer starts with. Body and summary land in one write, so they cannot disagree.
 
 The index reflects the change automatically (derived `SELECT`).
 
 ### § create-episode
 
-`insert(agent_id="<domain>", record_type="episode", project="<project>", title="<project-theme>", tags=[…], content="<first sub-episode block>", template_version="<the template's current stamp>")`. Read `episodic-entry-template` from resources first and declare its `template_version` — a missing or stale version is refused. The record is assembled and `uuid`-stamped server-side and appears in the index projection immediately.
+`insert(agent_id="<domain>", record_type="episode", project="<project>", title="<project-theme>", tags=[…], content="<first sub-episode block>", content_summary="<the block's Summary row>", template_version="<the template's current stamp>")`. Read `episodic-entry-template` from resources first and declare its `template_version` — a missing or stale version is refused. `content_summary` is required for an episode: pass the block's `**Summary**` row verbatim, because that one line is what the index projection lists the record by. The record is assembled and `uuid`-stamped server-side and appears in the index projection immediately.
 
 ### § housekeeping
 
@@ -82,7 +84,7 @@ The pattern's cited UUID is content — generate any UUID for it; the `insert` r
 
 ### § persist-knowledge
 
-`insert(agent_id="<domain>", record_type="knowledge", title="<knowledge area>", tags=[…], content="<knowledge doc>", template_version="<the template's current stamp>")`. Read `knowledge-file-template` from resources first and declare its `template_version` — a missing or stale version is refused. General/central knowledge only — Munnin is project-blind (no project-scoped knowledge).
+`insert(agent_id="<domain>", record_type="knowledge", title="<knowledge area>", tags=[…], content="<knowledge doc>", content_summary="<the entry's Summary row>", template_version="<the template's current stamp>")`. Read `knowledge-file-template` from resources first and declare its `template_version` — a missing or stale version is refused. `content_summary` is required for a knowledge record: pass the entry's `**Summary**` row verbatim, because that one line is what the knowledge index lists the record by. General/central knowledge only — Munnin is project-blind (no project-scoped knowledge).
 
 ### § update-knowledge-index
 
