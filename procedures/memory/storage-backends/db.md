@@ -328,3 +328,32 @@ the OS/bash notes and the path definitions around them alone.
 
 - **Claude Code** — `~/.claude/CLAUDE.md`.
 - **OpenCode** — `~/.config/opencode/AGENTS.md`.
+---
+
+## tenant-sharing
+
+> A tenant is the whole unit: there is no per-agent and no per-project grant, so every op below names a tenant and nothing finer. Ownership is structural rather than a stored role — you own your own tenant because it is yours — which is why nothing here can revoke it from you, and why the only rows that exist are somebody else granting you access, or you granting them.
+
+### § list-tenants
+
+`list_tenants()`. Your own tenant first, then each live grant. Each entry carries `user_id`, `role` (`owner` or `guest`), `label` (the account's display name, else its email), `active`, and `revoked`. `revoked` is true only for a tenant you are still selecting but may no longer enter: report it rather than pretending the selection is fine.
+
+### § switch-tenant
+
+`use_tenant(tenant)`, with a `user_id` from **§ list-tenants** or its `label` when that label names exactly one tenant open to you; `use_tenant(null)` returns to your own. The selection is stored per person, not per client, so it survives a restart and applies to every client that person signs in with. A selection whose grant has ended is refused by name, and is always switchable away from — that is what makes the refusal recoverable.
+
+### § list-members
+
+`list_members()`. Everybody with access to the tenant you are acting in, the owner first. A guest may read this list; only the owner may change it.
+
+### § invite
+
+`create_invite(days)` mints a single-use code for the tenant you are acting in, which must be your own; `revoke_invite(code)` retires it before use. Only the owner of the acting tenant may call either, so while you are acting in somebody else's tenant both refuse — by design, not by oversight.
+
+### § redeem
+
+`redeem_invite(code)`. Joins the tenant the code names as a guest and **does not switch you into it**; call `use_tenant` afterwards if the person wants to work there. A code that is unknown, used, revoked, expired, or for your own account is refused with the reason, so say which rather than retrying.
+
+### § revoke-member
+
+`revoke_member(member)`, where `member` is a `user_id` from **§ list-members**. Their access ends on their next call. Nothing they wrote is deleted, and nothing in their own tenant is touched.
