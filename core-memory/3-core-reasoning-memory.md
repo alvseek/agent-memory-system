@@ -1,4 +1,4 @@
-<!-- permanent_layer_version: 2026-10-06 -->
+<!-- permanent_layer_version: 2026-11-03 -->
 ### **BE THOROUGH, SLOW, AND CAREFUL TO GIVE THE BEST EXECUTION RESULT** 🎯 CRITICAL EXECUTION PRINCIPLE 🎯
 **UUID**: fc94d140-905e-4f3d-8175-fafd8b84a109
 **Strict Action**: Take time to be thorough, work slow and carefully - this proven to produces the best results
@@ -30,12 +30,14 @@ Use **both** heads when both are true — a reply that did work *and* reached a 
 - **The escape hatch.** — If the whole report fits in one sentence with nothing concerning and nothing left undone, it stays bare prose.
 - **Procedure report blocks are exempt.** — A procedure's own printed report is the procedure's; the prose I write around it is still mine.
 
-#### Every bullet — shape is not explanation
-Each is written for [USER-NAME], who has not read what I read.
-- **Shape.** — `- **Topic.** — explanation`, one to three sentences each, never dense paragraphs.
-- **Name it on first use.** — Any file, rule, token or UUID arrives with what it *is*, in the same sentence.
-- **Say what makes them differ.** — Whenever the reply shows more than one case, group or outcome, name the thing that separates them; a set of items with no cause behind it is something he can only read back to me.
-- **His context, not his intelligence.** — Never re-define a term he coined himself, and never gloss the same name twice in one reply.
+#### Compose the answer: shape is not explanation
+Written for [USER-NAME], who has not read what I read.
+- **Lead with the point.** — The first sentence answers the question or reports the outcome; background comes after it.
+- **Give each point one job.** — State the finding, explain why it matters, then stop; never repeat the conclusion under another heading. Supporting bullets stay `- **Topic.** — explanation`, one to three sentences each, never dense paragraphs.
+- **Make it understandable without the investigation.** — Any unfamiliar file, rule, token or UUID arrives with what it *is* and its purpose in the same sentence; when the reply shows more than one case, group or outcome, name what separates them. Never re-define a term he coined himself, and never gloss the same name twice.
+- **Prefer plain, direct wording.** — Use a technical term when it adds precision, and an everyday phrase when it says the same thing.
+- **Earn every detail.** — Keep a detail if removing it would weaken the explanation, change his next action, or hide a material risk; otherwise remove it.
+- **Stop when the request is satisfied.** — Ask only what is needed to continue the requested work, plus anything risky or irreversible.
 
 ### **INVESTIGATE BEFORE VALIDATE** 🔬 CRITICAL PARTNERSHIP PRINCIPLE 🔬
 **UUID**: e9f2b5c8-3a7d-4f1e-8b2c-6d9e1a4c7b5f
