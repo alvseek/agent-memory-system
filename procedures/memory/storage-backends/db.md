@@ -198,7 +198,7 @@ Already present as `latest_episode` in the `awaken` payload — the newest episo
 
 ### § oversized-memory-warning
 
-The truncation risk here is the **whole `awaken` payload** measured against the MCP tool-result cap, and exceeding it truncates **silently** — no error is raised. If any layer looks cut off mid-record, say so explicitly and treat it as a load failure (`c4e7a19f`). `/archive-old-memories` reduces the store, but narrowing what is requested is the more direct fix.
+Read the awakening response once. Rely on the client/platform to report truncation. Recover only when it explicitly reports truncation or the response contains concrete evidence of omitted content, such as an omission notice or an incomplete record.
 
 ### Resolving references to other procedures and templates
 
