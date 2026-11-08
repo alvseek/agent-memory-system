@@ -27,7 +27,12 @@ Verify the current date before archiving (**§ stamp-date**).
    - **auto**: themes carrying the `finished` marker that are older than their project's newest episode. These need no decision.
    - **ask**: themes with no marker whose newest sub-episode was last modified longer ago than the window, 30 days unless you were given another. These are the decision.
    - **protected**: the newest episode of each project, the newest overall, and any record with no usable date. This procedure never archives these.
-2. **Present the `ask` list**, one line per theme: project, title, last modified, and its `content_summary`. State how many rows were protected and why, in one line, without printing them.
+2. **Recommend, don't just list.** For each `ask` row, decide archive or keep from the three sets above, which already carry the dates and projects you need:
+   - **Recommend archive** when a newer episode in the same project carries that project's state forward (the project moved on), or when the row is a rotation of a theme that already has a newer record, and its last touch is older than the window.
+   - **Recommend keep** otherwise. Read the body when it is genuinely unclear whether the theme is still open, and say which fact decided it.
+3. **Present it as one decision.** A table of the rows you recommend archiving, with project, title, last modified and the reason each. Then one line per kept row with its reason. Ask for a single answer: agree, or name the exceptions. Agreement archives the recommended set and nothing else.
+
+> **A recommendation is evidence with a reason, not a preference.** If you cannot name the fact that decided a row, it belongs in keep, and the reason says so.
 
 > **A finished theme is marked, not guessed.** The scan archives what carries the marker, so a theme that looks closed but has no marker is a tagging gap: name it in the report and fix it through `/update-episodic`, rather than archiving it by hand.
 
