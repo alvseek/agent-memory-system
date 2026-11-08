@@ -63,6 +63,16 @@ Read `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` and locate `# Re
 
 The sub-episode block format → read `[AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/episodic-entry-template.md`.
 
+### § record-theme-state
+
+Edit the episode file's frontmatter `tags:` line in place: add `finished` when this block closes the theme, remove it when it does not. Touch nothing else — the body and the other frontmatter fields stay verbatim.
+
+When no `tags:` line exists yet, add one beneath `project:` in the same block. The importer reads episode frontmatter tags into the record, so the marker survives a later import into the DB store even though no tool here reads it.
+
+### § reopen-archived-theme
+
+Markdown keeps no archive flag on a record: an archived episode is one whose index line was moved into `archive/[YYYY]-archived-context.md`, while the file itself never moved. To reopen it, remove `finished` from the file's frontmatter, move its index line back from the archive file into the episode index (newest-first, under today's date group), and decrement the archive's count. Then append normally.
+
 ---
 
 ## add-reasoning
@@ -150,9 +160,21 @@ Read the selected file(s) from `[AGENT-MEMORY-PATH]/agent-[domain]/knowledge-bas
 
 `date '+%Y-%m-%d %H:%M'`
 
-### § archive-episodes
+### § propose-archive-candidates
 
-Operate on `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` → `# Recent Context Episodes`. For episodes past the cutoff: create/update `archive/[YYYY]-archived-context.md` (with the archive header), copy the episode references there (newest-first), **keep** the actual episode `.md` files in `episodes/` (don't delete), and remove the archived references from `agent-memory-index.md`. Update the archive's "Last Updated" date + archived count.
+**No tool on this backend.** List the candidates from the index yourself: read `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` → `# Recent Context Episodes`, and for each entry read the episode file's frontmatter `tags:` and the top sub-episode's date. `auto` is an entry whose file carries `finished` and is not the newest for its project; `ask` is an entry with no marker whose top sub-episode is older than 30 days; `protected` is the newest entry per project, the newest overall, and any file with no usable date. Report the sets; write nothing yet.
+
+### § apply-archive-candidates
+
+**No tool on this backend, and no bulk write.** On markdown the archive is an index move (see `§ archive-selected`), so apply the `auto` set exactly as if the user had chosen each of those entries.
+
+### § archive-selected
+
+Operate on `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` → `# Recent Context Episodes`. For each selected episode: create or update `archive/[YYYY]-archived-context.md` (with the archive header), copy the episode reference there (newest-first), **keep** the episode `.md` file in `episodes/` (never delete it), remove the reference from `agent-memory-index.md`, and update the archive's "Last Updated" date and count.
+
+### § recover-archived
+
+Remove `finished` from the episode file's frontmatter, then move its reference back from the archive file into the episode index (newest-first, under today's date group) and decrement the archive's count. The file itself never moved, so there is nothing to restore.
 
 ### § archive-emotional-apply
 

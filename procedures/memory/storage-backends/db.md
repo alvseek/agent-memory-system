@@ -42,6 +42,16 @@ The index reflects the change automatically (derived `SELECT`).
 
 **Served as an MCP Resource** (`episodic-entry-template`) — read it from resources. (`§ create-episode` inserts the record directly, so there is no separate scaffold template.)
 
+### § record-theme-state
+
+`edit_metadata(uuid, tags=[…])` — the tag list is written whole, so pass the record's existing tags with `finished` added when the block closes the theme, and the existing tags with it removed when it does not. `tags` is metadata with one writer, so this never rides on the body append. The write bumps `modified_date`, which is why the archive scan weighs the tag before the age.
+
+A newly created episode carries no marker, so a create needs no call; an append that changes the state does.
+
+### § reopen-archived-theme
+
+Two calls, in this order: `edit_metadata(uuid, tags=[<existing without finished>])`, then `unarchive(uuid)`. Clearing first matters — leave the marker in place and the next scan archives the theme straight back. `unarchive` returns the record to the index and to newest-episode selection, after which the append lands normally.
+
 ---
 
 ## add-reasoning
@@ -126,9 +136,21 @@ The pattern's cited UUID is content — generate any UUID for it; the `insert` r
 
 **No action** (server-stamped).
 
-### § archive-episodes
+### § propose-archive-candidates
 
-`archive(uuid)` per episode past the cutoff — sets `archived_date`, drops it from the hot index (a derived `SELECT`, so it updates itself), body retained + still `search`-able.
+`archive_memories(agent_id="<domain>", days=30)` — a dry run, writes nothing. Returns `auto` (tagged `finished`, unprotected), `ask` (untagged, not modified within `days`, unprotected) and `protected` (newest per project, newest overall, undated, each with a reason). The window is the tool's `days`; pass a different one only when the user asked for one.
+
+### § apply-archive-candidates
+
+`archive_memories(agent_id="<domain>", days=30, apply=True)` — archives exactly the `auto` set and returns the archived uuids. It never touches `ask`: those are decided one at a time.
+
+### § archive-selected
+
+`archive(uuid)` per theme the user chose from the ask list — sets `archived_date`, drops it from the hot index (a derived `SELECT`, so it updates itself), body retained and still `search`-able.
+
+### § recover-archived
+
+Two calls, in this order: `edit_metadata(uuid, tags=[<existing without finished>])`, then `unarchive(uuid)`. Clearing first matters — a restored record that still carries the marker is archived again by the next scan.
 
 ### § archive-emotional-apply
 

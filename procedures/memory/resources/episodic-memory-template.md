@@ -1,5 +1,6 @@
 ---
 project: "[project-name]"
+tags: []
 ---
 
 # Agent [DOMAIN] - Recent Context Episodes 🧠

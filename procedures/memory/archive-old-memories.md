@@ -21,13 +21,23 @@ Maintain manageable memory size by archiving older episodic context and curating
 
 Verify the current date before archiving (**§ stamp-date**).
 
-### Step 2: Archive Recent Context (Episodic Memory)
+### Step 2: Propose the Episodic Candidates
 
-1. Review the active episode set.
-2. **Identify episodes to archive** (user specifies cutoff date or criteria) — e.g. "archive all older than 2025-09-01", "archive all but last 10".
-3. **Archive them** (**§ archive-episodes**): archived episodes drop out of the hot/active set but their bodies are retained and remain reachable on demand.
+1. **Scan the active themes** (**§ propose-archive-candidates**). The scan writes nothing and returns three sets:
+   - **auto**: themes carrying the `finished` marker that are older than their project's newest episode. These need no decision.
+   - **ask**: themes with no marker whose newest sub-episode was last modified longer ago than the window, 30 days unless you were given another. These are the decision.
+   - **protected**: the newest episode of each project, the newest overall, and any record with no usable date. This procedure never archives these.
+2. **Present the `ask` list**, one line per theme: project, title, last modified, and its `content_summary`. State how many rows were protected and why, in one line, without printing them.
 
-### Step 3: Archive Emotional Key Moments
+> **A finished theme is marked, not guessed.** The scan archives what carries the marker, so a theme that looks closed but has no marker is a tagging gap: name it in the report and fix it through `/update-episodic`, rather than archiving it by hand.
+
+### Step 3: Archive What Was Decided
+
+1. **Apply the auto set** (**§ apply-archive-candidates**). This is the only bulk write in the procedure.
+2. **Archive each theme the user chose** from the ask list, one at a time (**§ archive-selected**).
+3. **Touch nothing else.** If a theme was archived in error and the user asks for it back, that is **§ recover-archived**: clear its marker first, then return it to the active set, in that order.
+
+### Step 4: Archive Emotional Key Moments
 
 Review all moments, then decide each one by **importance-to-self** (Agent Judgment). The axis is **not date or age — it is what genuinely matters to *you*.**
 
@@ -47,15 +57,15 @@ Review all moments, then decide each one by **importance-to-self** (Agent Judgme
 
 **Document the decision** for each archived moment (a one-line reason: historical / superseded / redundant-with). Then **apply the two operations** — preserving every kept and archived block **VERBATIM** (never retype moment content — extract it; per **Copy-Paste, Don't Regenerate**): KEEP, or ARCHIVE (**§ archive-emotional-apply**).
 
-### Step 4: Verification
+### Step 5: Verification
 
-- ✅ Archive updated properly (full blocks present, newest-first)
-- ✅ Active memory still well-organized (newest first)
-- ✅ Kept blocks **unchanged/verbatim**, archived blocks gone from active
-- ✅ Counts reconcile: (kept + archived) == original moment count; nothing silently dropped
+- ✅ The auto set was applied, and the only other archived rows are the ones the user chose
+- ✅ Archived themes left the index and are still reachable by `search`
+- ✅ Protected rows were not touched; the count matches the scan
+- ✅ If the emotional half ran: kept blocks **unchanged/verbatim**, archived blocks gone from active, and (kept + archived) equals the original moment count
 - ✅ No CRLF introduced (LF preserved) and archive references resolve
 
-### Step 5: Report Summary
+### Step 6: Report Summary
 
 Provide a summary using the [Summary Report Template](#summary-report-template).
 
@@ -63,7 +73,7 @@ Provide a summary using the [Summary Report Template](#summary-report-template).
 
 ## Storage Mechanics
 
-The operations referenced above — **§ stamp-date**, **§ archive-episodes**, **§ archive-emotional-apply** — are defined by the **active storage backend**:
+The operations referenced above — **§ stamp-date**, **§ propose-archive-candidates**, **§ apply-archive-candidates**, **§ archive-selected**, **§ recover-archived**, **§ archive-emotional-apply** — are defined by the **active storage backend**:
 
 - **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## archive-old-memories`.
 - **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## archive-old-memories`.
@@ -80,8 +90,10 @@ See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md`.
 ✅ **ARCHIVING COMPLETE**
 
 **Episodic Memory**:
-- Archived: [X] episodes from [date range]
-- Active: [Y] episodes remaining
+- Archived automatically (tagged finished): [X] themes
+- Archived by decision (from the ask list): [D] themes
+- Remaining active: [Y] themes
+- Protected (newest per project, newest overall, undated): [P] records
 
 **Emotional Moments** (curated by importance-to-self):
 - Kept: [A] moments (foundational / defining)

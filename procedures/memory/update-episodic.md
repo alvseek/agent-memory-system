@@ -34,6 +34,8 @@ List the active (non-archived) episodes for the current project (**§ list-candi
 If no candidates → skip to Step 6 (Create branch).
 
 > **Why active-only?** The active episode set is already at hand (loaded at awakening / cheap to query). Archived entries are intentionally out of reach — old context should not be merged into.
+>
+> **The one exception, and only on request**: when the user names a theme that is not in the active list because they are continuing it, look for it among the archived episodes before creating a second record for the same theme. Reopening is a deliberate action, never a scan behaviour: it clears the `finished` marker and returns the record to the active set (**§ reopen-archived-theme**), and the block then appends normally. A theme that is genuinely finished gets a successor file instead (Step 6, Create branch).
 
 #### Step 4: Match Heuristic
 
@@ -96,6 +98,8 @@ Wait for response. Auto-default to **A** only if confidence is high (≥3 strong
 
 4. **Run post-write housekeeping** (**§ housekeeping**).
 
+5. **Set the theme's state**: does this block close the theme? Ensure the record carries the `finished` marker when it does and does not carry it when it does not (**§ record-theme-state**). One state per block, written once at the end — never remove the marker in order to add it back in the same run.
+
 ---
 
 ### Create New Episode
@@ -103,6 +107,8 @@ Wait for response. Auto-default to **A** only if confidence is high (≥3 strong
 1. **Compose the first sub-episode block** using the sub-episode-block template (**§ template**). The H3 header includes the stamped date+time.
 
 2. **Create a new episode** for `[project-name]-[context-theme]` seeded with that block, and register it in the index projection (**§ create-episode**).
+
+3. **Set the theme's state**: a brand-new episode is by definition open, so ensure it carries no `finished` marker (**§ record-theme-state**). This is the same rule as the append branch, applied once, so a continuation can never inherit a stale marker.
 
 ---
 
@@ -131,7 +137,7 @@ Because both branches compose these lists before writing them, a caller never ha
 
 ## Storage Mechanics
 
-The operations referenced above — **§ stamp-date**, **§ list-candidate-episodes**, **§ append-sub-episode**, **§ create-episode**, **§ housekeeping**, **§ template** — are defined by the **active storage backend**:
+The operations referenced above — **§ stamp-date**, **§ list-candidate-episodes**, **§ append-sub-episode**, **§ create-episode**, **§ record-theme-state**, **§ reopen-archived-theme**, **§ housekeeping**, **§ template** — are defined by the **active storage backend**:
 
 - **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## update-episodic`.
 - **DB (Munnin)** — served automatically; the equivalents live in `[STORAGE-BACKENDS-PATH]/db.md` → section `## update-episodic`.
