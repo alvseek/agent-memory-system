@@ -1,10 +1,10 @@
 # Reasoning Pattern Template
 
-template_version: 2026-09-21-14-53
+template_version: 2026-11-08-00-30
 
 The format of a reasoning/logic memory entry. Storage-agnostic: the markdown backend writes this into the agent's reasoning section; the DB backend passes it as the `content` of an `insert(record_type="reasoning", …)`. Rows carrying `Use "None declared" if genuinely none.` are required (presence-checked); rows marked optional are not.
 
-Lean shape — shrink the prose, keep the vivid anchor and any load-bearing distinction. `Do` / `Guardrail` / `Siblings` are optional (include only when they add something). `Final Conclusion` is a one-sentence capsule fusing Rule+Why+Signals, **not** a copy of the Rule.
+Lean shape — shrink the prose, keep the vivid anchor and any load-bearing distinction. `Do` / `Guardrail` / `Siblings` are optional (include only when they add something). `Final Conclusion` is a one-sentence capsule fusing Rule+Why+Signals, **not** a copy of the Rule. It is also the rule's always-on form: a server-backed install prints it, under the title, in every session's permanent layer, so aim for a single sentence under 240 characters.
 
 ```markdown
 ### **[SHORT MEMORABLE TITLE]** [EMOJI] [PATTERN TYPE] [EMOJI]
@@ -15,7 +15,7 @@ Lean shape — shrink the prose, keep the vivid anchor and any load-bearing dist
 **Do**: [optional — steps, only if they add beyond the Rule]
 **Guardrail**: [optional — the mirror failure / over-application to avoid]
 **Siblings**: [optional — related UUIDs and how this one differs]
-**Final Conclusion**: [one flowing sentence fusing Rule+Why+Signals — the compression-survival capsule. Use "None declared" if genuinely none.]
+**Final Conclusion**: [one flowing sentence fusing Rule+Why+Signals — the compression-survival capsule, and the rule's always-on form for installs without the server, so aim for a single sentence under 240 characters. Use "None declared" if genuinely none.]
 ```
 
 > For the older, fuller `What happened` narrative shape, see the [add-reasoning-full.md](../add-reasoning-full.md) procedure.

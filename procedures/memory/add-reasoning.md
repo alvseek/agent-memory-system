@@ -33,7 +33,7 @@ Draft the entry using the reasoning-pattern template (**§ template**) — the l
 - **Why** — the pain/reason that anchors it: root problem + the vivid concrete beat (a real quote or moment), compressed. This is the memory anchor — keep it sharp, not long.
 - **Signals** — how to recognize when the pattern fires.
 - *(optional)* **Do** — steps, only when they add beyond the Rule · **Guardrail** — the mirror failure / over-application to avoid · **Siblings** — related UUIDs and how this one differs.
-- **Final Conclusion** — one flowing sentence fusing Rule + Why + Signals (the compression-survival capsule). NOT a verbatim copy of the Rule.
+- **Final Conclusion** — one flowing sentence fusing Rule + Why + Signals (the compression-survival capsule). NOT a verbatim copy of the Rule. This line is also the rule's always-on form: a server-backed install prints it, under the title, in every session's permanent layer, so keep it to one sentence under 240 characters.
 
 > Keep it tight: shrink the prose, keep the vivid anchor and any load-bearing distinction. For the older fuller "What happened" narrative shape, see [add-reasoning-full.md](add-reasoning-full.md).
 

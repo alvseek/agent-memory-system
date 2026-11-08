@@ -42,9 +42,11 @@ Add this harness's pointer to its instruction file if it is not already present 
 
 ### Step 5: Report
 
-Report the content file written, the version and hash, and the pointer target. If the
-harness's instruction file cannot be written (permissions, or you are unsure which file it
-is), say so and hand [USER-NAME] the exact one line to add himself.
+Report the content file written, the version and hash, and the pointer target. Name
+anything the tool returned in `skipped`, or say the block is complete: a rule with no
+capsule is left out of the always-on layer, and this report is the only place that shows
+it. If the harness's instruction file cannot be written (permissions, or you are unsure
+which file it is), say so and hand [USER-NAME] the exact one line to add himself.
 
 ## Storage Mechanics
 
