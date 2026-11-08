@@ -1,7 +1,7 @@
 # Anchor Memory
 
 Install the always-on **permanent layer** into this client's system-prompt file, so the
-universal RAS triggers and the compacted reasoning digest survive context compaction
+universal RAS triggers and every rule's capsule survive context compaction
 instead of being pulled fresh each session.
 
 ## Arguments

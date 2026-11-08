@@ -296,10 +296,13 @@ If `awaken` returns nothing for the domain, the inserts did not land. Report tha
 
 ### § fetch-permanent-layer
 
-`permanent_layer()` → `{version, hash, content}`. `content` is the universal RAS triggers
-followed by the compacted reasoning digest; `version` is the digest's authored dated stamp
-and `hash` a content hash over the whole block. The hash is what tells a stale local copy
-from a current one, so compare it to the one recorded in the file before rewriting.
+`permanent_layer()` → `{version, hash, content, skipped}`. `content` is this tenant's
+universal RAS triggers, followed by one entry per reasoning rule: the rule's stored title,
+then its `Final Conclusion`. `version` is the newest `modified_date` among the records the
+block includes, and `hash` a content hash over the whole block; the hash is what tells a
+stale local copy from a current one, so compare it to the one recorded in the file before
+rewriting. `skipped` names any rule left out for carrying no `Final Conclusion`; report it,
+because nothing else shows a rule missing from the layer.
 
 ### § write-permanent-file
 
