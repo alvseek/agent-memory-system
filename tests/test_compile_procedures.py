@@ -104,8 +104,30 @@ def test_templates_stay_a_reference_not_inlined(tmp_path: Path) -> None:
     assert "resources/reasoning-pattern-template.md" in md
     assert "reasoning-pattern-template" in db
     # the template body itself must not be pasted into the procedure
-    assert "[SHORT MEMORABLE TITLE]" not in md
-    assert "[SHORT MEMORABLE TITLE]" not in db
+    assert "[Plain, memorable title]" not in md
+    assert "[Plain, memorable title]" not in db
+
+
+def test_reasoning_template_has_the_fixed_fields() -> None:
+    text = (CF / "procedures/memory/resources/reasoning-pattern-template.md").read_text(
+        encoding="utf-8"
+    )
+    body = text.split("```markdown\n", 1)[1].split("```", 1)[0]
+    fields = (
+        "### [Plain, memorable title]",
+        "**UUID**:",
+        "**Instruction**",
+        "**Anchor**",
+        "**Example**",
+        "**Final Conclusion**:",
+    )
+    positions = [body.index(field) for field in fields]
+    assert positions == sorted(positions)
+    assert all(body.count(field) == 1 for field in fields)
+    assert "template_version: " in text
+    assert "[YYYY-MM-DD-HH-MM]" not in text
+    assert "**Rule**:" not in body
+    assert "**Signals**:" not in body
 
 
 def test_strict_exit_is_clean_on_healthy_tree(tmp_path: Path) -> None:

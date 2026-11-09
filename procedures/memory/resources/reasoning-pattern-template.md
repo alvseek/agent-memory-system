@@ -1,21 +1,30 @@
 # Reasoning Pattern Template
 
-template_version: 2026-11-08-00-30
+template_version: 2026-11-09-10-00
 
-The format of a reasoning/logic memory entry. Storage-agnostic: the markdown backend writes this into the agent's reasoning section; the DB backend passes it as the `content` of an `insert(record_type="reasoning", …)`. Rows carrying `Use "None declared" if genuinely none.` are required (presence-checked); rows marked optional are not.
-
-Lean shape — shrink the prose, keep the vivid anchor and any load-bearing distinction. `Do` / `Guardrail` / `Siblings` are optional (include only when they add something). `Final Conclusion` is a one-sentence capsule fusing Rule+Why+Signals, **not** a copy of the Rule. It is also the rule's always-on form: a server-backed install prints it, under the title, in every session's permanent layer, so aim for a single sentence under 240 characters.
+Use this fixed structure for every reasoning memory entry.
 
 ```markdown
-### **[SHORT MEMORABLE TITLE]** [EMOJI] [PATTERN TYPE] [EMOJI]
-**UUID**: [generate new UUID in format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx]
-**Rule**: [the specific behavior required — one or two sentences. Use "None declared" if genuinely none.]
-**Why**: [root problem + the vivid concrete beat (real quote/moment) that anchors it, compressed. Use "None declared" if genuinely none.]
-**Signals**: [how to recognize when the pattern fires. Use "None declared" if genuinely none.]
-**Do**: [optional — steps, only if they add beyond the Rule]
-**Guardrail**: [optional — the mirror failure / over-application to avoid]
-**Siblings**: [optional — related UUIDs and how this one differs]
-**Final Conclusion**: [one flowing sentence fusing Rule+Why+Signals — the compression-survival capsule, and the rule's always-on form for installs without the server, so aim for a single sentence under 240 characters. Use "None declared" if genuinely none.]
+### [Plain, memorable title]
+**UUID**: [xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx]
+
+**Instruction**
+[State what to do and when it applies. Include any boundary needed to prevent misapplication.]
+
+**Anchor**
+[Explain why this matters, using a real event or a concrete reason. Do not invent an incident.]
+
+**Example**
+[Show one concrete application. Use a contrasting pair when it makes the difference clearer.]
+
+**Final Conclusion**: [One self-contained sentence under 240 characters that preserves the essential instruction.]
 ```
 
-> For the older, fuller `What happened` narrative shape, see the [add-reasoning-full.md](../add-reasoning-full.md) procedure.
+## Requirements
+
+- Keep all six fields: title, UUID, Instruction, Anchor, Example, and Final Conclusion.
+- Use a plain title without decorative tags or required emojis.
+- Generate a UUID for a new pattern; preserve it when rewriting an existing one.
+- State each point once. The sections should complement, not repeat, each other.
+- Examples may be hypothetical, but must not be presented as events that actually happened.
+- The Final Conclusion is the rule’s always-on form, printed under its title in the permanent layer. It must make sense without the rest of the entry.

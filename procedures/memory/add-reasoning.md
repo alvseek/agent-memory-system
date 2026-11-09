@@ -23,19 +23,11 @@ Read the agent's current reasoning memory so the new pattern fits alongside the 
 
 ### Step 2: Draft from the Template
 
-Draft the entry using the reasoning-pattern template (**§ template**) — the lean shape below.
+Read the reasoning-pattern template (**§ template**) and draft the entry using its fixed structure.
 
-### Step 3: Fill the Lean Shape
+### Step 3: Check the Entry
 
-- **Title** — action-oriented, encodes both action AND consequence, with an emoji (🚨 critical · ⭐ positive · 🧠 cognitive) + a short PATTERN TYPE tag. Works like a proverb.
-- **UUID** — generate 8-4-4-4-12 (**§ generate-uuid**); the pattern's fingerprint for the COUNT roster + cross-references.
-- **Rule** — the specific behavior required, in one or two sentences.
-- **Why** — the pain/reason that anchors it: root problem + the vivid concrete beat (a real quote or moment), compressed. This is the memory anchor — keep it sharp, not long.
-- **Signals** — how to recognize when the pattern fires.
-- *(optional)* **Do** — steps, only when they add beyond the Rule · **Guardrail** — the mirror failure / over-application to avoid · **Siblings** — related UUIDs and how this one differs.
-- **Final Conclusion** — one flowing sentence fusing Rule + Why + Signals (the compression-survival capsule). NOT a verbatim copy of the Rule. This line is also the rule's always-on form: a server-backed install prints it, under the title, in every session's permanent layer, so keep it to one sentence under 240 characters.
-
-> Keep it tight: shrink the prose, keep the vivid anchor and any load-bearing distinction. For the older fuller "What happened" narrative shape, see [add-reasoning-full.md](add-reasoning-full.md).
+Check every required field against the template. For a new entry, generate its UUID (**§ generate-uuid**); for a rewrite, preserve the existing UUID. Keep the instructions, anchor, and example distinct, and check that the Final Conclusion stands on its own.
 
 ### Step 4: Persist
 
