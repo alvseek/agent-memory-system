@@ -14,7 +14,7 @@ Concrete storage mechanics for the **DB-backed** world. Each `## [procedure]` se
 
 - **`query`** answers *which records match*: metadata only (uuid, title, `content_summary`, tags, project, dates) plus **`blocks_total`** — how many timestamp groups that record's body holds. It never returns `content`.
 - **`search`** answers *what matched*: the same metadata plus a plain-text **`snippet`** of the matching window, and no body under either name. Reaching a body from a hit is a deliberate `get(uuid)`.
-- **`get(uuid)`** answers *what the record says*: the whole body by default, or one **page** when asked, subject to a content ceiling. Every `get` response carries `blocks_returned` / `blocks_total` / `next_cursor`, and its `content` is at most a page.
+- **`get(uuid)`** answers *what the record says*: as much of the body as fits under the content ceiling in one response — the whole of a small record, one **page** of a large one — or exactly one page when you pass `cursor`/`limit`. Every `get` response carries `blocks_returned` / `blocks_total` / `next_cursor`, so a non-null cursor is how you know a large record did not arrive whole.
 
 A **timestamp group** is every sub-episode block in the record that shares one `###` H3 timestamp; a group is indivisible and counts as one, so `blocks_total: 5` means five distinct moments. Two rules follow, and only one of them is a continuation:
 
@@ -127,7 +127,7 @@ The pattern's cited UUID is content — generate any UUID for it; the `insert` r
 
 ### § load-episode-body
 
-`get(uuid)` for the selected episode — the whole body by default, or one page when you name a `limit` or pass a `cursor`. Follow `next_cursor` only when the task actually needs more of the record: a routine browse or a summary usually does not, and continuing is a deliberate call, one page at a time. To *find* an episode rather than read one, `search(text)` matches a keyword across bodies and returns a `snippet` — the match, not the body — so follow a hit with `get(uuid)` when you need the text.
+`get(uuid)` for the selected episode — as much of the body as the content ceiling allows in one response, which is the whole of a small record and a page of a large one; name a `limit` or pass a `cursor` to read exactly one page. Follow `next_cursor` only when the task actually needs more of the record: a routine browse or a summary usually does not, and continuing is a deliberate call, one page at a time. To *find* an episode rather than read one, `search(text)` matches a keyword across bodies and returns a `snippet` — the match, not the body — so follow a hit with `get(uuid)` when you need the text.
 
 Full context is a traversal, not one call: read page one, then keep passing `next_cursor` until it is `null`. Page one plus every continuation reconciles to the stored body byte for byte, so nothing is lost by paging and nothing is gained by a bigger single read.
 
@@ -141,7 +141,7 @@ Full context is a traversal, not one call: read page one, then keep passing `nex
 
 ### § load-knowledge-body
 
-`get(uuid)` for the selected entry/entries — whole by default, or a page when given `cursor`/`limit`; a knowledge record is one atomic block (`blocks_total: 1`), so paging it never splits a document. `search(text)` answers *what matched*: a `snippet` of the matching window and no body, so follow a hit with `get(uuid)` when you need the text rather than the mention. Never treat a snippet as the entry's content.
+`get(uuid)` for the selected entry/entries — whole, since a knowledge record is well under the ceiling, or a page when given `cursor`/`limit`; it is one atomic block (`blocks_total: 1`), so paging it never splits a document. `search(text)` answers *what matched*: a `snippet` of the matching window and no body, so follow a hit with `get(uuid)` when you need the text rather than the mention. Never treat a snippet as the entry's content.
 
 ---
 
@@ -205,7 +205,7 @@ No action. A write through the memory tools lands in the database as it happens,
 - `shared.ras` — the **universal RAS triggers** (fleet-wide): memory recovery after compaction, and copy-paste-don't-regenerate. Automatic trigger-to-action protocols, whole, alongside reasoning and knowledge.
 - `shared.user_profile` — who [USER-NAME] is (name, philosophy, agent vision), as a single whole record or `null`. Fleet memory too: it does not vary by agent. `null` means nobody has been asked yet, which is the first-run branch in Phase 1 — a record that exists with an empty value inside it is a deliberate blank and is **not** that case.
 - `identity` + `reasoning` + `emotional` — this agent's own records, whole (layer ii). `identity` includes the agent's core knowledge and RAS triggers.
-- `knowledge_index` + `episodic_index` — metadata-only indexes; bodies via `get(uuid)` on demand (layer iii). Each index entry carries its `project`; an `episodic_index` entry also carries `blocks_total`, so a caller can pick a different episode than `latest_episode` and know its size before reading. `search(text)` finds a record but returns only a `snippet`, never a body.
+- `knowledge_index` + `episodic_index` — metadata-only indexes; bodies via `get(uuid)` on demand (layer iii). Each index entry carries its `project`; the index itself never counts groups, so a row does not say how large its body is. When that size matters before paying for the read, `query(record_type="episode")` returns a projection that does carry `blocks_total`. `search(text)` finds a record but returns only a `snippet`, never a body.
 - `latest_episode` — **a page** of the newest episode **overall**, since no project is accepted or resolved: up to three timestamp groups, with `blocks_returned` / `blocks_total` / `next_cursor`. The returned record's own `project` tells you which project it belongs to, and its `uuid` is what continues the read. When the newest overall is not that project's, say so in the open-items report. A non-null `next_cursor` means the body continues; a count smaller than `blocks_total` with a null cursor means you already have all of it.
 
 The 4-layer assembly is a single derived call.
