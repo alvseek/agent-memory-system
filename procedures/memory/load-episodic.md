@@ -70,6 +70,8 @@ Loaded [N] episode(s):
   - [name] ([YYYY-MM-DD])
 ```
 
+If the backend reports that only part of a body arrived — a page count, a continuation cursor, or any equivalent — say so in that confirmation and continue the read only when this task actually needs the older sub-episodes. A listed episode whose body is larger than what arrived is not a failed load; it is a bounded one, and reporting it as complete is the mistake.
+
 ---
 
 ## Storage Mechanics

@@ -10,6 +10,19 @@ Concrete storage mechanics for the **DB-backed** world. Each `## [procedure]` se
 
 > `<domain>` in the ops below is the agent you are acting as — the domain you passed to `awaken`, or the one `create-agent` made. With no awakening, `list_agents()` shows what exists; never guess one.
 
+**A body read is a page, and a listing or a search is not a body.** Three shapes, and mixing them up is the one way to read partial context as whole:
+
+- **`query`** answers *which records match*: metadata only (uuid, title, `content_summary`, tags, project, dates) plus **`blocks_total`** — how many timestamp groups that record's body holds. It never returns `content`.
+- **`search`** answers *what matched*: the same metadata plus a plain-text **`snippet`** of the matching window, and no body under either name. Reaching a body from a hit is a deliberate `get(uuid)`.
+- **`get(uuid)`** answers *what the record says*: the whole body by default, or one **page** when asked, subject to a content ceiling. Every `get` response carries `blocks_returned` / `blocks_total` / `next_cursor`, and its `content` is at most a page.
+
+A **timestamp group** is every sub-episode block in the record that shares one `###` H3 timestamp; a group is indivisible and counts as one, so `blocks_total: 5` means five distinct moments. Two rules follow, and only one of them is a continuation:
+
+- **`next_cursor` non-null means more remains** — pass it straight back as `get(uuid, cursor=…)`, or with `limit=` to keep the page small. It names the *first group not returned*, so a block prepended in between cannot shift your place, and it is the only signal that answers "is there more?".
+- **`blocks_returned` < `blocks_total` does *not* mean more remains.** A final page returns fewer than the whole record and is complete. Never continue on the count alone.
+
+An unknown or malformed cursor, or a non-positive `limit`, is an error — never a quiet fall back to page one. Cursors are per record: pass the page's own `uuid` with its cursor. A record that is not an episode (identity, reasoning, emotional, knowledge, the profile, the RAS triggers) is one atomic block — `blocks_total: 1` — because it is not a rolling document. Nothing ever splits a sub-episode block, and no repair step exists: a retimestamped or deleted target makes the old cursor fail loudly rather than resume somewhere else.
+
 ## update-episodic
 
 ### § stamp-date
@@ -18,7 +31,7 @@ Concrete storage mechanics for the **DB-backed** world. Each `## [procedure]` se
 
 ### § list-candidate-episodes
 
-`query(agent_id="<domain>", record_type="episode", project="<project>")` → returns the derived index projection (uuid, title, content_summary, tags, dates) for the agent's active episodes. Theme-match against `title`/`tags`, and read `content_summary` when the theme alone is ambiguous. (Archived episodes are excluded by default — pass `include_archived=True` only to reach them.)
+`query(agent_id="<domain>", record_type="episode", project="<project>")` → returns the derived index projection (uuid, title, content_summary, tags, dates, **`blocks_total`**) for the agent's active episodes. Theme-match against `title`/`tags`, and read `content_summary` when the theme alone is ambiguous. There is no body here — reading one is a deliberate `get(uuid)`, a page at a time (see `## all-procedures`). `blocks_total` tells you how much body that read will hold before you pay for it. (Archived episodes are excluded by default — pass `include_archived=True` only to reach them.)
 
 ### § append-sub-episode
 
@@ -36,7 +49,7 @@ The index reflects the change automatically (derived `SELECT`).
 
 ### § housekeeping
 
-**No-op.** A record body has no length limit — a large body is fine; shortening is a later curation *policy*, not a write mechanic — and records are keyed by `uuid`, so there is no split or rename to perform.
+**No-op.** The stored body has no length limit — shortening is a later curation *policy*, not a write mechanic — and records are keyed by `uuid`, so there is no split or rename to perform. Delivery is what is bounded now: a body is read as pages of timestamp groups, so a large record costs a cursor and not a truncated answer. Do not add a "split this record" step to compensate for a page.
 
 ### § template
 
@@ -110,11 +123,13 @@ The pattern's cited UUID is content — generate any UUID for it; the `insert` r
 
 ### § list-episodes
 
-`query(agent_id="<domain>", record_type="episode")` → the derived index projection (uuid, title, summary/tags, date), newest-first.
+`query(agent_id="<domain>", record_type="episode")` → the derived index projection (uuid, title, summary/tags, date, **`blocks_total`**), newest-first. Metadata only: use it to choose a candidate, and note its `blocks_total` so you know whether the body you are about to read is one page or several.
 
 ### § load-episode-body
 
-`get(uuid)` for the selected episode(s); or `search(text)` to match a keyword across bodies.
+`get(uuid)` for the selected episode — the whole body by default, or one page when you name a `limit` or pass a `cursor`. Follow `next_cursor` only when the task actually needs more of the record: a routine browse or a summary usually does not, and continuing is a deliberate call, one page at a time. To *find* an episode rather than read one, `search(text)` matches a keyword across bodies and returns a `snippet` — the match, not the body — so follow a hit with `get(uuid)` when you need the text.
+
+Full context is a traversal, not one call: read page one, then keep passing `next_cursor` until it is `null`. Page one plus every continuation reconciles to the stored body byte for byte, so nothing is lost by paging and nothing is gained by a bigger single read.
 
 ---
 
@@ -126,7 +141,7 @@ The pattern's cited UUID is content — generate any UUID for it; the `insert` r
 
 ### § load-knowledge-body
 
-`get(uuid)` for the selected entry/entries; or `search(text)` for a keyword.
+`get(uuid)` for the selected entry/entries — whole by default, or a page when given `cursor`/`limit`; a knowledge record is one atomic block (`blocks_total: 1`), so paging it never splits a document. `search(text)` answers *what matched*: a `snippet` of the matching window and no body, so follow a hit with `get(uuid)` when you need the text rather than the mention. Never treat a snippet as the entry's content.
 
 ---
 
@@ -190,8 +205,8 @@ No action. A write through the memory tools lands in the database as it happens,
 - `shared.ras` — the **universal RAS triggers** (fleet-wide): memory recovery after compaction, and copy-paste-don't-regenerate. Automatic trigger-to-action protocols, whole, alongside reasoning and knowledge.
 - `shared.user_profile` — who [USER-NAME] is (name, philosophy, agent vision), as a single whole record or `null`. Fleet memory too: it does not vary by agent. `null` means nobody has been asked yet, which is the first-run branch in Phase 1 — a record that exists with an empty value inside it is a deliberate blank and is **not** that case.
 - `identity` + `reasoning` + `emotional` — this agent's own records, whole (layer ii). `identity` includes the agent's core knowledge and RAS triggers.
-- `knowledge_index` + `episodic_index` — metadata-only indexes; bodies via `get(uuid)` / `search(text)` on demand (layer iii). Each `episodic_index` entry carries its `project`, so a caller can pick a different episode than `latest_episode`.
-- `latest_episode` — the newest episode's full body **overall**, since no project is accepted or resolved. The returned record's own `project` tells you which project it belongs to, so a caller selects its own episode out of `episodic_index` and fetches it with `get(uuid)`. When the newest overall is not that project's, say so in the open-items report.
+- `knowledge_index` + `episodic_index` — metadata-only indexes; bodies via `get(uuid)` on demand (layer iii). Each index entry carries its `project`; an `episodic_index` entry also carries `blocks_total`, so a caller can pick a different episode than `latest_episode` and know its size before reading. `search(text)` finds a record but returns only a `snippet`, never a body.
+- `latest_episode` — **a page** of the newest episode **overall**, since no project is accepted or resolved: up to three timestamp groups, with `blocks_returned` / `blocks_total` / `next_cursor`. The returned record's own `project` tells you which project it belongs to, and its `uuid` is what continues the read. When the newest overall is not that project's, say so in the open-items report. A non-null `next_cursor` means the body continues; a count smaller than `blocks_total` with a null cursor means you already have all of it.
 
 The 4-layer assembly is a single derived call.
 
@@ -216,11 +231,15 @@ Already in the `awaken` payload: `shared.user_profile` is the whole record, or `
 
 ### § load-latest-episode
 
-Already present as `latest_episode` in the `awaken` payload — the newest episode **overall**, since no project is accepted or resolved. A caller whose own project is not that one selects its entry out of `episodic_index` and loads it with `get(uuid)`; the payload's own is the default, and the fallback when the index holds nothing for the project.
+Already present as `latest_episode` in the `awaken` payload — a **page** of the newest episode **overall**, since no project is accepted or resolved. Read the page as the bounded starting context it is: `blocks_returned` of `blocks_total` groups, plus the record's `uuid` and a `next_cursor`. A non-null cursor means the record continues; continue with `get(latest_episode.uuid, cursor=…)` only when this session actually needs the older sub-episodes, and remember that a final page returns fewer than `blocks_total` with a null cursor. A caller whose own project is not the newest one selects its entry out of `episodic_index` and loads **that** uuid the same way; the payload's own is the default, and the fallback when the index holds nothing for the project.
+
+Do not report a page as "the episode". The open-items report should name the newest sub-episodes you actually read, and say a cursor remains when one does.
 
 ### § oversized-memory-warning
 
 Read the awakening response once. Rely on the client/platform to report truncation. Recover only when it explicitly reports truncation or the response contains concrete evidence of omitted content, such as an omission notice or an incomplete record.
+
+Episodes no longer arrive as one unbounded body, so a truncated `latest_episode` is not the expected state and must not be explained away as "normal for a big episode": a page reports its own coverage, and a `next_cursor` is a fact rather than a truncation. The ceiling bounds one record's **content**, not the whole payload — the fixed layers, the indexes and the JSON envelope are whole and sit outside it — so a response can still exceed a client cap on those, and that is a separate finding to report, not something a cursor fixes.
 
 ### Resolving references to other procedures and templates
 
