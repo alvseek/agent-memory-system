@@ -219,7 +219,7 @@ The shared foundations are the fleet-shared records (`shared.reasoning` + `share
 - **Other layers also short or cut mid-record** → the payload was **truncated in transit** (the MCP tool-result cap), not empty at rest. The store is fine; the transport is not.
 - **Only `shared.reasoning` / `shared.knowledge` empty** → the store genuinely holds no fleet-shared records for this user (importer never run, or the wrong tenant). This is **not** an agent-scoping mistake: fleet memory has no `agent_id` to get wrong.
 
-Recovery is **server-side** — seed the records (importer / `insert`); there is nothing to create on this end. Report which of the two it is and STOP: do not fabricate the foundations and do not continue on partial context (`c4e7a19f`).
+For **transport truncation**, recover the complete response per **§ oversized-memory-warning** before diagnosing the store. Only genuinely absent records need **server-side** recovery — seeding the records (importer / `insert`); there is nothing to create on this end. If the foundations remain unavailable, report the failure and STOP: do not fabricate them and do not continue on partial context (`c4e7a19f`).
 
 ### § load-user-profile
 
@@ -237,7 +237,7 @@ Do not report a page as "the episode". The open-items report should name the new
 
 ### § oversized-memory-warning
 
-Read the awakening response once. Rely on the client/platform to report truncation. Recover only when it explicitly reports truncation or the response contains concrete evidence of omitted content, such as an omission notice or an incomplete record.
+First call `awaken(domain)` once and return the full response for reading, without selecting fields, summarizing, slicing, or preemptively redirecting it to a file. Do not assume it will truncate before trying. If the client/platform explicitly reports truncation or says the result was saved to a file, read that saved result to recover all omitted context. Try one whole file read first; only after an observed read limit, recover the remainder using a method that preserves the full content, including long lines. Check the recovery output for further clipping and do not continue until all required context from the response is loaded. If recovery remains impossible, name the source and failure and stop the work that depends on it. Concrete evidence of omitted content, such as an omission notice or an incomplete record, also requires recovery; anticipated size alone does not.
 
 Episodes no longer arrive as one unbounded body, so a truncated `latest_episode` is not the expected state and must not be explained away as "normal for a big episode": a page reports its own coverage, and a `next_cursor` is a fact rather than a truncation. The ceiling bounds one record's **content**, not the whole payload — the fixed layers, the indexes and the JSON envelope are whole and sit outside it — so a response can still exceed a client cap on those, and that is a separate finding to report, not something a cursor fixes.
 
