@@ -15,12 +15,12 @@ of being a file the agent must first load in order to learn how to load files.
 - **Identity** — this domain's agent identity, core knowledge and RAS triggers
 - **Context + knowledge index** — the episodic index and the knowledge directory
 - **Shared reasoning patterns**
-- **Shared knowledge fundamentals**
+- **Shared knowledge** — the backend supplies either its index or its file-backed foundations
 Phase 1 processes what's already in memory; Phase 2 loads the latest central episodic context and reports.*
 
 ### Phase 1: Process Loaded Identity
 
-1. **Shared foundations**: process the shared reasoning patterns (refined reasoning) and the shared knowledge fundamentals, and take the **universal RAS triggers** (memory recovery after compaction, copy-paste-don't-regenerate) as live protocols to apply whenever their situation occurs.
+1. **Shared foundations**: process the shared reasoning patterns (refined reasoning) and take the **universal RAS triggers** (memory recovery after compaction, copy-paste-don't-regenerate) as live protocols. Inspect shared and agent-owned knowledge indexes and load bodies only when relevant; do not fetch every body to complete awakening. The file backend's shared foundations retain their existing file-based loading contract. A present empty store knowledge index is valid, not a failed foundation load.
 2. **User & domain**: load the user profile (**§ load-user-profile**) and read your identity layer — `[Domain Agent Identity]`, `[Domain Emotional Memory]` (the moments that last), `[Domain Core Knowledge]` (the reason you exist). The [User Profile](#user-profile) section below says what the profile holds and where each backend keeps it.
 
 > **First run — no profile at all**: if **§ load-user-profile** finds none, you are the first agent to awaken for this user. Ask once for their name, the philosophy they want work done by, and the vision they hold for their agents, then store it per **§ persist-user-profile**. Ask **only** on total absence: a profile that exists with a field left empty is a *deliberate* blank, and re-asking it every awakening turns a one-time courtesy into a nag. The two are distinguishable because one is a missing record and the other is a missing value inside a present one. This is the single interactive write inside a read flow, and it is allowed precisely because it happens once (`7b3c5a9d` — automatic for read, explicit for write).

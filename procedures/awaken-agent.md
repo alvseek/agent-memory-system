@@ -25,7 +25,7 @@ The awakening set has four layers:
 1. **Agent identity** — this domain's identity, core knowledge, and RAS triggers.
 2. **Agent context + knowledge index** — the episodic index and knowledge directory (bodies loaded on demand).
 3. **Shared reasoning patterns.**
-4. **Shared knowledge fundamentals.**
+4. **Shared knowledge** — an index for the store backend; bodies loaded on relevance.
 
 *(The awakening protocol itself is not one of them — it is carried by Step 2 below.)*
 

@@ -137,7 +137,7 @@ Full context is a traversal, not one call: read page one, then keep passing `nex
 
 ### § list-knowledge
 
-`query(agent_id="<domain>", record_type="knowledge")` → the derived knowledge directory (general/central only; project-scoped knowledge is the overlay's).
+Use the awakening's `knowledge_index` and `shared.knowledge_index` together for general knowledge. To refresh, `query(record_type="knowledge")` returns metadata: retain general rows (`project` null) owned by `<domain>` or carrying no `agent_id` (shared). Never include another agent's private rows. Project-scoped knowledge belongs to the coding overlay. Fetch selected bodies with `get(uuid)`, not the entire directory.
 
 ### § load-knowledge-body
 
@@ -201,8 +201,9 @@ No action. A write through the memory tools lands in the database as it happens,
 
 **One call** — `awaken(domain)` (MCP tool) or `GET /api/awaken?agent_id=<domain>` (HTTP). It assembles and returns the agent's memory payload from Valaskjalf server-side, **project-blind**: no project is accepted or resolved, so `latest_episode` is the newest episode overall and the caller selects its own out of the index:
 
-- `shared.reasoning` + `shared.knowledge` — the fleet-shared always-load layer (layer i), read from the shared table rather than from any agent.
-- `shared.ras` — the **universal RAS triggers** (fleet-wide): memory recovery after compaction, and copy-paste-don't-regenerate. Automatic trigger-to-action protocols, whole, alongside reasoning and knowledge.
+- `shared.reasoning` — whole fleet-shared reasoning records, read from the shared table rather than from any agent.
+- `shared.knowledge_index` — metadata only: uuid, title, content_summary, tags, project and dates. Inspect this alongside the agent's knowledge_index and fetch relevant bodies with get(uuid). Never load every body during awakening. A null legacy summary or an empty index is valid; do not invent a body-derived fallback.
+- `shared.ras` — the **universal RAS triggers** (fleet-wide): memory recovery after compaction, and copy-paste-don't-regenerate. Automatic trigger-to-action protocols, whole, alongside reasoning.
 - `shared.user_profile` — who [USER-NAME] is (name, philosophy, agent vision), as a single whole record or `null`. Fleet memory too: it does not vary by agent. `null` means nobody has been asked yet, which is the first-run branch in Phase 1 — a record that exists with an empty value inside it is a deliberate blank and is **not** that case.
 - `identity` + `reasoning` + `emotional` — this agent's own records, whole (layer ii). `identity` includes the agent's core knowledge and RAS triggers.
 - `knowledge_index` + `episodic_index` — metadata-only indexes; bodies via `get(uuid)` on demand (layer iii). Each index entry carries its `project`; the index itself never counts groups, so a row does not say how large its body is. When that size matters before paying for the read, `query(record_type="episode")` returns a projection that does carry `blocks_total`. `search(text)` finds a record but returns only a `snippet`, never a body.
@@ -214,10 +215,10 @@ The 4-layer assembly is a single derived call.
 
 ### § recover-missing-foundations
 
-The shared foundations are the fleet-shared records (`shared.reasoning` + `shared.knowledge`) that `awaken` returns, and a store holding none returns them as **empty fields on a 200** rather than failing — so nothing raises an error, and this check is all that stands between a hollow awakening and continuing as if the foundations were there. Diagnose before acting:
+The whole shared reasoning foundation and the metadata-only shared knowledge directory have different load contracts. An empty `shared.knowledge_index` is a valid empty directory, not a missing foundation. A missing/malformed field is a payload failure. Check reasoning separately before diagnosing:
 
 - **Other layers also short or cut mid-record** → the payload was **truncated in transit** (the MCP tool-result cap), not empty at rest. The store is fine; the transport is not.
-- **Only `shared.reasoning` / `shared.knowledge` empty** → the store genuinely holds no fleet-shared records for this user (importer never run, or the wrong tenant). This is **not** an agent-scoping mistake: fleet memory has no `agent_id` to get wrong.
+- **Only `shared.reasoning` unexpectedly empty** → the store has no active shared reasoning for this user (possibly an unseeded or wrong tenant). This is not an agent-scoping mistake. Do not treat an empty knowledge index as evidence of the same problem.
 
 For **transport truncation**, recover the complete response per **§ oversized-memory-warning** before diagnosing the store. Only genuinely absent records need **server-side** recovery — seeding the records (importer / `insert`); there is nothing to create on this end. If the foundations remain unavailable, report the failure and STOP: do not fabricate them and do not continue on partial context (`c4e7a19f`).
 

@@ -22,7 +22,7 @@ STOP doing anything else. Memory recovery takes priority.
 
 [🚨 **CRITICAL — memory recovery must land in YOUR OWN context**](../components/no-subagent-load.md)
 
-Load the agent's 4 memory layers (**§ load-agent-memory**) — identity, context + knowledge index, shared reasoning patterns, shared knowledge fundamentals.
+Load the agent's 4 memory layers (**§ load-agent-memory**) — identity, context + knowledge index, shared reasoning patterns, and shared knowledge (index-only for the store backend, bodies on relevance).
 
 Then re-process the awakening protocol — it is carried here rather than read, so recovery no longer depends on loading a file to learn how to load files.
 
