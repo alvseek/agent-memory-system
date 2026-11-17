@@ -40,6 +40,8 @@ procedure after component inlining but before seam composition — to the siblin
 ``procedures/output-inline/``, so what a component contributed is always inspectable and
 can never lag behind the compiled output. ``--emit-inline DIR`` relocates it. ``--strict``
 exits non-zero when any op is unresolved or any referenced component is missing.
+Dual previews keep intermediates under separate ``markdown/`` and ``db/`` subdirectories;
+single-backend compilation retains the original intermediate paths.
 """
 
 from __future__ import annotations
@@ -254,7 +256,8 @@ def compile_all(
         destination.write_bytes(result.text.encode("utf-8"))
         # Converted data has no pre-seam stage. The same canonical result is the
         # inspectable intermediate, not a fake legacy Storage Mechanics marker.
-        intermediate = emit_inline / f"{name}.md"
+        intermediate_root = emit_inline / selected_backend if backend is None else emit_inline
+        intermediate = intermediate_root / f"{name}.md"
         intermediate.parent.mkdir(parents=True, exist_ok=True)
         intermediate.write_bytes(result.text.encode("utf-8"))
         referenced = set(_OP_RE.findall(result.text))
@@ -273,14 +276,21 @@ def compile_all(
             name = proc.stem
             if catalog and name in catalog.procedures:
                 continue
-            # inline first: a component may be what brings this procedure's ops
-            core, missing, used = _inline_source(
-                proc, comp_dir, proc_dir, emit_inline, source_provider=source
-            )
-            if not any(_backend_covers(backend_docs[b], name, used) for b in BACKENDS):
+            # Canonical components already select backend mechanics while inlining.
+            # Keep each backend's core and intermediate separate before seam composition.
+            inlined = {
+                b: _inline_source(
+                    proc, comp_dir, proc_dir, emit_inline / b, backend=b, source_provider=source
+                )
+                for b in BACKENDS
+            }
+            if not any(
+                _backend_covers(backend_docs[b], name, inlined[b][2]) for b in BACKENDS
+            ):
                 skipped.append(name)  # seam marker but no backend implements it
                 continue
             for b in BACKENDS:
+                core, missing, used = inlined[b]
                 text, unresolved, note = compile_procedure(
                     core, backend_docs[b], name, b, used, source
                 )
@@ -410,7 +420,8 @@ def main(argv: list[str] | None = None) -> int:
         "--emit-inline", type=Path, default=None,
         help="where to write the pre-seam intermediate — each procedure after component "
              "inlining, mirroring the source tree (default: <out>-inline, i.e. "
-             "procedures/output-inline/). Always written, so it cannot go stale.",
+             "procedures/output-inline/; dual previews use markdown/ and db/ subdirectories). "
+             "Always written, so it cannot go stale.",
     )
     parser.add_argument(
         "--strict", action="store_true",

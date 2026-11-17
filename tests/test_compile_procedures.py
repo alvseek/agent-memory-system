@@ -96,6 +96,45 @@ def test_markdown_and_db_swap_the_right_mechanics(tmp_path: Path) -> None:
     assert "insert(agent_id=" not in md
 
 
+@pytest.mark.parametrize("backend", cc.BACKENDS)
+def test_dual_output_matches_single_backend_including_canonical_components(
+    tmp_path: Path, backend: str,
+) -> None:
+    dual, _ = cc.compile_all(CF, tmp_path / "dual")
+    _, skipped = cc.compile_all(CF, tmp_path / "single", backend=backend)
+    for report in dual:
+        # Dual preview retains unwired fallback artifacts; installation skips them.
+        if report.backend == backend and report.name not in skipped:
+            assert report.out_path.read_bytes() == (
+                tmp_path / "single" / f"{report.name}.md"
+            ).read_bytes(), report.name
+    refresh = (tmp_path / "dual" / f"refresh-memory.{backend}.md").read_text(encoding="utf-8")
+    if backend == "db":
+        assert 'insert(scope="shared"' in refresh
+        assert "get(latest_episode.uuid" in refresh
+        assert "Copy blank templates" not in refresh
+        assert "Write the three values to" not in refresh
+    else:
+        assert "Copy blank templates" in refresh
+        assert "Write the three values to" in refresh
+
+
+def test_dual_intermediates_are_separate_and_match_each_backend(tmp_path: Path) -> None:
+    intermediate = tmp_path / "dual-inline"
+    cc.compile_all(CF, tmp_path / "dual", emit_inline=intermediate)
+    for backend in cc.BACKENDS:
+        single_inline = tmp_path / f"single-{backend}-inline"
+        cc.compile_all(
+            CF, tmp_path / f"single-{backend}", backend=backend, emit_inline=single_inline,
+        )
+        # Legacy components and converted assemblies both vary by backend.
+        for name in ("refresh-memory", "awaken-agent"):
+            assert (intermediate / backend / f"{name}.md").read_bytes() == (
+                single_inline / f"{name}.md"
+            ).read_bytes()
+            assert not (intermediate / f"{name}.md").exists()
+
+
 def test_templates_stay_a_reference_not_inlined(tmp_path: Path) -> None:
     # templates live once as a separate Resource/file; the output references them, never inlines.
     cc.compile_all(CF, tmp_path)
