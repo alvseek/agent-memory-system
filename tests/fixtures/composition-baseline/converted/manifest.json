@@ -1,0 +1,19 @@
+{
+  "purpose": "Historical generated conversion evidence; never an authored source",
+  "sha256": {
+    "add-reasoning.markdown.md": "a55e83ab5fb559bcdcd6cad1bc07147cc6ad5dc3a9151e0aad6cefbd4f19bedf",
+    "add-reasoning.db.md": "bbb69f098178ea0812e358f57faa35d5735658df7ca944331b9a08825cef17bc",
+    "awaken-agent.markdown.md": "99155f0a4d2b959741761316316e7236febd227522db534028b79e9c45a6f925",
+    "awaken-agent.db.md": "36b1327390a3f5ae9f6e14c7ecb18917901bd2eef87b726aecb347aedcb9027c",
+    "update-emotional.markdown.md": "172b48f62b13255a15c72bc56485476dd1184c1412f0e60364467d3e85774d80",
+    "update-emotional.db.md": "9855450bcd3e115d23cb810191307dd2a7132a7989dbb2f3a89684f95744005d",
+    "update-episodic.markdown.md": "fd216dfe385714939b711e3cde696f0b498bf23d3de745e99e4fc22a9329a888",
+    "update-episodic.db.md": "dc2faa91affc12b82860bfb6ca70e3f0a96b8492218bde95a790dd7b4eb45d23",
+    "update-knowledge.markdown.md": "0e0da30652882951b25b5283bc8b402035ca3423084b71f2f2dcd48f673ab14d",
+    "update-knowledge.db.md": "0ab6f49e61ea15c5d2213db13f7ed66032df35b48bfbc2bd1da4e6b32a323079",
+    "update-memory.markdown.md": "710f600eda88d4a395c13e2e7460bb7498b7c5847655a005c58740464be46d31",
+    "update-memory.db.md": "41e11aa92836c987c3c0165c7431a077a71b9814b431adf9a0ceff1f46f6a721",
+    "wrap-up.markdown.md": "0984a008a0ccb76cf525273dbc09367ee5b424c9aeaef15568e9d6245b215223",
+    "wrap-up.db.md": "fc9edc290262898fa3035470a5d6b60f2ed5283228b7bac47efc73dc0c2f6427"
+  }
+}

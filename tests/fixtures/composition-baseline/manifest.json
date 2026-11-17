@@ -1,0 +1,115 @@
+{
+  "commit": "7b4d204f62d8964843195309ac39562af61c34c8",
+  "roots": [
+    "awaken-agent",
+    "wrap-up"
+  ],
+  "required_calls": [
+    "update-memory",
+    "add-reasoning",
+    "update-knowledge",
+    "update-episodic",
+    "update-emotional"
+  ],
+  "graph": {
+    "awaken-agent": {
+      "source": "procedures/awaken-agent.md",
+      "components": [
+        "core-instruction-control-files",
+        "no-subagent-load"
+      ],
+      "command_mentions": [
+        "awaken-agent",
+        "load-episodic",
+        "load-knowledge"
+      ],
+      "resource_mentions": []
+    },
+    "wrap-up": {
+      "source": "procedures/wrap-up.md",
+      "components": [],
+      "command_mentions": [
+        "update-episodic",
+        "update-memory",
+        "wrap-up"
+      ],
+      "resource_mentions": []
+    },
+    "update-memory": {
+      "source": "procedures/memory/update-memory.md",
+      "components": [],
+      "command_mentions": [
+        "add-reasoning",
+        "update-emotional",
+        "update-episodic",
+        "update-knowledge",
+        "update-memory",
+        "wrap-up"
+      ],
+      "resource_mentions": []
+    },
+    "add-reasoning": {
+      "source": "procedures/memory/add-reasoning.md",
+      "components": [],
+      "command_mentions": [
+        "add-reasoning"
+      ],
+      "resource_mentions": []
+    },
+    "update-knowledge": {
+      "source": "procedures/memory/update-knowledge.md",
+      "components": [],
+      "command_mentions": [
+        "update-knowledge"
+      ],
+      "resource_mentions": []
+    },
+    "update-episodic": {
+      "source": "procedures/memory/update-episodic.md",
+      "components": [],
+      "command_mentions": [
+        "update-episodic",
+        "update-memory"
+      ],
+      "resource_mentions": []
+    },
+    "update-emotional": {
+      "source": "procedures/memory/update-emotional.md",
+      "components": [],
+      "command_mentions": [
+        "update-emotional"
+      ],
+      "resource_mentions": []
+    }
+  },
+  "input_sha256": {
+    "procedures/awaken-agent.md": "68617a885f58e33cd903bc22366d70102a5f655b7eae2f92bb49cdc9bb97e4d4",
+    "procedures/components/no-subagent-load.md": "0d945d61209db4b087a74474cf3969f945254548f63fadd8b8447ecb229f0a3a",
+    "procedures/components/core-instruction-control-files.md": "69ff3fd44cf4f6ca73320f552fed6c2d6ad21df28725a9bfca920ccc51a72a99",
+    "procedures/wrap-up.md": "5496da2cb16425829e05f8f17ad6901448973a9c646310ec69dc9523824a7acd",
+    "procedures/memory/update-memory.md": "6a0bd6d745bb6ed4cf21ffb2f9a57c531bbc72287d712846c5e5a5ccecf1edf8",
+    "procedures/memory/add-reasoning.md": "49aaee6a0cac77d3e54bdf99a4897129d35480c364265a83b8086803bfe7d639",
+    "procedures/memory/update-knowledge.md": "dd90ac2ad86a06ccb969052ff9a07d5d852b8fa876be7c3d320707d0922ff699",
+    "procedures/memory/update-episodic.md": "bfa7787026fe1afa81cf363301e1bd3d2d9a2ada995647ecbd495ac536cf6ad1",
+    "procedures/memory/update-emotional.md": "02d089db605c110e4421fefdf48699c4362826fdffa1cd7722e2fcd81c8eee00",
+    "procedures/memory/storage-backends/markdown.md": "abcd30312dee16b426a59a84f2ad9b1e72c6988518aed0f491b4cccd25ff2464",
+    "procedures/memory/storage-backends/db.md": "6516b52d65932d6e68739a22a478ba35a94ae5e2c6d400ca00c47a68030384b1"
+  },
+  "output_sha256": {
+    "awaken-agent.markdown.md": "c42aa69b32e6ba8e10bebe4aca7c781b77bc6d4e425140a94ea20414bf07f3ec",
+    "add-reasoning.markdown.md": "23b857896661efb4aa8e4a1542ed772e48f2348f9227776cc880497063980832",
+    "update-emotional.markdown.md": "ac4b4e47cf3575d34f6e84460b40e3ec86e5acd95fdf4ab050c1e020a4c6027f",
+    "update-episodic.markdown.md": "e07cc79ec99f9848cd0b473731c143b7e8791c2f9168510b0e2063288a79154d",
+    "update-knowledge.markdown.md": "39b5b64be7a3fec554eff58af7b4815a35fbddacca89481f9e094668e429f0e6",
+    "update-memory.markdown.md": "a39712eb8eb4a1516d5926f8435c7e469d9a080881777c9c4ee627c6fccc6ffa",
+    "wrap-up.markdown.md": "3243cdac8364516e102f10f05b0c94b24bc01b4e42e6ce5b6b261ae8da0536ab",
+    "awaken-agent.db.md": "ea6c7cd562bda2e13a19442d98921ba0893c14c2ec9d80c7aa2bf9102cfbd254",
+    "add-reasoning.db.md": "c3b9b233ee9250c005186cb999eb70ebda54b1b87e647efb29da2b8ce58ba914",
+    "update-emotional.db.md": "52b0803e208b22d7a04ceced45a787ad290cf0a68b033c7bd057231d4558f07e",
+    "update-episodic.db.md": "1d9d68a83bddfe1f461f800c315156dac2059c1fb637f405ee6b428b5ada5f1e",
+    "update-knowledge.db.md": "d1eff65cc2c27beae6d02eef051029f06248230036d475716ab3f3c2ccb519e6",
+    "update-memory.db.md": "c91822e525202b809357e5d79ebc01af322a36b275e2a0a39d66663a856608ab",
+    "wrap-up.db.md": "10b54114e0d02bb2962a0219f9db3d6b538fdb280efa214b803764774cc2d514"
+  },
+  "note": "Generated historical evidence, not an authored procedure source. Command mentions include explanatory/conditional references; inspect before conversion."
+}

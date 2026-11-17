@@ -12,6 +12,8 @@ import sys
 from collections import Counter
 from pathlib import Path
 
+import pytest
+
 CF = Path(__file__).resolve().parents[1]  # control-files/
 _SCRIPT = CF / "procedures" / "setup-scripts" / "compile-procedures.py"
 
@@ -37,7 +39,8 @@ _VERBATIM = {"push-memory", "pull-memory"}
 
 def test_discovers_seam_procedures_and_excludes_machinery() -> None:
     procs = {p.stem for p in cc._seam_procedures(CF / "procedures")}
-    assert _KNOWN <= procs
+    converted = set(cc.Catalog(cc.FileSource(CF)).procedures)
+    assert _KNOWN <= procs | converted
     # the seam's own machinery must be excluded, even though it names the marker in prose
     assert "README" not in procs
     assert "markdown" not in procs
@@ -245,8 +248,9 @@ def test_emit_inline_writes_the_pre_seam_intermediate(tmp_path: Path) -> None:
     assert staged.exists()
     text = staged.read_text(encoding="utf-8")
     assert _COMPONENT_MARKER in text.lower()  # component already inlined
-    assert "## Storage Mechanics" in text  # seam not yet composed
-    assert (mid / "memory" / "update-episodic.md").exists()  # source tree mirrored
+    assert "## Storage Mechanics" not in text  # ordered data has no legacy seam stage
+    assert text == (out / "awaken-agent.md").read_text(encoding="utf-8")
+    assert (mid / "update-episodic.md").exists()  # canonical assembly identity
 
 
 # --- component-contributed storage ops (backend section composed from procedure + components) ---
@@ -267,6 +271,8 @@ def test_component_ops_are_defined_once_and_serve_every_caller(tmp_path: Path) -
         assert "§ load-agent-memory" in text, name
         assert "§ recover-missing-foundations" in text, name  # arrived via the component
         assert "## Storage Mechanics" not in text, name
+        assert text.count("### § load-agent-memory\n") == 1, name
+        assert text.count("### § recover-missing-foundations\n") == 1, name
 
 
 def test_backends_disagree_on_the_component_ops(tmp_path: Path) -> None:
@@ -374,3 +380,22 @@ def test_missing_component_is_reported_and_fails_strict(tmp_path: Path) -> None:
          "--out", str(tmp_path / "out2"), "--strict"]
     )
     assert rc == 1
+
+
+def test_converted_call_dependencies_must_resolve_in_the_delivery_catalog(tmp_path):
+    root = tmp_path / "source"
+    assemblies = root / "procedures/assemblies"
+    sections = root / "procedures/sections"
+    backends = root / "procedures/memory/storage-backends"
+    for directory in (assemblies, sections, backends):
+        directory.mkdir(parents=True, exist_ok=True)
+    (assemblies / "sample.toml").write_text(
+        'format_version=1\nid="sample"\ntitle="Sample"\ndescription="Call a dependency."\n'
+        'calls=["missing-command"]\n[[sections]]\nid="sample.body"\n'
+        'source="procedures/sections/body.md"\n', encoding="utf-8"
+    )
+    (sections / "body.md").write_text("Do it.\n", encoding="utf-8")
+    for backend in ("markdown", "db"):
+        (backends / f"{backend}.md").write_text("", encoding="utf-8")
+    with pytest.raises(ValueError, match="missing called procedures"):
+        cc.compile_all(root, tmp_path / "output", backend="db")

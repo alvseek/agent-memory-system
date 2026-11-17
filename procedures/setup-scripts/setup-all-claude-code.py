@@ -13,7 +13,8 @@ the sibling overlay manifest claims.
 Cross-platform (replaces the old ``.sh``): run directly on macOS/Linux, or via the ``.bat``
 wrapper on Windows.
 
-Usage:        python control-files/procedures/setup-scripts/setup-all-claude-code.py
+Usage:        uv run --project control-files python \
+              control-files/procedures/setup-scripts/setup-all-claude-code.py
 Env override: AGENT_MEMORY_TARGET_DIR (default: ~/.claude/commands)
 """
 

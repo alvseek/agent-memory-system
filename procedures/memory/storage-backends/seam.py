@@ -31,6 +31,13 @@ STORAGE_MARKER = "## Storage Mechanics"
 # It is prose, never ops: nothing in it can satisfy a `§` reference, and its presence
 # never wires a procedure the backend does not otherwise name.
 PREAMBLE_SECTION = "all-procedures"
+_source_provider_factory = None
+
+
+def configure_source_provider(factory) -> None:
+    """The owning loader supplies its source root; this component never derives it."""
+    global _source_provider_factory
+    _source_provider_factory = factory
 
 # The `§` op sigil is KEPT in the composed output — it signals to the reader that a step
 # was provided by the storage backend (a seam swap point), useful provenance.
@@ -42,7 +49,7 @@ _SEAM_XREF = re.compile(r"[ \t]*\(see \[[^\]]*\]\(#storage-mechanics\)\)")
 _SEAM_ANCHOR = re.compile(r"\[([^\]]*)\]\(#storage-mechanics\)")
 
 
-def extract_section(doc: str, title: str) -> str:
+def extract_section(doc: str, title: str, source_provider=None) -> str:
     """Return the body under ``## {title}`` up to the next ``## `` header or EOF.
 
     Matches the level-2 header exactly. Raises ``KeyError`` if absent.
@@ -61,7 +68,22 @@ def extract_section(doc: str, title: str) -> str:
         if lines[j].startswith("## "):
             end = j
             break
-    return "".join(lines[start:end]).strip("\n")
+    body = "".join(lines[start:end]).strip("\n")
+    if "<!-- composed-source:" in body:
+        if source_provider is None:
+            if _source_provider_factory is None:
+                raise ValueError("canonical source includes need an injected source provider")
+            source_provider = _source_provider_factory()
+
+        def include(match):
+            path = match.group(1)
+            if not path.startswith("procedures/sections/") or not path.endswith(".md"):
+                raise ValueError(f"invalid composed-source include: {path}")
+            # SourceProvider's read contract validates confined relative paths.
+            return source_provider.read(path).decode("utf-8").rstrip("\n")
+
+        body = re.sub(r"<!-- composed-source: ([^\n]+?) -->", include, body)
+    return body
 
 
 def defines_section(doc: str, title: str) -> bool:
@@ -77,7 +99,7 @@ def has_seam(doc: str) -> bool:
 
 
 def compose_backend_section(
-    doc: str, procedure: str, components: Sequence[str] = ()
+    doc: str, procedure: str, components: Sequence[str] = (), source_provider=None
 ) -> str:
     """The backend body for one compiled procedure: its own ``## {procedure}`` section
     followed by a ``## {component}`` section for each component inlined into it — and,
@@ -100,13 +122,13 @@ def compose_backend_section(
             continue
         seen.add(title)
         try:
-            parts.append(extract_section(doc, title))
+            parts.append(extract_section(doc, title, source_provider))
         except KeyError:
             continue
     if not parts:
         raise KeyError(f"backend defines no section for: {procedure}")
     try:
-        parts.insert(0, extract_section(doc, PREAMBLE_SECTION))
+        parts.insert(0, extract_section(doc, PREAMBLE_SECTION, source_provider))
     except KeyError:
         pass  # this backend owes its procedures no preamble
     return "\n\n".join(parts)
@@ -124,6 +146,19 @@ def substitute_storage_mechanics(core: str, backend_section: str) -> str:
     the section up to the next ``## `` header or standalone rule is preserved (so a
     trailing footer note survives). Raises ``KeyError`` if the marker is absent.
     """
+    # A converted component already brought its mechanics in execution order.
+    # Legacy callers may still have a seam; do not append those definitions twice.
+    defined = set(re.findall(r"(?m)^#{1,6}\s*§\s*([a-z][a-z0-9-]*)", core))
+    definitions = list(re.finditer(
+        r"(?m)^#{1,6}\s*§\s*([a-z][a-z0-9-]*)[^\n]*\n", backend_section
+    ))
+    for index in range(len(definitions) - 1, -1, -1):
+        match = definitions[index]
+        if match.group(1) in defined:
+            end = definitions[index + 1].start() if index + 1 < len(definitions) else len(
+                backend_section
+            )
+            backend_section = backend_section[:match.start()] + backend_section[end:]
     lines = core.splitlines(keepends=True)
     start = None
     for i, line in enumerate(lines):

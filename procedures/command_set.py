@@ -33,6 +33,27 @@ def command_procedures(proc_dir: Path) -> list[Path]:
     files: list[Path] = []
     for sub in COMMAND_SUBDIRS:
         files.extend((proc_dir / sub).glob("*.md"))
+    assemblies = proc_dir / "assemblies"
+    converted = set()
+    if assemblies.exists():
+        from procedure_composer import Catalog, FileSource
+
+        catalog = Catalog(FileSource(proc_dir.parent))
+        converted = set(catalog.procedures)
+        files.extend(proc_dir.parent / catalog.manifest_paths[name] for name in catalog.procedures)
+    # A navigation pointer is not a second authored command. A dangling or
+    # mismatched pointer must fail, never silently remove a command from delivery.
+    selected = []
+    for path in files:
+        if path.suffix == ".md":
+            text = path.read_text(encoding="utf-8")
+            if text.startswith("<!-- composed-procedure:"):
+                expected = f"<!-- composed-procedure: {path.stem} -->"
+                if not text.startswith(expected + "\n") or path.stem not in converted:
+                    raise ValueError(f"invalid or dangling composition pointer: {path}")
+                continue
+        selected.append(path)
+    files = selected
     files.sort()
     seen: dict[str, Path] = {}
     for f in files:

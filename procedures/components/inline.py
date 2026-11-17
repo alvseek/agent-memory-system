@@ -33,6 +33,13 @@ from pathlib import Path
 # `[label](<anything>/components/<name>.md)` — the prefix is ignored so a relative
 # dev-time link and a placeholder-rooted one both resolve to the same component.
 _COMPONENT_LINK = re.compile(r"\[([^\]]*)\]\((?:[^)\s]*/)?components/([a-z][a-z0-9-]*)\.md\)")
+_source_provider_factory = None
+
+
+def configure_source_provider(factory) -> None:
+    """Inject the owning content tree instead of deriving it from a component path."""
+    global _source_provider_factory
+    _source_provider_factory = factory
 
 
 def component_body(text: str) -> str:
@@ -53,7 +60,8 @@ def component_body(text: str) -> str:
 
 
 def inline_components(
-    text: str, components_dir: Path, _stack: tuple[str, ...] = ()
+    text: str, components_dir: Path, _stack: tuple[str, ...] = (), *,
+    backend: str = "markdown", source_provider=None,
 ) -> tuple[str, list[str], list[str]]:
     """Inline every component reference in ``text`` at its reference point.
 
@@ -86,11 +94,25 @@ def inline_components(
             if not path.is_file():
                 missing.append(name)
                 continue
-            body, sub_missing, sub_used = inline_components(
-                component_body(path.read_text(encoding="utf-8")),
+            raw = path.read_text(encoding="utf-8")
+            if raw.startswith("<!-- composed-component:"):
+                from procedure_composer import compose
+
+                provider = source_provider
+                if provider is None:
+                    if _source_provider_factory is None:
+                        raise ValueError("canonical components need an injected source provider")
+                    provider = _source_provider_factory()
+                body = compose(name, backend, provider).text
+                sub_missing, sub_used = [], []
+            else:
+                body, sub_missing, sub_used = inline_components(
+                component_body(raw),
                 components_dir,
                 _stack + (name,),
-            )
+                backend=backend,
+                source_provider=source_provider,
+                )
             missing.extend(sub_missing)
             used.extend(sub_used)
             used.append(name)

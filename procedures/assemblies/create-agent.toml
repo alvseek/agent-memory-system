@@ -1,0 +1,12 @@
+format_version = 1
+id = "create-agent"
+kind = "external"
+title = "create-agent dependencies"
+description = "Dependency declaration only; the complete command remains on the legacy renderer."
+
+[[sections]]
+id = "caller-context"
+applies_to = ["db"]
+[sections.backends]
+markdown = "procedures/sections/markdown/caller-context.md"
+db = "procedures/sections/db/caller-context.md"

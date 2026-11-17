@@ -1,0 +1,60 @@
+format_version = 1
+id = "wrap-up"
+title = "Wrap Up Session"
+description = "End-of-session **memory** orchestrator: update memory → persist the store → report. Capturing a session and saving it are one job here rather than two — the procedure writes the memory layers and then commits whatever the active storage backend needs committing, so a session never ends with its own record written but unsaved."
+argument_name = "mode"
+argument_description = "Input described in the procedure's Arguments section"
+calls = ["update-memory"]
+
+[[sections]]
+id = "caller-context"
+[sections.backends]
+markdown = "procedures/sections/markdown/caller-context.md"
+db = "procedures/sections/db/caller-context.md"
+
+[[sections]]
+id = "wrap-up.text-001"
+source = "procedures/sections/shared/wrap-up.text-001.md"
+
+[[sections]]
+id = "wrap-up.text-002"
+source = "procedures/sections/shared/wrap-up.text-002.md"
+
+[[sections]]
+id = "wrap-up.text-003"
+source = "procedures/sections/shared/wrap-up.text-003.md"
+
+[[sections]]
+id = "wrap-up.text-004"
+source = "procedures/sections/shared/wrap-up.text-004.md"
+
+[[sections]]
+id = "wrap-up.text-005"
+source = "procedures/sections/shared/wrap-up.text-005.md"
+
+[[sections]]
+id = "wrap-up.persist-store"
+calls = { markdown = ["push-memory"], db = [] }
+[sections.backends]
+markdown = "procedures/sections/markdown/wrap-up.persist-store.md"
+db = "procedures/sections/db/wrap-up.persist-store.md"
+
+[[sections]]
+id = "wrap-up.text-006"
+source = "procedures/sections/shared/wrap-up.text-006.md"
+
+[[sections]]
+id = "wrap-up.persistence-report"
+[sections.backends]
+markdown = "procedures/sections/markdown/wrap-up.persistence-report.md"
+db = "procedures/sections/db/wrap-up.persistence-report.md"
+
+[[sections]]
+id = "wrap-up.open-items-report"
+source = "procedures/sections/shared/wrap-up.open-items-report.md"
+
+[[sections]]
+id = "wrap-up.failure-report"
+[sections.backends]
+markdown = "procedures/sections/markdown/wrap-up.failure-report.md"
+db = "procedures/sections/db/wrap-up.failure-report.md"

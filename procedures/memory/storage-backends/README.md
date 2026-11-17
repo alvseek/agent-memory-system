@@ -1,13 +1,39 @@
 # Storage-Backend Seam — Contract
 
-Memory procedures are **storage-agnostic**: each one carries its *judgment* (gates, heuristics, templates, WAIT confirms) in its body, and delegates its *storage mechanics* (how memory is physically read/written) to a swappable **backend**. This is the prose-layer mirror of the code's `MemoryRepository` Protocol — one procedure "core", two concrete backends.
+Memory procedures share their *judgment* (gates, heuristics, templates, WAIT confirms)
+while selecting their *storage mechanics* for Markdown or DB delivery. Awakening and
+wrap-up and their memory-update dependencies use ordered assemblies: one authored
+section per instruction, with the applicable mechanics beside the step. Unconverted
+procedures retain the legacy storage seam described below.
+
+The canonical implementation for ordered sources is the independently installable
+[procedure-composer package](../../../packages/procedure-composer/README.md).
+Assemblies live in `procedures/assemblies/`; UTF-8 prose lives in
+`procedures/sections/`. The compiler and Munnin call the same package. An old command
+path may remain as a navigation pointer, not an authored duplicate or an executable
+command. Likewise, migrated sections in the backend files below are data includes
+of canonical mechanics. `seam.py` resolves these for legacy consumers, preserving
+the exported functions. The owning compiler/loader injects a source provider:
+direct module users pass one explicitly or call `configure_source_provider` with
+a factory. Components never infer a parent checkout or deployment layout.
+
+Run tooling inside the framework environment so the package is installed:
+
+```sh
+uv run --project <control-files-root> python <control-files-root>/procedures/setup-scripts/compile-procedures.py --backend markdown --strict
+```
+
+The Claude Code, OpenCode, Codex and Antigravity installers consume compiled
+commands. Neither source pointers nor TOML manifests are installed as instructions.
+Converted IDs fail on invalid/missing data; they never silently fall back to the
+legacy renderer. Resources/templates remain separately addressed.
 
 ## The two backends
 
 - **[markdown.md](markdown.md)** — memory lives as a markdown tree over git (the native fleet world): files under `agent-[domain]/`, a hand-maintained `agent-memory-index.md`, `cp` from templates, `date` for timestamps.
 - **[db.md](db.md)** — memory lives in Valaskjalf via **Munnin**: the data tools (`awaken`·`get`·`query`·`search`·`insert`·`edit`·`edit_metadata`·`prepend`·`archive`·`soft_delete`). The index is a derived `SELECT`, so index/housekeeping steps become explicit no-ops.
 
-## The seam (how a procedure connects to a backend)
+## The legacy seam (how an unconverted procedure connects to a backend)
 
 1. **Marker**: every memory procedure has exactly **one** `## Storage Mechanics` section — the swap point. It sits after the procedure body (after `## Procedure` / the phase sections) and before `## Templates` / `## Notes` if present.
 2. **Reference by name**: the procedure body calls storage operations abstractly as **`§ op-name`** (e.g. *"list candidate episodes (§ list-candidates)"*, *"persist the sub-episode (§ append-sub-episode)"*). It never spells out files or tools inline.

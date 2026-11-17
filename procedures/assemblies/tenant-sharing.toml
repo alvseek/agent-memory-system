@@ -1,0 +1,12 @@
+format_version = 1
+id = "tenant-sharing"
+kind = "external"
+title = "tenant-sharing dependencies"
+description = "Dependency declaration only; the complete command remains on the legacy renderer."
+
+[[sections]]
+id = "caller-context"
+applies_to = ["db"]
+[sections.backends]
+markdown = "procedures/sections/markdown/caller-context.md"
+db = "procedures/sections/db/caller-context.md"

@@ -13,7 +13,10 @@ Step-by-step guide for configuring agent-memory with Claude Code or Codex and cr
 
 ## Environment Setup
 
-Run the relevant setup script from the `@agent-memory` directory.
+Run the relevant setup script from the `@agent-memory` directory. Install `uv`
+first; procedure installers run the core's Python project environment so its
+canonical composer package is available. Do not manually copy raw procedure
+Markdown: converted command paths are navigation pointers to ordered sources.
 
 ### Environment-Based Wrapper Choice
 
@@ -70,7 +73,11 @@ For a detailed breakdown of the file structure, compilation system, and memory a
 
 **Step 1** compiles the `core-memory/` source files (user profile, environment, RAS triggers, reasoning patterns) into a single `CLAUDE.md` and writes it to `~/.claude/CLAUDE.md`. This is where the Awaken trigger, post-compact recovery, and reasoning patterns live.
 
-**Step 2** copies all procedures from `procedures/` to `~/.claude/commands/`, enabling slash commands like `/awaken-agent`, `/update-episodic`, `/wrap-up`, etc. Uses a manifest to clean up stale commands from previous installations. See [Architecture Documentation](ARCHITECTURE.md#common-slash-commands) for the full command list.
+**Step 2** compiles procedure assemblies and legacy sources with the Markdown
+backend, then installs the resulting commands to `~/.claude/commands/`. It uses a
+manifest to clean up stale commands without touching another overlay's files.
+See [Architecture Documentation](ARCHITECTURE.md#common-slash-commands) for the
+command list.
 
 **Step 3** merges hooks and permissions into `~/.claude/settings.json` without overwriting existing settings:
 - **Stop hook** - plays `stop.wav` when Claude finishes responding
@@ -86,7 +93,9 @@ For a detailed breakdown of the file structure, compilation system, and memory a
 
 **Step 1** compiles the `core-memory/` source files into a single global Codex instruction file and writes it to `~/.codex/AGENTS.md`.
 
-**Step 2** converts each procedure in `control-files/procedures/` and `control-files/procedures/memory/` into a Codex user skill under `~/.agents/skills/`. Each installed skill wraps the original procedure markdown in a Codex-native `SKILL.md` so it can be invoked explicitly or discovered implicitly by Codex.
+**Step 2** compiles the discovered command set with the Markdown backend and wraps
+each delivered procedure in a Codex-native `SKILL.md` under `~/.agents/skills/`.
+Original-source pointers and assembly TOML are never installed as instructions.
 
 **Step 3** updates `~/.codex/config.toml` to:
 - set `tool_output_token_limit = 64000` for large memory-file workflows
@@ -162,7 +171,7 @@ If you prefer to configure manually instead of using the script, edit these file
 
 - **User identity + OS + agent path**: `bash control-files/core-memory/compile-scripts/user-config.sh` (writes runtime-resolved files to `control-files/core-memory/output/`)
 - **Compile CLAUDE.md**: `bash control-files/core-memory/compile-scripts/compile-write-to-claude.sh`
-- **Slash commands**: `python control-files/procedures/setup-scripts/setup-all-claude-code.py`
+- **Slash commands**: `uv run --project control-files python control-files/procedures/setup-scripts/setup-all-claude-code.py`
 - **Settings**: `bash control-files/scripts/setup-scripts/setup-settings-claude-code.sh`
 - **Compile Codex AGENTS.md**: `bash control-files/core-memory/compile-scripts/compile-write-to-codex.sh`
 - **Codex skills**: `bash control-files/procedures/setup-scripts/setup-all-codex.sh`

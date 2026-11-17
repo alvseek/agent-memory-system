@@ -1,0 +1,67 @@
+format_version = 1
+id = "core-instruction-control-files"
+title = "Core Instruction — Awakening Protocol (component)"
+description = "The phased protocol every agent follows when loading its memory, plus the user-profile\nprecondition. **This is a component, not a standalone command** — callers reference it by\nlink and it is inlined at compile time, so the process arrives *with* the command instead\nof being a file the agent must first load in order to learn how to load files."
+kind = "component"
+
+[[sections]]
+id = "core-instruction-control-files.text-001"
+source = "procedures/sections/shared/core-instruction-control-files.text-001.md"
+
+[[sections]]
+id = "core-instruction-control-files.text-002"
+source = "procedures/sections/shared/core-instruction-control-files.text-002.md"
+
+[[sections]]
+id = "core-instruction-control-files.load-user-profile"
+[sections.backends]
+markdown = "procedures/sections/markdown/core-instruction-control-files.load-user-profile.md"
+db = "procedures/sections/db/core-instruction-control-files.load-user-profile.md"
+
+[[sections]]
+id = "core-instruction-control-files.persist-user-profile"
+[sections.backends]
+markdown = "procedures/sections/markdown/core-instruction-control-files.persist-user-profile.md"
+db = "procedures/sections/db/core-instruction-control-files.persist-user-profile.md"
+
+[[sections]]
+id = "core-instruction-control-files.recover-missing-foundations"
+[sections.backends]
+markdown = "procedures/sections/markdown/core-instruction-control-files.recover-missing-foundations.md"
+db = "procedures/sections/db/core-instruction-control-files.recover-missing-foundations.md"
+
+[[sections]]
+id = "core-instruction-control-files.text-003"
+source = "procedures/sections/shared/core-instruction-control-files.text-003.md"
+
+[[sections]]
+id = "core-instruction-control-files.load-latest-episode"
+[sections.backends]
+markdown = "procedures/sections/markdown/core-instruction-control-files.load-latest-episode.md"
+db = "procedures/sections/db/core-instruction-control-files.load-latest-episode.md"
+
+[[sections]]
+id = "core-instruction-control-files.oversized-memory-warning"
+[sections.backends]
+markdown = "procedures/sections/markdown/core-instruction-control-files.oversized-memory-warning.md"
+db = "procedures/sections/db/core-instruction-control-files.oversized-memory-warning.md"
+
+[[sections]]
+id = "core-instruction-control-files.text-004"
+source = "procedures/sections/shared/core-instruction-control-files.text-004.md"
+
+[[sections]]
+id = "core-instruction-control-files.text-005"
+source = "procedures/sections/shared/core-instruction-control-files.text-005.md"
+
+[[sections]]
+id = "core-instruction-control-files.text-006"
+source = "procedures/sections/shared/core-instruction-control-files.text-006.md"
+
+[[sections]]
+id = "core-instruction-control-files.text-007"
+source = "procedures/sections/shared/core-instruction-control-files.text-007.md"
+
+[[sections]]
+id = "core-instruction-control-files.text-008"
+source = "procedures/sections/shared/core-instruction-control-files.text-008.md"

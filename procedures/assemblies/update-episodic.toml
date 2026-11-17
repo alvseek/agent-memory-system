@@ -1,0 +1,116 @@
+format_version = 1
+id = "update-episodic"
+title = "Update Episodic Memory Protocol"
+description = "Capture session context as **rolling per-theme episodes**. The default flow scans active (non-archived) episodes for the current project, finds theme matches, and appends a dated sub-episode to the matching one — or creates a new episode if none matches. *How* episodes are physically listed / created / appended is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics))."
+argument_name = "mode"
+argument_description = "Input described in the procedure's Arguments section"
+
+[[sections]]
+id = "caller-context"
+[sections.backends]
+markdown = "procedures/sections/markdown/caller-context.md"
+db = "procedures/sections/db/caller-context.md"
+
+[[sections]]
+id = "update-episodic.text-001"
+source = "procedures/sections/shared/update-episodic.text-001.md"
+
+[[sections]]
+id = "update-episodic.text-002"
+source = "procedures/sections/shared/update-episodic.text-002.md"
+
+[[sections]]
+id = "update-episodic.text-003"
+source = "procedures/sections/shared/update-episodic.text-003.md"
+
+[[sections]]
+id = "update-episodic.text-004"
+source = "procedures/sections/shared/update-episodic.text-004.md"
+
+[[sections]]
+id = "update-episodic.text-005"
+source = "procedures/sections/shared/update-episodic.text-005.md"
+
+[[sections]]
+id = "update-episodic.stamp-date"
+[sections.backends]
+markdown = "procedures/sections/markdown/update-episodic.stamp-date.md"
+db = "procedures/sections/db/update-episodic.stamp-date.md"
+
+[[sections]]
+id = "update-episodic.text-006"
+source = "procedures/sections/shared/update-episodic.text-006.md"
+
+[[sections]]
+id = "update-episodic.text-007"
+source = "procedures/sections/shared/update-episodic.text-007.md"
+
+[[sections]]
+id = "update-episodic.list-candidate-episodes"
+[sections.backends]
+markdown = "procedures/sections/markdown/update-episodic.list-candidate-episodes.md"
+db = "procedures/sections/db/update-episodic.list-candidate-episodes.md"
+
+[[sections]]
+id = "update-episodic.reopen-archived-theme"
+[sections.backends]
+markdown = "procedures/sections/markdown/update-episodic.reopen-archived-theme.md"
+db = "procedures/sections/db/update-episodic.reopen-archived-theme.md"
+
+[[sections]]
+id = "update-episodic.text-008"
+source = "procedures/sections/shared/update-episodic.text-008.md"
+
+[[sections]]
+id = "update-episodic.text-009"
+source = "procedures/sections/shared/update-episodic.text-009.md"
+
+[[sections]]
+id = "update-episodic.text-010"
+source = "procedures/sections/shared/update-episodic.text-010.md"
+
+[[sections]]
+id = "update-episodic.text-011"
+source = "procedures/sections/shared/update-episodic.text-011.md"
+
+[[sections]]
+id = "update-episodic.template"
+[sections.backends]
+markdown = "procedures/sections/markdown/update-episodic.template.md"
+db = "procedures/sections/db/update-episodic.template.md"
+
+[[sections]]
+id = "update-episodic.append-sub-episode"
+[sections.backends]
+markdown = "procedures/sections/markdown/update-episodic.append-sub-episode.md"
+db = "procedures/sections/db/update-episodic.append-sub-episode.md"
+
+[[sections]]
+id = "update-episodic.housekeeping"
+[sections.backends]
+markdown = "procedures/sections/markdown/update-episodic.housekeeping.md"
+db = "procedures/sections/db/update-episodic.housekeeping.md"
+
+[[sections]]
+id = "update-episodic.record-theme-state"
+[sections.backends]
+markdown = "procedures/sections/markdown/update-episodic.record-theme-state.md"
+db = "procedures/sections/db/update-episodic.record-theme-state.md"
+
+[[sections]]
+id = "update-episodic.text-012"
+source = "procedures/sections/shared/update-episodic.text-012.md"
+
+[[sections]]
+id = "update-episodic.create-episode"
+[sections.backends]
+markdown = "procedures/sections/markdown/update-episodic.create-episode.md"
+db = "procedures/sections/db/update-episodic.create-episode.md"
+
+[[sections]]
+id = "update-episodic.text-013"
+source = "procedures/sections/shared/update-episodic.text-013.md"
+
+[[sections]]
+id = "update-episodic.text-014"
+source = "procedures/sections/shared/update-episodic.text-014.md"

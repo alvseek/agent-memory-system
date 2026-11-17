@@ -50,6 +50,8 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from procedure_composer import Catalog, FileSource
+
 # control-files/ root (this script lives at procedures/setup-scripts/compile-procedures.py).
 _CF_ROOT = Path(__file__).resolve().parents[2]
 
@@ -63,6 +65,7 @@ def _load(name: str, rel: str):
 
 # Every definition lives once, beside its contract; import them from there.
 _seam = _load("cf_seam", "procedures/memory/storage-backends/seam.py")
+_seam.configure_source_provider(lambda: FileSource(_CF_ROOT))
 STORAGE_MARKER = _seam.STORAGE_MARKER
 extract_section = _seam.extract_section
 substitute_storage_mechanics = _seam.substitute_storage_mechanics
@@ -71,6 +74,7 @@ defines_section = _seam.defines_section
 has_seam = _seam.has_seam
 
 _inline = _load("cf_inline", "procedures/components/inline.py")
+_inline.configure_source_provider(lambda: FileSource(_CF_ROOT))
 inline_components = _inline.inline_components
 
 _command_set = _load("cf_command_set", "procedures/command_set.py")
@@ -111,7 +115,7 @@ def _seam_procedures(proc_dir: Path, generated: tuple[Path, ...] = ()) -> list[P
     plus whatever ``generated`` paths the caller was pointed at (``--out`` / ``--emit-inline``
     can be written anywhere, including inside the source tree).
     """
-    skip = {"storage-backends", "resources", "components"}
+    skip = {"storage-backends", "resources", "components", "sections", "assemblies"}
     roots = tuple(p.resolve() for p in generated)
 
     def _is_generated(path: Path) -> bool:
@@ -155,7 +159,8 @@ def _referenced_ops(core: str) -> set[str]:
 
 
 def compile_procedure(
-    core: str, backend_doc: str, name: str, backend: str, components: tuple[str, ...] = ()
+    core: str, backend_doc: str, name: str, backend: str, components: tuple[str, ...] = (),
+    source_provider=None,
 ) -> tuple[str, list[str], str]:
     """Compose ``core`` with one backend's section for this procedure.
 
@@ -169,7 +174,7 @@ def compile_procedure(
     """
     referenced = _referenced_ops(core)
     try:
-        section = compose_backend_section(backend_doc, name, components)
+        section = compose_backend_section(backend_doc, name, components, source_provider)
     except KeyError:
         note = f"no '## {name}' section in {backend}.md — core served verbatim"
         return core, sorted(referenced), note
@@ -187,7 +192,8 @@ def _backend_covers(backend_doc: str, name: str, components: tuple[str, ...]) ->
 
 
 def _inline_source(
-    proc: Path, comp_dir: Path, proc_dir: Path, emit_inline: Path
+    proc: Path, comp_dir: Path, proc_dir: Path, emit_inline: Path, backend: str = "markdown",
+    source_provider=None,
 ) -> tuple[str, list[str], tuple[str, ...]]:
     """Read a procedure and inline its components — the stage before seam composition.
 
@@ -195,7 +201,10 @@ def _inline_source(
     source tree: the intermediate stage is a product of every run, not an opt-in, so it can
     never sit stale beside a newer compiled output.
     """
-    core, missing, used = inline_components(proc.read_text(encoding="utf-8"), comp_dir)
+    core, missing, used = inline_components(
+        proc.read_text(encoding="utf-8"), comp_dir, backend=backend,
+        source_provider=source_provider,
+    )
     dest = emit_inline / proc.relative_to(proc_dir)
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_text(core, encoding="utf-8", newline="\n")
@@ -231,6 +240,29 @@ def compile_all(
 
     reports: list[ProcedureReport] = []
     skipped: list[str] = []
+    catalog = Catalog(FileSource(content_root)) if (proc_dir / "assemblies").exists() else None
+    source = catalog.source if catalog else FileSource(content_root)
+    available_commands = {path.stem for path in command_procedures(proc_dir)}
+
+    def emit_composed(name: str, selected_backend: str) -> None:
+        result = catalog.compose(name, selected_backend)
+        missing_calls = set(result.calls) - available_commands
+        if missing_calls:
+            raise ValueError(f"{name}: missing called procedures: {sorted(missing_calls)}")
+        filename = f"{name}.{selected_backend}.md" if backend is None else f"{name}.md"
+        destination = out_dir / filename
+        destination.write_bytes(result.text.encode("utf-8"))
+        # Converted data has no pre-seam stage. The same canonical result is the
+        # inspectable intermediate, not a fake legacy Storage Mechanics marker.
+        intermediate = emit_inline / f"{name}.md"
+        intermediate.parent.mkdir(parents=True, exist_ok=True)
+        intermediate.write_bytes(result.text.encode("utf-8"))
+        referenced = set(_OP_RE.findall(result.text))
+        defined = set(_OP_DEF_RE.findall(result.text))
+        reports.append(ProcedureReport(
+            name, selected_backend, destination, sorted(referenced - defined),
+            "ordered composition",
+        ))
 
     if backend is None:
         backend_docs = {
@@ -239,15 +271,23 @@ def compile_all(
         }
         for proc in _seam_procedures(proc_dir, (out_dir, emit_inline)):
             name = proc.stem
+            if catalog and name in catalog.procedures:
+                continue
             # inline first: a component may be what brings this procedure's ops
-            core, missing, used = _inline_source(proc, comp_dir, proc_dir, emit_inline)
+            core, missing, used = _inline_source(
+                proc, comp_dir, proc_dir, emit_inline, source_provider=source
+            )
             if not any(_backend_covers(backend_docs[b], name, used) for b in BACKENDS):
                 skipped.append(name)  # seam marker but no backend implements it
                 continue
             for b in BACKENDS:
-                text, unresolved, note = compile_procedure(core, backend_docs[b], name, b, used)
+                text, unresolved, note = compile_procedure(
+                    core, backend_docs[b], name, b, used, source
+                )
                 # a backend section may carry component references of its own
-                text, from_backend, _ = inline_components(text, comp_dir)
+                text, from_backend, _ = inline_components(
+                    text, comp_dir, backend=b, source_provider=source
+                )
                 out_path = out_dir / f"{name}.{b}.md"
                 out_path.write_text(text, encoding="utf-8", newline="\n")
                 reports.append(
@@ -255,18 +295,31 @@ def compile_all(
                         name, b, out_path, unresolved, note, sorted(set(missing + from_backend))
                     )
                 )
+        if catalog:
+            for name in catalog.procedures:
+                for selected_backend in BACKENDS:
+                    emit_composed(name, selected_backend)
         return reports, skipped
 
     backend_doc = (content_root / _BACKEND_REL.format(name=backend)).read_text(encoding="utf-8")
     for proc in command_procedures(proc_dir):
         name = proc.stem
-        core, missing, used = _inline_source(proc, comp_dir, proc_dir, emit_inline)
+        if proc.suffix == ".toml":
+            emit_composed(name, backend)
+            continue
+        core, missing, used = _inline_source(
+            proc, comp_dir, proc_dir, emit_inline, backend, source_provider=source
+        )
         if has_seam(core):
             if not _backend_covers(backend_doc, name, used):
                 skipped.append(name)  # seam marker but this backend has no section
                 continue
-            text, unresolved, note = compile_procedure(core, backend_doc, name, backend, used)
-            text, from_backend, _ = inline_components(text, comp_dir)
+            text, unresolved, note = compile_procedure(
+                core, backend_doc, name, backend, used, source
+            )
+            text, from_backend, _ = inline_components(
+                text, comp_dir, backend=backend, source_provider=source
+            )
             missing = sorted(set(missing + from_backend))
         else:
             text, unresolved, note = core, [], "copied as-is (no seam)"

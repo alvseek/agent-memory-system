@@ -8,127 +8,33 @@ Concrete storage mechanics for the **native markdown-over-git** world. Each `## 
 
 ## update-episodic
 
-### § stamp-date
-
-ALWAYS CHECK DATE TIME FIRST for the sub-episode H3 header and index entry placement:
-`date '+%Y-%m-%d %H:%M'`
-
-### § list-candidate-episodes
-
-Read `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` and locate `# Recent Context Episodes`. Collect all entries where the filename or summary contains the **project name**. These are scan candidates. (Archived entries live in `archive/` and are intentionally out of reach.)
-
-### § append-sub-episode
-
-1. **Open the chosen file** in `[AGENT-MEMORY-PATH]/agent-[domain]/episodes/`.
-2. **Insert the sub-episode H3 block at the TOP** (newest-first within the file), above any older H3 blocks. Sub-episodes are separated by `---`.
-3. **Update the index entry — MOVE-TO-TODAY rule**:
-   - Locate the existing entry for this file in the index.
-   - Delete it from its current date group (if the group becomes empty, remove the group header too).
-   - Insert at the **top of today's date group** (`📂 YYYY-MM-DD:`); create today's group if it doesn't exist.
-   - Update the summary from the new block's `**Summary**` row: carry that text verbatim, appended as `+ [new sub-topic]` when the overall theme still holds, or rewritten when the new sub-topic shifts it.
-
-   > **Why move?** Awakening's project-scoped episodic load grabs the top entry as "latest episodic." The move preserves the "top = newest" invariant. Edit-in-place would leave a stale top entry and break awakening's selection logic.
-
-### § create-episode
-
-1. **Build filename**: `[project-name]-[context-theme].md` (no date prefix). Examples: `agent-memory-task-system-framework-rules.md`, `plko-jira-mcp-integration.md`. If a file at this name already exists (and a separate file is wanted), use an incrementing suffix: `[project-name]-[context-theme]-2.md`.
-2. **Copy the file scaffold**:
-   ```
-   cp [AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/episodic-memory-template.md [AGENT-MEMORY-PATH]/agent-[domain]/episodes/[filename].md
-   ```
-3. **Set the frontmatter `project`** in the new file to the project name, then **replace the template placeholder** at the top with the composed sub-episode block. The frontmatter is what the importer reads into the record's `project`; the filename is convention, not the source.
-4. **Add index entry**:
-   - Insert at the **top of today's date group** (`📂 YYYY-MM-DD:`); create today's group if it doesn't exist.
-   - Entry format: `- [filename.md](episodes/filename.md) - [one-line summary]`, where the summary is the new block's `**Summary**` row copied verbatim. This entry is the record's listed description, so it and the block must not diverge.
-
-### § housekeeping
-
-1. **Check line limit** after an append:
-   - **> 500 lines**: warn — *"[filename] over 500 lines, consider splitting on next merge"*.
-   - **> 1000 lines**: split — move the *just-added* sub-episode into `[project]-[theme]-2.md` (next incrementing suffix if `-2` exists). Add `> Continues from [original-filename]` at the top of the new file. Add a new index entry for the split file under today's date group.
-2. **Lazy filename migration** (one-time per file): if the chosen file still uses the legacy `YYYY-MM-DD-HH.MM-[project]-[theme].md` format, rename it to `[project]-[theme].md` as part of this append and update the index entry's filename reference. If a file at the new name already exists (rare collision), use the line-limit `-{n}` suffix rule.
-
-> **Episodes folder structure**:
-> ```
-> episodes/
-> ├── [project-name]-[context-theme].md        # Active episode file (rolling per theme)
-> ├── [project-name]-[context-theme]-2.md      # Split file when 1000-line cap hit
-> ├── YYYY-MM-DD-HH.MM-[project]-[theme].md    # Legacy dated files (lazy migration)
-> └── archive/                                  # Archived old episodes (via /archive-old-memories)
->     └── YYYY-archived-context.md
-> ```
-> Legacy filenames are migrated lazily — only renamed when the file gets its next merge-append. No bulk sweep.
-
-### § template
-
-The sub-episode block format → read `[AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/episodic-entry-template.md`.
-
-### § record-theme-state
-
-Edit the episode file's frontmatter `tags:` line in place: add `finished` when this block closes the theme, remove it when it does not. Touch nothing else — the body and the other frontmatter fields stay verbatim.
-
-When no `tags:` line exists yet, add one beneath `project:` in the same block. The importer reads episode frontmatter tags into the record, so the marker survives a later import into the DB store even though no tool here reads it.
-
-### § reopen-archived-theme
-
-Markdown keeps no archive flag on a record: an archived episode is one whose index line was moved into `archive/[YYYY]-archived-context.md`, while the file itself never moved. To reopen it, remove `finished` from the file's frontmatter, move its index line back from the archive file into the episode index (newest-first, under today's date group), and decrement the archive's count. Then append normally.
-
----
+<!-- composed-source: procedures/sections/markdown/update-episodic.stamp-date.md -->
+<!-- composed-source: procedures/sections/markdown/update-episodic.list-candidate-episodes.md -->
+<!-- composed-source: procedures/sections/markdown/update-episodic.reopen-archived-theme.md -->
+<!-- composed-source: procedures/sections/markdown/update-episodic.template.md -->
+<!-- composed-source: procedures/sections/markdown/update-episodic.append-sub-episode.md -->
+<!-- composed-source: procedures/sections/markdown/update-episodic.housekeeping.md -->
+<!-- composed-source: procedures/sections/markdown/update-episodic.record-theme-state.md -->
+<!-- composed-source: procedures/sections/markdown/update-episodic.create-episode.md -->
 
 ## add-reasoning
 
-### § read-reasoning-store
-
-Read the `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` reasoning memory section (`# DOMAIN REASONING MEMORY`).
-
-### § generate-uuid
-
-Generate a unique identifier:
-- **Windows**: `powershell -c "[guid]::NewGuid().ToString()"`
-- **Linux/macOS**: `uuidgen` or `cat /proc/sys/kernel/random/uuid`
-
-### § persist-reasoning
-
-Write the completed pattern into the `# DOMAIN REASONING MEMORY` section of `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md`.
-
-### § template
-
-The reasoning-pattern block format → read `[AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/reasoning-pattern-template.md`.
-
----
+<!-- composed-source: procedures/sections/markdown/add-reasoning.read-reasoning-store.md -->
+<!-- composed-source: procedures/sections/markdown/add-reasoning.template.md -->
+<!-- composed-source: procedures/sections/markdown/add-reasoning.generate-uuid.md -->
+<!-- composed-source: procedures/sections/markdown/add-reasoning.persist-reasoning.md -->
 
 ## update-emotional
 
-### § stamp-date
-
-ALWAYS verify current date before writing:
-`date '+%Y-%m-%d %H:%M'`
-
-### § persist-emotional
-
-Write the moment to `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` (in the `# DOMAIN EMOTIONAL MEMORY` section). **Order: NEWEST FIRST** — most recent entries at the TOP.
-
-### § template
-
-The emotional-moment block format (happy / sad / frustrated / bonding) → read `[AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/emotional-moment-template.md`.
-
----
+<!-- composed-source: procedures/sections/markdown/update-emotional.stamp-date.md -->
+<!-- composed-source: procedures/sections/markdown/update-emotional.template.md -->
+<!-- composed-source: procedures/sections/markdown/update-emotional.persist-emotional.md -->
 
 ## update-knowledge
 
-### § persist-knowledge
-
-Create in `[AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/research/` (domain expertise and research). Name the file `[date]-[descriptive-theme].md` or `[domain-area].md` — examples: `2025-09-11-nestjs-patterns.md` (dated research), `typescript-best-practices.md` (timeless domain knowledge). Create the file with the template structure, filling the frontmatter `tags` — the importer reads them into the record's `tags`.
-
-### § update-knowledge-index
-
-Update `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` knowledge directory - add an entry to the knowledge index for discoverability, of the form `- **[{Title}]({path})** - [one-line summary]`. Copy the summary from the entry's `**Summary**` row verbatim: this line is the record's listed description on the markdown backend and the `content_summary` on the DB one, so the two must not diverge.
-
-### § template
-
-The knowledge-file format → read `[AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/knowledge-file-template.md`.
-
----
+<!-- composed-source: procedures/sections/markdown/update-knowledge.template.md -->
+<!-- composed-source: procedures/sections/markdown/update-knowledge.persist-knowledge.md -->
+<!-- composed-source: procedures/sections/markdown/update-knowledge.update-knowledge-index.md -->
 
 ## load-episodic
 
@@ -189,68 +95,23 @@ Operate on `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` (`# DOMAIN 
 
 ## update-memory
 
-### § detect-mode-scan
-
-Read the central episodic index `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` → `# Recent Context Episodes` for the theme-match scan.
-
-### § scan-promotion-markers
-
-Identify cross-layer files written this session, by path:
-
-| Layer | Path |
-|-------|------|
-| Project context (shared) | `shared-memory/[project]/context/*.md` |
-| Project context (private) | `knowledge-base/[project]/*.md` |
-| Knowledge | `knowledge-base/[topic].md`, `knowledge-base/core-domain-knowledge.md` |
-| Reasoning (shared) | `shared-memory/core-reasoning-memory.md` |
-| Reasoning (per-agent) | `agent-core-memory.md` → `# DOMAIN REASONING MEMORY` |
-
----
+<!-- composed-source: procedures/sections/markdown/update-memory.detect-mode-scan.md -->
+<!-- composed-source: procedures/sections/markdown/update-memory.scan-promotion-markers.md -->
 
 ## wrap-up
 
-### § persist-store
-
-This store is a git repository, so capturing memory is not the same as saving it. Execute `/push-memory <mode>` with the mode `/wrap-up` resolved, and carry its per-repo result back as the persistence outcome — pushed with its commit hash, no changes, or failed, including any branch left ahead of its remote.
-
----
+<!-- composed-source: procedures/sections/markdown/wrap-up.persist-store.md -->
+<!-- composed-source: procedures/sections/markdown/wrap-up.persistence-report.md -->
+<!-- composed-source: procedures/sections/markdown/wrap-up.failure-report.md -->
 
 ## core-instruction-control-files
 
-### § load-agent-memory
-
-Use the **Read tool directly** and read all 4 files in parallel:
-
-- `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` (Identity — agent identity, core knowledge, RAS triggers)
-- `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` (Context + knowledge index)
-- `[AGENT-MEMORY-PATH]/shared-memory/core-reasoning-memory.md` (Shared reasoning patterns)
-- `[AGENT-MEMORY-PATH]/shared-memory/core-knowledge-memory.md` (Shared knowledge fundamentals)
-
-### § recover-missing-foundations
-
-The `shared-memory/` directory was not found on disk. Ask [USER-NAME]:
-
-"shared-memory/ not found. Would you like me to:
-A) Copy blank templates from `[AGENT-MEMORY-PATH]/control-files/new-agent-template/shared-memory/`
-B) Create empty shared-memory/ files with section headers only"
-
-### § load-user-profile
-
-**No action.** The profile is already in your context: the global instructions file carries it, compiled from `[AGENT-MEMORY-PATH]/shared-memory/user-profile.md`, which is the single source of truth. If the `## AI Agent - User Profile` section is absent from your instructions, or carries no values at all, treat that as *no profile exists* and take Phase 1's first-run branch.
-
-### § persist-user-profile
-
-Write the three values to `[AGENT-MEMORY-PATH]/shared-memory/user-profile.md`, keeping the existing bullet form — `- **[USER-NAME]** = …` and its two siblings — because `user-profile-claude.sh` reads those exact markers by line. Then tell [USER-NAME] that the compiled instructions file picks them up on the next `user-config-claude.sh` run: the markdown file is the source, the compiled copy is downstream of it.
-
-### § load-latest-episode
-
-Read the episode file named by the index entry from `[AGENT-MEMORY-PATH]/agent-[domain]/episodes/`.
-
-### § oversized-memory-warning
-
-A file that exceeded the single-Read limit came back partial. Name it and warn: *"⚠️ `[filename]` exceeded the read limit during loading — consider `/archive-old-memories` to reduce its size."*
-
----
+<!-- composed-source: procedures/sections/markdown/core-instruction-control-files.load-agent-memory.md -->
+<!-- composed-source: procedures/sections/markdown/core-instruction-control-files.load-user-profile.md -->
+<!-- composed-source: procedures/sections/markdown/core-instruction-control-files.persist-user-profile.md -->
+<!-- composed-source: procedures/sections/markdown/core-instruction-control-files.recover-missing-foundations.md -->
+<!-- composed-source: procedures/sections/markdown/core-instruction-control-files.load-latest-episode.md -->
+<!-- composed-source: procedures/sections/markdown/core-instruction-control-files.oversized-memory-warning.md -->
 
 ## list-agents
 

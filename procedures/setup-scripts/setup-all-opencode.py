@@ -16,7 +16,8 @@ installer never deletes a skill the sibling manifest claims.
 
 Cross-platform: run directly on macOS/Linux, or via the ``.bat`` wrapper on Windows.
 
-Usage:        python control-files/procedures/setup-scripts/setup-all-opencode.py [--yes]
+Usage:        uv run --project control-files python \
+              control-files/procedures/setup-scripts/setup-all-opencode.py
 Env override: AGENT_MEMORY_TARGET_DIR (default: ~/.config/opencode/skills)
 """
 

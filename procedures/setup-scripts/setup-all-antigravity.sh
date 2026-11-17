@@ -24,6 +24,13 @@ echo ""
 if [ ! -d "$CORE_DIR" ]; then echo "Error: core directory not found: $CORE_DIR"; exit 1; fi
 if [ ! -d "$MEMORY_DIR" ]; then echo "Error: memory directory not found: $MEMORY_DIR"; exit 1; fi
 
+# Compile before touching an existing installation. Raw source files may be pointers.
+COMPILED_DIR="$(mktemp -d)" || exit 1
+trap 'rm -rf "$COMPILED_DIR"' EXIT
+uv run --project "$CORE_DIR/.." python "$SCRIPT_DIR/compile-procedures.py" \
+    --backend markdown --strict --out "$COMPILED_DIR" \
+    --emit-inline "$COMPILED_DIR/inline" || exit 1
+
 mkdir -p "$TARGET_DIR"
 
 # Clean up previously installed CORE files using the core manifest (leaves overlay workflows untouched).
@@ -43,7 +50,7 @@ fi
 # Copy core top-level *.md + memory/*.md; record each in the core manifest.
 : > "$MANIFEST_FILE"
 TOTAL_COUNT=0
-for dir in "$CORE_DIR" "$MEMORY_DIR"; do
+for dir in "$COMPILED_DIR"; do
     for file in "$dir"/*.md; do
         [ -f "$file" ] || continue
         cp "$file" "$TARGET_DIR/"

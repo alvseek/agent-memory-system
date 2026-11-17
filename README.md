@@ -26,16 +26,19 @@ This submodule provides the **memory-primitive** infrastructure for the [5-layer
 ```
 control-files/
 ├── procedures/                         # Memory-primitive procedures (also work as slash commands)
-│   ├── awaken-agent.md                # Load agent identity + central memory
+│   ├── awaken-agent.md                # Navigation pointer to the ordered awakening assembly
 │   ├── refresh-memory.md              # Post-compaction recovery
-│   ├── wrap-up.md                     # End-of-session memory capture + store persistence
+│   ├── wrap-up.md                     # Navigation pointer to the ordered wrap-up assembly
 │   ├── push-memory.md                 # Persist the memory store (git push)
 │   ├── pull-memory.md                 # Sync the memory store (git pull + submodule)
 │   ├── list-agents.md                 # Roster of every agent in the store
 │   ├── wait-options.md                # How a decision is presented for an answer
 │   ├── memory/                        # Memory management (10 procedures) + resources/ (entry templates) + storage-backends/
 │   ├── components/                    # Shared fragments, inlined into the procedures that reference them
+│   ├── assemblies/                    # Ordered procedure/component data and legacy dependency declarations
+│   ├── sections/                      # Canonical shared and backend-specific Markdown prose
 │   └── setup-scripts/                 # 2-repo-aware setup orchestrators (core / core+skill)
+├── packages/procedure-composer/         # Independent pure Python 3.11+ composition package
 ├── new-agent-template/                 # Starter template for new agents
 ├── core-memory/                        # Source files for Global CLAUDE.md compilation
 ├── docs/                               # Framework standards + orientation map
@@ -75,13 +78,17 @@ If you cloned the [agent-memory](https://github.com/alvseek/agent-memory) templa
 
 ```bash
 # Memory core — every agent (chat or coding):
-python control-files/procedures/setup-scripts/setup-all-claude-code.py
+uv run --project control-files python control-files/procedures/setup-scripts/setup-all-claude-code.py
 
 # Coding agents ALSO run the overlay's own installer (separate repo):
 bash /path/to/agent-memory-project/setup-scripts/setup-all-claude-code.sh
 ```
 
-Each repo installs itself — a coding agent runs both installers (they use separate manifests and coexist). For detailed setup options and manual alternatives, see the [Setup Guide](SETUP.md).
+Each repo installs itself — a coding agent runs both installers (they use separate
+manifests and coexist). Install `uv` first: the core's project environment supplies
+its compiler and independent composer package. Installers compile the selected
+backend before copying output; raw source pointers are not executable commands.
+For detailed setup options and manual alternatives, see the [Setup Guide](SETUP.md).
 
 > **Large memory files & the Read cap**: awakening reads a large identity file (`agent-core-memory.md`), and Claude Code's Read tool **silently truncates** an oversized read rather than erroring — so a partial identity can load looking complete. Raise the cap (the `CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS` env var, or the `tengu_amber_wren` Statsig flag) and restart. See [Setup Guide → Tool Output Token Limits](SETUP.md#tool-output-token-limits).
 
@@ -147,14 +154,13 @@ bash core-memory/compile-scripts/write-to-claude.sh  # Write to ~/.claude/CLAUDE
 
 ### Core Instruction Component
 
-`procedures/components/core-instruction-control-files.md` holds the awakening protocol every agent follows. It is a **component**, not a file agents load: it is inlined into `/awaken-agent` and `/refresh-memory` at compile time, so the process arrives with the command rather than being a file you must read in order to learn how to read files. It contains:
-
-| Section | Content |
-|---------|---------|
-| Awakening Instructions | Central awakening protocol (Phase 1 identity + Phase 2 central context) |
-| User Profile | User identity (name, philosophy, vision) |
-| Reasoning Memory | UUID-based reasoning patterns with emotional anchoring |
-| Knowledge Memory | 5-layer architecture reference, behavioral rules |
+The [awakening component assembly](procedures/assemblies/core-instruction-control-files.toml)
+selects the canonical sections for identity processing, central recall/reporting and
+the first-run user-profile branch. The old component Markdown path is a navigation
+adapter. Delivery expands the component into `/awaken-agent` and the legacy
+`/refresh-memory` caller, so the process arrives with the command rather than
+requiring another file load. Identity, reasoning, emotional and knowledge records
+remain memory data, not copies inside the procedure.
 
 ### Core Memory Compilation
 
@@ -173,13 +179,24 @@ The compilation system concatenates source files, strips HTML comments, and writ
 
 ### Procedure Structure
 
-Every procedure follows a consistent format and doubles as a slash command:
+Delivered procedures follow a consistent format:
 
 1. **Arguments** — What the command accepts (e.g., `[domain]`, `[context]`)
 2. **Procedure** — Step-by-step instructions for the agent to follow
 3. **Templates** — Output format templates (where applicable)
 
-Procedures are installed as slash commands to `~/.claude/commands/` by the setup script.
+Awakening, wrap-up and their selected memory-update dependencies are authored as
+ordered assemblies and section files. Shared policy has one source; backend
+mechanics follow the step that uses them. The
+[composer package](packages/procedure-composer/README.md) returns the text plus
+stable section IDs, source hashes and reverse dependencies. External dependency
+declarations keep legacy consumers visible without converting their complete flows.
+
+Unconverted commands retain the [storage seam](procedures/memory/storage-backends/README.md).
+The compiler discovers both forms, rejects ambiguous IDs and refuses malformed
+converted sources rather than falling back to a pointer. Templates remain separate
+resources. Setup installs compiled commands to `~/.claude/commands/` or the selected
+host's skill directory; remote consumers use the same canonical package.
 
 For the complete loading flow, memory layer details, and the coding overlay, see [ARCHITECTURE.md](ARCHITECTURE.md).
 
@@ -196,8 +213,10 @@ For the complete loading flow, memory layer details, and the coding overlay, see
 ### Procedures as Slash Commands
 
 **Context**: Memory update procedures needed to be easily executable during sessions without remembering file paths.
-**Decision**: Every procedure file doubles as a slash command — same file, installed to `~/.claude/commands/`.
-**Trade-off**: Procedure files must follow Claude Code's command format, but eliminates duplication between docs and automation.
+**Decision**: Each procedure has one authored source flow; the compiler delivers it
+in the host's command format. Ordered sources and legacy sources share discovery.
+**Trade-off**: Compilation is required before installation, but neither delivered
+commands nor served instructions become a second authored copy.
 
 ### Core Memory Compilation
 
