@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          # Conversion evidence is reconciled against its recorded historical commit.
+          fetch-depth: 0
       # setup-uv publishes no floating major tag past v7, so pin the exact release.
       - uses: astral-sh/setup-uv@v10.0.1
         with:
