@@ -4,3 +4,4 @@ Save what Step 1 just wrote (**§ persist-store**). What that costs depends on t
 
 Capture that outcome for Step 3: whether everything in scope is committed AND pushed (per repo, where the backend has repos), plus any failure reason.
 
+<!-- disposable Helheim runtime verification: second section -->
