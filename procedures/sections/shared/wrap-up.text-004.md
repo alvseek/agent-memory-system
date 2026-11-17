@@ -5,3 +5,4 @@ Execute `/update-memory`. Pass `fresh` through if present. Capture as data for t
 > The open items arrive with the write instead of being read back out of the store afterwards. The agent that composed that block is the one being asked, so there is no second read to go stale.
 
 <!-- disposable Helheim runtime verification: first section -->
+<!-- disposable external concurrent editor -->
