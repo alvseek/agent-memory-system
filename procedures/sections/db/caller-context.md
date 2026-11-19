@@ -16,3 +16,5 @@ An unknown or malformed cursor, or a non-positive `limit`, is an error — never
 
 
 QA live commit-unreadable marker
+
+QA live partial-PR marker
