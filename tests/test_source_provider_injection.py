@@ -16,19 +16,17 @@ def module(name, relative):
     return result
 
 
-def test_component_pointer_works_in_an_unrelated_directory_with_an_injected_provider(tmp_path):
+def test_v2_component_uses_an_injected_provider(tmp_path):
     inline = module("injected_component", "procedures/components/inline.py")
     directory = tmp_path / "not-a-framework-layout"
     directory.mkdir()
-    (directory / "sample.md").write_text("<!-- composed-component: sample -->", encoding="utf-8")
-    source = MemorySource({
-        "procedures/assemblies/sample.toml": (
-            b'format_version=1\nid="sample"\nkind="component"\ntitle="Sample"\n'
-            b'description="Test context injection."\n[[sections]]\nid="sample.body"\n'
-            b'source="procedures/sections/body.md"\n'
-        ),
-        "procedures/sections/body.md": b"Injected content\n",
-    })
+    component = (
+        "+++\nformat_version = 2\nid = \"sample\"\nkind = \"component\"\n"
+        "title = \"Sample\"\ndescription = \"Test context injection.\"\n+++\n"
+        "Injected content\n"
+    )
+    (directory / "sample.md").write_text(component, encoding="utf-8")
+    source = MemorySource({"procedures/components/sample.md": component.encode()})
     text, missing, used = inline.inline_components(
         "[Sample](components/sample.md)\n", directory, source_provider=source
     )
@@ -37,13 +35,28 @@ def test_component_pointer_works_in_an_unrelated_directory_with_an_injected_prov
         inline.inline_components("[Sample](components/sample.md)\n", directory)
 
 
-def test_legacy_seam_factory_remains_live_without_deriving_a_parent_directory():
+def test_superseded_component_pointer_is_refused(tmp_path):
+    inline = module("pointer_component", "procedures/components/inline.py")
+    directory = tmp_path / "components"
+    directory.mkdir()
+    (directory / "sample.md").write_text(
+        "<!-- composed-component: sample -->", encoding="utf-8"
+    )
+    with pytest.raises(ValueError, match="superseded composed-component pointer"):
+        inline.inline_components("[Sample](components/sample.md)\n", directory)
+
+
+def test_legacy_seam_expands_regions_and_refuses_superseded_includes():
     seam = module("injected_seam", "procedures/memory/storage-backends/seam.py")
-    document = "## sample\n\n<!-- composed-source: procedures/sections/body.md -->\n"
-    with pytest.raises(ValueError, match="injected source provider"):
-        seam.extract_section(document, "sample")
-    files = {"procedures/sections/body.md": b"first"}
-    seam.configure_source_provider(lambda: MemorySource(files))
+    document = '## sample\n\n@start region id="body"\nfirst\n@end region\n'
     assert seam.extract_section(document, "sample") == "first"
-    files["procedures/sections/body.md"] = b"changed"
-    assert seam.extract_section(document, "sample") == "changed"
+    document = (
+        '## sample\n\n@start region id="a"\nfirst\n@end region\n'
+        '@start region id="b"\nsecond\n@end region\n'
+    )
+    assert seam.extract_section(document, "sample") == "first\nsecond"
+    with pytest.raises(ValueError, match="superseded composed-source"):
+        seam.extract_section(
+            "## sample\n\n<!-- composed-source: procedures/sections/body.md -->\n",
+            "sample",
+        )

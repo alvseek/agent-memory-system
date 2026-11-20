@@ -73,7 +73,7 @@ For a detailed breakdown of the file structure, compilation system, and memory a
 
 **Step 1** compiles the `core-memory/` source files (user profile, environment, RAS triggers, reasoning patterns) into a single `CLAUDE.md` and writes it to `~/.claude/CLAUDE.md`. This is where the Awaken trigger, post-compact recovery, and reasoning patterns live.
 
-**Step 2** compiles procedure assemblies and legacy sources with the Markdown
+**Step 2** compiles single-file procedure documents and legacy sources with the Markdown
 backend, then installs the resulting commands to `~/.claude/commands/`. It uses a
 manifest to clean up stale commands without touching another overlay's files.
 See [Architecture Documentation](ARCHITECTURE.md#common-slash-commands) for the
@@ -95,7 +95,7 @@ command list.
 
 **Step 2** compiles the discovered command set with the Markdown backend and wraps
 each delivered procedure in a Codex-native `SKILL.md` under `~/.agents/skills/`.
-Original-source pointers and assembly TOML are never installed as instructions.
+Document metadata and reference directives are never installed as instructions.
 
 **Step 3** updates `~/.codex/config.toml` to:
 - set `tool_output_token_limit = 64000` for large memory-file workflows

@@ -1,8 +1,14 @@
-"""Seam substitution — the reference implementation.
+"""Seam substitution — the legacy reference implementation.
 
-Each memory procedure carries one ``## Storage Mechanics`` section; serving/preview
-swaps that section's body for a backend's ``## [procedure]`` section — markdown
-mechanics for the native fleet, DB tools for Munnin. Pure text ops.
+Converted procedures are complete single-file documents composed by
+``procedure_composer``; this module remains the adapter for **unconverted** memory
+procedures. Each legacy memory procedure carries one ``## Storage Mechanics`` section;
+serving/preview swaps that section's body for a backend's ``## [procedure]`` section —
+markdown mechanics for the native fleet, DB tools for Munnin. Pure text ops.
+
+A heading-based backend section may now contain named ``region`` blocks. ``extract_section``
+expands them so the legacy consumer receives the same prose and never the directive lines;
+the superseded ``<!-- composed-source: -->`` include is refused.
 
 A procedure may also inline **components** (shared fragments), and a component can
 reference storage ops of its own. Those are defined once under the component's own
@@ -12,7 +18,7 @@ the single body that gets substituted. A backend may also open **every** compose
 procedure with one ``## all-procedures`` section — prose the whole backend owes each
 procedure, such as what a placeholder its ops use means — again written once.
 
-This is the framework's single home for that logic, defined once beside the seam
+This is the framework's single home for the legacy seam logic, defined once beside the
 contract (``README.md``). It is Munnin-agnostic. Every consumer imports it:
 
 - the standalone ``procedures/setup-scripts/compile-procedures.py`` preview tool (this repo);
@@ -39,6 +45,7 @@ def configure_source_provider(factory) -> None:
     global _source_provider_factory
     _source_provider_factory = factory
 
+
 # The `§` op sigil is KEPT in the composed output — it signals to the reader that a step
 # was provided by the storage backend (a seam swap point), useful provenance.
 
@@ -52,7 +59,9 @@ _SEAM_ANCHOR = re.compile(r"\[([^\]]*)\]\(#storage-mechanics\)")
 def extract_section(doc: str, title: str, source_provider=None) -> str:
     """Return the body under ``## {title}`` up to the next ``## `` header or EOF.
 
-    Matches the level-2 header exactly. Raises ``KeyError`` if absent.
+    A migrated heading holds named ``region`` blocks; they are expanded in place so a
+    legacy consumer receives the same prose and never the directive lines. The
+    superseded ``<!-- composed-source: -->`` include is refused rather than read.
     """
     lines = doc.splitlines(keepends=True)
     header = f"## {title}"
@@ -70,20 +79,12 @@ def extract_section(doc: str, title: str, source_provider=None) -> str:
             break
     body = "".join(lines[start:end]).strip("\n")
     if "<!-- composed-source:" in body:
-        if source_provider is None:
-            if _source_provider_factory is None:
-                raise ValueError("canonical source includes need an injected source provider")
-            source_provider = _source_provider_factory()
+        raise ValueError("superseded composed-source include; migrate it to a region")
+    if "@start " in body or "@end " in body:
+        from procedure_composer import expand_regions
 
-        def include(match):
-            path = match.group(1)
-            if not path.startswith("procedures/sections/") or not path.endswith(".md"):
-                raise ValueError(f"invalid composed-source include: {path}")
-            # SourceProvider's read contract validates confined relative paths.
-            return source_provider.read(path).decode("utf-8").rstrip("\n")
-
-        body = re.sub(r"<!-- composed-source: ([^\n]+?) -->", include, body)
-    return body
+        body = expand_regions(body, f"<section {title}>")
+    return body.rstrip("\n")
 
 
 def defines_section(doc: str, title: str) -> bool:
@@ -149,16 +150,16 @@ def substitute_storage_mechanics(core: str, backend_section: str) -> str:
     # A converted component already brought its mechanics in execution order.
     # Legacy callers may still have a seam; do not append those definitions twice.
     defined = set(re.findall(r"(?m)^#{1,6}\s*§\s*([a-z][a-z0-9-]*)", core))
-    definitions = list(re.finditer(
-        r"(?m)^#{1,6}\s*§\s*([a-z][a-z0-9-]*)[^\n]*\n", backend_section
-    ))
+    definitions = list(re.finditer(r"(?m)^#{1,6}\s*§\s*([a-z][a-z0-9-]*)[^\n]*\n", backend_section))
     for index in range(len(definitions) - 1, -1, -1):
         match = definitions[index]
         if match.group(1) in defined:
-            end = definitions[index + 1].start() if index + 1 < len(definitions) else len(
-                backend_section
+            end = (
+                definitions[index + 1].start()
+                if index + 1 < len(definitions)
+                else len(backend_section)
             )
-            backend_section = backend_section[:match.start()] + backend_section[end:]
+            backend_section = backend_section[: match.start()] + backend_section[end:]
     lines = core.splitlines(keepends=True)
     start = None
     for i, line in enumerate(lines):

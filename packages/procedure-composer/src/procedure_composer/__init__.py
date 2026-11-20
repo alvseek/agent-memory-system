@@ -1,20 +1,40 @@
 """Pure, versioned procedure composition; source providers supply data, never code."""
 
 from .composer import (
+    BACKENDS,
+    FORMAT_VERSION,
     Catalog,
     Composition,
     CompositionError,
+    Document,
+    DocumentEdit,
     FileSource,
     MemorySource,
-    Section,
+    Reference,
     SourceProvider,
+    Span,
     compose,
     dependents,
     validate_catalog,
 )
+from .document import expand_regions
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 __all__ = [
-    "Catalog", "Composition", "CompositionError", "FileSource", "MemorySource",
-    "Section", "SourceProvider", "compose", "dependents", "validate_catalog",
+    "BACKENDS",
+    "FORMAT_VERSION",
+    "Catalog",
+    "Composition",
+    "CompositionError",
+    "Document",
+    "DocumentEdit",
+    "FileSource",
+    "MemorySource",
+    "Reference",
+    "Span",
+    "SourceProvider",
+    "compose",
+    "dependents",
+    "expand_regions",
+    "validate_catalog",
 ]

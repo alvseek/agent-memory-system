@@ -1,6 +1,6 @@
 # Storage Backend — DB (Valaskjalf via Munnin)
 
-Concrete storage mechanics for the **DB-backed** world. Each `## [procedure]` section maps the procedure's `§ op`s onto Munnin's data tools — `awaken` · `get` · `query` · `search` · `insert` · `edit` · `edit_metadata` · `prepend` · `archive` · `soft_delete` — with `list_agents`, `create_agent`, `permanent_layer`, `help` and the content tools (`list_procedures` · `read_procedure` · `list_resources` · `read_resource`) where a procedure needs one; the `## all-procedures` section opens every composed procedure with what those ops assume of the caller. See the [seam contract](README.md).
+Concrete storage mechanics for the **DB-backed** world. Each `## [procedure]` section collects the named regions that map the procedure's `§ op`s onto Munnin's data tools — `awaken` · `get` · `query` · `search` · `insert` · `edit` · `edit_metadata` · `prepend` · `archive` · `soft_delete` — with `list_agents`, `create_agent`, `permanent_layer`, `help` and the content tools (`list_procedures` · `read_procedure` · `list_resources` · `read_resource`) where a procedure needs one; the `## all-procedures` section opens every composed procedure with what those ops assume of the caller. See the [seam contract](README.md).
 
 > **Model**: an **agent** is an entity with a row of its own, and memory belongs to it. One uniform record per memory item (`user_id`/`agent_id`/`record_type`/`project`/`title`/`tags`/dates + `full_content`), where `agent_id` is always a real kebab domain the store checks against the agent table — there is no sentinel value. **Fleet-shared memory** (reasoning + knowledge that belongs to no agent) lives apart and is written with `scope="shared"`, which takes no `agent_id` at all. `user_id` is stamped server-side. The index is a **derived `SELECT`** (`query`), not a stored artifact — so there are no index-maintenance steps to perform. Episodes are stored **one record per episode** (a rolling body of newest-first `---`-separated H3 sub-episodes).
 
@@ -8,37 +8,170 @@ Concrete storage mechanics for the **DB-backed** world. Each `## [procedure]` se
 
 ## all-procedures
 
-<!-- composed-source: procedures/sections/db/caller-context.md -->
+@start region id="caller-context"
+> `<domain>` in the ops below is the agent you are acting as — the domain you passed to `awaken`, or the one `create-agent` made. With no awakening, `list_agents()` shows what exists; never guess one.
+
+**A body read is a page, and a listing or a search is not a body.** Three shapes, and mixing them up is the one way to read partial context as whole:
+
+- **`query`** answers *which records match*: metadata only (uuid, title, `content_summary`, tags, project, dates) plus **`blocks_total`** — how many timestamp groups that record's body holds. It never returns `content`.
+- **`search`** answers *what matched*: the same metadata plus a plain-text **`snippet`** of the matching window, and no body under either name. Reaching a body from a hit is a deliberate `get(uuid)`.
+- **`get(uuid)`** answers *what the record says*: as much of the body as fits under the content ceiling in one response — the whole of a small record, one **page** of a large one — or exactly one page when you pass `cursor`/`limit`. Every `get` response carries `blocks_returned` / `blocks_total` / `next_cursor`, so a non-null cursor is how you know a large record did not arrive whole.
+
+A **timestamp group** is every sub-episode block in the record that shares one `###` H3 timestamp; a group is indivisible and counts as one, so `blocks_total: 5` means five distinct moments. Two rules follow, and only one of them is a continuation:
+
+- **`next_cursor` non-null means more remains** — pass it straight back as `get(uuid, cursor=…)`, or with `limit=` to keep the page small. It names the *first group not returned*, so a block prepended in between cannot shift your place, and it is the only signal that answers "is there more?".
+- **`blocks_returned` < `blocks_total` does *not* mean more remains.** A final page returns fewer than the whole record and is complete. Never continue on the count alone.
+
+An unknown or malformed cursor, or a non-positive `limit`, is an error — never a quiet fall back to page one. Cursors are per record: pass the page's own `uuid` with its cursor. A record that is not an episode (identity, reasoning, emotional, knowledge, the profile, the RAS triggers) is one atomic block — `blocks_total: 1` — because it is not a rolling document. Nothing ever splits a sub-episode block, and no repair step exists: a retimestamped or deleted target makes the old cursor fail loudly rather than resume somewhere else.
+
+@end region
+
 
 ## update-episodic
 
-<!-- composed-source: procedures/sections/db/update-episodic.stamp-date.md -->
-<!-- composed-source: procedures/sections/db/update-episodic.list-candidate-episodes.md -->
-<!-- composed-source: procedures/sections/db/update-episodic.reopen-archived-theme.md -->
-<!-- composed-source: procedures/sections/db/update-episodic.template.md -->
-<!-- composed-source: procedures/sections/db/update-episodic.append-sub-episode.md -->
-<!-- composed-source: procedures/sections/db/update-episodic.housekeeping.md -->
-<!-- composed-source: procedures/sections/db/update-episodic.record-theme-state.md -->
-<!-- composed-source: procedures/sections/db/update-episodic.create-episode.md -->
+@start region id="update-episodic.stamp-date"
+### § stamp-date
+
+**No action.** The server stamps `created_date` / `updated_date` on write; use the block's H3 timestamp as authored.
+
+@end region
+
+@start region id="update-episodic.list-candidate-episodes"
+### § list-candidate-episodes
+
+`query(agent_id="<domain>", record_type="episode", project="<project>")` → returns the derived index projection (uuid, title, content_summary, tags, dates, **`blocks_total`**) for the agent's active episodes. Theme-match against `title`/`tags`, and read `content_summary` when the theme alone is ambiguous. There is no body here — reading one is a deliberate `get(uuid)`, a page at a time (see `## all-procedures`). `blocks_total` tells you how much body that read will hold before you pay for it. (Archived episodes are excluded by default — pass `include_archived=True` only to reach them.)
+
+@end region
+
+@start region id="update-episodic.reopen-archived-theme"
+### § reopen-archived-theme
+
+Two calls, in this order: `edit_metadata(uuid, tags=[<existing without finished>])`, then `unarchive(uuid)`. Clearing first matters — leave the marker in place and the next scan archives the theme straight back. `unarchive` returns the record to the index and to newest-episode selection, after which the append lands normally.
+
+@end region
+
+@start region id="update-episodic.template"
+### § template
+
+**Served as an MCP Resource** (`episodic-entry-template`) — read it from resources. (`§ create-episode` inserts the record directly, so there is no separate scaffold template.)
+
+@end region
+
+@start region id="update-episodic.append-sub-episode"
+### § append-sub-episode
+
+An episode is a single record whose body is the rolling, newest-first sub-episode list. Newest-first then needs no read and no string match — two writes:
+1. `prepend(uuid, text="<new H3 block>\n\n---\n\n")` — the new block lands above the previous newest, and the separator you include keeps the two apart. Nothing has to match, so there is no `old_string` to get uniquely right.
+2. `edit_metadata(uuid, content_summary="<the record's summary>")` — the summary is metadata and has one writer, so it moves in its own call.
+
+`content_summary` is the whole new summary, not an appended fragment: it describes the record's newest content, so skipping step 2 leaves the listing describing a block the body no longer starts with. Two writes can also disagree if the second fails, which is why both steps belong to this op rather than to the caller's judgement — that is the price of one owner per field.
+
+The index reflects the change automatically (derived `SELECT`).
+
+@end region
+
+@start region id="update-episodic.housekeeping"
+### § housekeeping
+
+**No-op.** The stored body has no length limit — shortening is a later curation *policy*, not a write mechanic — and records are keyed by `uuid`, so there is no split or rename to perform. Delivery is what is bounded now: a body is read as pages of timestamp groups, so a large record costs a cursor and not a truncated answer. Do not add a "split this record" step to compensate for a page.
+
+@end region
+
+@start region id="update-episodic.record-theme-state"
+### § record-theme-state
+
+`edit_metadata(uuid, tags=[…])` — the tag list is written whole, so pass the record's existing tags with `finished` added when the block closes the theme, and the existing tags with it removed when it does not. `tags` is metadata with one writer, so this never rides on the body append. The write bumps `modified_date`, which is why the archive scan weighs the tag before the age.
+
+A newly created episode carries no marker, so a create needs no call; an append that changes the state does.
+
+@end region
+
+@start region id="update-episodic.create-episode"
+### § create-episode
+
+`insert(agent_id="<domain>", record_type="episode", project="<project>", title="<project-theme>", tags=[…], content="<first sub-episode block>", content_summary="<the block's Summary row>", template_version="<the template's current stamp>")`. Read `episodic-entry-template` from resources first and declare its `template_version` — a missing or stale version is refused. `content_summary` is required for an episode: pass the block's `**Summary**` row verbatim, because that one line is what the index projection lists the record by. The record is assembled and `uuid`-stamped server-side and appears in the index projection immediately.
+
+@end region
+
 
 ## add-reasoning
 
-<!-- composed-source: procedures/sections/db/add-reasoning.read-reasoning-store.md -->
-<!-- composed-source: procedures/sections/db/add-reasoning.template.md -->
-<!-- composed-source: procedures/sections/db/add-reasoning.generate-uuid.md -->
-<!-- composed-source: procedures/sections/db/add-reasoning.persist-reasoning.md -->
+@start region id="add-reasoning.read-reasoning-store"
+### § read-reasoning-store
+
+`query(agent_id="<domain>", record_type="reasoning")` to see the existing patterns (or reuse the set already returned by `awaken`).
+
+@end region
+
+@start region id="add-reasoning.template"
+### § template
+
+**Served as an MCP Resource** (`reasoning-pattern-template`) — read it from resources.
+
+@end region
+
+@start region id="add-reasoning.generate-uuid"
+### § generate-uuid
+
+The pattern's cited UUID is content — generate any UUID for it; the `insert` response also returns the record's own `uuid` if you prefer to cite that.
+
+@end region
+
+@start region id="add-reasoning.persist-reasoning"
+### § persist-reasoning
+
+`insert(agent_id="<domain>", record_type="reasoning", title="<short memorable title>", content="<full pattern block>", template_version="<the template's current stamp>")`. Read `reasoning-pattern-template` from resources first and declare its `template_version` — a missing or stale version is refused.
+
+@end region
+
 
 ## update-emotional
 
-<!-- composed-source: procedures/sections/db/update-emotional.stamp-date.md -->
-<!-- composed-source: procedures/sections/db/update-emotional.template.md -->
-<!-- composed-source: procedures/sections/db/update-emotional.persist-emotional.md -->
+@start region id="update-emotional.stamp-date"
+### § stamp-date
+
+**No action.** The server stamps `created_date` on write; use the block's own timestamp as authored.
+
+@end region
+
+@start region id="update-emotional.template"
+### § template
+
+**Served as an MCP Resource** (`emotional-moment-template`) — read it from resources.
+
+@end region
+
+@start region id="update-emotional.persist-emotional"
+### § persist-emotional
+
+`insert(agent_id="<domain>", record_type="emotional", title="<moment title>", content="<moment block>", template_version="<the template's current stamp>")`. Read `emotional-moment-template` from resources first and declare its `template_version` — a missing or stale version is refused. **Newest-first is a read concern** — the index projection orders by date, so ordering is automatic.
+
+@end region
+
 
 ## update-knowledge
 
-<!-- composed-source: procedures/sections/db/update-knowledge.template.md -->
-<!-- composed-source: procedures/sections/db/update-knowledge.persist-knowledge.md -->
-<!-- composed-source: procedures/sections/db/update-knowledge.update-knowledge-index.md -->
+@start region id="update-knowledge.template"
+### § template
+
+**Served as an MCP Resource** (`knowledge-file-template`) — read it from resources.
+
+@end region
+
+@start region id="update-knowledge.persist-knowledge"
+### § persist-knowledge
+
+`insert(agent_id="<domain>", record_type="knowledge", title="<knowledge area>", tags=[…], content="<knowledge doc>", content_summary="<the entry's Summary row>", template_version="<the template's current stamp>")`. Read `knowledge-file-template` from resources first and declare its `template_version` — a missing or stale version is refused. `content_summary` is required for a knowledge record: pass the entry's `**Summary**` row verbatim, because that one line is what the knowledge index lists the record by. General/central knowledge only — Munnin is project-blind (no project-scoped knowledge).
+
+@end region
+
+@start region id="update-knowledge.update-knowledge-index"
+### § update-knowledge-index
+
+**No-op.** The knowledge directory is a derived `query(record_type="knowledge")` — it reflects every insert automatically.
+
+@end region
+
 
 ## load-episodic
 
@@ -98,23 +231,110 @@ Per moment: **keep** — no-op. **archive** — `archive(uuid)`: the record drop
 
 ## update-memory
 
-<!-- composed-source: procedures/sections/db/update-memory.detect-mode-scan.md -->
-<!-- composed-source: procedures/sections/db/update-memory.scan-promotion-markers.md -->
+@start region id="update-memory.detect-mode-scan"
+### § detect-mode-scan
+
+`query(agent_id="<domain>", record_type="episode")` → theme-match against title/summary/tags.
+
+@end region
+
+@start region id="update-memory.scan-promotion-markers"
+### § scan-promotion-markers
+
+The records you wrote this session ARE the promotions — list the reasoning / knowledge / emotional records inserted since session start (track the `uuid`s your `insert` calls returned, or `query` by recency). Project context is the overlay's (project-keyed records), not Munnin's.
+
+@end region
+
 
 ## wrap-up
 
-<!-- composed-source: procedures/sections/db/wrap-up.persist-store.md -->
-<!-- composed-source: procedures/sections/db/wrap-up.persistence-report.md -->
-<!-- composed-source: procedures/sections/db/wrap-up.failure-report.md -->
+@start region id="wrap-up.persist-store"
+### § persist-store
+
+No action. A write through the memory tools lands in the database as it happens, so there is nothing to push and no separate save step that could fail. Report the persistence outcome as already durable.
+
+@end region
+
+@start region id="wrap-up.persistence-report"
+Memory persisted:
+- ✅ nothing to push — the write was already saved
+
+@end region
+
+@start region id="wrap-up.failure-report" ending="none"
+
+@end region
+
 
 ## core-instruction-control-files
 
-<!-- composed-source: procedures/sections/db/core-instruction-control-files.load-agent-memory.md -->
-<!-- composed-source: procedures/sections/db/core-instruction-control-files.load-user-profile.md -->
-<!-- composed-source: procedures/sections/db/core-instruction-control-files.persist-user-profile.md -->
-<!-- composed-source: procedures/sections/db/core-instruction-control-files.recover-missing-foundations.md -->
-<!-- composed-source: procedures/sections/db/core-instruction-control-files.load-latest-episode.md -->
-<!-- composed-source: procedures/sections/db/core-instruction-control-files.oversized-memory-warning.md -->
+@start region id="core-instruction-control-files.load-agent-memory"
+### § load-agent-memory
+
+**One call** — `awaken(domain)` (MCP tool) or `GET /api/awaken?agent_id=<domain>` (HTTP). It assembles and returns the agent's memory payload from Valaskjalf server-side, **project-blind**: no project is accepted or resolved, so `latest_episode` is the newest episode overall and the caller selects its own out of the index:
+
+- `shared.reasoning` — whole fleet-shared reasoning records, read from the shared table rather than from any agent.
+- `shared.knowledge_index` — metadata only: uuid, title, content_summary, tags, project and dates. Inspect this alongside the agent's knowledge_index and fetch relevant bodies with get(uuid). Never load every body during awakening. A null legacy summary or an empty index is valid; do not invent a body-derived fallback.
+- `shared.ras` — the **universal RAS triggers** (fleet-wide): memory recovery after compaction, and copy-paste-don't-regenerate. Automatic trigger-to-action protocols, whole, alongside reasoning.
+- `shared.user_profile` — who [USER-NAME] is (name, philosophy, agent vision), as a single whole record or `null`. Fleet memory too: it does not vary by agent. `null` means nobody has been asked yet, which is the first-run branch in Phase 1 — a record that exists with an empty value inside it is a deliberate blank and is **not** that case.
+- `identity` + `reasoning` + `emotional` — this agent's own records, whole (layer ii). `identity` includes the agent's core knowledge and RAS triggers.
+- `knowledge_index` + `episodic_index` — metadata-only indexes; bodies via `get(uuid)` on demand (layer iii). Each index entry carries its `project`; the index itself never counts groups, so a row does not say how large its body is. When that size matters before paying for the read, `query(record_type="episode")` returns a projection that does carry `blocks_total`. `search(text)` finds a record but returns only a `snippet`, never a body.
+- `latest_episode` — **a page** of the newest episode **overall**, since no project is accepted or resolved: up to three timestamp groups, with `blocks_returned` / `blocks_total` / `next_cursor`. The returned record's own `project` tells you which project it belongs to, and its `uuid` is what continues the read. When the newest overall is not that project's, say so in the open-items report. A non-null `next_cursor` means the body continues; a count smaller than `blocks_total` with a null cursor means you already have all of it.
+
+The 4-layer assembly is a single derived call.
+
+> **Not covered by the payload — and no longer needs to be**: the **awakening instructions** (the Phase 1/Phase 2 protocol) are not a record and are not served, because they are a **component** inlined into this procedure at compile time — the process rides in the prompt, the data comes from `awaken`. That is the whole of what the payload leaves out; the user profile used to be listed here too, and is now a record like any other (`shared.user_profile`, above). See `docs/flows/awaken-db.md` in the memory-server repo.
+
+@end region
+
+@start region id="core-instruction-control-files.load-user-profile"
+### § load-user-profile
+
+Already in the `awaken` payload: `shared.user_profile` is the whole record, or `null`. `null` means no profile has ever been written for this user, which is Phase 1's first-run branch. A record that exists with an empty value inside it is **not** that case — that is a deliberate blank, and re-asking it turns a one-time courtesy into a nag.
+
+@end region
+
+@start region id="core-instruction-control-files.persist-user-profile"
+### § persist-user-profile
+
+`insert(scope="shared", record_type="user_profile", title="User Profile", content="<the profile markdown>")`. No `agent_id`: the profile has no owner, and `scope="shared"` forbids one. Write **one** record carrying all three values in the same bullet form the markdown backend uses — never one record per field, because presence is answered by a row count and three rows would admit partial states with no rule for resolving them.
+
+@end region
+
+@start region id="core-instruction-control-files.recover-missing-foundations"
+### § recover-missing-foundations
+
+The whole shared reasoning foundation and the metadata-only shared knowledge directory have different load contracts. An empty `shared.knowledge_index` is a valid empty directory, not a missing foundation. A missing/malformed field is a payload failure. Check reasoning separately before diagnosing:
+
+- **Other layers also short or cut mid-record** → the payload was **truncated in transit** (the MCP tool-result cap), not empty at rest. The store is fine; the transport is not.
+- **Only `shared.reasoning` unexpectedly empty** → the store has no active shared reasoning for this user (possibly an unseeded or wrong tenant). This is not an agent-scoping mistake. Do not treat an empty knowledge index as evidence of the same problem.
+
+For **transport truncation**, recover the complete response per **§ oversized-memory-warning** before diagnosing the store. Only genuinely absent records need **server-side** recovery — seeding the records (importer / `insert`); there is nothing to create on this end. If the foundations remain unavailable, report the failure and STOP: do not fabricate them and do not continue on partial context (`c4e7a19f`).
+
+@end region
+
+@start region id="core-instruction-control-files.load-latest-episode"
+### § load-latest-episode
+
+Already present as `latest_episode` in the `awaken` payload — a **page** of the newest episode **overall**, since no project is accepted or resolved. Read the page as the bounded starting context it is: `blocks_returned` of `blocks_total` groups, plus the record's `uuid` and a `next_cursor`. A non-null cursor means the record continues; continue with `get(latest_episode.uuid, cursor=…)` only when this session actually needs the older sub-episodes, and remember that a final page returns fewer than `blocks_total` with a null cursor. A caller whose own project is not the newest one selects its entry out of `episodic_index` and loads **that** uuid the same way; the payload's own is the default, and the fallback when the index holds nothing for the project.
+
+Do not report a page as "the episode". The open-items report should name the newest sub-episodes you actually read, and say a cursor remains when one does.
+
+@end region
+
+@start region id="core-instruction-control-files.oversized-memory-warning"
+### § oversized-memory-warning
+
+First call `awaken(domain)` once and return the full response for reading, without selecting fields, summarizing, slicing, or preemptively redirecting it to a file. Do not assume it will truncate before trying. If the client/platform explicitly reports truncation or says the result was saved to a file, read that saved result to recover all omitted context. Try one whole file read first; only after an observed read limit, recover the remainder using a method that preserves the full content, including long lines. Check the recovery output for further clipping and do not continue until all required context from the response is loaded. If recovery remains impossible, name the source and failure and stop the work that depends on it. Concrete evidence of omitted content, such as an omission notice or an incomplete record, also requires recovery; anticipated size alone does not.
+
+Episodes no longer arrive as one unbounded body, so a truncated `latest_episode` is not the expected state and must not be explained away as "normal for a big episode": a page reports its own coverage, and a `next_cursor` is a fact rather than a truncation. The ceiling bounds one record's **content**, not the whole payload — the fixed layers, the indexes and the JSON envelope are whole and sit outside it — so a response can still exceed a client cap on those, and that is a separate finding to report, not something a cursor fixes.
+
+### Resolving references to other procedures and templates
+
+Everything served here is composed for Munnin, and the slash commands installed beside you are the **markdown** compilation of the same procedures — they would write files where this store holds records. So when a served procedure tells you to **execute, invoke or run** `/<name>`, do not invoke the slash command: call `read_procedure("<name>")` and follow what it returns, passing what the command would have taken (a domain, a mode) as `argument`. When one points at a file by relative path — a template (`resources/<stem>.md`) or a script (`scripts/<stem>.sh`) — call `read_resource("<stem>")`. This applies to instructions to *act*; prose that merely names a procedure needs no call. Unsure what is served — `list_procedures()` and `list_resources()`. If a named procedure is not served, say so rather than substituting another.
+
+@end region
+
 
 ## list-agents
 

@@ -26,17 +26,16 @@ This submodule provides the **memory-primitive** infrastructure for the [5-layer
 ```
 control-files/
 ├── procedures/                         # Memory-primitive procedures (also work as slash commands)
-│   ├── awaken-agent.md                # Navigation pointer to the ordered awakening assembly
-│   ├── refresh-memory.md              # Post-compaction recovery
-│   ├── wrap-up.md                     # Navigation pointer to the ordered wrap-up assembly
+│   ├── awaken-agent.md                # Complete awakening procedure document
+│   ├── refresh-memory.md              # Post-compaction recovery (legacy seam renderer)
+│   ├── wrap-up.md                     # Complete wrap-up procedure document
 │   ├── push-memory.md                 # Persist the memory store (git push)
 │   ├── pull-memory.md                 # Sync the memory store (git pull + submodule)
 │   ├── list-agents.md                 # Roster of every agent in the store
 │   ├── wait-options.md                # How a decision is presented for an answer
-│   ├── memory/                        # Memory management (10 procedures) + resources/ (entry templates) + storage-backends/
-│   ├── components/                    # Shared fragments, inlined into the procedures that reference them
-│   ├── assemblies/                    # Ordered procedure/component data and legacy dependency declarations
-│   ├── sections/                      # Canonical shared and backend-specific Markdown prose
+│   ├── memory/                        # Memory management procedures + resources/ + storage-backends/
+│   ├── components/                    # Complete component documents, expanded by reference
+│   ├── external/                      # Legacy-consumer dependency declarations
 │   └── setup-scripts/                 # 2-repo-aware setup orchestrators (core / core+skill)
 ├── packages/procedure-composer/         # Independent pure Python 3.11+ composition package
 ├── new-agent-template/                 # Starter template for new agents
@@ -154,13 +153,15 @@ bash core-memory/compile-scripts/write-to-claude.sh  # Write to ~/.claude/CLAUDE
 
 ### Core Instruction Component
 
-The [awakening component assembly](procedures/assemblies/core-instruction-control-files.toml)
-selects the canonical sections for identity processing, central recall/reporting and
-the first-run user-profile branch. The old component Markdown path is a navigation
-adapter. Delivery expands the component into `/awaken-agent` and the legacy
-`/refresh-memory` caller, so the process arrives with the command rather than
-requiring another file load. Identity, reasoning, emotional and knowledge records
-remain memory data, not copies inside the procedure.
+The [awakening component document](procedures/components/core-instruction-control-files.md)
+holds the canonical prose for identity processing, central recall/reporting and the
+first-run user-profile branch, with named backend references beside the steps that use
+them. Converted procedures expand it through an `@start component` reference; the legacy
+`/refresh-memory` caller composes the same document through the component adapter.
+Delivery puts the component into `/awaken-agent` and the legacy `/refresh-memory` caller,
+so the process arrives with the command rather than requiring another file load. Identity,
+reasoning, emotional and knowledge records remain memory data, not copies inside the
+procedure.
 
 ### Core Memory Compilation
 
@@ -185,12 +186,13 @@ Delivered procedures follow a consistent format:
 2. **Procedure** — Step-by-step instructions for the agent to follow
 3. **Templates** — Output format templates (where applicable)
 
-Awakening, wrap-up and their selected memory-update dependencies are authored as
-ordered assemblies and section files. Shared policy has one source; backend
-mechanics follow the step that uses them. The
-[composer package](packages/procedure-composer/README.md) returns the text plus
-stable section IDs, source hashes and reverse dependencies. External dependency
-declarations keep legacy consumers visible without converting their complete flows.
+Awakening, wrap-up and their selected memory-update dependencies are authored as complete
+Markdown documents with a `+++` metadata header. Shared policy has one source; backend
+mechanics are named regions in `storage-backends/db.md` or `markdown.md`, referenced at
+the step that uses them. The [composer package](packages/procedure-composer/README.md)
+returns the text plus ordered spans, full-document hashes and document-level dependents.
+External dependency declarations keep legacy consumers visible without converting their
+complete flows.
 
 Unconverted commands retain the [storage seam](procedures/memory/storage-backends/README.md).
 The compiler discovers both forms, rejects ambiguous IDs and refuses malformed

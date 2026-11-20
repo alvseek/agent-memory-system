@@ -423,17 +423,16 @@ def test_missing_component_is_reported_and_fails_strict(tmp_path: Path) -> None:
 
 def test_converted_call_dependencies_must_resolve_in_the_delivery_catalog(tmp_path):
     root = tmp_path / "source"
-    assemblies = root / "procedures/assemblies"
-    sections = root / "procedures/sections"
-    backends = root / "procedures/memory/storage-backends"
-    for directory in (assemblies, sections, backends):
+    procedures = root / "procedures"
+    backends = procedures / "memory/storage-backends"
+    for directory in (procedures, backends):
         directory.mkdir(parents=True, exist_ok=True)
-    (assemblies / "sample.toml").write_text(
-        'format_version=1\nid="sample"\ntitle="Sample"\ndescription="Call a dependency."\n'
-        'calls=["missing-command"]\n[[sections]]\nid="sample.body"\n'
-        'source="procedures/sections/body.md"\n', encoding="utf-8"
+    (procedures / "sample.md").write_text(
+        "+++\nformat_version = 2\nid = \"sample\"\nkind = \"procedure\"\n"
+        "title = \"Sample\"\ndescription = \"Call a dependency.\"\n"
+        "calls = [\"missing-command\"]\n+++\nDo it.\n",
+        encoding="utf-8",
     )
-    (sections / "body.md").write_text("Do it.\n", encoding="utf-8")
     for backend in ("markdown", "db"):
         (backends / f"{backend}.md").write_text("", encoding="utf-8")
     with pytest.raises(ValueError, match="missing called procedures"):

@@ -1,24 +1,41 @@
-"""An assembly is ordered data. All editable text comes from declared section files."""
+"""Compose single-file procedure documents for one storage backend.
+
+An authored document owns its generic prose. Paired references insert a canonical
+component or one named region of the selected backend document at the point of use. The
+composer returns both the rendered text and the full owning documents that produced it,
+so an editor can always open and save the complete source rather than a rendered span.
+
+The format is data only. Nothing here evaluates an expression, imports authored code, or
+falls back to the superseded fragmented assembly format.
+"""
 
 from __future__ import annotations
 
-import hashlib
-import re
 import stat
-import tomllib
 from dataclasses import dataclass
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 from typing import Mapping, Protocol
 
-FORMAT_VERSION = 1
-BACKENDS = ("markdown", "db")
-_ID = re.compile(r"[a-z][a-z0-9]*(?:[.-][a-z0-9]+)*\Z")
+from .document import (
+    BACKENDS,
+    FORMAT_VERSION,
+    BackendDocument,
+    CompositionError,
+    Document,
+    Prose,
+    Reference,
+    _path,
+    backend_path,
+    parse_backend_document,
+    parse_document,
+)
+
 _ASSEMBLIES = "procedures/assemblies"
-_SECTIONS = "procedures/sections/"
-
-
-class CompositionError(ValueError):
-    """Invalid or unsupported authored data; callers must not silently fall back."""
+_PROCEDURE_DIRS = ("procedures", "procedures/memory")
+_COMPONENT_DIR = "procedures/components"
+_EXTERNAL_DIR = "procedures/external"
+_BACKEND_DIR = "procedures/memory/storage-backends"
+_BACKEND_DOCUMENTS = tuple(f"{_BACKEND_DIR}/{backend}.md" for backend in BACKENDS)
 
 
 def _linked(path: Path) -> bool:
@@ -27,15 +44,6 @@ def _linked(path: Path) -> bool:
         getattr(path.lstat(), "st_file_attributes", 0)
         & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)
     )
-
-
-def _path(value: str) -> str:
-    if not isinstance(value, str) or not value or "\\" in value or ":" in value:
-        raise CompositionError(f"unsafe source path: {value!r}")
-    path = PurePosixPath(value)
-    if path.is_absolute() or any(p in ("", ".", "..") for p in value.split("/")):
-        raise CompositionError(f"unsafe source path: {value!r}")
-    return value
 
 
 class SourceProvider(Protocol):
@@ -50,7 +58,7 @@ class MemorySource:
     """Immutable bytes, suitable for a revision-pinned remote tree or draft overlay."""
 
     def __init__(self, files: Mapping[str, bytes]) -> None:
-        self._files = {_path(p): bytes(data) for p, data in files.items()}
+        self._files = {_path(path): bytes(data) for path, data in files.items()}
 
     def read(self, path: str) -> bytes:
         try:
@@ -60,15 +68,18 @@ class MemorySource:
 
     def paths(self, directory: str) -> tuple[str, ...]:
         prefix = _path(directory) + "/"
-        return tuple(sorted(p for p in self._files if p.startswith(prefix)))
+        return tuple(sorted(path for path in self._files if path.startswith(prefix)))
 
 
 class FileSource(MemorySource):
-    """Snapshot regular files beneath a caller-supplied root; never traverse links.
+    """Snapshot regular files beneath the ``procedures/`` tree; never traverse links.
 
-    Only assembly and section directories are captured. A nested repository, symlink
-    or Windows junction is refused instead of following data outside the source root.
+    The procedures tree is the authoring and delivery surface: procedure, component,
+    external and backend documents all live inside it. A nested repository, symlink or
+    Windows junction is refused instead of following data outside the content root.
     """
+
+    _TREE = "procedures"
 
     def __init__(self, root: Path) -> None:
         root = Path(root)
@@ -93,26 +104,41 @@ class FileSource(MemorySource):
                     raise CompositionError(f"non-regular source: {path}")
 
         # Check every ancestor too: otherwise a linked procedures/ bypasses walk.
-        for relative in (_ASSEMBLIES, _SECTIONS.rstrip("/")):
-            target = root
-            for part in PurePosixPath(relative).parts:
-                target = target / part
-                if target.exists() and _linked(target):
-                    raise CompositionError(f"linked source directory: {target}")
-                if target.exists() and (target / ".git").exists():
-                    raise CompositionError(f"nested repository: {target}")
-            if target.exists():
-                walk(target)
+        target = root
+        for part in Path(self._TREE).parts:
+            target = target / part
+            if target.exists() and _linked(target):
+                raise CompositionError(f"linked source directory: {target}")
+            if target.exists() and (target / ".git").exists():
+                raise CompositionError(f"nested repository: {target}")
+        if target.exists():
+            walk(target)
         super().__init__(files)
 
 
 @dataclass(frozen=True)
-class Section:
-    id: str
-    source: str
-    source_hash: str
-    backend_applicability: tuple[str, ...]
+class Span:
+    """One ordered piece of rendered text and the full document that owns it."""
+
+    kind: str
+    document_id: str
+    path: str
+    document_sha256: str
     text: str
+    id: str | None = None
+    target: str | None = None
+    backend_applicability: tuple[str, ...] = BACKENDS
+
+
+@dataclass(frozen=True)
+class DocumentEdit:
+    """The complete owning document bytes, never a rendered span."""
+
+    id: str
+    kind: str
+    path: str
+    sha256: str
+    raw: bytes
 
 
 @dataclass(frozen=True)
@@ -124,177 +150,309 @@ class Composition:
     argument_name: str | None
     argument_description: str | None
     text: str
-    sections: tuple[Section, ...]
+    spans: tuple[Span, ...]
     calls: tuple[str, ...]
+    documents: tuple[DocumentEdit, ...]
 
 
-def _identifier(value: object) -> str:
-    if not isinstance(value, str) or not _ID.fullmatch(value):
-        raise CompositionError(f"invalid authored identity: {value!r}")
-    return value
+def _direct(source_provider: SourceProvider, directory: str) -> tuple[str, ...]:
+    prefix = directory + "/"
+    selected = []
+    for path in source_provider.paths(directory):
+        if not path.startswith(prefix):
+            continue
+        if "/" not in path[len(prefix) :]:
+            selected.append(path)
+    return tuple(sorted(selected))
 
 
 class Catalog:
+    """Every supported version-2 document in one immutable source revision."""
+
     def __init__(self, source_provider: SourceProvider) -> None:
         self.source = source_provider
-        self.entries: dict[str, dict] = {}
-        self.manifest_paths: dict[str, str] = {}
-        self._identities: dict[str, tuple] = {}
-        self._source_owners: dict[str, str] = {}
-        for path in source_provider.paths(_ASSEMBLIES):
-            _path(path)
-            if not path.endswith(".toml"):
-                continue
-            try:
-                data = tomllib.loads(source_provider.read(path).decode("utf-8"))
-            except (UnicodeError, tomllib.TOMLDecodeError) as exc:
-                raise CompositionError(f"invalid assembly: {path}: {exc}") from exc
-            allowed = {"format_version", "id", "title", "description", "argument_name",
-                       "argument_description", "sections", "kind", "calls"}
-            if set(data) - allowed:
-                raise CompositionError(f"unknown assembly fields: {path}")
-            if type(data.get("format_version")) is not int or data["format_version"] != 1:
-                raise CompositionError(f"unsupported format version: {path}")
-            identity = _identifier(data.get("id"))
-            if identity in self.entries:
-                raise CompositionError(f"duplicate assembly ID: {identity}")
-            if PurePosixPath(path).stem != identity:
-                raise CompositionError(f"assembly filename must identify {identity}: {path}")
-            if data.get("kind", "procedure") not in ("procedure", "component", "external"):
-                raise CompositionError(f"unknown assembly kind: {path}")
-            for field in ("title", "description"):
-                if not isinstance(data.get(field), str) or not data[field]:
-                    raise CompositionError(f"missing {field}: {path}")
-            if ("argument_name" in data) != ("argument_description" in data):
-                raise CompositionError(f"incomplete argument metadata: {path}")
-            for field in ("argument_name", "argument_description"):
-                if field in data and not isinstance(data[field], str):
-                    raise CompositionError(f"invalid argument metadata: {path}")
-            calls = data.get("calls", [])
-            if not isinstance(calls, list):
-                raise CompositionError(f"invalid calls: {path}")
-            for call in calls:
-                _identifier(call)
-            if not isinstance(data.get("sections"), list) or not data["sections"]:
-                raise CompositionError(f"missing ordered sections: {path}")
-            local_ids = set()
-            for node in data["sections"]:
-                self._check_node(node, local_ids)
-            self.entries[identity] = data
-            self.manifest_paths[identity] = path
+        self.documents: dict[str, Document] = {}
+        self._by_path: dict[str, Document] = {}
+        self._backend_cache: dict[str, BackendDocument] = {}
+        self._refuse_fragmented_catalog()
+        self._discover()
+        self._check_backend_documents()
 
-    def _check_node(self, node: dict, local_ids: set) -> None:
-        if not isinstance(node, dict) or set(node) - {
-            "id", "source", "backends", "component", "applies_to",
-            "calls",
-        }:
-            raise CompositionError("unknown section selector")
-        applies = node.get("applies_to", list(BACKENDS))
-        if (not isinstance(applies, list) or not applies
-                or any(not isinstance(item, str) for item in applies)
-                or len(set(applies)) != len(applies) or set(applies) - set(BACKENDS)):
-            raise CompositionError("invalid explicit backend applicability")
-        calls = node.get("calls", {})
-        if not isinstance(calls, dict) or set(calls) - set(BACKENDS):
-            raise CompositionError("invalid backend call dependencies")
-        for targets in calls.values():
-            if not isinstance(targets, list):
-                raise CompositionError("call dependencies must be lists")
-            for target in targets:
-                _identifier(target)
-        identity = _identifier(node.get("id"))
-        if identity in local_ids:
-            raise CompositionError(f"duplicate section ID: {identity}")
-        local_ids.add(identity)
-        selectors = set(node) & {"source", "backends", "component"}
-        if len(selectors) != 1:
-            raise CompositionError(f"section must select exactly one source: {identity}")
-        if "component" in node:
-            _identifier(node["component"])
-            signature = ("component", node["component"])
-        else:
-            variants = node.get("backends")
-            if variants is not None:
-                if not isinstance(variants, dict) or set(variants) != set(BACKENDS):
-                    raise CompositionError(f"backend alternatives must cover {BACKENDS}")
-            else:
-                variants = {b: node["source"] for b in BACKENDS}
-            for path in variants.values():
-                _path(path)
-                if not path.startswith(_SECTIONS) or not path.endswith(".md"):
-                    raise CompositionError(f"undeclared section directory/type: {path}")
-                owner = self._source_owners.setdefault(path, identity)
-                if owner != identity:
-                    raise CompositionError(f"source has multiple section identities: {path}")
-            signature = tuple(sorted(variants.items()))
-        previous = self._identities.setdefault(identity, signature)
-        if previous != signature:
-            raise CompositionError(f"section ID has conflicting sources: {identity}")
+    def _refuse_fragmented_catalog(self) -> None:
+        legacy = [path for path in self.source.paths(_ASSEMBLIES) if path.endswith(".toml")]
+        if legacy:
+            raise CompositionError(
+                "unsupported format_version 1 fragmented assembly catalog; "
+                "single-file format_version 2 documents replace it"
+            )
+
+    def _discover(self) -> None:
+        groups = (
+            *((directory, "procedure") for directory in _PROCEDURE_DIRS),
+            (_COMPONENT_DIR, "component"),
+            (_EXTERNAL_DIR, "external"),
+        )
+        for directory, expected_kind in groups:
+            for path in _direct(self.source, directory):
+                if not path.endswith(".md"):
+                    continue
+                raw = self.source.read(path)
+                if raw.startswith(b"\xef\xbb\xbf+++"):
+                    raise CompositionError(
+                        f"document must not start with a byte-order mark: {path}"
+                    )
+                if not raw.startswith(b"+++"):
+                    continue
+                document = parse_document(path, raw)
+                if document.metadata.kind != expected_kind:
+                    raise CompositionError(
+                        f"{path} declares kind {document.metadata.kind!r}; "
+                        f"this directory holds {expected_kind!r} documents"
+                    )
+                if Path(path).stem != document.metadata.id:
+                    raise CompositionError(
+                        f"document filename must identify {document.metadata.id}: {path}"
+                    )
+                if document.metadata.id in self.documents:
+                    raise CompositionError(f"duplicate document identity: {document.metadata.id}")
+                self.documents[document.metadata.id] = document
+                self._by_path[path] = document
+
+    def _check_backend_documents(self) -> None:
+        for path in _BACKEND_DOCUMENTS:
+            if path in self.source.paths(_BACKEND_DIR):
+                self.backend_document(path)
 
     @property
     def procedures(self) -> tuple[str, ...]:
-        return tuple(sorted(k for k, v in self.entries.items()
-                            if v.get("kind", "procedure") == "procedure"))
-
-    def compose(self, procedure_id: str, backend: str) -> Composition:
-        if backend not in BACKENDS:
-            raise CompositionError(f"unknown backend: {backend}")
-        if procedure_id not in self.entries:
-            raise CompositionError(f"unknown assembly: {procedure_id}")
-        sections: list[Section] = []
-        calls: list[str] = []
-
-        def expand(identity: str, stack: tuple[str, ...]) -> None:
-            if identity in stack:
-                raise CompositionError(f"component cycle: {' -> '.join((*stack, identity))}")
-            if identity not in self.entries:
-                raise CompositionError(f"missing component: {identity}")
-            entry = self.entries[identity]
-            calls.extend(entry.get("calls", []))
-            for node in entry["sections"]:
-                applies = node.get("applies_to", BACKENDS)
-                if backend not in applies:
-                    continue
-                calls.extend(node.get("calls", {}).get(backend, []))
-                if "component" in node:
-                    target = node["component"]
-                    if self.entries.get(target, {}).get("kind") != "component":
-                        raise CompositionError(f"not a component: {target}")
-                    expand(target, (*stack, identity))
-                    continue
-                variants = node.get("backends", {b: node.get("source") for b in BACKENDS})
-                path = variants[backend]
-                raw = self.source.read(path)
-                try:
-                    text = raw.decode("utf-8")
-                except UnicodeError as exc:
-                    raise CompositionError(f"section is not UTF-8: {path}") from exc
-                sections.append(Section(
-                    node["id"], path, hashlib.sha256(raw).hexdigest(),
-                    tuple(b for b in BACKENDS if variants[b] == path and b in applies), text,
-                ))
-
-        expand(procedure_id, ())
-        data = self.entries[procedure_id]
-        return Composition(
-            FORMAT_VERSION, procedure_id, data["title"], data["description"],
-            data.get("argument_name"), data.get("argument_description"),
-            "".join(s.text for s in sections), tuple(sections),
-            tuple(dict.fromkeys(calls)),
+        return tuple(
+            sorted(
+                identity
+                for identity, document in self.documents.items()
+                if document.metadata.kind == "procedure"
+            )
         )
 
-    def dependents(self, source_id: str, *, source_path: str | None = None) -> tuple[str, ...]:
-        consumers = sorted(name for name, entry in self.entries.items()
-                           if entry.get("kind", "procedure") in ("procedure", "external"))
-        return tuple(name for name in consumers if any(
-            section.id == source_id and (source_path is None or section.source == source_path)
-            for backend in BACKENDS for section in self.compose(name, backend).sections
-        ))
+    def backend_document(self, path: str) -> BackendDocument:
+        cached = self._backend_cache.get(path)
+        if cached is not None:
+            return cached
+        raw = self.source.read(path)
+        document = parse_backend_document(path, raw)
+        self._backend_cache[path] = document
+        return document
+
+    def _component(self, reference: Reference) -> Document:
+        document = self._by_path.get(reference.ref)
+        if document is None:
+            raise CompositionError(f"missing component: {reference.ref}")
+        if document.metadata.kind != "component":
+            raise CompositionError(f"not a component: {document.metadata.id}")
+        return document
+
+    def compose(self, document_id: str, backend: str) -> Composition:
+        if backend not in BACKENDS:
+            raise CompositionError(f"unknown backend: {backend}")
+        document = self.documents.get(document_id)
+        if document is None:
+            raise CompositionError(f"unknown document: {document_id}")
+        renderer = _Renderer(self, backend)
+        renderer.render(document, (document_id,), None)
+        metadata = document.metadata
+        return Composition(
+            FORMAT_VERSION,
+            metadata.id,
+            metadata.title,
+            metadata.description,
+            metadata.argument_name,
+            metadata.argument_description,
+            renderer.text(),
+            tuple(renderer.spans),
+            tuple(dict.fromkeys(renderer.calls)),
+            tuple(renderer.documents),
+        )
+
+    def dependents(self, source_path: str) -> tuple[str, ...]:
+        """Procedures and external consumers whose compositions read this whole file."""
+        source_path = _path(source_path)
+        affected = []
+        for identity in sorted(self.documents):
+            document = self.documents[identity]
+            if document.metadata.kind not in ("procedure", "external"):
+                continue
+            reachable = {document.path}
+            self._reachable(document, reachable, {identity}, set(BACKENDS), {})
+            if source_path in reachable:
+                affected.append(identity)
+        return tuple(affected)
+
+    def _reachable(
+        self,
+        document: Document,
+        found: set[str],
+        stack: set[str],
+        backends: set[str],
+        seen: dict[str, set[str]],
+    ) -> None:
+        previous = seen.get(document.metadata.id, set())
+        fresh = backends - previous
+        if not fresh:
+            return
+        seen[document.metadata.id] = previous | fresh
+        for node in document.nodes:
+            if not isinstance(node, Reference):
+                continue
+            effective = fresh & set(node.applies_to)
+            if not effective:
+                continue
+            if node.kind == "component":
+                found.add(node.ref)
+                target = self._by_path.get(node.ref)
+                if target is not None and target.metadata.id not in stack:
+                    self._reachable(
+                        target,
+                        found,
+                        stack | {target.metadata.id},
+                        effective,
+                        seen,
+                    )
+                continue
+            for backend in effective:
+                found.add(backend_path(node.ref, backend))
 
     def validate(self) -> None:
-        for identity in self.entries:
+        for identity in self.documents:
             for backend in BACKENDS:
                 self.compose(identity, backend)
+        for path in _BACKEND_DOCUMENTS:
+            if path in self.source.paths(_BACKEND_DIR):
+                self.backend_document(path)
+
+
+class _Renderer:
+    def __init__(self, catalog: Catalog, backend: str) -> None:
+        self.catalog = catalog
+        self.backend = backend
+        self._parts: list[str] = []
+        self.spans: list[Span] = []
+        self.calls: list[str] = []
+        self.documents: list[DocumentEdit] = []
+        self._seen_documents: set[str] = set()
+
+    def text(self) -> str:
+        return "".join(self._parts)
+
+    def _enter(self, document: Document) -> None:
+        if document.path not in self._seen_documents:
+            self._seen_documents.add(document.path)
+            self.documents.append(
+                DocumentEdit(
+                    document.metadata.id,
+                    document.metadata.kind,
+                    document.path,
+                    document.sha256,
+                    document.raw,
+                )
+            )
+        self.calls.extend(document.metadata.calls_for(self.backend))
+
+    def _enter_backend(self, path: str, raw: bytes, sha256: str) -> None:
+        if path in self._seen_documents:
+            return
+        self._seen_documents.add(path)
+        self.documents.append(DocumentEdit(Path(path).stem, "backend", path, sha256, raw))
+
+    def render(
+        self,
+        document: Document,
+        stack: tuple[str, ...],
+        reference_id: str | None,
+        applies_to: tuple[str, ...] = BACKENDS,
+    ) -> None:
+        self._enter(document)
+        for node in document.nodes:
+            if isinstance(node, Prose):
+                self._prose(node.text, document, reference_id, applies_to)
+            elif node.kind == "component":
+                self._component(node, stack, applies_to)
+            else:
+                self._storage(node)
+
+    def _prose(
+        self,
+        text: str,
+        document: Document,
+        reference_id: str | None,
+        applies_to: tuple[str, ...],
+    ) -> None:
+        if not text:
+            return
+        self._parts.append(text)
+        self.spans.append(
+            Span(
+                "component" if document.metadata.kind == "component" else "text",
+                document.metadata.id,
+                document.path,
+                document.sha256,
+                text,
+                id=reference_id if document.metadata.kind == "component" else None,
+                backend_applicability=applies_to,
+            )
+        )
+
+    def _component(
+        self,
+        reference: Reference,
+        stack: tuple[str, ...],
+        applies_to: tuple[str, ...],
+    ) -> None:
+        effective = tuple(backend for backend in applies_to if backend in reference.applies_to)
+        if self.backend not in effective:
+            return
+        document = self.catalog._component(reference)
+        if document.metadata.id in stack:
+            chain = " -> ".join((*stack, document.metadata.id))
+            raise CompositionError(f"component cycle: {chain}")
+        before = len(self.spans)
+        self.render(
+            document,
+            (*stack, document.metadata.id),
+            reference.id,
+            effective,
+        )
+        if len(self.spans) == before:
+            self.spans.append(
+                Span(
+                    "component",
+                    document.metadata.id,
+                    document.path,
+                    document.sha256,
+                    "",
+                    id=reference.id,
+                    backend_applicability=effective,
+                )
+            )
+
+    def _storage(self, reference: Reference) -> None:
+        if self.backend not in reference.applies_to:
+            return
+        path = backend_path(reference.ref, self.backend)
+        backend = self.catalog.backend_document(path)
+        region = backend.region(reference.target)
+        self._enter_backend(backend.path, backend.raw, backend.sha256)
+        self._parts.append(region)
+        self.spans.append(
+            Span(
+                "storage",
+                Path(path).stem,
+                backend.path,
+                backend.sha256,
+                region,
+                id=reference.id,
+                target=reference.target,
+                backend_applicability=(self.backend,),
+            )
+        )
 
 
 def compose(procedure_id: str, backend: str, source_provider: SourceProvider) -> Composition:
@@ -307,7 +465,5 @@ def validate_catalog(source_provider: SourceProvider) -> Catalog:
     return catalog
 
 
-def dependents(
-    source_id: str, source_provider: SourceProvider, *, source_path: str | None = None,
-) -> tuple[str, ...]:
-    return Catalog(source_provider).dependents(source_id, source_path=source_path)
+def dependents(source_path: str, source_provider: SourceProvider) -> tuple[str, ...]:
+    return Catalog(source_provider).dependents(source_path)

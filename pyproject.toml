@@ -15,7 +15,7 @@ package = false
 
 [dependency-groups]
 dev = [
-    "procedure-composer",
+    "procedure-composer==0.2.0",
     "pytest>=9.1.1",
     "ruff>=0.16.2",
 ]

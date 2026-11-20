@@ -1,9 +1,0 @@
-format_version = 1
-id = "no-subagent-load"
-title = "No Sub-Agent Load (component)"
-description = "The rule that memory must be loaded into the agent's own context window, never through a\nsub-agent. **This is a component, not a standalone command** — callers reference it by link\nand it is inlined at compile time."
-kind = "component"
-
-[[sections]]
-id = "no-subagent-load.text-001"
-source = "procedures/sections/shared/no-subagent-load.text-001.md"

@@ -1,7 +1,7 @@
 [project]
 name = "procedure-composer"
-version = "0.1.0"
-description = "Data-only ordered procedure composition with source provenance"
+version = "0.2.0"
+description = "Data-only single-file procedure composition with source provenance"
 requires-python = ">=3.11"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]

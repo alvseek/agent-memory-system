@@ -26,32 +26,46 @@ def test_recorded_conversion_preserved_legacy_instructions_or_named_edits():
             after = (BASELINE / "converted" / f"{name}.{backend}.md").read_text(encoding="utf-8")
             allowed = set()
             if name == "update-episodic":
-                allowed.update(line for line in before.splitlines()
-                               if line.startswith("Obtain the current date+time"))
+                allowed.update(
+                    line
+                    for line in before.splitlines()
+                    if line.startswith("Obtain the current date+time")
+                )
                 assert "for the sub-episode H3 header (**§ stamp-date**)" in after
             if name == "update-knowledge":
-                allowed.update(line for line in before.splitlines()
-                               if line.startswith("Add an entry to the knowledge directory"))
+                allowed.update(
+                    line
+                    for line in before.splitlines()
+                    if line.startswith("Add an entry to the knowledge directory")
+                )
                 assert "Ensure the entry is discoverable" in after
             if name == "wrap-up":
                 allowed.add("Memory persisted — print the line matching this backend, not both:")
-                allowed.add("- (store durable at write time) ✅ nothing to push — "
-                            "the write was already saved")
+                allowed.add(
+                    "- (store durable at write time) ✅ nothing to push — "
+                    "the write was already saved"
+                )
                 if backend == "db":
                     # Only Git persistence instructions disappear on the DB backend.
                     failure = before.split("**On failure**", 1)[1].split("\n---\n", 1)[0]
                     allowed.update(("**On failure**" + failure).splitlines())
-                    allowed.update(line for line in before.splitlines()
-                                   if line.startswith(("**Completion gate**", "- (git-backed")))
+                    allowed.update(
+                        line
+                        for line in before.splitlines()
+                        if line.startswith(("**Completion gate**", "- (git-backed"))
+                    )
                     assert "report completion only when Step 2" in after
                     assert "WRAP-UP INCOMPLETE" not in after
                 expected = "nothing to push" if backend == "db" else "pushed / no changes"
                 assert expected in after
             missing = [
-                line for line in before.splitlines()
-                if line.strip() and not line.startswith("#")
+                line
+                for line in before.splitlines()
+                if line.strip()
+                and not line.startswith("#")
                 and line.strip() not in ("---", "```", "```markdown")
-                and line not in allowed and line.strip() not in after
+                and line not in allowed
+                and line.strip() not in after
             ]
             assert not missing, (name, backend, missing)
 
@@ -62,10 +76,16 @@ def test_current_workflows_keep_their_operational_contracts():
         "wrap-up": ["persist-store", "completion gate", "tech debts", "next steps"],
         "update-memory": ["cutoff", "all 5 must pass", "tech debts", "next steps"],
         "update-episodic": [
-            "carry-forward", "newest-first", "finished", "tech debts", "next steps",
+            "carry-forward",
+            "newest-first",
+            "finished",
+            "tech debts",
+            "next steps",
         ],
         "add-reasoning": [
-            "final conclusion", "preserve the existing uuid", "reasoning-pattern-template",
+            "final conclusion",
+            "preserve the existing uuid",
+            "reasoning-pattern-template",
         ],
         "update-knowledge": ["discoverability", "knowledge-file-template"],
         "update-emotional": ["newest", "emotional-moment-template"],
@@ -96,6 +116,43 @@ def test_backend_mechanics_are_beside_steps_and_resources_remain_references():
     assert composed.compose("wrap-up", "db").calls == ("update-memory",)
 
 
+def test_current_composition_matches_the_recorded_converted_baseline():
+    manifest = json.loads((BASELINE / "manifest.json").read_text(encoding="utf-8"))
+    composed = catalog()
+    for name in manifest["graph"]:
+        for backend in ("markdown", "db"):
+            expected = (BASELINE / "converted" / f"{name}.{backend}.md").read_text(encoding="utf-8")
+            assert composed.compose(name, backend).text == expected, (name, backend)
+
+
+def test_no_fragmented_inventory_or_directive_leakage_remains():
+    assert not (ROOT / "procedures/assemblies").exists()
+    assert not (ROOT / "procedures/sections").exists()
+    for directory in (
+        "procedures",
+        "procedures/memory",
+        "procedures/components",
+        "procedures/external",
+        "procedures/memory/storage-backends",
+    ):
+        for path in (ROOT / directory).glob("*.md"):
+            text = path.read_text(encoding="utf-8")
+            if not text.startswith("+++"):
+                continue
+            for marker in (
+                "<!-- composed-procedure:",
+                "<!-- composed-component:",
+                "<!-- composed-source:",
+            ):
+                assert marker not in text, path
+    composed = catalog()
+    for identity in composed.documents:
+        for backend in ("markdown", "db"):
+            text = composed.compose(identity, backend).text
+            assert "@start " not in text and "@end " not in text, (identity, backend)
+            assert "<!-- composed-" not in text, (identity, backend)
+
+
 def test_extraction_lineage_has_no_unrecorded_source_origins():
     manifest = json.loads((BASELINE / "manifest.json").read_text(encoding="utf-8"))
     extracted = json.loads((BASELINE / "extraction-map.json").read_text(encoding="utf-8"))
@@ -109,10 +166,8 @@ def test_extraction_lineage_has_no_unrecorded_source_origins():
 
 def test_missing_converted_source_refuses_instead_of_legacy_pointer_fallback():
     source = FileSource(ROOT)
-    data = {p: source.read(p) for folder in
-            ("procedures/assemblies", "procedures/sections") for p in source.paths(folder)}
-    path = catalog().compose("wrap-up", "db").sections[-1].source
-    del data[path]
+    data = {p: source.read(p) for p in source.paths("procedures")}
+    data.pop("procedures/memory/storage-backends/db.md")
     with pytest.raises(ValueError, match="missing source"):
         Catalog(MemorySource(data)).compose("wrap-up", "db")
 
@@ -120,11 +175,14 @@ def test_missing_converted_source_refuses_instead_of_legacy_pointer_fallback():
 def test_reverse_dependencies_include_the_actual_legacy_refresh_consumer():
     composed = catalog()
     assert "refresh-memory" not in composed.procedures
-    assert composed.dependents("core-instruction-control-files.load-agent-memory") == (
-        "awaken-agent", "refresh-memory",
+    assert composed.documents["refresh-memory"].metadata.kind == "external"
+    assert composed.dependents("procedures/components/core-instruction-control-files.md") == (
+        "awaken-agent",
+        "refresh-memory",
     )
-    assert composed.dependents("core-instruction-control-files.text-002") == (
-        "awaken-agent", "refresh-memory",
+    assert composed.dependents("procedures/components/no-subagent-load.md") == (
+        "awaken-agent",
+        "refresh-memory",
     )
     legacy = (ROOT / "procedures/refresh-memory.md").read_text(encoding="utf-8")
     for component in ("core-instruction-control-files", "no-subagent-load"):
@@ -132,33 +190,18 @@ def test_reverse_dependencies_include_the_actual_legacy_refresh_consumer():
 
 
 def test_backend_specific_impact_matches_actual_legacy_delivery():
-    spec = importlib.util.spec_from_file_location(
-        "conversion_dependency_inventory", ROOT / "procedures/setup-scripts/compile-procedures.py"
-    )
-    compiler = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = compiler
-    spec.loader.exec_module(compiler)
     composed = catalog()
-    expected = set(composed.procedures)
-    backend = (ROOT / "procedures/memory/storage-backends/db.md").read_text(encoding="utf-8")
-    for command in compiler.command_procedures(ROOT / "procedures"):
-        if command.suffix != ".md":
-            continue
-        raw = command.read_text(encoding="utf-8")
-        if not compiler.has_seam(raw):
-            continue
-        _, missing, components = compiler.inline_components(
-            raw, ROOT / "procedures/components", backend="db"
-        )
-        assert not missing
-        if compiler._backend_covers(backend, command.stem, tuple(components)):
-            expected.add(command.stem)
-    assert set(composed.dependents(
-        "caller-context", source_path="procedures/sections/db/caller-context.md"
-    )) == expected
-    assert set(composed.dependents(
-        "caller-context", source_path="procedures/sections/markdown/caller-context.md"
-    )) == set(composed.procedures)
+    externals = {
+        identity
+        for identity, document in composed.documents.items()
+        if document.metadata.kind == "external"
+    }
+    db_path = "procedures/memory/storage-backends/db.md"
+    markdown_path = "procedures/memory/storage-backends/markdown.md"
+    assert set(composed.dependents(db_path)) == set(composed.procedures) | externals
+    assert set(composed.dependents(markdown_path)) == set(composed.procedures) | {
+        "refresh-memory",
+    }
 
 
 @pytest.mark.parametrize("host", ["claude-code", "opencode"])
