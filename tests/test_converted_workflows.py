@@ -116,12 +116,36 @@ def test_backend_mechanics_are_beside_steps_and_resources_remain_references():
     assert composed.compose("wrap-up", "db").calls == ("update-memory",)
 
 
+# The wrap-up report block moved into one markdown-only region after the conversion was
+# recorded (2026-11-21 review decision). The db backend prints the ordinary report from
+# prose instead of a template, so the recorded fixture is compared with exactly that block
+# replaced by the reviewed note; every other recorded byte must still match.
+WRAP_UP_DB_REPORT_NOTE = (
+    "There is no persistence section to print — the write landed in the database when it "
+    "happened, so nothing was pushed and no separate save step could fail. Open with "
+    "`Wrap-up complete (mode: [agent / all] · [fresh / delta from CUTOFF]):`, then the "
+    "memory-update results captured in Step 1, then the open items.\n"
+)
+
+
+def recorded_wrap_up_report_block(text):
+    lead = "**On success**, print this block:\n\n"
+    start = text.index(lead) + len(lead)
+    stop = text.index("\nIf both Tech Debts and Next Steps are empty", start)
+    block = text[start:stop]
+    assert block.startswith("```\n") and block.endswith("```\n")
+    return start, stop
+
+
 def test_current_composition_matches_the_recorded_converted_baseline():
     manifest = json.loads((BASELINE / "manifest.json").read_text(encoding="utf-8"))
     composed = catalog()
     for name in manifest["graph"]:
         for backend in ("markdown", "db"):
             expected = (BASELINE / "converted" / f"{name}.{backend}.md").read_text(encoding="utf-8")
+            if (name, backend) == ("wrap-up", "db"):
+                start, stop = recorded_wrap_up_report_block(expected)
+                expected = expected[:start] + WRAP_UP_DB_REPORT_NOTE + expected[stop:]
             assert composed.compose(name, backend).text == expected, (name, backend)
 
 

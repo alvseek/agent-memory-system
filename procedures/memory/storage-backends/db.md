@@ -255,10 +255,8 @@ No action. A write through the memory tools lands in the database as it happens,
 
 @end region
 
-@start region id="wrap-up.persistence-report"
-Memory persisted:
-- ✅ nothing to push — the write was already saved
-
+@start region id="wrap-up.report-db"
+There is no persistence section to print — the write landed in the database when it happened, so nothing was pushed and no separate save step could fail. Open with `Wrap-up complete (mode: [agent / all] · [fresh / delta from CUTOFF]):`, then the memory-update results captured in Step 1, then the open items.
 @end region
 
 @start region id="wrap-up.failure-report" ending="none"

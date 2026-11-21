@@ -202,11 +202,8 @@ def _attributes(text: str, path: str, line: int) -> dict[str, str]:
 
 
 def _directive(content: str):
-    """Match a directive line; ``@@start`` forces a reference inside a fence."""
-    stripped = content.strip()
-    if stripped.startswith("@@"):
-        stripped = stripped[1:]
-    return _DIRECTIVE.fullmatch(stripped)
+    """Match a directive line."""
+    return _DIRECTIVE.fullmatch(content.strip())
 
 
 def _event(part, path: str, line_number: int):
@@ -225,21 +222,13 @@ def _event(part, path: str, line_number: int):
 def _events(text: str, path: str):
     """Yield directive events and raw lines.
 
-    A normal ``@start`` inside fenced code stays literal, so examples never expand. A
-    ``@@start`` is an explicit fenced reference and is recognized inside the fence; the
-    reference's expansion lands inside the code block, which is what a backend-specific
-    line in a printed template needs.
+    A directive inside fenced code stays literal, so a printed example never expands and
+    is never mistaken for a reference. An unterminated fence is an error.
     """
     fence: tuple[str, int] | None = None
     for line_number, line in enumerate(text.splitlines(keepends=True), 1):
         content = line.rstrip("\r\n")
         if fence is not None:
-            stripped = content.strip()
-            if stripped.startswith("@@"):
-                directive = _directive(content)
-                if directive:
-                    yield _event(directive, path, line_number)
-                    continue
             yield ("raw", line)
             closing = re.fullmatch(
                 r" {0,3}(" + re.escape(fence[0]) + r"{" + str(fence[1]) + r",})[ \t]*",

@@ -696,31 +696,34 @@ def test_region_ending_none_preserves_an_authored_missing_newline():
         Catalog(MemorySource(data))
 
 
-def test_forced_reference_inside_fenced_code():
+def test_directive_inside_fenced_code_stays_literal():
     data = files()
-    data["procedures/flow.md"] = document(
-        body=(
-            "```\n"
-            "before\n"
-            '@@start storage id="flow.persist" '
-            'ref="procedures/memory/storage-backends/{backend}.md" target="flow.persist"\n'
-            "@@end storage\n"
-            "after\n"
-            "```\n"
-        )
+    body = (
+        "```\n"
+        "before\n"
+        '@start storage id="flow.persist" '
+        'ref="procedures/memory/storage-backends/{backend}.md" target="flow.persist"\n'
+        "@end storage\n"
+        "after\n"
+        "```\n"
     )
+    data["procedures/flow.md"] = document(body=body)
     result = compose("flow", "db", MemorySource(data))
-    assert result.text == "```\nbefore\nDB body\nafter\n```\n"
-    assert [span.kind for span in result.spans] == ["text", "storage", "text"]
+    assert result.text == body
+    assert [span.kind for span in result.spans] == ["text"]
 
 
-def test_malformed_document_directives_fail_inside_and_outside_fences():
+def test_malformed_document_directives_fail_outside_fences_only():
     data = files()
-    data["procedures/flow.md"] = document(
-        body='```\n@@start component id="x"\n@end component\n```\n'
-    )
+    data["procedures/flow.md"] = document(body='@start component id="x"\n@end component\n')
     with pytest.raises(CompositionError):
         validate_catalog(MemorySource(data))
+    fenced = '```\n@@start component id="x"\n@end component\n```\n'
+    data["procedures/flow.md"] = document(body=fenced)
+    assert compose("flow", "db", MemorySource(data)).text == fenced
+    unfenced = '@@start component id="x"\n@@end component\n'
+    data["procedures/flow.md"] = document(body=unfenced)
+    assert compose("flow", "db", MemorySource(data)).text == unfenced
 
 
 def test_expand_regions_drops_only_directive_scaffolding():

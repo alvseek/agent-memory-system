@@ -42,9 +42,8 @@ The actual instructions for this backend live here.
   only one backend. Omitted means both. A region may carry `ending="none"` when its
   authored body deliberately has no final newline; the structural line break before
   `@end region` is then not content.
-- Directives are recognized outside fenced code. A normal `@start` inside a fence stays
-  literal; `@@start` is the explicit fenced reference used where a printed code block
-  contains a backend-specific line.
+- Directives are recognized outside fenced code; a directive written inside a fence stays
+  literal, so a printed example never expands.
 - Regions, references and document identities are unique and validated. Missing
   targets, cycles, unsafe paths, unsupported versions and the superseded fragmented
   assemblies fail explicitly; there is no fallback renderer.
@@ -90,8 +89,8 @@ Converted regions are organized under the procedure or component heading that ow
 <concrete store mechanics>
 @end region
 
-@start region id="wrap-up.persistence-report"
-<concrete report mechanics>
+@start region id="wrap-up.report"
+<concrete report mechanics, where this backend prints a report block>
 @end region
 ```
 

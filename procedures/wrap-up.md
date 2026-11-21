@@ -54,26 +54,10 @@ Capture that outcome for Step 3: whether everything in scope is committed AND pu
 
 **On success**, print this block:
 
-```
-Wrap-up complete (mode: [agent / all] · [fresh / delta from CUTOFF]):
-
-Memory update:
-- Phase 1 — Promoted artifacts: project context: [updated/created — file / skipped] / reasoning: [added — pattern name / skipped] / knowledge: [added — entry name / skipped]
-- Phase 2 — Session captured: [appended to / created] [name] ([timestamp]) — [brief theme]; carry-forward: [N items / N/A]; promotions: [N markers / none]
-- Phase 3 — Feeling captured: emotional [captured — polarity + clearest criterion / skipped — brief reason]
-
-@@start storage id="wrap-up.persistence-report" ref="procedures/memory/storage-backends/{backend}.md" target="wrap-up.persistence-report"
-@@end storage
-📋 Open items going forward:
-
-Tech debts:
-- [item 1]
-(or "None declared")
-
-Next steps:
-- [item 1]
-(or "None declared")
-```
+@start storage id="wrap-up.report" ref="procedures/memory/storage-backends/{backend}.md" target="wrap-up.report" applies_to="markdown"
+@end storage
+@start storage id="wrap-up.report-db" ref="procedures/memory/storage-backends/{backend}.md" target="wrap-up.report-db" applies_to="db"
+@end storage
 
 If both Tech Debts and Next Steps are empty → replace both lists with *"No open items declared from this session."*
 

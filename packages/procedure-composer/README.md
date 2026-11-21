@@ -74,11 +74,9 @@ Directive lines are removed with their line terminator; every other byte is pres
 Blank lines around a reference are authored content, not composer trimming. UTF-8,
 Unicode and LF/CRLF/CR are preserved exactly.
 
-A normal `@start` inside fenced code is literal, so examples never expand. `@@start` is
-the explicit fenced reference: it is recognized inside the fence and its expansion lands
-inside the code block, which is how a printed template can carry one backend-specific
-line. An unterminated fence is an error rather than a silent truncation of the document's
-references.
+A directive inside fenced code is literal, so examples never expand and a printed template
+keeps its text. An unterminated fence is an error rather than a silent truncation of the
+document's references.
 
 ## Metadata
 

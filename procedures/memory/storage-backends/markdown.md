@@ -279,10 +279,28 @@ This store is a git repository, so capturing memory is not the same as saving it
 
 @end region
 
-@start region id="wrap-up.persistence-report"
+@start region id="wrap-up.report"
+```
+Wrap-up complete (mode: [agent / all] · [fresh / delta from CUTOFF]):
+
+Memory update:
+- Phase 1 — Promoted artifacts: project context: [updated/created — file / skipped] / reasoning: [added — pattern name / skipped] / knowledge: [added — entry name / skipped]
+- Phase 2 — Session captured: [appended to / created] [name] ([timestamp]) — [brief theme]; carry-forward: [N items / N/A]; promotions: [N markers / none]
+- Phase 3 — Feeling captured: emotional [captured — polarity + clearest criterion / skipped — brief reason]
+
 Memory persisted:
 - (git-backed store) [repo]: ✅ [commit-hash] pushed / no changes [— agent mode: other agents' files left untouched]
 
+📋 Open items going forward:
+
+Tech debts:
+- [item 1]
+(or "None declared")
+
+Next steps:
+- [item 1]
+(or "None declared")
+```
 @end region
 
 @start region id="wrap-up.failure-report"
