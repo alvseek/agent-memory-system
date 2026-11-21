@@ -16,7 +16,8 @@ Step-by-step guide for configuring agent-memory with Claude Code or Codex and cr
 Run the relevant setup script from the `@agent-memory` directory. Install `uv`
 first; procedure installers run the core's Python project environment so its
 canonical composer package is available. Do not manually copy raw procedure
-Markdown: converted command paths are navigation pointers to ordered sources.
+Markdown: a converted command path is the complete single-file document the composer
+renders, so an edit belongs in that file rather than in the generated command.
 
 ### Environment-Based Wrapper Choice
 

@@ -216,7 +216,8 @@ For the complete loading flow, memory layer details, and the coding overlay, see
 
 **Context**: Memory update procedures needed to be easily executable during sessions without remembering file paths.
 **Decision**: Each procedure has one authored source flow; the compiler delivers it
-in the host's command format. Ordered sources and legacy sources share discovery.
+in the host's command format. Converted single-file documents and legacy procedures
+share discovery.
 **Trade-off**: Compilation is required before installation, but neither delivered
 commands nor served instructions become a second authored copy.
 
