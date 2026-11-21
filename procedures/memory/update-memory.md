@@ -1,3 +1,15 @@
++++
+format_version = 2
+id = "update-memory"
+kind = "procedure"
+title = "Update Memory Protocol"
+description = "Comprehensive memory update orchestrator. Five phases:"
+argument_name = "mode"
+argument_description = "Input described in the procedure's Arguments section"
+calls = ["add-reasoning", "update-knowledge", "update-episodic", "update-emotional"]
++++
+@start storage id="caller-context" ref="procedures/memory/storage-backends/{backend}.md" target="caller-context"
+@end storage
 # Update Memory Protocol
 
 Comprehensive memory update orchestrator. Five phases:
@@ -8,7 +20,7 @@ Comprehensive memory update orchestrator. Five phases:
 - **Phase 3** — Emotional 5-criteria gate (deep-emotion anchoring, polarity-neutral)
 - **Phase 4** — Report
 
-`/update-episodic` writes only the episodic layer. `/update-memory` is the full end-of-session orchestrator (what `/wrap-up` invokes). *Storage-specific reads/scans are delegated to the active backend (see [Storage Mechanics](#storage-mechanics)); the gates below are storage-agnostic.*
+`/update-episodic` writes only the episodic layer. `/update-memory` is the full end-of-session orchestrator (what `/wrap-up` invokes). *Storage-specific reads/scans are delegated to the active backend; the gates below are storage-agnostic.*
 
 **Execution style**: silent. Run Phases 0-3 silently — tool calls stay visible, but no prose narration of phases. Produce only the Phase 4 Step 6 summary block. (When invoked by `/wrap-up`, even that is folded into the caller's summary.)
 
@@ -33,6 +45,8 @@ Comprehensive memory update orchestrator. Five phases:
 
 ---
 
+@start storage id="update-memory.detect-mode-scan" ref="procedures/memory/storage-backends/{backend}.md" target="update-memory.detect-mode-scan"
+@end storage
 ## Phase 1 — Promote Durable Artifacts
 
 > **Delta-mode scope rule**: when `MODE = delta`, each gate's checklist applies ONLY to work after `CUTOFF`. Pre-cutoff work was evaluated at the prior wrap-up.
@@ -65,6 +79,8 @@ Identify cross-layer memory written this session (Phase 1 + any mid-session writ
 
 Per item: `→ Promoted to [layer-file](ref) — [brief: what was formalized]`
 
+@start storage id="update-memory.scan-promotion-markers" ref="procedures/memory/storage-backends/{backend}.md" target="update-memory.scan-promotion-markers"
+@end storage
 ### Step 4: Run Episodic Capture
 
 Invoke `/update-episodic new` if `$ARGUMENTS` contains `new`, else `/update-episodic`. Populate the new sub-episode's `**Promotions**` field with markers from Step 3 (omit if empty).
@@ -115,15 +131,6 @@ Phase 3 — Feeling captured (scope: [full session / delta since CUTOFF]):
 ```
 
 ---
-
-## Storage Mechanics
-
-The operations referenced above — **§ detect-mode-scan**, **§ scan-promotion-markers** — are defined by the **active storage backend**:
-
-- **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## update-memory`.
-- **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## update-memory`.
-
-See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md`.
 
 ---
 

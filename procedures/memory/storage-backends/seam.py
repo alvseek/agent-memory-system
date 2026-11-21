@@ -1,8 +1,14 @@
-"""Seam substitution — the reference implementation.
+"""Seam substitution — the legacy reference implementation.
 
-Each memory procedure carries one ``## Storage Mechanics`` section; serving/preview
-swaps that section's body for a backend's ``## [procedure]`` section — markdown
-mechanics for the native fleet, DB tools for Munnin. Pure text ops.
+Converted procedures are complete single-file documents composed by
+``procedure_composer``; this module remains the adapter for **unconverted** memory
+procedures. Each legacy memory procedure carries one ``## Storage Mechanics`` section;
+serving/preview swaps that section's body for a backend's ``## [procedure]`` section —
+markdown mechanics for the native fleet, DB tools for Munnin. Pure text ops.
+
+A heading-based backend section may now contain named ``region`` blocks. ``extract_section``
+expands them so the legacy consumer receives the same prose and never the directive lines;
+the superseded ``<!-- composed-source: -->`` include is refused.
 
 A procedure may also inline **components** (shared fragments), and a component can
 reference storage ops of its own. Those are defined once under the component's own
@@ -12,7 +18,7 @@ the single body that gets substituted. A backend may also open **every** compose
 procedure with one ``## all-procedures`` section — prose the whole backend owes each
 procedure, such as what a placeholder its ops use means — again written once.
 
-This is the framework's single home for that logic, defined once beside the seam
+This is the framework's single home for the legacy seam logic, defined once beside the
 contract (``README.md``). It is Munnin-agnostic. Every consumer imports it:
 
 - the standalone ``procedures/setup-scripts/compile-procedures.py`` preview tool (this repo);
@@ -31,6 +37,14 @@ STORAGE_MARKER = "## Storage Mechanics"
 # It is prose, never ops: nothing in it can satisfy a `§` reference, and its presence
 # never wires a procedure the backend does not otherwise name.
 PREAMBLE_SECTION = "all-procedures"
+_source_provider_factory = None
+
+
+def configure_source_provider(factory) -> None:
+    """The owning loader supplies its source root; this component never derives it."""
+    global _source_provider_factory
+    _source_provider_factory = factory
+
 
 # The `§` op sigil is KEPT in the composed output — it signals to the reader that a step
 # was provided by the storage backend (a seam swap point), useful provenance.
@@ -42,10 +56,12 @@ _SEAM_XREF = re.compile(r"[ \t]*\(see \[[^\]]*\]\(#storage-mechanics\)\)")
 _SEAM_ANCHOR = re.compile(r"\[([^\]]*)\]\(#storage-mechanics\)")
 
 
-def extract_section(doc: str, title: str) -> str:
+def extract_section(doc: str, title: str, source_provider=None) -> str:
     """Return the body under ``## {title}`` up to the next ``## `` header or EOF.
 
-    Matches the level-2 header exactly. Raises ``KeyError`` if absent.
+    A migrated heading holds named ``region`` blocks; they are expanded in place so a
+    legacy consumer receives the same prose and never the directive lines. The
+    superseded ``<!-- composed-source: -->`` include is refused rather than read.
     """
     lines = doc.splitlines(keepends=True)
     header = f"## {title}"
@@ -61,7 +77,14 @@ def extract_section(doc: str, title: str) -> str:
         if lines[j].startswith("## "):
             end = j
             break
-    return "".join(lines[start:end]).strip("\n")
+    body = "".join(lines[start:end]).strip("\n")
+    if "<!-- composed-source:" in body:
+        raise ValueError("superseded composed-source include; migrate it to a region")
+    if "@start " in body or "@end " in body:
+        from procedure_composer import expand_regions
+
+        body = expand_regions(body, f"<section {title}>")
+    return body.rstrip("\n")
 
 
 def defines_section(doc: str, title: str) -> bool:
@@ -77,7 +100,7 @@ def has_seam(doc: str) -> bool:
 
 
 def compose_backend_section(
-    doc: str, procedure: str, components: Sequence[str] = ()
+    doc: str, procedure: str, components: Sequence[str] = (), source_provider=None
 ) -> str:
     """The backend body for one compiled procedure: its own ``## {procedure}`` section
     followed by a ``## {component}`` section for each component inlined into it — and,
@@ -100,13 +123,13 @@ def compose_backend_section(
             continue
         seen.add(title)
         try:
-            parts.append(extract_section(doc, title))
+            parts.append(extract_section(doc, title, source_provider))
         except KeyError:
             continue
     if not parts:
         raise KeyError(f"backend defines no section for: {procedure}")
     try:
-        parts.insert(0, extract_section(doc, PREAMBLE_SECTION))
+        parts.insert(0, extract_section(doc, PREAMBLE_SECTION, source_provider))
     except KeyError:
         pass  # this backend owes its procedures no preamble
     return "\n\n".join(parts)
@@ -124,6 +147,19 @@ def substitute_storage_mechanics(core: str, backend_section: str) -> str:
     the section up to the next ``## `` header or standalone rule is preserved (so a
     trailing footer note survives). Raises ``KeyError`` if the marker is absent.
     """
+    # A converted component already brought its mechanics in execution order.
+    # Legacy callers may still have a seam; do not append those definitions twice.
+    defined = set(re.findall(r"(?m)^#{1,6}\s*§\s*([a-z][a-z0-9-]*)", core))
+    definitions = list(re.finditer(r"(?m)^#{1,6}\s*§\s*([a-z][a-z0-9-]*)[^\n]*\n", backend_section))
+    for index in range(len(definitions) - 1, -1, -1):
+        match = definitions[index]
+        if match.group(1) in defined:
+            end = (
+                definitions[index + 1].start()
+                if index + 1 < len(definitions)
+                else len(backend_section)
+            )
+            backend_section = backend_section[: match.start()] + backend_section[end:]
     lines = core.splitlines(keepends=True)
     start = None
     for i, line in enumerate(lines):

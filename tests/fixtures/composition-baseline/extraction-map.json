@@ -1,0 +1,764 @@
+[
+  {
+    "id": "caller-context",
+    "source": "storage-backends/markdown.md#all-procedures",
+    "target": "procedures/sections/markdown/caller-context.md",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "id": "caller-context",
+    "source": "storage-backends/db.md#all-procedures",
+    "target": "procedures/sections/db/caller-context.md",
+    "sha256": "826ab2d5278087001df9322b38ac10d072755fa29965f19e26141cf1e5722d5f"
+  },
+  {
+    "id": "awaken-agent.text-001",
+    "source": "procedures/awaken-agent.md",
+    "target": "procedures/sections/shared/awaken-agent.text-001.md",
+    "sha256": "a63cef936f1dde8bfc3e62816232515b1260e0843dbc1703161881f9cdef8b59"
+  },
+  {
+    "id": "awaken-agent.text-002",
+    "source": "procedures/awaken-agent.md",
+    "target": "procedures/sections/shared/awaken-agent.text-002.md",
+    "sha256": "72613dfd7fb30b158b801fa315180add1bb00b47837de4bbf361e3e3cd29d936"
+  },
+  {
+    "id": "awaken-agent.text-003",
+    "source": "procedures/awaken-agent.md",
+    "target": "procedures/sections/shared/awaken-agent.text-003.md",
+    "sha256": "a3ff482615df728c02016ef003b6067f8bd5d1e0120f65b294582c8b0f5ac26e"
+  },
+  {
+    "id": "awaken-agent.text-004",
+    "source": "procedures/awaken-agent.md",
+    "target": "procedures/sections/shared/awaken-agent.text-004.md",
+    "sha256": "fc402b6e94c09e94e6d984f8cb374664e6eae21e47b69c64cdf90cd7fcc179a9"
+  },
+  {
+    "id": "awaken-agent.text-005",
+    "source": "procedures/awaken-agent.md",
+    "target": "procedures/sections/shared/awaken-agent.text-005.md",
+    "sha256": "1625009a7938979fb985066707f417714f0af4dca5fafb2d0e8046cddeee0dcd"
+  },
+  {
+    "id": "wrap-up.text-001",
+    "source": "procedures/wrap-up.md",
+    "target": "procedures/sections/shared/wrap-up.text-001.md",
+    "sha256": "3c0c541bc8bdccd54b459882f0fe9aba36755b48e35d73fe495a13ea778cc242"
+  },
+  {
+    "id": "wrap-up.text-002",
+    "source": "procedures/wrap-up.md",
+    "target": "procedures/sections/shared/wrap-up.text-002.md",
+    "sha256": "fa5c4c10da274d2745a992d34f3d707f1233d6c20dee26465ae7095cb772ef15"
+  },
+  {
+    "id": "wrap-up.text-003",
+    "source": "procedures/wrap-up.md",
+    "target": "procedures/sections/shared/wrap-up.text-003.md",
+    "sha256": "7cc511acc0e7e053de6763376ac8c1234bdac64c847b0f03c8b6064a97266080"
+  },
+  {
+    "id": "wrap-up.text-004",
+    "source": "procedures/wrap-up.md",
+    "target": "procedures/sections/shared/wrap-up.text-004.md",
+    "sha256": "4a763f683cd414d4992297a2227b9522c35dc5b994c76ff8e1bf8c4d5755b076"
+  },
+  {
+    "id": "wrap-up.text-005",
+    "source": "procedures/wrap-up.md",
+    "target": "procedures/sections/shared/wrap-up.text-005.md",
+    "sha256": "1929bce4ba815b9a8fb15232b6b52af862fd831a0baa90456241c9d1e61e3179"
+  },
+  {
+    "id": "wrap-up.persist-store",
+    "source": "storage-backends/markdown.md#wrap-up",
+    "target": "procedures/sections/markdown/wrap-up.persist-store.md",
+    "sha256": "6df2d49de4c2daf9ee4ba3d0a9ca9372c5d9bf8a62e6cacab45d77760d2af10d"
+  },
+  {
+    "id": "wrap-up.persist-store",
+    "source": "storage-backends/db.md#wrap-up",
+    "target": "procedures/sections/db/wrap-up.persist-store.md",
+    "sha256": "8c5a8fe62374b5a7bac5188de664f1ba26f2601b31fedc8b246affa4443f7594"
+  },
+  {
+    "id": "wrap-up.text-006",
+    "source": "procedures/wrap-up.md",
+    "target": "procedures/sections/shared/wrap-up.text-006.md",
+    "sha256": "1ac4c8d5b034a8811301e672702b3632c65d34b37a4300d7f1c9f80bc79658c3"
+  },
+  {
+    "id": "update-memory.text-001",
+    "source": "procedures/memory/update-memory.md",
+    "target": "procedures/sections/shared/update-memory.text-001.md",
+    "sha256": "6b1a3f44aebbf9e3a660116f8189d7f0c0d1ab3d78876f5e46ff780e9be80336"
+  },
+  {
+    "id": "update-memory.text-002",
+    "source": "procedures/memory/update-memory.md",
+    "target": "procedures/sections/shared/update-memory.text-002.md",
+    "sha256": "820baacf381b9b14298e4ee9d98fd2f36a84ed8c9f09d68c2aa6813cd2b73f87"
+  },
+  {
+    "id": "update-memory.text-003",
+    "source": "procedures/memory/update-memory.md",
+    "target": "procedures/sections/shared/update-memory.text-003.md",
+    "sha256": "89a78233be095d5f89f15b4c3601efc54dd70ee008d2781744fc32433faf8243"
+  },
+  {
+    "id": "update-memory.text-004",
+    "source": "procedures/memory/update-memory.md",
+    "target": "procedures/sections/shared/update-memory.text-004.md",
+    "sha256": "4e0a00f25269695c61d22b987d8bf473e48e1d690815ef0f5ba5405fa803fe38"
+  },
+  {
+    "id": "update-memory.detect-mode-scan",
+    "source": "storage-backends/markdown.md#update-memory",
+    "target": "procedures/sections/markdown/update-memory.detect-mode-scan.md",
+    "sha256": "6a504fc255f457be889cea8263c2de467aa656db31f5836896b730a714b8a2b9"
+  },
+  {
+    "id": "update-memory.detect-mode-scan",
+    "source": "storage-backends/db.md#update-memory",
+    "target": "procedures/sections/db/update-memory.detect-mode-scan.md",
+    "sha256": "8923f388cd1550b9e2ab983d1312cd6ff21d6f0233fa3e7a3b3f2f89b2f8c422"
+  },
+  {
+    "id": "update-memory.text-005",
+    "source": "procedures/memory/update-memory.md",
+    "target": "procedures/sections/shared/update-memory.text-005.md",
+    "sha256": "3fb6bf893345a751d3c215f40b114ec34c70b90a343f2a2add4db5c9a0968e72"
+  },
+  {
+    "id": "update-memory.text-006",
+    "source": "procedures/memory/update-memory.md",
+    "target": "procedures/sections/shared/update-memory.text-006.md",
+    "sha256": "15a24e01ebdd5555dfab50196a434037fb7fc35fcdead4538f3131d40ebd60d3"
+  },
+  {
+    "id": "update-memory.text-007",
+    "source": "procedures/memory/update-memory.md",
+    "target": "procedures/sections/shared/update-memory.text-007.md",
+    "sha256": "c3c8e51c0c4d2ac98c10fb05c2b6be88fd76caa313630c9cfa4963ab5ec2667d"
+  },
+  {
+    "id": "update-memory.text-008",
+    "source": "procedures/memory/update-memory.md",
+    "target": "procedures/sections/shared/update-memory.text-008.md",
+    "sha256": "05c76fffef2eab23465c65d6d83de55932e8e7e5a55e2d08f18e7fb6f59c7c60"
+  },
+  {
+    "id": "update-memory.text-009",
+    "source": "procedures/memory/update-memory.md",
+    "target": "procedures/sections/shared/update-memory.text-009.md",
+    "sha256": "e7c48295eb5aebbc92c073ae2fa0f04cd12ea9b3492e24b71f46cd051ac83a77"
+  },
+  {
+    "id": "update-memory.scan-promotion-markers",
+    "source": "storage-backends/markdown.md#update-memory",
+    "target": "procedures/sections/markdown/update-memory.scan-promotion-markers.md",
+    "sha256": "30887cddbc9c06f49788208ad44d4ca96bafe402f43f0fe3f04402a3d30de6ac"
+  },
+  {
+    "id": "update-memory.scan-promotion-markers",
+    "source": "storage-backends/db.md#update-memory",
+    "target": "procedures/sections/db/update-memory.scan-promotion-markers.md",
+    "sha256": "562fdf892857d0c324fdb32ea2947e2eae25ccb02854316132815923adfe518c"
+  },
+  {
+    "id": "update-memory.text-010",
+    "source": "procedures/memory/update-memory.md",
+    "target": "procedures/sections/shared/update-memory.text-010.md",
+    "sha256": "fde02328584b83e3c5a57d44b31e438346403b92a1b4387196e414b8ba938f9d"
+  },
+  {
+    "id": "update-memory.text-011",
+    "source": "procedures/memory/update-memory.md",
+    "target": "procedures/sections/shared/update-memory.text-011.md",
+    "sha256": "43dc053b738d7b327f3e308ab2e2850bc78ff5bcffb54ea0982581405b5f490a"
+  },
+  {
+    "id": "update-memory.text-012",
+    "source": "procedures/memory/update-memory.md",
+    "target": "procedures/sections/shared/update-memory.text-012.md",
+    "sha256": "27b2f6f7f49c05c41c7447066aaf55f779a42a56f5fe97fe4a1c9fdfbbb71b0a"
+  },
+  {
+    "id": "update-memory.text-013",
+    "source": "procedures/memory/update-memory.md",
+    "target": "procedures/sections/shared/update-memory.text-013.md",
+    "sha256": "11821e4266f1fb5a9b0e5a283b4f87493dde5dba73c828b10a145a5e2a81e466"
+  },
+  {
+    "id": "update-memory.text-014",
+    "source": "procedures/memory/update-memory.md",
+    "target": "procedures/sections/shared/update-memory.text-014.md",
+    "sha256": "100b2abf9606e831c096333f9e77f7e6f58a151f18ca45bc7fb8fa282f93debb"
+  },
+  {
+    "id": "update-memory.text-015",
+    "source": "procedures/memory/update-memory.md",
+    "target": "procedures/sections/shared/update-memory.text-015.md",
+    "sha256": "42ed39921ffc96ff2f601124449c923914f1f062f69f7ad7b033d30a469234b6"
+  },
+  {
+    "id": "add-reasoning.text-001",
+    "source": "procedures/memory/add-reasoning.md",
+    "target": "procedures/sections/shared/add-reasoning.text-001.md",
+    "sha256": "412b9d58052efc97c984755a245a2709d4f78687d15d0dd927c0a91811f29585"
+  },
+  {
+    "id": "add-reasoning.text-002",
+    "source": "procedures/memory/add-reasoning.md",
+    "target": "procedures/sections/shared/add-reasoning.text-002.md",
+    "sha256": "d642d925911adfbf4adf4be7afb7d11959b39b7faf5eb5e0bff6def30780c557"
+  },
+  {
+    "id": "add-reasoning.text-003",
+    "source": "procedures/memory/add-reasoning.md",
+    "target": "procedures/sections/shared/add-reasoning.text-003.md",
+    "sha256": "84510538e1f1219d93db464530c5350d61809b050e0839a119d4fa0749266d03"
+  },
+  {
+    "id": "add-reasoning.text-004",
+    "source": "procedures/memory/add-reasoning.md",
+    "target": "procedures/sections/shared/add-reasoning.text-004.md",
+    "sha256": "62d2363e10352bb719c0fdcc0df98cf97daa1798d894ed88bf02619ad9956378"
+  },
+  {
+    "id": "add-reasoning.read-reasoning-store",
+    "source": "storage-backends/markdown.md#add-reasoning",
+    "target": "procedures/sections/markdown/add-reasoning.read-reasoning-store.md",
+    "sha256": "8cdf187a7b3899e330d1ad6a91f78a47d4c6b16142d8023cc41878120c0862d3"
+  },
+  {
+    "id": "add-reasoning.read-reasoning-store",
+    "source": "storage-backends/db.md#add-reasoning",
+    "target": "procedures/sections/db/add-reasoning.read-reasoning-store.md",
+    "sha256": "853fcbfa539974fff2fe5da669771507f68942235b3d6eef700055c3a90b6469"
+  },
+  {
+    "id": "add-reasoning.text-005",
+    "source": "procedures/memory/add-reasoning.md",
+    "target": "procedures/sections/shared/add-reasoning.text-005.md",
+    "sha256": "03ea725afda7b318ddf4063ae055737c9676acc2760f642b9d4346c4895fda1b"
+  },
+  {
+    "id": "add-reasoning.template",
+    "source": "storage-backends/markdown.md#add-reasoning",
+    "target": "procedures/sections/markdown/add-reasoning.template.md",
+    "sha256": "14815496d2a2ce4efa0d190c2e8d71f953b85fe03c438d1cba6f1ef9b8386af5"
+  },
+  {
+    "id": "add-reasoning.template",
+    "source": "storage-backends/db.md#add-reasoning",
+    "target": "procedures/sections/db/add-reasoning.template.md",
+    "sha256": "9066da65a29fa22b6cab6d1e82bba7b70318b42e313380a131dbea3ff23e411f"
+  },
+  {
+    "id": "add-reasoning.text-006",
+    "source": "procedures/memory/add-reasoning.md",
+    "target": "procedures/sections/shared/add-reasoning.text-006.md",
+    "sha256": "332ad7139d2f6e001e81961271ad95356c8a904a90f8e6d876d0898e170566e6"
+  },
+  {
+    "id": "add-reasoning.generate-uuid",
+    "source": "storage-backends/markdown.md#add-reasoning",
+    "target": "procedures/sections/markdown/add-reasoning.generate-uuid.md",
+    "sha256": "4f1c69d0e37431b595caa8d0522eb50e98d4b0f749123994046872a97d83f7a5"
+  },
+  {
+    "id": "add-reasoning.generate-uuid",
+    "source": "storage-backends/db.md#add-reasoning",
+    "target": "procedures/sections/db/add-reasoning.generate-uuid.md",
+    "sha256": "1e936479fc7042ddc54c880cebcff52808069b7f49eba398dac60a3a9eb2c75b"
+  },
+  {
+    "id": "add-reasoning.text-007",
+    "source": "procedures/memory/add-reasoning.md",
+    "target": "procedures/sections/shared/add-reasoning.text-007.md",
+    "sha256": "ba618b05885a8d0843f8b5cc40f279687784cc22b27c0097949b8c3e0ab3e827"
+  },
+  {
+    "id": "add-reasoning.persist-reasoning",
+    "source": "storage-backends/markdown.md#add-reasoning",
+    "target": "procedures/sections/markdown/add-reasoning.persist-reasoning.md",
+    "sha256": "bd74101ef6aaa4995db3c22549acc6fc36037ce404f5a61a0050b78f5f4f48d9"
+  },
+  {
+    "id": "add-reasoning.persist-reasoning",
+    "source": "storage-backends/db.md#add-reasoning",
+    "target": "procedures/sections/db/add-reasoning.persist-reasoning.md",
+    "sha256": "afa8b0aa2e7bd7ccff6ddb7aa87409c15b581e761b067ee857306d96e7ed4348"
+  },
+  {
+    "id": "update-knowledge.text-001",
+    "source": "procedures/memory/update-knowledge.md",
+    "target": "procedures/sections/shared/update-knowledge.text-001.md",
+    "sha256": "3c3eb1d618897f17c828b975f3fb6b2a28b597ee5f863ffa294b3082ec16d19c"
+  },
+  {
+    "id": "update-knowledge.text-002",
+    "source": "procedures/memory/update-knowledge.md",
+    "target": "procedures/sections/shared/update-knowledge.text-002.md",
+    "sha256": "a33c69bd8ec7dbdb29a743d2a76c120d6ae25c6859e1c34aa0ee05e7965bf766"
+  },
+  {
+    "id": "update-knowledge.text-003",
+    "source": "procedures/memory/update-knowledge.md",
+    "target": "procedures/sections/shared/update-knowledge.text-003.md",
+    "sha256": "665cf993b1be2c271792e47b508df0ec476ce169ce1af35fe0ffe48e5b697be7"
+  },
+  {
+    "id": "update-knowledge.text-004",
+    "source": "procedures/memory/update-knowledge.md",
+    "target": "procedures/sections/shared/update-knowledge.text-004.md",
+    "sha256": "287c29754bf37a5fd3a113aae2232796e4f4cdb4224709406aeb1b96796b8438"
+  },
+  {
+    "id": "update-knowledge.text-005",
+    "source": "procedures/memory/update-knowledge.md",
+    "target": "procedures/sections/shared/update-knowledge.text-005.md",
+    "sha256": "7f840493b370f337ed1c5e855ad9d279fc6ea8a4b3f068030d211dd5cd29a7b4"
+  },
+  {
+    "id": "update-knowledge.template",
+    "source": "storage-backends/markdown.md#update-knowledge",
+    "target": "procedures/sections/markdown/update-knowledge.template.md",
+    "sha256": "bad06549bf86c9c2c2b2c717fd31ad0a0570b68365e5c66d38ae38d68b47447c"
+  },
+  {
+    "id": "update-knowledge.template",
+    "source": "storage-backends/db.md#update-knowledge",
+    "target": "procedures/sections/db/update-knowledge.template.md",
+    "sha256": "620119f66bb8b727fc15e4ed854f4443d027dcf053dc764b23e5e642c527740d"
+  },
+  {
+    "id": "update-knowledge.text-006",
+    "source": "procedures/memory/update-knowledge.md",
+    "target": "procedures/sections/shared/update-knowledge.text-006.md",
+    "sha256": "4e2c1bdb6353ad4e6596394fe3aea433069b0be2bac15c45e16c5565fb18711e"
+  },
+  {
+    "id": "update-knowledge.persist-knowledge",
+    "source": "storage-backends/markdown.md#update-knowledge",
+    "target": "procedures/sections/markdown/update-knowledge.persist-knowledge.md",
+    "sha256": "854206259558138e68d76c32fef7c9dafe26c6b9652c65612b99db6c138a83fc"
+  },
+  {
+    "id": "update-knowledge.persist-knowledge",
+    "source": "storage-backends/db.md#update-knowledge",
+    "target": "procedures/sections/db/update-knowledge.persist-knowledge.md",
+    "sha256": "8d6cb6ddbecd8aa8dd00a78c05b4ec9a1ad06e133a249d8382d9b191153d05a4"
+  },
+  {
+    "id": "update-knowledge.text-007",
+    "source": "procedures/memory/update-knowledge.md",
+    "target": "procedures/sections/shared/update-knowledge.text-007.md",
+    "sha256": "58f66f2e29dbdb3e2d9591c734d7b750063d7de18902cbece86d62af7f0f1ac5"
+  },
+  {
+    "id": "update-knowledge.update-knowledge-index",
+    "source": "storage-backends/markdown.md#update-knowledge",
+    "target": "procedures/sections/markdown/update-knowledge.update-knowledge-index.md",
+    "sha256": "ff3a2b5fb61b885890228eba5fc28e56fca0886cd7c4ea0a3e500e37e4f28a2e"
+  },
+  {
+    "id": "update-knowledge.update-knowledge-index",
+    "source": "storage-backends/db.md#update-knowledge",
+    "target": "procedures/sections/db/update-knowledge.update-knowledge-index.md",
+    "sha256": "d89b6587df7d1d3bf75c2d10fad16e5cccc275425f413705b857c82601bb894b"
+  },
+  {
+    "id": "update-episodic.text-001",
+    "source": "procedures/memory/update-episodic.md",
+    "target": "procedures/sections/shared/update-episodic.text-001.md",
+    "sha256": "85da155e3756cf9bfd5dbdd0940a820c3c6327cbecdaee365e83637a30062fc0"
+  },
+  {
+    "id": "update-episodic.text-002",
+    "source": "procedures/memory/update-episodic.md",
+    "target": "procedures/sections/shared/update-episodic.text-002.md",
+    "sha256": "07eb6520455ec24bcadb1ba490102c72bc2baf689843fb25d89a9561135ccbcb"
+  },
+  {
+    "id": "update-episodic.text-003",
+    "source": "procedures/memory/update-episodic.md",
+    "target": "procedures/sections/shared/update-episodic.text-003.md",
+    "sha256": "665cf993b1be2c271792e47b508df0ec476ce169ce1af35fe0ffe48e5b697be7"
+  },
+  {
+    "id": "update-episodic.text-004",
+    "source": "procedures/memory/update-episodic.md",
+    "target": "procedures/sections/shared/update-episodic.text-004.md",
+    "sha256": "dd21dd7743af43133ce74c138711681b22ad1263b02ee02e4bb6291ebb3d6b2c"
+  },
+  {
+    "id": "update-episodic.text-005",
+    "source": "procedures/memory/update-episodic.md",
+    "target": "procedures/sections/shared/update-episodic.text-005.md",
+    "sha256": "6fbb6ec8af490a1fbc805e092151cb175efcbc5bcdb26cdd765e954838aa13cc"
+  },
+  {
+    "id": "update-episodic.stamp-date",
+    "source": "storage-backends/markdown.md#update-episodic",
+    "target": "procedures/sections/markdown/update-episodic.stamp-date.md",
+    "sha256": "cf6a20e1720568effd898c2b1fad38718e8f5254348fe3b9396a2d24fd1054b8"
+  },
+  {
+    "id": "update-episodic.stamp-date",
+    "source": "storage-backends/db.md#update-episodic",
+    "target": "procedures/sections/db/update-episodic.stamp-date.md",
+    "sha256": "0e27b156df66f8f81349da142791fbe799a1902163d06b47e00da8c61a617699"
+  },
+  {
+    "id": "update-episodic.text-006",
+    "source": "procedures/memory/update-episodic.md",
+    "target": "procedures/sections/shared/update-episodic.text-006.md",
+    "sha256": "e9e464f4818ee29a10a8db17b3758ca6aef51f3cebf6627381ae228f911fbe1b"
+  },
+  {
+    "id": "update-episodic.text-007",
+    "source": "procedures/memory/update-episodic.md",
+    "target": "procedures/sections/shared/update-episodic.text-007.md",
+    "sha256": "c9776626467a835a66f1b000efdba4eba279045161218661dc42f276bf2bc35d"
+  },
+  {
+    "id": "update-episodic.list-candidate-episodes",
+    "source": "storage-backends/markdown.md#update-episodic",
+    "target": "procedures/sections/markdown/update-episodic.list-candidate-episodes.md",
+    "sha256": "c8a959929c30a660fe1ce21127daa00172bf34122349dbfebd5c9f7e95affa58"
+  },
+  {
+    "id": "update-episodic.list-candidate-episodes",
+    "source": "storage-backends/db.md#update-episodic",
+    "target": "procedures/sections/db/update-episodic.list-candidate-episodes.md",
+    "sha256": "d10ae125229f75ee7a7e386d4c122788fe92ae343600a8cc6115c3f2690b7b47"
+  },
+  {
+    "id": "update-episodic.reopen-archived-theme",
+    "source": "storage-backends/markdown.md#update-episodic",
+    "target": "procedures/sections/markdown/update-episodic.reopen-archived-theme.md",
+    "sha256": "270c51db3e28d08acd7cfd9553037d5ec15fd0d2f8a477a2551b54010eaa8f25"
+  },
+  {
+    "id": "update-episodic.reopen-archived-theme",
+    "source": "storage-backends/db.md#update-episodic",
+    "target": "procedures/sections/db/update-episodic.reopen-archived-theme.md",
+    "sha256": "99c0dc74bd120b65744329813518b642ec0e06401ab2a5de34b492479ed117a7"
+  },
+  {
+    "id": "update-episodic.text-008",
+    "source": "procedures/memory/update-episodic.md",
+    "target": "procedures/sections/shared/update-episodic.text-008.md",
+    "sha256": "0cac55f405d9ba8c60b85e6f78285808598fd91fdc45e066cec6bba68d05fb30"
+  },
+  {
+    "id": "update-episodic.text-009",
+    "source": "procedures/memory/update-episodic.md",
+    "target": "procedures/sections/shared/update-episodic.text-009.md",
+    "sha256": "1eda2521d1e6f7dba01ffb8440b90f6e22359a1ca996465f07ec03ba9fdc04a4"
+  },
+  {
+    "id": "update-episodic.text-010",
+    "source": "procedures/memory/update-episodic.md",
+    "target": "procedures/sections/shared/update-episodic.text-010.md",
+    "sha256": "b3a55c822f685f30d0859e23ad75ffd107a70279e3bb87b3c9268f4e5656aac4"
+  },
+  {
+    "id": "update-episodic.text-011",
+    "source": "procedures/memory/update-episodic.md",
+    "target": "procedures/sections/shared/update-episodic.text-011.md",
+    "sha256": "9bee50a6c28b157224806712c0f9d09beeeda8cd54648731178862b4de04ec78"
+  },
+  {
+    "id": "update-episodic.template",
+    "source": "storage-backends/markdown.md#update-episodic",
+    "target": "procedures/sections/markdown/update-episodic.template.md",
+    "sha256": "16722ea913b488689bcae97be271ab74aa805ec16735c7e01c6495bbea65073b"
+  },
+  {
+    "id": "update-episodic.template",
+    "source": "storage-backends/db.md#update-episodic",
+    "target": "procedures/sections/db/update-episodic.template.md",
+    "sha256": "8cc63ac3afc69a51e6fe6c7c82aeb437c1d3f02b57701c7fc47d2532e1199c2a"
+  },
+  {
+    "id": "update-episodic.append-sub-episode",
+    "source": "storage-backends/markdown.md#update-episodic",
+    "target": "procedures/sections/markdown/update-episodic.append-sub-episode.md",
+    "sha256": "c9d7c61f5ff2839a6fefe7d021a37650b3614196325e7f00be9fdc0decd8badc"
+  },
+  {
+    "id": "update-episodic.append-sub-episode",
+    "source": "storage-backends/db.md#update-episodic",
+    "target": "procedures/sections/db/update-episodic.append-sub-episode.md",
+    "sha256": "557541542196fffb6cbb85c3ec0ff1bd4261daedd40e153e2a530c43cfaa5325"
+  },
+  {
+    "id": "update-episodic.housekeeping",
+    "source": "storage-backends/markdown.md#update-episodic",
+    "target": "procedures/sections/markdown/update-episodic.housekeeping.md",
+    "sha256": "c9e4e24df13c3b8c0e7ac3310da9f9babc938462490d7cd6c6d21ded74a479a7"
+  },
+  {
+    "id": "update-episodic.housekeeping",
+    "source": "storage-backends/db.md#update-episodic",
+    "target": "procedures/sections/db/update-episodic.housekeeping.md",
+    "sha256": "fd9307696b8dc87957bcec7bb0eaa4891031a69bb2548a98679637033c9544ce"
+  },
+  {
+    "id": "update-episodic.record-theme-state",
+    "source": "storage-backends/markdown.md#update-episodic",
+    "target": "procedures/sections/markdown/update-episodic.record-theme-state.md",
+    "sha256": "334d05e4e2764891700627f6376b69e1368803eabe7faefb907b4084aa9bafd0"
+  },
+  {
+    "id": "update-episodic.record-theme-state",
+    "source": "storage-backends/db.md#update-episodic",
+    "target": "procedures/sections/db/update-episodic.record-theme-state.md",
+    "sha256": "1476309e6aa0f0845ae7e1eb5897eda1baf0fab3e6d27a103336f99933b811aa"
+  },
+  {
+    "id": "update-episodic.text-012",
+    "source": "procedures/memory/update-episodic.md",
+    "target": "procedures/sections/shared/update-episodic.text-012.md",
+    "sha256": "79afcc84d60c4ab75a5287b5710b15a0fed690cc58402929277584bd4e5d463d"
+  },
+  {
+    "id": "update-episodic.create-episode",
+    "source": "storage-backends/markdown.md#update-episodic",
+    "target": "procedures/sections/markdown/update-episodic.create-episode.md",
+    "sha256": "d68cfa26cd6d459001856199901cb189605044b2da5e9a1d20826eee30660733"
+  },
+  {
+    "id": "update-episodic.create-episode",
+    "source": "storage-backends/db.md#update-episodic",
+    "target": "procedures/sections/db/update-episodic.create-episode.md",
+    "sha256": "c74ec1bf5ebaa94a23b7f35cd0d67433cb63e8a936d6814825f62b1805337176"
+  },
+  {
+    "id": "update-episodic.text-013",
+    "source": "procedures/memory/update-episodic.md",
+    "target": "procedures/sections/shared/update-episodic.text-013.md",
+    "sha256": "0a50fb187813db001b8e8829aa9a3e19ccbbd54d0eb351c48053bece57e40b9d"
+  },
+  {
+    "id": "update-episodic.text-014",
+    "source": "procedures/memory/update-episodic.md",
+    "target": "procedures/sections/shared/update-episodic.text-014.md",
+    "sha256": "07a3444315f077de57373c0cfacc0311121b8d17a34c884ef1791c84a23e80a2"
+  },
+  {
+    "id": "update-emotional.text-001",
+    "source": "procedures/memory/update-emotional.md",
+    "target": "procedures/sections/shared/update-emotional.text-001.md",
+    "sha256": "77c96a1213e70b89a39fef7bf17078f849fe920189e1dadb455d4f061dedc925"
+  },
+  {
+    "id": "update-emotional.text-002",
+    "source": "procedures/memory/update-emotional.md",
+    "target": "procedures/sections/shared/update-emotional.text-002.md",
+    "sha256": "0c5b204a74667c5921ebc8abde4e798c045b0aca0d9f450afc74f62f08f1c30e"
+  },
+  {
+    "id": "update-emotional.text-003",
+    "source": "procedures/memory/update-emotional.md",
+    "target": "procedures/sections/shared/update-emotional.text-003.md",
+    "sha256": "665cf993b1be2c271792e47b508df0ec476ce169ce1af35fe0ffe48e5b697be7"
+  },
+  {
+    "id": "update-emotional.text-004",
+    "source": "procedures/memory/update-emotional.md",
+    "target": "procedures/sections/shared/update-emotional.text-004.md",
+    "sha256": "fc2c3dda2033f9645c57491bf9b66a3d5ec1d3d255372f587bcd3416d9dd98db"
+  },
+  {
+    "id": "update-emotional.text-005",
+    "source": "procedures/memory/update-emotional.md",
+    "target": "procedures/sections/shared/update-emotional.text-005.md",
+    "sha256": "15dc980980cb9ae5a619989ef6bf81a10e091743260ddb4d8ee7347ad58b72b5"
+  },
+  {
+    "id": "update-emotional.text-006",
+    "source": "procedures/memory/update-emotional.md",
+    "target": "procedures/sections/shared/update-emotional.text-006.md",
+    "sha256": "52da65e274ac5388d9393cb7f331c2d20796aec7dcd26e6a56142c6593164d1f"
+  },
+  {
+    "id": "update-emotional.stamp-date",
+    "source": "storage-backends/markdown.md#update-emotional",
+    "target": "procedures/sections/markdown/update-emotional.stamp-date.md",
+    "sha256": "7ec1033ccd86f20577938feb877d1b4026a688882e884cd1493605b69cf37b9e"
+  },
+  {
+    "id": "update-emotional.stamp-date",
+    "source": "storage-backends/db.md#update-emotional",
+    "target": "procedures/sections/db/update-emotional.stamp-date.md",
+    "sha256": "babeae4646c906e80cff676725992bd796b734326083b8cb326dbd917b49520c"
+  },
+  {
+    "id": "update-emotional.text-007",
+    "source": "procedures/memory/update-emotional.md",
+    "target": "procedures/sections/shared/update-emotional.text-007.md",
+    "sha256": "b3fad6a19e0e8aa5894b0f955dd1c3ef6facb350c643f0d1712cc21e21d80158"
+  },
+  {
+    "id": "update-emotional.template",
+    "source": "storage-backends/markdown.md#update-emotional",
+    "target": "procedures/sections/markdown/update-emotional.template.md",
+    "sha256": "db0003aca5399bac3aac0d8f297d5afeb9a9ec74d166d6115ba234c86a3047be"
+  },
+  {
+    "id": "update-emotional.template",
+    "source": "storage-backends/db.md#update-emotional",
+    "target": "procedures/sections/db/update-emotional.template.md",
+    "sha256": "5b3f751c3319a3bc391b2e7148a9288d3a15fc4ae439425f49dd7cceec5401aa"
+  },
+  {
+    "id": "update-emotional.text-008",
+    "source": "procedures/memory/update-emotional.md",
+    "target": "procedures/sections/shared/update-emotional.text-008.md",
+    "sha256": "fd2699fe773ef1a9fa628d0f84ca445fd9f5b779326414bcf26a8e3ca180ebe6"
+  },
+  {
+    "id": "update-emotional.persist-emotional",
+    "source": "storage-backends/markdown.md#update-emotional",
+    "target": "procedures/sections/markdown/update-emotional.persist-emotional.md",
+    "sha256": "c2886049ff393d0acb78bcf9eecc2f5587ce364d0dee34a5920a879594840c6c"
+  },
+  {
+    "id": "update-emotional.persist-emotional",
+    "source": "storage-backends/db.md#update-emotional",
+    "target": "procedures/sections/db/update-emotional.persist-emotional.md",
+    "sha256": "28f6cead33f7e2dd10ee73194799ea053709150652b41f3bbbba6c9fc947215d"
+  },
+  {
+    "id": "core-instruction-control-files.text-001",
+    "source": "procedures/components/core-instruction-control-files.md",
+    "target": "procedures/sections/shared/core-instruction-control-files.text-001.md",
+    "sha256": "74dfc090c9597eddeea98aa9824f23e2b77110a48eadca08e20dda7978a34e87"
+  },
+  {
+    "id": "core-instruction-control-files.text-002",
+    "source": "procedures/components/core-instruction-control-files.md",
+    "target": "procedures/sections/shared/core-instruction-control-files.text-002.md",
+    "sha256": "70e9500efe27f4070575094542420104357f768a203e027437f25a0f45d806d7"
+  },
+  {
+    "id": "core-instruction-control-files.load-user-profile",
+    "source": "storage-backends/markdown.md#core-instruction-control-files",
+    "target": "procedures/sections/markdown/core-instruction-control-files.load-user-profile.md",
+    "sha256": "7be5c6c32ae0b4e3a807a9523b774f69cb1e6dcd657013e5ecf10bf95721193b"
+  },
+  {
+    "id": "core-instruction-control-files.load-user-profile",
+    "source": "storage-backends/db.md#core-instruction-control-files",
+    "target": "procedures/sections/db/core-instruction-control-files.load-user-profile.md",
+    "sha256": "e874f4888c284bf20016daf368a427a1edcc7b14b0153ed0d8890e82bd3cd529"
+  },
+  {
+    "id": "core-instruction-control-files.persist-user-profile",
+    "source": "storage-backends/markdown.md#core-instruction-control-files",
+    "target": "procedures/sections/markdown/core-instruction-control-files.persist-user-profile.md",
+    "sha256": "70cc3e085f4d5479769b837eb578db3c7a49d1fa23bcf39a0792919391abbfd5"
+  },
+  {
+    "id": "core-instruction-control-files.persist-user-profile",
+    "source": "storage-backends/db.md#core-instruction-control-files",
+    "target": "procedures/sections/db/core-instruction-control-files.persist-user-profile.md",
+    "sha256": "242e00dd44baae47cb3f62c58dec2bd61240f541e2cc75a6f34b4d46321049b0"
+  },
+  {
+    "id": "core-instruction-control-files.recover-missing-foundations",
+    "source": "storage-backends/markdown.md#core-instruction-control-files",
+    "target": "procedures/sections/markdown/core-instruction-control-files.recover-missing-foundations.md",
+    "sha256": "3aaa275b04b33842c72c69ce5672d70b5e3a46f04c19ba6aefdcf5954caf68aa"
+  },
+  {
+    "id": "core-instruction-control-files.recover-missing-foundations",
+    "source": "storage-backends/db.md#core-instruction-control-files",
+    "target": "procedures/sections/db/core-instruction-control-files.recover-missing-foundations.md",
+    "sha256": "eadf0a9a114bc8ebae3787be83a95ecb8034333af98f26d21f020e5a84af567e"
+  },
+  {
+    "id": "core-instruction-control-files.text-003",
+    "source": "procedures/components/core-instruction-control-files.md",
+    "target": "procedures/sections/shared/core-instruction-control-files.text-003.md",
+    "sha256": "10799b06d0ccc8a1849a80436a6f2d35557be4b51ceabd69fdd3f65152e619ae"
+  },
+  {
+    "id": "core-instruction-control-files.load-latest-episode",
+    "source": "storage-backends/markdown.md#core-instruction-control-files",
+    "target": "procedures/sections/markdown/core-instruction-control-files.load-latest-episode.md",
+    "sha256": "4770581373882f06b81879c5822a8568ea6495fddc3bc7f0cad09eed42b2a008"
+  },
+  {
+    "id": "core-instruction-control-files.load-latest-episode",
+    "source": "storage-backends/db.md#core-instruction-control-files",
+    "target": "procedures/sections/db/core-instruction-control-files.load-latest-episode.md",
+    "sha256": "c0be3be6637f4339fb706be22fe278f7428955a5116b3c10e05d09d10184779d"
+  },
+  {
+    "id": "core-instruction-control-files.oversized-memory-warning",
+    "source": "storage-backends/markdown.md#core-instruction-control-files",
+    "target": "procedures/sections/markdown/core-instruction-control-files.oversized-memory-warning.md",
+    "sha256": "d00509365b9c43bb18f381b1d98903e0f3be1a8273b03b5530072ab57a11bb54"
+  },
+  {
+    "id": "core-instruction-control-files.oversized-memory-warning",
+    "source": "storage-backends/db.md#core-instruction-control-files",
+    "target": "procedures/sections/db/core-instruction-control-files.oversized-memory-warning.md",
+    "sha256": "35912f8b66640f92a0dce81821d28d097de99ee891c72bd7f7386c87796eb2fb"
+  },
+  {
+    "id": "core-instruction-control-files.text-004",
+    "source": "procedures/components/core-instruction-control-files.md",
+    "target": "procedures/sections/shared/core-instruction-control-files.text-004.md",
+    "sha256": "689e8c7ea27cecabaee64a8521ae69b9fcf292a06fedae67d2a663eabe86f799"
+  },
+  {
+    "id": "core-instruction-control-files.text-005",
+    "source": "procedures/components/core-instruction-control-files.md",
+    "target": "procedures/sections/shared/core-instruction-control-files.text-005.md",
+    "sha256": "61fff40a0b226154286b333d0842a558c92917bd27a03479f48b852c75f4d109"
+  },
+  {
+    "id": "core-instruction-control-files.text-006",
+    "source": "procedures/components/core-instruction-control-files.md",
+    "target": "procedures/sections/shared/core-instruction-control-files.text-006.md",
+    "sha256": "2849d1b53b1e2979e67ae706e7dd9944a814b176481aa2702718c7b472831428"
+  },
+  {
+    "id": "core-instruction-control-files.text-007",
+    "source": "procedures/components/core-instruction-control-files.md",
+    "target": "procedures/sections/shared/core-instruction-control-files.text-007.md",
+    "sha256": "85b33bb51a534441715f8acecf3ea630fbefa56f45ae75f7f073367c52f92f5f"
+  },
+  {
+    "id": "core-instruction-control-files.text-008",
+    "source": "procedures/components/core-instruction-control-files.md",
+    "target": "procedures/sections/shared/core-instruction-control-files.text-008.md",
+    "sha256": "a0269a8ffeb8249098206d3e6fad1c32144c515d7203f1015377165a23e7890d"
+  },
+  {
+    "id": "core-instruction-control-files.load-agent-memory",
+    "source": "storage-backends/markdown.md#core-instruction-control-files",
+    "target": "procedures/sections/markdown/core-instruction-control-files.load-agent-memory.md",
+    "sha256": "9cbd071ba7fcd22b3e07751fe8037d2400debcc8b33c18af69d561721b811c5b"
+  },
+  {
+    "id": "core-instruction-control-files.load-agent-memory",
+    "source": "storage-backends/db.md#core-instruction-control-files",
+    "target": "procedures/sections/db/core-instruction-control-files.load-agent-memory.md",
+    "sha256": "0c33c63e8a27c1b829aa749e4f966529349ad45b43290a135740fe9f2b503ece"
+  },
+  {
+    "id": "no-subagent-load.text-001",
+    "source": "procedures/components/no-subagent-load.md",
+    "target": "procedures/sections/shared/no-subagent-load.text-001.md",
+    "sha256": "50619006f9f7e343a330cc52f1a951a9b1f14ecdae7a7b7c4725f242681be3a5"
+  }
+]

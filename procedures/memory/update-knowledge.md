@@ -1,6 +1,17 @@
++++
+format_version = 2
+id = "update-knowledge"
+kind = "procedure"
+title = "Update Knowledge Memory Protocol"
+description = "Capture domain expertise, technical patterns, research findings, and best practices that enhance agent capabilities. *How* the knowledge store + index are written is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics))."
+argument_name = "context"
+argument_description = "Input described in the procedure's Arguments section"
++++
+@start storage id="caller-context" ref="procedures/memory/storage-backends/{backend}.md" target="caller-context"
+@end storage
 # Update Knowledge Memory Protocol
 
-Capture domain expertise, technical patterns, research findings, and best practices that enhance agent capabilities. *How* the knowledge store + index are written is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics)).
+Capture domain expertise, technical patterns, research findings, and best practices that enhance agent capabilities. *How* the knowledge store + index are written is delegated to the active **storage backend**.
 
 ## Arguments
 
@@ -44,13 +55,17 @@ Compose the entry using the knowledge-file template (**§ template**).
 - Reference specific examples or case studies
 - Distinguish between proven practices and experimental approaches
 
+@start storage id="update-knowledge.template" ref="procedures/memory/storage-backends/{backend}.md" target="update-knowledge.template"
+@end storage
 ### Step 3: Persist
 
 Persist the composed entry into the knowledge store (**§ persist-knowledge**).
 
-### Step 4: Register in the Knowledge Index
+@start storage id="update-knowledge.persist-knowledge" ref="procedures/memory/storage-backends/{backend}.md" target="update-knowledge.persist-knowledge"
+@end storage
+### Step 4: Confirm Knowledge Discoverability
 
-Add an entry to the knowledge directory for discoverability (**§ update-knowledge-index**). Consider whether new knowledge should be core vs. specialized.
+Ensure the entry is discoverable through the knowledge directory (**§ update-knowledge-index**). Consider whether new knowledge should be core vs. specialized.
 
 **Cross-Reference Standards:**
 - Use markdown links for all file references: `[Pattern Name](file.md)`
@@ -59,11 +74,5 @@ Add an entry to the knowledge directory for discoverability (**§ update-knowled
 
 ---
 
-## Storage Mechanics
-
-The operations referenced above — **§ persist-knowledge**, **§ update-knowledge-index**, **§ template** — are defined by the **active storage backend**:
-
-- **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## update-knowledge`.
-- **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## update-knowledge`.
-
-See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md`.
+@start storage id="update-knowledge.update-knowledge-index" ref="procedures/memory/storage-backends/{backend}.md" target="update-knowledge.update-knowledge-index"
+@end storage

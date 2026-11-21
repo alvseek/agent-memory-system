@@ -1,6 +1,17 @@
++++
+format_version = 2
+id = "update-episodic"
+kind = "procedure"
+title = "Update Episodic Memory Protocol"
+description = "Capture session context as **rolling per-theme episodes**. The default flow scans active (non-archived) episodes for the current project, finds theme matches, and appends a dated sub-episode to the matching one — or creates a new episode if none matches. *How* episodes are physically listed / created / appended is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics))."
+argument_name = "mode"
+argument_description = "Input described in the procedure's Arguments section"
++++
+@start storage id="caller-context" ref="procedures/memory/storage-backends/{backend}.md" target="caller-context"
+@end storage
 # Update Episodic Memory Protocol
 
-Capture session context as **rolling per-theme episodes**. The default flow scans active (non-archived) episodes for the current project, finds theme matches, and appends a dated sub-episode to the matching one — or creates a new episode if none matches. *How* episodes are physically listed / created / appended is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics)).
+Capture session context as **rolling per-theme episodes**. The default flow scans active (non-archived) episodes for the current project, finds theme matches, and appends a dated sub-episode to the matching one — or creates a new episode if none matches. *How* episodes are physically listed / created / appended is delegated to the active **storage backend**.
 
 ## Arguments
 
@@ -19,8 +30,10 @@ Capture session context as **rolling per-theme episodes**. The default flow scan
 
 #### Step 1: Stamp the Time
 
-Obtain the current date+time for the sub-episode H3 header and index-entry placement (**§ stamp-date**).
+Obtain the current date+time for the sub-episode H3 header (**§ stamp-date**).
 
+@start storage id="update-episodic.stamp-date" ref="procedures/memory/storage-backends/{backend}.md" target="update-episodic.stamp-date"
+@end storage
 #### Step 2: Identify Project + Theme
 
 Determine:
@@ -37,6 +50,10 @@ If no candidates → skip to Step 6 (Create branch).
 >
 > **The one exception, and only on request**: when the user names a theme that is not in the active list because they are continuing it, look for it among the archived episodes before creating a second record for the same theme. Reopening is a deliberate action, never a scan behaviour: it clears the `finished` marker and returns the record to the active set (**§ reopen-archived-theme**), and the block then appends normally. A theme that is genuinely finished gets a successor file instead (Step 6, Create branch).
 
+@start storage id="update-episodic.list-candidate-episodes" ref="procedures/memory/storage-backends/{backend}.md" target="update-episodic.list-candidate-episodes"
+@end storage
+@start storage id="update-episodic.reopen-archived-theme" ref="procedures/memory/storage-backends/{backend}.md" target="update-episodic.reopen-archived-theme"
+@end storage
 #### Step 4: Match Heuristic
 
 For each candidate, score theme overlap:
@@ -102,6 +119,14 @@ Wait for response. Auto-default to **A** only if confidence is high (≥3 strong
 
 ---
 
+@start storage id="update-episodic.template" ref="procedures/memory/storage-backends/{backend}.md" target="update-episodic.template"
+@end storage
+@start storage id="update-episodic.append-sub-episode" ref="procedures/memory/storage-backends/{backend}.md" target="update-episodic.append-sub-episode"
+@end storage
+@start storage id="update-episodic.housekeeping" ref="procedures/memory/storage-backends/{backend}.md" target="update-episodic.housekeeping"
+@end storage
+@start storage id="update-episodic.record-theme-state" ref="procedures/memory/storage-backends/{backend}.md" target="update-episodic.record-theme-state"
+@end storage
 ### Create New Episode
 
 1. **Compose the first sub-episode block** using the sub-episode-block template (**§ template**). The H3 header includes the stamped date+time.
@@ -112,6 +137,8 @@ Wait for response. Auto-default to **A** only if confidence is high (≥3 strong
 
 ---
 
+@start storage id="update-episodic.create-episode" ref="procedures/memory/storage-backends/{backend}.md" target="update-episodic.create-episode"
+@end storage
 ### Force New Episode
 
 `/update-episodic new` bypasses the scan + heuristic + confirm flow. Execute [Create New Episode](#create-new-episode) directly. Use when:
@@ -135,11 +162,3 @@ Because both branches compose these lists before writing them, a caller never ha
 
 ---
 
-## Storage Mechanics
-
-The operations referenced above — **§ stamp-date**, **§ list-candidate-episodes**, **§ append-sub-episode**, **§ create-episode**, **§ record-theme-state**, **§ reopen-archived-theme**, **§ housekeeping**, **§ template** — are defined by the **active storage backend**:
-
-- **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## update-episodic`.
-- **DB (Munnin)** — served automatically; the equivalents live in `[STORAGE-BACKENDS-PATH]/db.md` → section `## update-episodic`.
-
-See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md` for how this swap works.

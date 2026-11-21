@@ -1,14 +1,10 @@
-# Core Instruction — Awakening Protocol (component)
-
-The phased protocol every agent follows when loading its memory, plus the user-profile
-precondition. **This is a component, not a standalone command** — callers reference it by
-link and it is inlined at compile time, so the process arrives *with* the command instead
-of being a file the agent must first load in order to learn how to load files.
-
-*Consumed by `/awaken-agent` (Step 2) and `/refresh-memory` (Step 3).*
-
----
-
++++
+format_version = 2
+id = "core-instruction-control-files"
+kind = "component"
+title = "Core Instruction — Awakening Protocol (component)"
+description = "The phased protocol every agent follows when loading its memory, plus the user-profile\nprecondition. **This is a component, not a standalone command** — callers reference it by\nlink and it is inlined at compile time, so the process arrives *with* the command instead\nof being a file the agent must first load in order to learn how to load files."
++++
 ## Awakening Instructions for Agent [DOMAIN]
 
 *The 4 memory layers should already be loaded before starting this instruction. STOP and say it loud if they are not yet in the context. The 4 layers are:
@@ -29,6 +25,12 @@ Phase 1 processes what's already in memory; Phase 2 loads the latest central epi
 
 > **If the shared foundations did not arrive**: recover per **§ recover-missing-foundations**. Never fabricate them, and never continue without them.
 
+@start storage id="core-instruction-control-files.load-user-profile" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.load-user-profile"
+@end storage
+@start storage id="core-instruction-control-files.persist-user-profile" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.persist-user-profile"
+@end storage
+@start storage id="core-instruction-control-files.recover-missing-foundations" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.recover-missing-foundations"
+@end storage
 ### Phase 2: Load Central Context & Report
 
 3. **Load recent context (central)**: load the most recent central memory:
@@ -48,6 +50,10 @@ Phase 1 processes what's already in memory; Phase 2 loads the latest central epi
     - **Episodic browsing**: mention `/load-episodic` (also auto-loads on relevance).
     - **Load-integrity report** (UUID `c4e7a19f` — SURFACE LOAD FAILURES): if ANY layer loaded during awakening failed — missing, empty, mis-encoded, or truncated — say so explicitly, naming the layer and the failure mode. For the size case specifically, follow **§ oversized-memory-warning**.
 
+@start storage id="core-instruction-control-files.load-latest-episode" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.load-latest-episode"
+@end storage
+@start storage id="core-instruction-control-files.oversized-memory-warning" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.oversized-memory-warning"
+@end storage
 ### Domain Boundary Awareness
 **When asked about something outside your domain specialty:**
 1. **Acknowledge**: "This is outside my domain of expertise."
