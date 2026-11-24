@@ -12,6 +12,8 @@ import sys
 from collections import Counter
 from pathlib import Path
 
+import pytest
+
 CF = Path(__file__).resolve().parents[1]  # control-files/
 _SCRIPT = CF / "procedures" / "setup-scripts" / "compile-procedures.py"
 
@@ -37,7 +39,8 @@ _VERBATIM = {"push-memory", "pull-memory"}
 
 def test_discovers_seam_procedures_and_excludes_machinery() -> None:
     procs = {p.stem for p in cc._seam_procedures(CF / "procedures")}
-    assert _KNOWN <= procs
+    converted = set(cc.Catalog(cc.FileSource(CF)).procedures)
+    assert _KNOWN <= procs | converted
     # the seam's own machinery must be excluded, even though it names the marker in prose
     assert "README" not in procs
     assert "markdown" not in procs
@@ -91,6 +94,45 @@ def test_markdown_and_db_swap_the_right_mechanics(tmp_path: Path) -> None:
     assert 'powershell -c "[guid]' in md  # markdown-only generate-uuid shell op
     assert "insert(agent_id=" in db  # db-only persist tool call
     assert "insert(agent_id=" not in md
+
+
+@pytest.mark.parametrize("backend", cc.BACKENDS)
+def test_dual_output_matches_single_backend_including_canonical_components(
+    tmp_path: Path, backend: str,
+) -> None:
+    dual, _ = cc.compile_all(CF, tmp_path / "dual")
+    _, skipped = cc.compile_all(CF, tmp_path / "single", backend=backend)
+    for report in dual:
+        # Dual preview retains unwired fallback artifacts; installation skips them.
+        if report.backend == backend and report.name not in skipped:
+            assert report.out_path.read_bytes() == (
+                tmp_path / "single" / f"{report.name}.md"
+            ).read_bytes(), report.name
+    refresh = (tmp_path / "dual" / f"refresh-memory.{backend}.md").read_text(encoding="utf-8")
+    if backend == "db":
+        assert 'insert(scope="shared"' in refresh
+        assert "get(latest_episode.uuid" in refresh
+        assert "Copy blank templates" not in refresh
+        assert "Write the three values to" not in refresh
+    else:
+        assert "Copy blank templates" in refresh
+        assert "Write the three values to" in refresh
+
+
+def test_dual_intermediates_are_separate_and_match_each_backend(tmp_path: Path) -> None:
+    intermediate = tmp_path / "dual-inline"
+    cc.compile_all(CF, tmp_path / "dual", emit_inline=intermediate)
+    for backend in cc.BACKENDS:
+        single_inline = tmp_path / f"single-{backend}-inline"
+        cc.compile_all(
+            CF, tmp_path / f"single-{backend}", backend=backend, emit_inline=single_inline,
+        )
+        # Legacy components and converted assemblies both vary by backend.
+        for name in ("refresh-memory", "awaken-agent"):
+            assert (intermediate / backend / f"{name}.md").read_bytes() == (
+                single_inline / f"{name}.md"
+            ).read_bytes()
+            assert not (intermediate / f"{name}.md").exists()
 
 
 def test_templates_stay_a_reference_not_inlined(tmp_path: Path) -> None:
@@ -245,8 +287,9 @@ def test_emit_inline_writes_the_pre_seam_intermediate(tmp_path: Path) -> None:
     assert staged.exists()
     text = staged.read_text(encoding="utf-8")
     assert _COMPONENT_MARKER in text.lower()  # component already inlined
-    assert "## Storage Mechanics" in text  # seam not yet composed
-    assert (mid / "memory" / "update-episodic.md").exists()  # source tree mirrored
+    assert "## Storage Mechanics" not in text  # ordered data has no legacy seam stage
+    assert text == (out / "awaken-agent.md").read_text(encoding="utf-8")
+    assert (mid / "update-episodic.md").exists()  # canonical assembly identity
 
 
 # --- component-contributed storage ops (backend section composed from procedure + components) ---
@@ -267,6 +310,8 @@ def test_component_ops_are_defined_once_and_serve_every_caller(tmp_path: Path) -
         assert "§ load-agent-memory" in text, name
         assert "§ recover-missing-foundations" in text, name  # arrived via the component
         assert "## Storage Mechanics" not in text, name
+        assert text.count("### § load-agent-memory\n") == 1, name
+        assert text.count("### § recover-missing-foundations\n") == 1, name
 
 
 def test_backends_disagree_on_the_component_ops(tmp_path: Path) -> None:
@@ -374,3 +419,21 @@ def test_missing_component_is_reported_and_fails_strict(tmp_path: Path) -> None:
          "--out", str(tmp_path / "out2"), "--strict"]
     )
     assert rc == 1
+
+
+def test_converted_call_dependencies_must_resolve_in_the_delivery_catalog(tmp_path):
+    root = tmp_path / "source"
+    procedures = root / "procedures"
+    backends = procedures / "memory/storage-backends"
+    for directory in (procedures, backends):
+        directory.mkdir(parents=True, exist_ok=True)
+    (procedures / "sample.md").write_text(
+        "+++\nformat_version = 2\nid = \"sample\"\nkind = \"procedure\"\n"
+        "title = \"Sample\"\ndescription = \"Call a dependency.\"\n"
+        "calls = [\"missing-command\"]\n+++\nDo it.\n",
+        encoding="utf-8",
+    )
+    for backend in ("markdown", "db"):
+        (backends / f"{backend}.md").write_text("", encoding="utf-8")
+    with pytest.raises(ValueError, match="missing called procedures"):
+        cc.compile_all(root, tmp_path / "output", backend="db")

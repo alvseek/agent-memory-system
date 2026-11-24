@@ -1,19 +1,21 @@
-"""Component inlining — the reference implementation.
+"""Component expansion — the reference implementation.
 
 A **component** is a reusable procedural fragment under ``procedures/components/``.
-It is never installed as a slash command and never served on its own: a procedure
-references one by markdown link, and at delivery the link is replaced by its label
-text and the component's body is inserted right after. The delivered procedure is
-therefore self-contained — it carries no reference to a file the agent cannot reach.
+It is never installed as a slash command and never served on its own: converted
+procedures reference one with an ``@start component`` pair, and the composer expands its
+complete body. An unconverted legacy caller may still reference one by markdown link;
+that link is replaced by its label text and the component's composed body is inserted
+right after. The delivered procedure is therefore self-contained — it carries no
+reference to a file the agent cannot reach.
 
 Reference form (the path prefix is free — relative for dev-time click-through, or a
 placeholder path; only the ``components/<name>.md`` tail is matched)::
 
     [🚨 **Load-into-own-context rule**](components/no-subagent-load.md)
 
-This is the framework's single home for that logic, defined once beside the components
-it serves — the same rule ``seam.py`` follows for the storage seam. Every consumer
-imports it rather than keeping a copy:
+This is the framework's single home for the legacy adapter, defined once beside the
+components it serves — the same rule ``seam.py`` follows for the storage seam. Every
+consumer imports it rather than keeping a copy:
 
 - the standalone ``procedures/setup-scripts/compile-procedures.py`` tool, which produces
   the installed slash commands;
@@ -33,6 +35,13 @@ from pathlib import Path
 # `[label](<anything>/components/<name>.md)` — the prefix is ignored so a relative
 # dev-time link and a placeholder-rooted one both resolve to the same component.
 _COMPONENT_LINK = re.compile(r"\[([^\]]*)\]\((?:[^)\s]*/)?components/([a-z][a-z0-9-]*)\.md\)")
+_source_provider_factory = None
+
+
+def configure_source_provider(factory) -> None:
+    """Inject the owning content tree instead of deriving it from a component path."""
+    global _source_provider_factory
+    _source_provider_factory = factory
 
 
 def component_body(text: str) -> str:
@@ -53,7 +62,12 @@ def component_body(text: str) -> str:
 
 
 def inline_components(
-    text: str, components_dir: Path, _stack: tuple[str, ...] = ()
+    text: str,
+    components_dir: Path,
+    _stack: tuple[str, ...] = (),
+    *,
+    backend: str = "markdown",
+    source_provider=None,
 ) -> tuple[str, list[str], list[str]]:
     """Inline every component reference in ``text`` at its reference point.
 
@@ -86,11 +100,27 @@ def inline_components(
             if not path.is_file():
                 missing.append(name)
                 continue
-            body, sub_missing, sub_used = inline_components(
-                component_body(path.read_text(encoding="utf-8")),
-                components_dir,
-                _stack + (name,),
-            )
+            raw = path.read_text(encoding="utf-8")
+            if raw.startswith("+++"):
+                from procedure_composer import compose
+
+                provider = source_provider
+                if provider is None:
+                    if _source_provider_factory is None:
+                        raise ValueError("canonical components need an injected source provider")
+                    provider = _source_provider_factory()
+                body = compose(name, backend, provider).text
+                sub_missing, sub_used = [], []
+            elif raw.startswith("<!-- composed-component:"):
+                raise ValueError(f"superseded composed-component pointer: {path}")
+            else:
+                body, sub_missing, sub_used = inline_components(
+                    component_body(raw),
+                    components_dir,
+                    _stack + (name,),
+                    backend=backend,
+                    source_provider=source_provider,
+                )
             missing.extend(sub_missing)
             used.extend(sub_used)
             used.append(name)

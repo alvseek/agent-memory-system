@@ -36,6 +36,8 @@ done
 # time (their prose ships inside the core, so it is core), and the compiled core memory
 while IFS= read -r f; do CORE_FILES+=("$f"); done < <(find "$ROOT/procedures/memory" -name '*.md')
 while IFS= read -r f; do CORE_FILES+=("$f"); done < <(find "$ROOT/procedures/components" -name '*.md' 2>/dev/null || true)
+while IFS= read -r f; do CORE_FILES+=("$f"); done < <(find "$ROOT/procedures/sections" -name '*.md' 2>/dev/null || true)
+while IFS= read -r f; do CORE_FILES+=("$f"); done < <(find "$ROOT/procedures/assemblies" -name '*.toml' 2>/dev/null || true)
 while IFS= read -r f; do CORE_FILES+=("$f"); done < <(find "$ROOT/core-memory" -maxdepth 1 -name '*.md' 2>/dev/null || true)
 
 # --- Add-on procedure names the core must NOT reference ---

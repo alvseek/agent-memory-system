@@ -1,6 +1,17 @@
++++
+format_version = 2
+id = "update-emotional"
+kind = "procedure"
+title = "Update Emotional Memory Protocol"
+description = "Capture significant emotional experiences that shape our partnership and agent development journey. *How* the emotional store is written is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics))."
+argument_name = "moment_type"
+argument_description = "Input described in the procedure's Arguments section"
++++
+@start storage id="caller-context" ref="procedures/memory/storage-backends/{backend}.md" target="caller-context"
+@end storage
 # Update Emotional Memory Protocol
 
-Capture significant emotional experiences that shape our partnership and agent development journey. *How* the emotional store is written is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics)).
+Capture significant emotional experiences that shape our partnership and agent development journey. *How* the emotional store is written is delegated to the active **storage backend**.
 
 ## Arguments
 
@@ -31,6 +42,8 @@ Determine which emotional template to use:
 
 Verify the current date+time before writing (**§ stamp-date**).
 
+@start storage id="update-emotional.stamp-date" ref="procedures/memory/storage-backends/{backend}.md" target="update-emotional.stamp-date"
+@end storage
 #### Step 3: Compose the Moment
 
 Compose the entry using the matching block from the emotional-moment template (**§ template**). Ensure it captures:
@@ -40,17 +53,13 @@ Compose the entry using the matching block from the emotional-moment template (*
 - [USER-NAME]'s reaction (if applicable)
 - Why this moment was significant
 
+@start storage id="update-emotional.template" ref="procedures/memory/storage-backends/{backend}.md" target="update-emotional.template"
+@end storage
 #### Step 4: Persist
 
 Persist the composed moment into the emotional store, **newest first** (**§ persist-emotional**).
 
 ---
 
-## Storage Mechanics
-
-The operations referenced above — **§ stamp-date**, **§ persist-emotional**, **§ template** — are defined by the **active storage backend**:
-
-- **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## update-emotional`.
-- **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## update-emotional`.
-
-See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md`.
+@start storage id="update-emotional.persist-emotional" ref="procedures/memory/storage-backends/{backend}.md" target="update-emotional.persist-emotional"
+@end storage

@@ -15,9 +15,13 @@ package = false
 
 [dependency-groups]
 dev = [
+    "procedure-composer==0.2.0",
     "pytest>=9.1.1",
     "ruff>=0.16.2",
 ]
+
+[tool.uv.sources]
+procedure-composer = { path = "packages/procedure-composer" }
 
 [tool.ruff]
 line-length = 100

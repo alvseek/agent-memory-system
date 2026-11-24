@@ -1,3 +1,15 @@
++++
+format_version = 2
+id = "wrap-up"
+kind = "procedure"
+title = "Wrap Up Session"
+description = "End-of-session **memory** orchestrator: update memory → persist the store → report. Capturing a session and saving it are one job here rather than two — the procedure writes the memory layers and then commits whatever the active storage backend needs committing, so a session never ends with its own record written but unsaved."
+argument_name = "mode"
+argument_description = "Input described in the procedure's Arguments section"
+calls = { markdown = ["update-memory", "push-memory"], db = ["update-memory"] }
++++
+@start storage id="caller-context" ref="procedures/memory/storage-backends/{backend}.md" target="caller-context"
+@end storage
 # Wrap Up Session
 
 End-of-session **memory** orchestrator: update memory → persist the store → report. Capturing a session and saving it are one job here rather than two — the procedure writes the memory layers and then commits whatever the active storage backend needs committing, so a session never ends with its own record written but unsaved.
@@ -34,65 +46,24 @@ Save what Step 1 just wrote (**§ persist-store**). What that costs depends on t
 
 Capture that outcome for Step 3: whether everything in scope is committed AND pushed (per repo, where the backend has repos), plus any failure reason.
 
+@start storage id="wrap-up.persist-store" ref="procedures/memory/storage-backends/{backend}.md" target="wrap-up.persist-store"
+@end storage
 ### Step 3: Wrap-Up Report (only visible output)
 
-**Completion gate** (per NO TODOS LEFT BEHIND, UUID a1b2c3d4): the wrap-up is complete only when Step 2's outcome says this session's memory is persisted. A backend that is durable at write time passes trivially. A git-backed store passes only when nothing in scope is dirty and no branch carrying this agent's commits is ahead of its remote. In `agent` mode another agent's dirty files are expected, reported, and never a failure.
+**Completion gate** (UUID a1b2c3d4): report completion only when Step 2 confirms this session's memory is persisted. Apply the selected backend's persistence and failure rules below.
 
 **On success**, print this block:
 
-```
-Wrap-up complete (mode: [agent / all] · [fresh / delta from CUTOFF]):
-
-Memory update:
-- Phase 1 — Promoted artifacts: project context: [updated/created — file / skipped] / reasoning: [added — pattern name / skipped] / knowledge: [added — entry name / skipped]
-- Phase 2 — Session captured: [appended to / created] [name] ([timestamp]) — [brief theme]; carry-forward: [N items / N/A]; promotions: [N markers / none]
-- Phase 3 — Feeling captured: emotional [captured — polarity + clearest criterion / skipped — brief reason]
-
-Memory persisted — print the line matching this backend, not both:
-- (git-backed store) [repo]: ✅ [commit-hash] pushed / no changes [— agent mode: other agents' files left untouched]
-- (store durable at write time) ✅ nothing to push — the write was already saved
-
-📋 Open items going forward:
-
-Tech debts:
-- [item 1]
-(or "None declared")
-
-Next steps:
-- [item 1]
-(or "None declared")
-```
+@start storage id="wrap-up.report" ref="procedures/memory/storage-backends/{backend}.md" target="wrap-up.report" applies_to="markdown"
+@end storage
+@start storage id="wrap-up.report-db" ref="procedures/memory/storage-backends/{backend}.md" target="wrap-up.report-db" applies_to="db"
+@end storage
 
 If both Tech Debts and Next Steps are empty → replace both lists with *"No open items declared from this session."*
 
-**On failure** (Step 2's outcome reports anything of this agent's still uncommitted or unpushed) — do NOT print "complete". Print this block instead:
-
-```
-🚨 WRAP-UP INCOMPLETE — MEMORY NOT SAVED. NEED CONFIRMATION.
-
-[Memory update / Open items sections — same as above]
-
-Memory persisted — FAILED / INCOMPLETE:
-- [repo]: ⚠️ [uncommitted N file(s) / branch ahead by N / push error: <reason>]
-
-⚠️ This session's memory is written but NOT saved to the remote. What remains, and where:
-- [repo → which path is uncommitted or unpushed]
-(In `agent` mode another agent's dirty files are expected and are NOT listed here.)
-
-Retry the persistence, or resolve the blocker, before leaving — the wrap-up is complete only when this session's memory is committed AND pushed.
-```
-
----
-
-## Storage Mechanics
-
-The operation referenced above — **§ persist-store** — is defined by the **active storage backend**:
-
-- **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## wrap-up`.
-- **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## wrap-up`.
-
-See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md`.
 
 ---
 
 > **Working in a repo as well?** This wrap-up saves memory and nothing else. If a coding/environment add-on is installed, use its fuller project wrap-up instead — it pushes the project's work first so a merge request can open without waiting, runs this memory update, refreshes the orientation map, and gates on both pushes together.
+@start storage id="wrap-up.failure-report" ref="procedures/memory/storage-backends/{backend}.md" target="wrap-up.failure-report"
+@end storage

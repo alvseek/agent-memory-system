@@ -72,13 +72,13 @@ if [ ! -f "$SETUP_PROCEDURES_SCRIPT" ]; then
     exit 1
 fi
 
-SETUP_PROCEDURES_PYTHON="$(command -v python || command -v python3)"
-if [ -z "$SETUP_PROCEDURES_PYTHON" ]; then
-    echo "ERROR: python not found (needed to install procedures)"
+SETUP_PROCEDURES_UV="$(command -v uv)"
+if [ -z "$SETUP_PROCEDURES_UV" ]; then
+    echo "ERROR: uv not found (needed for the procedure compiler environment)"
     exit 1
 fi
 
-"$SETUP_PROCEDURES_PYTHON" "$SETUP_PROCEDURES_SCRIPT"
+"$SETUP_PROCEDURES_UV" run --project "$CONTROL_FILES_DIR" python "$SETUP_PROCEDURES_SCRIPT"
 setup_status=$?
 
 if [ $setup_status -ne 0 ]; then

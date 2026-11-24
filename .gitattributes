@@ -1,2 +1,5 @@
 # Windows batch files must keep CRLF line endings (safe for CMD, required for label/goto scripts)
 *.bat text eol=crlf
+# Section separators are authored bytes; historical output fixtures preserve them too.
+procedures/sections/** whitespace=-blank-at-eof
+tests/fixtures/composition-baseline/** whitespace=-blank-at-eof

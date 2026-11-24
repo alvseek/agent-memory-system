@@ -1,6 +1,17 @@
++++
+format_version = 2
+id = "awaken-agent"
+kind = "procedure"
+title = "Awaken Agent"
+description = "Load agent memory and activate a domain-specific agent. *Where* the memory is loaded from is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics))."
+argument_name = "domain"
+argument_description = "Input described in the procedure's Arguments section"
++++
+@start storage id="caller-context" ref="procedures/memory/storage-backends/{backend}.md" target="caller-context"
+@end storage
 # Awaken Agent
 
-Load agent memory and activate a domain-specific agent. *Where* the memory is loaded from is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics)).
+Load agent memory and activate a domain-specific agent. *Where* the memory is loaded from is delegated to the active **storage backend**.
 
 ## Arguments
 
@@ -29,21 +40,19 @@ The awakening set has four layers:
 
 *(The awakening protocol itself is not one of them — it is carried by Step 2 below.)*
 
-[🚨 **CRITICAL — load the awakening set into YOUR OWN context**](components/no-subagent-load.md)
+🚨 **CRITICAL — load the awakening set into YOUR OWN context**
 
+@start storage id="core-instruction-control-files.load-agent-memory" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.load-agent-memory"
+@end storage
+@start component id="awaken-agent.include-no-subagent-load" ref="procedures/components/no-subagent-load.md"
+@end component
 ### Step 2: Follow Awakening Instructions
 
 Follow the phased protocol below — Phase 1 (Process Loaded Identity), then Phase 2 (Load Central Context & Report).
 
-[**Awakening protocol**](components/core-instruction-control-files.md)
+**Awakening protocol**
 
 ---
 
-## Storage Mechanics
-
-The operations referenced above — **§ load-agent-memory**, plus the ops the inlined awakening-protocol component references (**§ recover-missing-foundations**, **§ load-latest-episode**, **§ oversized-memory-warning**) — are defined by the **active storage backend**:
-
-- **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## core-instruction-control-files`.
-- **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## core-instruction-control-files`.
-
-See the seam contract at `[STORAGE-BACKENDS-PATH]/README.md`.
+@start component id="awaken-agent.include-core-instruction-control-files" ref="procedures/components/core-instruction-control-files.md"
+@end component
