@@ -17,7 +17,7 @@ Load knowledge-base entries into working memory. Supports listing all available 
 
 ### Step 1: List Knowledge
 
-List all knowledge entries (**§ list-knowledge**), capturing per entry:
+List the general knowledge available to the agent you are acting as (**§ list-knowledge**), capturing per entry:
 - **Reference**: how to load it (path or id)
 - **Title**: the entry title
 - **Description**: the one-line description

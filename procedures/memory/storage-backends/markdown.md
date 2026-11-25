@@ -6,12 +6,6 @@ Concrete storage mechanics for the **native markdown-over-git** world. Each `## 
 
 ---
 
-## shared-context
-
-@start region id="caller-context" ending="none"
-
-@end region
-
 ## update-episodic
 
 @start region id="update-episodic.stamp-date"
@@ -188,6 +182,7 @@ Update `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` knowledge dire
 
 ## load-episodic
 
+@start region id="load-episodic.mechanics"
 ### § list-episodes
 
 Read `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` and locate `# Recent Context Episodes`. Parse entries — each `📂 YYYY-MM-DD:` group holds `- [filename.md](episodes/filename.md) - summary`, newest-first. File path = `episodes/[filename.md]`.
@@ -195,11 +190,13 @@ Read `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` and locate `# Re
 ### § load-episode-body
 
 Read the selected episode file(s) from `[AGENT-MEMORY-PATH]/agent-[domain]/episodes/` using the Read tool.
+@end region
 
 ---
 
 ## load-knowledge
 
+@start region id="load-knowledge.mechanics"
 ### § list-knowledge
 
 Read `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` and locate `# Core Knowledge Base`. Parse entries — `### **[Topic Group]**` headers over `- **[Title](path)** - description`. File path from the markdown link. Exclude any "Project Context Files" subsection (overlay concern).
@@ -207,11 +204,13 @@ Read `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` and locate `# Co
 ### § load-knowledge-body
 
 Read the selected file(s) from `[AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/` using the Read tool.
+@end region
 
 ---
 
 ## archive-old-memories
 
+@start region id="archive-old-memories.mechanics"
 ### § stamp-date
 
 `date '+%Y-%m-%d %H:%M'`
@@ -240,6 +239,7 @@ Operate on `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` (`# DOMAIN 
 - **Mechanic**: for an all-archive pass, `copy-lines.sh` + **bottom-first** `sed` deletion works. For a mixed pass, a small block-parse script (split on the moment headings, keep/archive by datetime token) is safest. **Back up first**; clean up `*.backup.*`; verify no CRLF introduced.
 
 > Dated pass format: `## 🗂️ Archiving Rationale ([DATE] pass)` (reason lines) then `## 📅 Archived Moments ([DATE] pass)` (full blocks, newest-first).
+@end region
 
 ---
 
@@ -379,6 +379,7 @@ A file that exceeded the single-Read limit came back partial. Name it and warn: 
 
 ## list-agents
 
+@start region id="list-agents.mechanics"
 ### § list-agent-domains
 
 Discover every agent in the ecosystem by scanning the memory-store root for `agent-[domain]/` folders that hold an identity file (`agent-core-memory.md`):
@@ -395,11 +396,13 @@ For each domain, read the identity header at the top of `[AGENT-MEMORY-PATH]/age
 - **Role** — the `**Role**:` line value; if absent, fall back to the first line of `**Main Purpose**:`.
 
 Read only the header region (roughly the first 15 lines) rather than the whole file — the scan spans ~30 agents, so keep each read cheap.
+@end region
 
 ---
 
 ## create-agent
 
+@start region id="create-agent.mechanics"
 ### § check-agent-exists
 
 Check for an identity file at the agent's home:
@@ -462,11 +465,13 @@ Read `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` back and confirm:
 - `episodes/` and `knowledge-base/` both exist.
 
 Report any failure precisely. A partially-created agent is worse than none, because the next **§ check-agent-exists** will treat it as already existing.
+@end region
 
 ---
 
 ## anchor-memory
 
+@start region id="anchor-memory.mechanics"
 **No action on the markdown backend** — the permanent layer here *is* the compiled global
 instructions file. `core-memory/compile-scripts/compile.sh` folds `0`–`3-core-memory` into
 `output/core-memory-compiled.md`, and `write-to-<harness>.sh` writes that to the harness's
@@ -487,11 +492,13 @@ installer **last** (it re-adds the overlay path line the core write drops).
 ### § install-pointer
 
 **No action.**
+@end region
 
 ---
 
 ## register-core-access
 
+@start region id="register-core-access.mechanics"
 The declarations travel with the compiled core. `core-memory/compile-scripts/compile.sh` folds
 the core memory into `output/core-memory-compiled.md`, each `write-to-<harness>.sh` writes that
 into the harness's global instructions file, and the same script stamps `[CORE-ACCESS]` /
@@ -509,3 +516,4 @@ fetch — the value is this backend, and the URL is whatever the installer was g
 re-stamp a value, run `core-memory/compile-scripts/set-core-access.sh <instructions-file> markdown <url>`:
 it rewrites the two lines in place and exits non-zero when either is missing, which is the
 correct loud failure here because the installer always wrote them.
+@end region

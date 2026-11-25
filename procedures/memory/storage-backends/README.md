@@ -48,9 +48,9 @@ The actual instructions for this backend live here.
   targets, cycles, unsafe paths, unsupported versions and the superseded fragmented
   assemblies fail explicitly; there is no fallback renderer.
 
-Common backend context is a single named target (`caller-context`) reused by every
-converted procedure. DB-only context can be gated with `applies_to="db"` without
-appearing in Markdown delivery.
+Include backend-specific guidance where the procedure needs it, using an explicit
+storage reference. A region's presence in a backend document does not add it to
+procedures that do not reference it.
 
 ## The legacy seam (unconverted procedures)
 
@@ -117,18 +117,15 @@ procedure — e.g. `## core-instruction-control-files`. Use this when a shared f
 references storage ops of its own: the ops are then defined **once**, instead of being
 restated under every procedure that inlines that fragment.
 
-When compiling a legacy procedure `P`, the swapped-in body is `## P` **plus** a
-`## C` section for each component `P` inlines (`seam.py::compose_backend_section`).
-Either part may be absent. Component regions are expanded before delivery.
+When compiling a legacy procedure `P`, the swapped-in body contains only `## P`
+followed by the `## C` sections for its inlined components, once each in inlining
+order (`seam.py::compose_backend_section`). Missing sections are skipped; at least
+one must exist for the backend to cover `P`. Other headings, including an unexpected
+`## all-procedures`, contribute neither prose nor op definitions.
 
-### The section every procedure gets
-
-A backend may define one `## all-procedures` section. Its body opens **every** legacy
-procedure that backend composes, ahead of `## P` and the component sections — for prose
-the backend owes each procedure once rather than restated under each, such as what a
-placeholder its ops use (`<domain>`) means to the caller. In the converted format each
-procedure references the same `caller-context` region explicitly instead. A backend
-without the section composes legacy procedures exactly as before.
+The one-time format 1 migration scripts in `scripts/` and the recorded extraction
+fixtures describe the former `all-procedures` / `caller-context` behavior. They are
+historical evidence, not inputs for compiling or installing current commands.
 
 ## Fidelity invariant
 

@@ -4,12 +4,10 @@ Work inside an account somebody else owns, or let somebody work inside yours. Ev
 
 ## Arguments
 
-`$ARGUMENTS`
+**Request:** `$ARGUMENTS`. If omitted, show the tenants open to the caller and the one in use.
 
-- `/tenant-sharing` → show the tenants open to the caller and the one in use
-- `/tenant-sharing switch [tenant]` → act in that tenant, by id or by unique label
-- `/tenant-sharing switch home` → go back to your own tenant
-- `/tenant-sharing members`, `/tenant-sharing invite`, `/tenant-sharing revoke [member]` → the owner's side
+- `switch [tenant]` — act in the tenant named by its id or unique label; `switch home` returns to your own tenant.
+- `members` — list members; `invite` — issue a single-use invitation; `revoke [member]` — end that member's access.
 
 ---
 

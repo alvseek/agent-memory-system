@@ -1,5 +1,6 @@
 """Instruction accounting against captured bytes, plus ordering and delivery guards."""
 
+import hashlib
 import importlib.util
 import json
 import sys
@@ -116,37 +117,19 @@ def test_backend_mechanics_are_beside_steps_and_resources_remain_references():
     assert composed.compose("wrap-up", "db").calls == ("update-memory",)
 
 
-# The wrap-up report block moved into one markdown-only region after the conversion was
-# recorded (2026-11-21 review decision). The db backend prints the ordinary report from
-# prose instead of a template, so the recorded fixture is compared with exactly that block
-# replaced by the reviewed note; every other recorded byte must still match.
-WRAP_UP_DB_REPORT_NOTE = (
-    "There is no persistence section to print — the write landed in the database when it "
-    "happened, so nothing was pushed and no separate save step could fail. Open with "
-    "`Wrap-up complete (mode: [agent / all] · [fresh / delta from CUTOFF]):`, then the "
-    "memory-update results captured in Step 1, then the open items.\n"
-)
-
-
-def recorded_wrap_up_report_block(text):
-    lead = "**On success**, print this block:\n\n"
-    start = text.index(lead) + len(lead)
-    stop = text.index("\nIf both Tech Debts and Next Steps are empty", start)
-    block = text[start:stop]
-    assert block.startswith("```\n") and block.endswith("```\n")
-    return start, stop
-
-
-def test_current_composition_matches_the_recorded_converted_baseline():
-    manifest = json.loads((BASELINE / "manifest.json").read_text(encoding="utf-8"))
+def test_current_composition_matches_reviewed_delivery():
+    # Keep the migration evidence immutable. These separate fingerprints cover the
+    # current delivered text after subsequent intentional authoring changes.
+    expected = json.loads((ROOT / "tests/fixtures/procedure-delivery.json").read_text("utf-8"))
     composed = catalog()
-    for name in manifest["graph"]:
-        for backend in ("markdown", "db"):
-            expected = (BASELINE / "converted" / f"{name}.{backend}.md").read_text(encoding="utf-8")
-            if (name, backend) == ("wrap-up", "db"):
-                start, stop = recorded_wrap_up_report_block(expected)
-                expected = expected[:start] + WRAP_UP_DB_REPORT_NOTE + expected[stop:]
-            assert composed.compose(name, backend).text == expected, (name, backend)
+    actual = {
+        name: {
+            backend: hashlib.sha256(composed.compose(name, backend).text.encode()).hexdigest()
+            for backend in ("db", "markdown")
+        }
+        for name in composed.procedures
+    }
+    assert actual == expected
 
 
 def test_no_fragmented_inventory_or_directive_leakage_remains():
@@ -223,9 +206,11 @@ def test_backend_specific_impact_matches_actual_legacy_delivery():
     db_path = "procedures/memory/storage-backends/db.md"
     markdown_path = "procedures/memory/storage-backends/markdown.md"
     assert set(composed.dependents(db_path)) == set(composed.procedures) | externals
-    assert set(composed.dependents(markdown_path)) == set(composed.procedures) | {
-        "refresh-memory",
-    }
+    # Tenant sharing has no Markdown section. Each other external consumes its own
+    # backend section or, for refresh-memory, the shared awakening component.
+    assert set(composed.dependents(markdown_path)) == (
+        set(composed.procedures) | externals
+    ) - {"tenant-sharing"}
 
 
 @pytest.mark.parametrize("host", ["claude-code", "opencode"])

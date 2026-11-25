@@ -5,21 +5,15 @@ kind = "procedure"
 title = "Awaken Agent"
 description = "Load agent memory and activate a domain-specific agent. *Where* the memory is loaded from is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics))."
 argument_name = "domain"
-argument_description = "Input described in the procedure's Arguments section"
+argument_description = "the agent domain to awaken; asks if omitted"
 +++
-@start storage id="caller-context" ref="procedures/memory/storage-backends/{backend}.md" target="caller-context"
-@end storage
 # Awaken Agent
 
 Load agent memory and activate a domain-specific agent. *Where* the memory is loaded from is delegated to the active **storage backend**.
 
 ## Arguments
 
-`$ARGUMENTS`
-
-- `/awaken-agent [domain]` → Awaken the specified domain agent (e.g., meta, backend-nestjs, frontend-react)
-
-If no arguments provided, ask: "Which agent domain should I awaken?"
+**Domain:** `$ARGUMENTS` — the agent's domain name (e.g. `unreal`), not its identity UUID. If omitted, ask: "Which agent domain should I awaken?"
 
 ---
 
