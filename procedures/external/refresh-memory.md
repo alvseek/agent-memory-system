@@ -11,5 +11,3 @@ description = "Dependency declaration only: the complete refresh-memory command 
 @end storage
 @start component id="refresh-memory.include-core-instruction-control-files" ref="procedures/components/core-instruction-control-files.md"
 @end component
-@start storage id="caller-context" ref="procedures/memory/storage-backends/{backend}.md" target="caller-context" applies_to="db"
-@end storage

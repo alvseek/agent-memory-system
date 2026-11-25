@@ -5,20 +5,15 @@ kind = "procedure"
 title = "Update Episodic Memory Protocol"
 description = "Capture session context as **rolling per-theme episodes**. The default flow scans active (non-archived) episodes for the current project, finds theme matches, and appends a dated sub-episode to the matching one — or creates a new episode if none matches. *How* episodes are physically listed / created / appended is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics))."
 argument_name = "mode"
-argument_description = "Input described in the procedure's Arguments section"
+argument_description = "`new` to force a new episode instead of appending"
 +++
-@start storage id="caller-context" ref="procedures/memory/storage-backends/{backend}.md" target="caller-context"
-@end storage
 # Update Episodic Memory Protocol
 
 Capture session context as **rolling per-theme episodes**. The default flow scans active (non-archived) episodes for the current project, finds theme matches, and appends a dated sub-episode to the matching one — or creates a new episode if none matches. *How* episodes are physically listed / created / appended is delegated to the active **storage backend**.
 
 ## Arguments
 
-`$ARGUMENTS`
-
-- `/update-episodic` → Default flow: scan, heuristic match, confirm, then append or create (see [Default Flow](#default-flow))
-- `/update-episodic new` → Force new episode, skip scan/heuristic (see [Force New Episode](#force-new-episode))
+**Mode:** `$ARGUMENTS` — `new` [creates a new episode](#force-new-episode) without checking for a theme match. If omitted, [scan for a match](#default-flow) and follow the confirmation rules to append or create.
 
 ---
 
@@ -42,7 +37,7 @@ Determine:
 
 #### Step 3: List + Scan Candidate Episodes
 
-List the active (non-archived) episodes for the current project (**§ list-candidate-episodes**). Collect all whose filename or summary contains the **project name** — these are the scan candidates.
+List the acting agent's active (non-archived) episodes for the current project (**§ list-candidate-episodes**). Collect all whose filename or summary contains the **project name** — these are the scan candidates.
 
 If no candidates → skip to Step 6 (Create branch).
 
@@ -106,7 +101,7 @@ Wait for response. Auto-default to **A** only if confidence is high (≥3 strong
 
    > **Why no time threshold**: the prior sub-episode's timestamp is deterministic. Recent prior (same conversation) → full context to review each item. Older prior (different session) → items are still carry-forward candidates, reviewed on their own descriptions; items that can't be confidently evaluated default to "still open" (conservative, per UUID a1b2c3d4 — debts never silently dropped).
 
-2. **Compose the sub-episode block** using the sub-episode-block template (**§ template**). The H3 header includes the stamped date+time:
+2. **Compose the sub-episode block** using the sub-episode-block template (**§ template**). The H3 header includes the stamped date+time and the domain you are acting as:
    ```
    ### YYYY-MM-DD HH.MM - [SESSION SUB-THEME] (agent: [domain])
    ```
@@ -129,7 +124,7 @@ Wait for response. Auto-default to **A** only if confidence is high (≥3 strong
 @end storage
 ### Create New Episode
 
-1. **Compose the first sub-episode block** using the sub-episode-block template (**§ template**). The H3 header includes the stamped date+time.
+1. **Compose the first sub-episode block** using the sub-episode-block template (**§ template**). The H3 header includes the stamped date+time and the domain you are acting as.
 
 2. **Create a new episode** for `[project-name]-[context-theme]` seeded with that block, and register it in the index projection (**§ create-episode**).
 

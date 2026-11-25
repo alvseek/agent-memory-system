@@ -172,10 +172,9 @@ def compile_procedure(
 ) -> tuple[str, list[str], str]:
     """Compose ``core`` with one backend's section for this procedure.
 
-    The backend body is the procedure's own ``## [procedure]`` section plus a
+    The backend body includes only the procedure's own ``## [procedure]`` section and a
     ``## [component]`` section for each component inlined into it, so ops arriving via a
-    component resolve without being restated under every caller — opened by the backend's
-    ``## all-procedures`` section when it defines one.
+    component resolve without being restated under every caller.
 
     Returns (text, unresolved_ops, note). ``§ template`` is left as a reference —
     templates live once as a separate Resource / file, never inlined here.

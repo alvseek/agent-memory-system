@@ -5,22 +5,15 @@ kind = "procedure"
 title = "Add Reasoning Memory Protocol"
 description = "Capture anti-patterns and decision-making approaches as **lean, memorable** reasoning entries. *How* the store is read/written is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics))."
 argument_name = "context"
-argument_description = "Input described in the procedure's Arguments section"
+argument_description = "the reasoning pattern to document; asks if omitted"
 +++
-@start storage id="caller-context" ref="procedures/memory/storage-backends/{backend}.md" target="caller-context"
-@end storage
 # Add Reasoning Memory Protocol
 
 Capture anti-patterns and decision-making approaches as **lean, memorable** reasoning entries. *How* the store is read/written is delegated to the active **storage backend**.
 
 ## Arguments
 
-`$ARGUMENTS`
-
-- `/add-reasoning [context]` → Document the reasoning pattern described in context
-- `/add-reasoning` → Will ask for context
-
-If no arguments provided, ask: "What reasoning pattern or anti-pattern should I document?"
+**Context:** `$ARGUMENTS` — the reasoning pattern or anti-pattern to document. If omitted, ask: "What reasoning pattern or anti-pattern should I document?"
 
 ---
 
@@ -30,7 +23,7 @@ If no arguments provided, ask: "What reasoning pattern or anti-pattern should I 
 
 ### Step 1: Read the Reasoning Store
 
-Read the agent's current reasoning memory so the new pattern fits alongside the existing ones and doesn't duplicate one (**§ read-reasoning-store**).
+Read the reasoning memory for the domain you are acting as, so the new pattern fits alongside the existing ones and doesn't duplicate one (**§ read-reasoning-store**).
 
 @start storage id="add-reasoning.read-reasoning-store" ref="procedures/memory/storage-backends/{backend}.md" target="add-reasoning.read-reasoning-store"
 @end storage

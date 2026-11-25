@@ -5,11 +5,9 @@ kind = "procedure"
 title = "Update Memory Protocol"
 description = "Comprehensive memory update orchestrator. Five phases:"
 argument_name = "mode"
-argument_description = "Input described in the procedure's Arguments section"
+argument_description = "`fresh` re-evaluates the whole session, `new` forces a new episode"
 calls = ["add-reasoning", "update-knowledge", "update-episodic", "update-emotional"]
 +++
-@start storage id="caller-context" ref="procedures/memory/storage-backends/{backend}.md" target="caller-context"
-@end storage
 # Update Memory Protocol
 
 Comprehensive memory update orchestrator. Five phases:
@@ -26,11 +24,7 @@ Comprehensive memory update orchestrator. Five phases:
 
 ## Arguments
 
-`$ARGUMENTS`
-
-- `/update-memory` → Default (auto-detect mode)
-- `/update-memory fresh` → Force fresh mode (full-session re-eval)
-- `/update-memory new` → Force new episodic file (combinable: `/update-memory fresh new`)
+**Mode:** `$ARGUMENTS` — `fresh` re-evaluates the whole session; `new` forces a new episode. They can be combined (`/update-memory fresh new`). Without `fresh`, a theme match determines delta vs. full-session evaluation. Without `new`, episodic capture follows its usual match-or-create flow.
 
 ---
 
@@ -39,7 +33,7 @@ Comprehensive memory update orchestrator. Five phases:
 ### Step 0: Detect Mode + Cutoff
 
 1. If `$ARGUMENTS` contains `fresh` → `MODE = fresh`, skip to Phase 1.
-2. Theme-match scan: list active episodes (**§ detect-mode-scan**). Find the top candidate where the name or summary contains the current project name + highest keyword overlap with the session theme.
+2. Theme-match scan: list the acting agent's active episodes (**§ detect-mode-scan**). Find the top candidate where the name or summary contains the current project name + highest keyword overlap with the session theme.
 3. **No match** → `MODE = fresh` (new episode created in Phase 2). **Match** → `MODE = delta`, `CUTOFF = top sub-episode timestamp`.
 4. Capture `MODE` and `CUTOFF` (if delta) for the Phase 4 summary.
 

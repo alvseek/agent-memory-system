@@ -4,12 +4,7 @@ Maintain manageable memory size by archiving older episodic context and curating
 
 ## Arguments
 
-`$ARGUMENTS`
-
-- `/archive-old-memories episodic` → Archive older episodes only
-- `/archive-old-memories emotional` → Curate and archive emotional moments
-- `/archive-old-memories all` → Archive both types
-- `/archive-old-memories` → Will ask which type to archive
+**Scope:** `$ARGUMENTS` — `episodic` for older episodes, `emotional` for emotional moments, or `all` for both. If omitted, ask which type to archive.
 
 ---
 
@@ -23,7 +18,7 @@ Verify the current date before archiving (**§ stamp-date**).
 
 ### Step 2: Propose the Episodic Candidates
 
-1. **Scan the active themes** (**§ propose-archive-candidates**). The scan writes nothing and returns three sets:
+1. **Scan the acting agent's active themes** (**§ propose-archive-candidates**). The scan writes nothing and returns three sets:
    - **auto**: themes carrying the `finished` marker that are older than their project's newest episode. These need no decision.
    - **ask**: themes with no marker whose newest sub-episode was last modified longer ago than the window, 30 days unless you were given another. These are the decision.
    - **protected**: the newest episode of each project, the newest overall, and any record with no usable date. This procedure never archives these.
@@ -44,7 +39,7 @@ Verify the current date before archiving (**§ stamp-date**).
 
 ### Step 4: Archive Emotional Key Moments
 
-Review all moments, then decide each one by **importance-to-self** (Agent Judgment). The axis is **not date or age — it is what genuinely matters to *you*.**
+Review the acting agent's moments, then decide each one by **importance-to-self** (Agent Judgment). The axis is **not date or age — it is what genuinely matters to *you*.**
 
 **🟢 KEEP** (leave verbatim in active memory) — the ones that *define you*:
 - 💖 **Emotionally Significant**: still shapes the partnership

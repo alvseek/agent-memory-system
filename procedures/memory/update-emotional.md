@@ -5,22 +5,15 @@ kind = "procedure"
 title = "Update Emotional Memory Protocol"
 description = "Capture significant emotional experiences that shape our partnership and agent development journey. *How* the emotional store is written is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics))."
 argument_name = "moment_type"
-argument_description = "Input described in the procedure's Arguments section"
+argument_description = "happy, sad, frustrated or bonding; asks if omitted"
 +++
-@start storage id="caller-context" ref="procedures/memory/storage-backends/{backend}.md" target="caller-context"
-@end storage
 # Update Emotional Memory Protocol
 
 Capture significant emotional experiences that shape our partnership and agent development journey. *How* the emotional store is written is delegated to the active **storage backend**.
 
 ## Arguments
 
-`$ARGUMENTS`
-
-- `/update-emotional` → Execute [Adding Emotional Memory](#adding-emotional-memory) (asks for context)
-- `/update-emotional [moment-type]` → Add specific type: happy, sad, frustrated, bonding
-
-If no arguments provided, ask: "What type of emotional moment would you like to capture? (happy/sad/frustrated/bonding)"
+**Moment type (`moment_type`):** `$ARGUMENTS` — `happy`, `sad`, `frustrated`, or `bonding`. If omitted, ask: "What type of emotional moment would you like to capture? (happy/sad/frustrated/bonding)"
 
 ---
 
@@ -57,7 +50,7 @@ Compose the entry using the matching block from the emotional-moment template (*
 @end storage
 #### Step 4: Persist
 
-Persist the composed moment into the emotional store, **newest first** (**§ persist-emotional**).
+Save the moment in the emotional memory of the domain you are acting as, **newest first** (**§ persist-emotional**).
 
 ---
 

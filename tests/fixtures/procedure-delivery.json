@@ -1,0 +1,30 @@
+{
+  "add-reasoning": {
+    "db": "504c2d1e459cf8d33e1dd6ec09151c5ec92318a210d2eec419bbd8449f02658c",
+    "markdown": "0c5cf37866d35db57257c6dd2af0c40bc194beae074247d58a29f0ebcc247804"
+  },
+  "awaken-agent": {
+    "db": "69dc36b6ddec8713fff740d5d239412dec444b0984f87f8d68ffd36d553932f1",
+    "markdown": "af8772ba0bd55d8224dcb523b67873c3ebadc9e8d348b067ec555061d8238669"
+  },
+  "update-emotional": {
+    "db": "460d865b6181d914888c46125d0414021f36cefd2b9281060aa5636fa8df4774",
+    "markdown": "24bf4dd7c0710a71b6e7ff2be96e5f38df9c9672cc117c4b8812d78c21161c97"
+  },
+  "update-episodic": {
+    "db": "2239565aa47001b2bfc78f5bd1992580dcee5da470cc993df12be8f46b89cdf3",
+    "markdown": "c5907f8ed7fa5a57f82a4a93f9f85846d571cd9e146743ba4c20c20a62fdd6c2"
+  },
+  "update-knowledge": {
+    "db": "1dbcd9f9fa7ecf5e7a395e93febaca8940c0817933c0d9eb8292139a237f4884",
+    "markdown": "ad673c242cc4fd5dd20d5b524e032b8894b57319dac07897ccc1ef3d608cdeb3"
+  },
+  "update-memory": {
+    "db": "a5639654bd1dfd24bd431b2290d408ac51d1068eb46316440ba74d8acf628227",
+    "markdown": "3c78046b98e0550647181c8515c2fb0300ce827b2aaf475fb26e724f7663ed88"
+  },
+  "wrap-up": {
+    "db": "13b4bd83bdfebd0209f95914184d308ccb6e85e2c05969bcdf49a7252328a962",
+    "markdown": "34d4b4cbc7b77b3205c58bce48c823e19e3eb1a2a3979fd001c8057d305f625d"
+  }
+}

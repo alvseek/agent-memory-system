@@ -17,7 +17,7 @@ Load past episodic memory into working memory. Supports paginated listing or key
 
 ### Step 1: List Episodes
 
-List all episodes ordered newest-first (**§ list-episodes**), capturing per entry:
+List the acting agent's episodes newest-first (**§ list-episodes**), capturing per entry:
 - **Reference**: how to load the episode (path or id)
 - **Date**: the entry's date
 - **Summary**: the one-line summary
@@ -70,7 +70,7 @@ Loaded [N] episode(s):
   - [name] ([YYYY-MM-DD])
 ```
 
-If the backend reports that only part of a body arrived — a page count, a continuation cursor, or any equivalent — say so in that confirmation and continue the read only when this task actually needs the older sub-episodes. A listed episode whose body is larger than what arrived is not a failed load; it is a bounded one, and reporting it as complete is the mistake.
+If the backend indicates that more of an episode remains, say that you loaded a page and continue only if the task needs older sub-episodes. The number of items returned does not tell you whether the read is complete.
 
 ---
 

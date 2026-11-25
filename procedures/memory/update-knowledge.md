@@ -5,22 +5,15 @@ kind = "procedure"
 title = "Update Knowledge Memory Protocol"
 description = "Capture domain expertise, technical patterns, research findings, and best practices that enhance agent capabilities. *How* the knowledge store + index are written is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics))."
 argument_name = "context"
-argument_description = "Input described in the procedure's Arguments section"
+argument_description = "the knowledge to document; asks if omitted"
 +++
-@start storage id="caller-context" ref="procedures/memory/storage-backends/{backend}.md" target="caller-context"
-@end storage
 # Update Knowledge Memory Protocol
 
 Capture domain expertise, technical patterns, research findings, and best practices that enhance agent capabilities. *How* the knowledge store + index are written is delegated to the active **storage backend**.
 
 ## Arguments
 
-`$ARGUMENTS`
-
-- `/update-knowledge [context]` → Document the knowledge described in context
-- `/update-knowledge` → Will ask for context
-
-If no arguments provided, ask: "What knowledge or domain expertise should I document?"
+**Context:** `$ARGUMENTS` — the knowledge or domain expertise to document. If omitted, ask: "What knowledge or domain expertise should I document?"
 
 ---
 
@@ -59,7 +52,7 @@ Compose the entry using the knowledge-file template (**§ template**).
 @end storage
 ### Step 3: Persist
 
-Persist the composed entry into the knowledge store (**§ persist-knowledge**).
+Save the entry in the knowledge store for the domain you are acting as (**§ persist-knowledge**).
 
 @start storage id="update-knowledge.persist-knowledge" ref="procedures/memory/storage-backends/{backend}.md" target="update-knowledge.persist-knowledge"
 @end storage

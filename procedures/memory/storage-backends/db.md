@@ -1,31 +1,10 @@
 # Storage Backend — DB (Valaskjalf via Munnin)
 
-Concrete storage mechanics for the **DB-backed** world. Each `## [procedure]` section collects the named regions that map the procedure's `§ op`s onto Munnin's data tools — `awaken` · `get` · `query` · `search` · `insert` · `edit` · `edit_metadata` · `prepend` · `archive` · `soft_delete` — with `list_agents`, `create_agent`, `permanent_layer`, `help` and the content tools (`list_procedures` · `read_procedure` · `list_resources` · `read_resource`) where a procedure needs one; the `## all-procedures` section opens every composed procedure with what those ops assume of the caller. See the [seam contract](README.md).
+Concrete storage mechanics for the **DB-backed** world. Each `## [procedure]` section collects the named regions that map the procedure's `§ op`s onto Munnin's data tools — `awaken` · `get` · `query` · `search` · `insert` · `edit` · `edit_metadata` · `prepend` · `archive` · `soft_delete` — with `list_agents`, `create_agent`, `permanent_layer`, `help` and the content tools (`list_procedures` · `read_procedure` · `list_resources` · `read_resource`) where a procedure needs one. See the [seam contract](README.md).
 
 > **Model**: an **agent** is an entity with a row of its own, and memory belongs to it. One uniform record per memory item (`user_id`/`agent_id`/`record_type`/`project`/`title`/`tags`/dates + `full_content`), where `agent_id` is always a real kebab domain the store checks against the agent table — there is no sentinel value. **Fleet-shared memory** (reasoning + knowledge that belongs to no agent) lives apart and is written with `scope="shared"`, which takes no `agent_id` at all. `user_id` is stamped server-side. The index is a **derived `SELECT`** (`query`), not a stored artifact — so there are no index-maintenance steps to perform. Episodes are stored **one record per episode** (a rolling body of newest-first `---`-separated H3 sub-episodes).
 
 ---
-
-## all-procedures
-
-@start region id="caller-context"
-> `<domain>` in the ops below is the agent you are acting as — the domain you passed to `awaken`, or the one `create-agent` made. With no awakening, `list_agents()` shows what exists; never guess one.
-
-**A body read is a page, and a listing or a search is not a body.** Three shapes, and mixing them up is the one way to read partial context as whole:
-
-- **`query`** answers *which records match*: metadata only (uuid, title, `content_summary`, tags, project, dates) plus **`blocks_total`** — how many timestamp groups that record's body holds. It never returns `content`.
-- **`search`** answers *what matched*: the same metadata plus a plain-text **`snippet`** of the matching window, and no body under either name. Reaching a body from a hit is a deliberate `get(uuid)`.
-- **`get(uuid)`** answers *what the record says*: as much of the body as fits under the content ceiling in one response — the whole of a small record, one **page** of a large one — or exactly one page when you pass `cursor`/`limit`. Every `get` response carries `blocks_returned` / `blocks_total` / `next_cursor`, so a non-null cursor is how you know a large record did not arrive whole.
-
-A **timestamp group** is every sub-episode block in the record that shares one `###` H3 timestamp; a group is indivisible and counts as one, so `blocks_total: 5` means five distinct moments. Two rules follow, and only one of them is a continuation:
-
-- **`next_cursor` non-null means more remains** — pass it straight back as `get(uuid, cursor=…)`, or with `limit=` to keep the page small. It names the *first group not returned*, so a block prepended in between cannot shift your place, and it is the only signal that answers "is there more?".
-- **`blocks_returned` < `blocks_total` does *not* mean more remains.** A final page returns fewer than the whole record and is complete. Never continue on the count alone.
-
-An unknown or malformed cursor, or a non-positive `limit`, is an error — never a quiet fall back to page one. Cursors are per record: pass the page's own `uuid` with its cursor. A record that is not an episode (identity, reasoning, emotional, knowledge, the profile, the RAS triggers) is one atomic block — `blocks_total: 1` — because it is not a rolling document. Nothing ever splits a sub-episode block, and no repair step exists: a retimestamped or deleted target makes the old cursor fail loudly rather than resume somewhere else.
-
-@end region
-
 
 ## update-episodic
 
@@ -39,7 +18,9 @@ An unknown or malformed cursor, or a non-positive `limit`, is an error — never
 @start region id="update-episodic.list-candidate-episodes"
 ### § list-candidate-episodes
 
-`query(agent_id="<domain>", record_type="episode", project="<project>")` → returns the derived index projection (uuid, title, content_summary, tags, dates, **`blocks_total`**) for the agent's active episodes. Theme-match against `title`/`tags`, and read `content_summary` when the theme alone is ambiguous. There is no body here — reading one is a deliberate `get(uuid)`, a page at a time (see `## all-procedures`). `blocks_total` tells you how much body that read will hold before you pay for it. (Archived episodes are excluded by default — pass `include_archived=True` only to reach them.)
+Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing. Use the project identified in Step 2 as `<project>`.
+
+`query(agent_id="<domain>", record_type="episode", project="<project>")` lists active candidates by title, tags and summary. It returns metadata, not the prior open items: for an append, read the selected episode’s newest timestamp group with `get(uuid, limit=1)` for the carry-forward review. Include archived candidates only when asked to reopen a theme.
 
 @end region
 
@@ -89,6 +70,8 @@ A newly created episode carries no marker, so a create needs no call; an append 
 @start region id="update-episodic.create-episode"
 ### § create-episode
 
+For a forced new episode, use the acting agent’s domain and the project identified for this episode; if the agent is unknown, confirm it from `list_agents()` first.
+
 `insert(agent_id="<domain>", record_type="episode", project="<project>", title="<project-theme>", tags=[…], content="<first sub-episode block>", content_summary="<the block's Summary row>", template_version="<the template's current stamp>")`. Read `episodic-entry-template` from resources first and declare its `template_version` — a missing or stale version is refused. `content_summary` is required for an episode: pass the block's `**Summary**` row verbatim, because that one line is what the index projection lists the record by. The record is assembled and `uuid`-stamped server-side and appears in the index projection immediately.
 
 @end region
@@ -99,7 +82,7 @@ A newly created episode carries no marker, so a create needs no call; an append 
 @start region id="add-reasoning.read-reasoning-store"
 ### § read-reasoning-store
 
-`query(agent_id="<domain>", record_type="reasoning")` to see the existing patterns (or reuse the set already returned by `awaken`).
+Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing. Reuse the reasoning records returned by `awaken`; otherwise `query(agent_id="<domain>", record_type="reasoning")` lists metadata. Use `get(uuid)` for the patterns you need to compare.
 
 @end region
 
@@ -144,6 +127,8 @@ The pattern's cited UUID is content — generate any UUID for it; the `insert` r
 @start region id="update-emotional.persist-emotional"
 ### § persist-emotional
 
+Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing.
+
 `insert(agent_id="<domain>", record_type="emotional", title="<moment title>", content="<moment block>", template_version="<the template's current stamp>")`. Read `emotional-moment-template` from resources first and declare its `template_version` — a missing or stale version is refused. **Newest-first is a read concern** — the index projection orders by date, so ordering is automatic.
 
 @end region
@@ -161,6 +146,8 @@ The pattern's cited UUID is content — generate any UUID for it; the `insert` r
 @start region id="update-knowledge.persist-knowledge"
 ### § persist-knowledge
 
+Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing.
+
 `insert(agent_id="<domain>", record_type="knowledge", title="<knowledge area>", tags=[…], content="<knowledge doc>", content_summary="<the entry's Summary row>", template_version="<the template's current stamp>")`. Read `knowledge-file-template` from resources first and declare its `template_version` — a missing or stale version is refused. `content_summary` is required for a knowledge record: pass the entry's `**Summary**` row verbatim, because that one line is what the knowledge index lists the record by. General/central knowledge only — Munnin is project-blind (no project-scoped knowledge).
 
 @end region
@@ -175,37 +162,44 @@ The pattern's cited UUID is content — generate any UUID for it; the `insert` r
 
 ## load-episodic
 
+@start region id="load-episodic.mechanics"
 ### § list-episodes
 
-`query(agent_id="<domain>", record_type="episode")` → the derived index projection (uuid, title, summary/tags, date, **`blocks_total`**), newest-first. Metadata only: use it to choose a candidate, and note its `blocks_total` so you know whether the body you are about to read is one page or several.
+Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing. `query(agent_id="<domain>", record_type="episode")` lists episode metadata newest first. Select by title, summary or tags; `blocks_total` counts timestamp groups, not pages.
 
 ### § load-episode-body
 
 `get(uuid)` for the selected episode — as much of the body as the content ceiling allows in one response, which is the whole of a small record and a page of a large one; name a `limit` or pass a `cursor` to read exactly one page. Follow `next_cursor` only when the task actually needs more of the record: a routine browse or a summary usually does not, and continuing is a deliberate call, one page at a time. To *find* an episode rather than read one, `search(text)` matches a keyword across bodies and returns a `snippet` — the match, not the body — so follow a hit with `get(uuid)` when you need the text.
 
-Full context is a traversal, not one call: read page one, then keep passing `next_cursor` until it is `null`. Page one plus every continuation reconciles to the stored body byte for byte, so nothing is lost by paging and nothing is gained by a bigger single read.
+`blocks_returned` counts timestamp groups on this page. Only a non-null `next_cursor` means more remain. For a full episode, pass it as `cursor` to `get` with the same `uuid` until the cursor is null.
+@end region
 
 ---
 
 ## load-knowledge
 
+@start region id="load-knowledge.mechanics"
 ### § list-knowledge
 
-Use the awakening's `knowledge_index` and `shared.knowledge_index` together for general knowledge. To refresh, `query(record_type="knowledge")` returns metadata: retain general rows (`project` null) owned by `<domain>` or carrying no `agent_id` (shared). Never include another agent's private rows. Project-scoped knowledge belongs to the coding overlay. Fetch selected bodies with `get(uuid)`, not the entire directory.
+Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing. Use the awakening's `knowledge_index` and `shared.knowledge_index` together for general knowledge. To refresh, `query(record_type="knowledge")` returns metadata: retain general rows (`project` null) owned by `<domain>` or carrying no `agent_id` (shared). Never include another agent's private rows. Project-scoped knowledge belongs to the coding overlay. Fetch selected bodies with `get(uuid)`, not the entire directory.
 
 ### § load-knowledge-body
 
 `get(uuid)` for the selected entry/entries — whole, since a knowledge record is well under the ceiling, or a page when given `cursor`/`limit`; it is one atomic block (`blocks_total: 1`), so paging it never splits a document. `search(text)` answers *what matched*: a `snippet` of the matching window and no body, so follow a hit with `get(uuid)` when you need the text rather than the mention. Never treat a snippet as the entry's content.
+@end region
 
 ---
 
 ## archive-old-memories
 
+@start region id="archive-old-memories.mechanics"
 ### § stamp-date
 
 **No action** (server-stamped).
 
 ### § propose-archive-candidates
+
+Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing.
 
 `archive_memories(agent_id="<domain>", days=30)` — a dry run, writes nothing. Returns `auto` (tagged `finished`, unprotected), `ask` (untagged, not modified within `days`, unprotected) and `protected` (newest per project, newest overall, undated, each with a reason). The window is the tool's `days`; pass a different one only when the user asked for one.
 
@@ -226,6 +220,7 @@ Two calls, in this order: `edit_metadata(uuid, tags=[<existing without finished>
 Per moment: **keep** — no-op. **archive** — `archive(uuid)`: the record drops out of the awaken load while its full body is retained and stays `search`-able.
 
 > **No shorten/stub step, deliberately** (2026-10-08). The DB has no archive file, so shortening a moment means `edit`-ing its body to a stub in place — which overwrites the only copy and destroys the full text. The former Tier-2 (shorten + archive) is therefore retired: a moment is kept or archived, and archiving always retains the full body.
+@end region
 
 ---
 
@@ -234,7 +229,7 @@ Per moment: **keep** — no-op. **archive** — `archive(uuid)`: the record drop
 @start region id="update-memory.detect-mode-scan"
 ### § detect-mode-scan
 
-`query(agent_id="<domain>", record_type="episode")` → theme-match against title/summary/tags.
+Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing. Match the title, summary and tags from `query(agent_id="<domain>", record_type="episode")`. For a delta, read the chosen record’s newest timestamp group with `get(uuid, limit=1)` to obtain the cutoff.
 
 @end region
 
@@ -336,6 +331,7 @@ Everything served here is composed for Munnin, and the slash commands installed 
 
 ## list-agents
 
+@start region id="list-agents.mechanics"
 > Both ops are answered by a **single** `list_agents()` call. Every other read here is agent-scoped — you name a domain and get its records — so enumeration needed a primitive of its own, and that primitive assembles the roster server-side rather than handing back rows to join. Discovery and identity arrive together, which is why there is one call below and not two.
 
 ### § list-agent-domains
@@ -347,11 +343,13 @@ Everything served here is composed for Munnin, and the slash commands installed 
 **Already answered** — the `name` and `role` fields come back on each entry from **§ list-agent-domains**, read straight off the agent's own columns (they are parsed once, at import, not on every call). Do not call `awaken(domain)` per agent to fill them in: `awaken` returns that agent's whole always-load payload including the fleet-shared layers, so a roster built that way costs the entire store and overruns the client's output cap.
 
 An agent with no readable identity returns `name` and `role` as `null`. Keep it in the roster with role `(no identity recorded)` — that state is a finding worth seeing, not a row to drop.
+@end region
 
 ---
 
 ## create-agent
 
+@start region id="create-agent.mechanics"
 > Creation here is genuinely two steps, and the order is enforced by the store rather than by convention: an agent is a **row**, and every memory record names an owner the store checks against it. So `create_agent` comes first and `insert` cannot run before it. The agent now has an existence of its own — a row that must be created before any record can point at it.
 
 ### § check-agent-exists
@@ -395,11 +393,13 @@ Fleet-shared memory needs nothing: it belongs to no agent, lives in its own tabl
 Also confirm the domain now appears in `list_agents()` with its `name` and `role`, which is the entity half and the half `awaken` cannot report on.
 
 If `awaken` returns nothing for the domain, the inserts did not land. Report that rather than retrying blindly — the agent row will already exist, so a blind retry now fails at **§ create-agent-store** instead of at the step that actually went wrong.
+@end region
 
 ---
 
 ## anchor-memory
 
+@start region id="anchor-memory.mechanics"
 ### § fetch-permanent-layer
 
 `permanent_layer()` → `{version, hash, content, skipped}`. `content` is this tenant's
@@ -427,11 +427,13 @@ first; add only when missing:
 
 - **Claude Code** — the line `@~/.munnin/permanent-layer.md` in `~/.claude/CLAUDE.md`.
 - **OpenCode** — the entry `"~/.munnin/permanent-layer.md"` in the `instructions` array of `~/.config/opencode/opencode.json`.
+@end region
 
 ---
 
 ## register-core-access
 
+@start region id="register-core-access.mechanics"
 ### § read-access-pair
 
 `help()` → `{instructions, procedures, access, endpoint}`. `access` is what this server
@@ -459,10 +461,12 @@ the OS/bash notes and the path definitions around them alone.
 
 - **Claude Code** — `~/.claude/CLAUDE.md`.
 - **OpenCode** — `~/.config/opencode/AGENTS.md`.
+@end region
 ---
 
 ## tenant-sharing
 
+@start region id="tenant-sharing.mechanics"
 > A tenant is the whole unit: there is no per-agent and no per-project grant, so every op below names a tenant and nothing finer. Ownership is structural rather than a stored role — you own your own tenant because it is yours — which is why nothing here can revoke it from you, and why the only rows that exist are somebody else granting you access, or you granting them.
 
 ### § list-tenants
@@ -488,3 +492,4 @@ the OS/bash notes and the path definitions around them alone.
 ### § revoke-member
 
 `revoke_member(member)`, where `member` is a `user_id` from **§ list-members**. Their access ends on their next call. Nothing they wrote is deleted, and nothing in their own tenant is touched.
+@end region

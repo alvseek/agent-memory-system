@@ -13,10 +13,8 @@ the superseded ``<!-- composed-source: -->`` include is refused.
 A procedure may also inline **components** (shared fragments), and a component can
 reference storage ops of its own. Those are defined once under the component's own
 ``## [component]`` section rather than repeated under every procedure that inlines it;
-``compose_backend_section`` assembles the procedure's section plus its components' into
-the single body that gets substituted. A backend may also open **every** composed
-procedure with one ``## all-procedures`` section — prose the whole backend owes each
-procedure, such as what a placeholder its ops use means — again written once.
+``compose_backend_section`` assembles only the procedure's section and those of its
+inlined components into the body that gets substituted.
 
 This is the framework's single home for the legacy seam logic, defined once beside the
 contract (``README.md``). It is Munnin-agnostic. Every consumer imports it:
@@ -33,10 +31,6 @@ from collections.abc import Sequence
 
 STORAGE_MARKER = "## Storage Mechanics"
 
-# A backend section that opens every composed procedure, when the backend defines it.
-# It is prose, never ops: nothing in it can satisfy a `§` reference, and its presence
-# never wires a procedure the backend does not otherwise name.
-PREAMBLE_SECTION = "all-procedures"
 _source_provider_factory = None
 
 
@@ -102,19 +96,10 @@ def has_seam(doc: str) -> bool:
 def compose_backend_section(
     doc: str, procedure: str, components: Sequence[str] = (), source_provider=None
 ) -> str:
-    """The backend body for one compiled procedure: its own ``## {procedure}`` section
-    followed by a ``## {component}`` section for each component inlined into it — and,
-    when the backend defines ``## all-procedures``, that section ahead of both.
+    """Join only the procedure's own backend section and its inlined components' sections.
 
-    A component's ops live **once**, under the component's own name, instead of being
-    repeated under every procedure that inlines it — the same single-home rule the seam
-    itself follows. Order is preamble first, then the procedure, then components as they
-    were inlined; repeats and components the backend says nothing about are skipped.
-
-    The preamble is prose the backend owes every procedure (what a placeholder in its
-    ops means, say), so it is prepended only once a procedure is otherwise covered: a
-    backend that defines the preamble and nothing else still defines nothing for this
-    procedure, and ``KeyError`` is raised exactly as before.
+    Components follow the procedure in inlining order. Skip missing or repeated names;
+    raise ``KeyError`` if none of the named sections exist.
     """
     parts: list[str] = []
     seen: set[str] = set()
@@ -128,10 +113,6 @@ def compose_backend_section(
             continue
     if not parts:
         raise KeyError(f"backend defines no section for: {procedure}")
-    try:
-        parts.insert(0, extract_section(doc, PREAMBLE_SECTION, source_provider))
-    except KeyError:
-        pass  # this backend owes its procedures no preamble
     return "\n\n".join(parts)
 
 

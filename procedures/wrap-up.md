@@ -5,11 +5,9 @@ kind = "procedure"
 title = "Wrap Up Session"
 description = "End-of-session **memory** orchestrator: update memory → persist the store → report. Capturing a session and saving it are one job here rather than two — the procedure writes the memory layers and then commits whatever the active storage backend needs committing, so a session never ends with its own record written but unsaved."
 argument_name = "mode"
-argument_description = "Input described in the procedure's Arguments section"
+argument_description = "agent (default) or all; add fresh to re-evaluate the whole session"
 calls = { markdown = ["update-memory", "push-memory"], db = ["update-memory"] }
 +++
-@start storage id="caller-context" ref="procedures/memory/storage-backends/{backend}.md" target="caller-context"
-@end storage
 # Wrap Up Session
 
 End-of-session **memory** orchestrator: update memory → persist the store → report. Capturing a session and saving it are one job here rather than two — the procedure writes the memory layers and then commits whatever the active storage backend needs committing, so a session never ends with its own record written but unsaved.
@@ -22,11 +20,11 @@ What it does not touch is the working project: no project push, no orientation m
 
 ## Arguments
 
-`$ARGUMENTS` = `[all|agent] [fresh]`
+**Mode:** `$ARGUMENTS` — `[all|agent] [fresh]`.
 
-- **Mode** (optional): `agent` (default) persists only this agent's own memory, leaving a concurrently-running agent's in-flight work untouched; `all` persists the whole store. The default is the conservative one because `/wrap-up` runs at session end, when nobody is watching what else in the store happens to be dirty.
-- **`fresh`** (optional): force fresh mode for the memory update (pass-through to `/update-memory`); default auto-detects delta vs fresh.
-- Examples: `/wrap-up` (agent + delta) · `/wrap-up all` · `/wrap-up fresh` · `/wrap-up all fresh`.
+- `agent` (default) persists only this agent's memory; `all` persists the whole store.
+- `fresh` tells `/update-memory` to re-evaluate the whole session. Without it, `/update-memory` detects delta vs. fresh from the session theme.
+- Examples: `/wrap-up` (agent, auto-detect) · `/wrap-up all` · `/wrap-up fresh` · `/wrap-up all fresh`.
 
 ---
 
