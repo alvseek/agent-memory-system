@@ -276,8 +276,6 @@ There is no persistence section to print — the write landed in the database wh
 
 The 4-layer assembly is a single derived call.
 
-> **Not covered by the payload — and no longer needs to be**: the **awakening instructions** (the Phase 1/Phase 2 protocol) are not a record and are not served, because they are a **component** inlined into this procedure at compile time — the process rides in the prompt, the data comes from `awaken`. That is the whole of what the payload leaves out; the user profile used to be listed here too, and is now a record like any other (`shared.user_profile`, above). See `docs/flows/awaken-db.md` in the memory-server repo.
-
 @end region
 
 @start region id="core-instruction-control-files.load-user-profile"
