@@ -3,31 +3,29 @@ format_version = 2
 id = "update-episodic"
 kind = "procedure"
 title = "Update Episodic Memory Protocol"
-description = "Capture session context as **rolling per-theme episodes**. The default flow scans active (non-archived) episodes for the current project, finds theme matches, and appends a dated sub-episode to the matching one — or creates a new episode if none matches. *How* episodes are physically listed / created / appended is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics))."
+description = "Save a dated session entry in a new or existing episode for the current project."
 argument_name = "mode"
 argument_description = "`new` to force a new episode instead of appending"
 +++
 # Update Episodic Memory Protocol
 
-Capture session context as **rolling per-theme episodes**. The default flow scans active (non-archived) episodes for the current project, finds theme matches, and appends a dated sub-episode to the matching one — or creates a new episode if none matches. *How* episodes are physically listed / created / appended is delegated to the active **storage backend**.
+An episode groups dated session entries by theme. By default, look for a matching active episode in the current project. Add the entry to that episode, or create one if none matches.
 
 ## Arguments
 
-**Mode:** `$ARGUMENTS` — `new` [creates a new episode](#force-new-episode) without checking for a theme match. If omitted, [scan for a match](#default-flow) and follow the confirmation rules to append or create.
+`$ARGUMENTS` — optional `new`. Use it to [create a separate episode](#force-new-episode) without scanning for a match. Otherwise, follow the [default flow](#default-flow).
 
 ---
 
 ## Procedure
 
-*IMPORTANT: Use TodoWrite tool with FULL VERBATIM copy of each step below (including all commands, examples, and sub-points) to prevent context loss and ensure complete execution*
-
 ### Default Flow
 
 #### Step 1: Stamp the Time
 
-Obtain the current date+time for the sub-episode H3 header (**§ stamp-date**).
+Get the current local date and time for the new entry’s heading (`YYYY-MM-DD HH.MM`), whether adding to an episode or creating one.
 
-@start storage id="update-episodic.stamp-date" ref="procedures/memory/storage-backends/{backend}.md" target="update-episodic.stamp-date"
+@start storage id="update-episodic.stamp-date" ref="procedures/memory/storage-backends/{backend}.md" target="update-episodic.stamp-date" applies_to="markdown"
 @end storage
 #### Step 2: Identify Project + Theme
 

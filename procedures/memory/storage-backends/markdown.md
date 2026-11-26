@@ -9,10 +9,7 @@ Concrete storage mechanics for the **native markdown-over-git** world. Each `## 
 ## update-episodic
 
 @start region id="update-episodic.stamp-date"
-### § stamp-date
-
-ALWAYS CHECK DATE TIME FIRST for the sub-episode H3 header and index entry placement:
-`date '+%Y-%m-%d %H:%M'`
+Use `date '+%Y-%m-%d %H.%M'`. Use the same date for the entry’s placement in the episode index.
 
 @end region
 

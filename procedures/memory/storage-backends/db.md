@@ -8,13 +8,6 @@ Concrete storage mechanics for the **DB-backed** world. Each `## [procedure]` se
 
 ## update-episodic
 
-@start region id="update-episodic.stamp-date"
-### § stamp-date
-
-**No action.** The server stamps `created_date` / `updated_date` on write; use the block's H3 timestamp as authored.
-
-@end region
-
 @start region id="update-episodic.list-candidate-episodes"
 ### § list-candidate-episodes
 
