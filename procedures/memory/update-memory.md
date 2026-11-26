@@ -3,22 +3,14 @@ format_version = 2
 id = "update-memory"
 kind = "procedure"
 title = "Update Memory Protocol"
-description = "Comprehensive memory update orchestrator. Five phases:"
+description = "Save what’s new in this conversation to episodic memory, along with any reusable lessons or significant emotional moments that qualify."
 argument_name = "mode"
 argument_description = "Optional new: create a new episode instead of appending to a matching one"
 calls = ["add-reasoning", "update-knowledge", "update-episodic", "update-emotional"]
 +++
 # Update Memory Protocol
 
-Comprehensive memory update orchestrator. Five phases:
-
-- **Phase 0** — Identify which part of this conversation to evaluate
-- **Phase 1** — Save reusable lessons
-- **Phase 2** — Save the episode
-- **Phase 3** — Save a significant emotional moment
-- **Phase 4** — Report
-
-`/update-episodic` writes only the episodic layer. `/update-memory` is the full end-of-session orchestrator (what `/wrap-up` invokes).
+Save what’s new in this conversation to episodic memory, along with any reusable lessons or significant emotional moments that qualify.
 
 **Execution style**: silent. Run Phases 0-3 silently. Produce only the Phase 4 Step 6 summary block. (When invoked by `/wrap-up`, even that is folded into the caller's summary.)
 
@@ -87,11 +79,3 @@ Phase 2 — Session captured:
 Phase 3 — Feeling captured (scope: [full session / delta since CUTOFF]):
 - Emotional: [captured / skipped] — [moment type and why it mattered, if captured]
 ```
-
----
-
----
-
-## Notes
-
-- **Conservative bias** on all 3 gates: when borderline, SKIP. False positives dilute memory; false negatives are recoverable via a direct command call.
