@@ -34,7 +34,7 @@ Comprehensive memory update orchestrator. Five phases:
 
 1. If both `delta` and `fresh` were supplied, ask for one mode and stop before writing. If `fresh` was selected, set `MODE = fresh` and skip to Phase 1.
 2. Theme-match scan: list the acting agent's active episodes (**§ detect-mode-scan**). Find the top candidate where the name or summary contains the current project name + highest keyword overlap with the session theme.
-3. **Match:** Set `MODE = delta` and use the newest matching sub-episode timestamp as `CUTOFF`. **No usable cutoff:** If `delta` was requested, report that there is no prior matching update and stop before writing; use `fresh` for a full-session evaluation. In automatic mode, set `MODE = fresh`.
+3. **Match with a usable cutoff:** Set `MODE = delta` and use the newest matching sub-episode timestamp as `CUTOFF`. **No usable cutoff:** Set `MODE = fresh` and evaluate the whole session, even if `delta` was requested.
 4. Capture `MODE` and `CUTOFF` (if delta) for the Phase 4 summary.
 
 ---

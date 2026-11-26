@@ -271,7 +271,10 @@ Identify cross-layer files written this session, by path:
 ## wrap-up
 
 @start region id="wrap-up.arguments"
-`$ARGUMENTS` — `[agent|all] [delta|fresh]`. Use `agent` (default) to commit and push only this agent's memory, or `all` for the whole memory store.
+## Arguments
+
+`$ARGUMENTS` — `[agent|all]`. Use `agent` (default) to commit and push only this agent's memory, or `all` for the whole memory store.
+
 @end region
 
 @start region id="wrap-up.persist-store"

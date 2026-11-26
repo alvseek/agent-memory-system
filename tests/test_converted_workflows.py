@@ -74,7 +74,7 @@ def test_recorded_conversion_preserved_legacy_instructions_or_named_edits():
 def test_current_workflows_keep_their_operational_contracts():
     critical = {
         "awaken-agent": ["own context", "load-user-profile", "load-latest-episode"],
-        "wrap-up": ["update-memory", "fresh", "one final report", "tech debts", "next steps"],
+        "wrap-up": ["call `/update-memory` without arguments", "one final report", "tech debts", "next steps"],
         "update-memory": ["cutoff", "all 5 must pass", "tech debts", "next steps"],
         "update-episodic": [
             "carry-forward",
@@ -99,6 +99,8 @@ def test_current_workflows_keep_their_operational_contracts():
 
     db = current.compose("wrap-up", "db").text
     markdown = current.compose("wrap-up", "markdown").text
+    assert current.compose("wrap-up", "db").argument_name is None
+    assert "$ARGUMENTS" not in db and "$ARGUMENTS" in markdown
     for git_only in ("§ persist-store", "/push-memory", "[agent|all]", "push error"):
         assert git_only in markdown and git_only not in db
     assert "what remains unsaved" in db
