@@ -111,7 +111,7 @@ def test_dual_output_matches_single_backend_including_canonical_components(
     refresh = (tmp_path / "dual" / f"refresh-memory.{backend}.md").read_text(encoding="utf-8")
     if backend == "db":
         assert 'insert(scope="shared"' in refresh
-        assert "get(latest_episode.uuid" in refresh
+        assert "get(episode.uuid, cursor=episode.next_cursor)" in refresh
         assert "Copy blank templates" not in refresh
         assert "Write the three values to" not in refresh
     else:
@@ -321,7 +321,7 @@ def test_backends_disagree_on_the_component_ops(tmp_path: Path) -> None:
     db = (tmp_path / "awaken-agent.db.md").read_text(encoding="utf-8")
     assert "new-agent-template/shared-memory/" in md  # markdown recovers by copying files
     assert "new-agent-template/shared-memory/" not in db
-    assert "truncated in transit" in db  # db's failure mode is a silent payload cap
+    assert "§ recover-missing-foundations" not in db
     assert "latest_episode" in db  # db already has the episode; markdown must read it
     assert "episodes/" in md
 

@@ -340,7 +340,7 @@ Use the **Read tool directly** and read all 4 files in parallel:
 @start region id="core-instruction-control-files.load-user-profile"
 ### § load-user-profile
 
-**No action.** The profile is already in your context: the global instructions file carries it, compiled from `[AGENT-MEMORY-PATH]/shared-memory/user-profile.md`, which is the single source of truth. If the `## AI Agent - User Profile` section is absent from your instructions, or carries no values at all, treat that as *no profile exists* and take Phase 1's first-run branch.
+Use the `## AI Agent - User Profile` section already in the global instructions file. If the section is absent or all its fields are empty, follow the first-run instructions. Otherwise, leave blank fields as they are.
 
 @end region
 
@@ -354,7 +354,7 @@ Write the three values to `[AGENT-MEMORY-PATH]/shared-memory/user-profile.md`, k
 @start region id="core-instruction-control-files.recover-missing-foundations"
 ### § recover-missing-foundations
 
-The `shared-memory/` directory was not found on disk. Ask [USER-NAME]:
+If the `shared-memory/` directory is missing, ask [USER-NAME]:
 
 "shared-memory/ not found. Would you like me to:
 A) Copy blank templates from `[AGENT-MEMORY-PATH]/control-files/new-agent-template/shared-memory/`
@@ -365,14 +365,7 @@ B) Create empty shared-memory/ files with section headers only"
 @start region id="core-instruction-control-files.load-latest-episode"
 ### § load-latest-episode
 
-Read the episode file named by the index entry from `[AGENT-MEMORY-PATH]/agent-[domain]/episodes/`.
-
-@end region
-
-@start region id="core-instruction-control-files.oversized-memory-warning"
-### § oversized-memory-warning
-
-A file that exceeded the single-Read limit came back partial. Name it and warn: *"⚠️ `[filename]` exceeded the read limit during loading — consider `/archive-old-memories` to reduce its size."*
+Read the episode file named by the newest index entry from `[AGENT-MEMORY-PATH]/agent-[domain]/episodes/`. If a different entry matches the project you need, read that file instead.
 
 @end region
 

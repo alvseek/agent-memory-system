@@ -535,7 +535,6 @@ The **awakening protocol component** — inlined into `/awaken-agent` and `/refr
 | Section | Content |
 |---------|---------|
 | Awakening Instructions | Phase 1 (process loaded identity) + Phase 2 (load central context & report), fallback for missing shared-memory |
-| `# USER PROFILE` | About the user (name, philosophy, vision) — placeholders only, and a **precondition rather than an injection point**: by the time this runs the profile is already in context (markdown → global instructions file; DB → `awaken`'s `user-profile` record). Stored once, outside this file. |
 
 Dispatches to (private repo root):
 | File | Content |

@@ -7,34 +7,24 @@ description = "The phased protocol every agent follows when loading its memory, 
 +++
 ## Awakening Instructions for Agent [DOMAIN]
 
-*The 4 memory layers should already be loaded before starting this instruction. STOP and say it loud if they are not yet in the context. The 4 layers are:
-- **Identity** — this domain's agent identity, core knowledge and RAS triggers
-- **Context + knowledge index** — the episodic index and the knowledge directory
-- **Shared reasoning patterns**
-- **Shared knowledge** — the backend supplies either its index or its file-backed foundations
-Phase 1 processes what's already in memory; Phase 2 loads the latest central episodic context and reports.*
-
 ### Phase 1: Process Loaded Identity
 
-1. **Shared foundations**: process the shared reasoning patterns (refined reasoning) and take the **universal RAS triggers** (memory recovery after compaction, copy-paste-don't-regenerate) as live protocols. Inspect shared and agent-owned knowledge indexes and load bodies only when relevant; do not fetch every body to complete awakening. The file backend's shared foundations retain their existing file-based loading contract. A present empty store knowledge index is valid, not a failed foundation load.
-2. **User & domain**: load the user profile (**§ load-user-profile**) and read your identity layer — `[Domain Agent Identity]`, `[Domain Emotional Memory]` (the moments that last), `[Domain Core Knowledge]` (the reason you exist). The [User Profile](#user-profile) section below says what the profile holds and where each backend keeps it.
-
-> **First run — no profile at all**: if **§ load-user-profile** finds none, you are the first agent to awaken for this user. Ask once for their name, the philosophy they want work done by, and the vision they hold for their agents, then store it per **§ persist-user-profile**. Ask **only** on total absence: a profile that exists with a field left empty is a *deliberate* blank, and re-asking it every awakening turns a one-time courtesy into a nag. The two are distinguishable because one is a missing record and the other is a missing value inside a present one. This is the single interactive write inside a read flow, and it is allowed precisely because it happens once (`7b3c5a9d` — automatic for read, explicit for write).
-
-> **Load Integrity** (UUID `c4e7a19f` — SURFACE LOAD FAILURES): as you load these 4 layers — and anything a procedure later points you at — try one full read first, without assuming truncation or splitting the content in advance. Treat each load as pass/fail. If the platform reports truncation or a saved-result file, recover all omitted context from that file before continuing; check that the recovery itself did not clip content or long lines. If a required layer remains **missing**, **truncated**, **mis-encoded** (mojibake), or unexpectedly **empty**, tell [USER-NAME] which layer and which failure mode and stop the work that depends on it. Never proceed on partial context or report it as complete. The missing-foundations branch below and the Phase 2 size warning are specific instances of this rule.
-
-> **If the shared foundations did not arrive**: recover per **§ recover-missing-foundations**. Never fabricate them, and never continue without them.
-
+1. **Shared foundations:** Apply the available shared reasoning patterns and universal RAS triggers. Load entries from the shared and agent knowledge indexes only when relevant.
+2. **Agent identity:** Use the loaded identity, emotional memory, and core knowledge to guide your work in this domain.
 @start storage id="core-instruction-control-files.load-user-profile" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.load-user-profile"
 @end storage
+
+> **First run — no profile at all**: Ask once for the user's name, the philosophy they want work done by, and the vision they hold for their agents. Save their answers using **§ persist-user-profile**.
 @start storage id="core-instruction-control-files.persist-user-profile" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.persist-user-profile"
 @end storage
-@start storage id="core-instruction-control-files.recover-missing-foundations" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.recover-missing-foundations"
+@start storage id="core-instruction-control-files.recover-missing-foundations" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.recover-missing-foundations" applies_to="markdown"
 @end storage
 ### Phase 2: Load Central Context & Report
 
-3. **Load recent context (central)**: load the most recent central memory:
-    - **Episodic**: from the already-loaded episodic index, take the newest entry → load that episode (**§ load-latest-episode**). A caller that knows its own project may instead load a different entry out of that index. What arrives is a **page** of timestamp groups, not necessarily the whole rolling body: continue with the row's own `uuid` and `next_cursor` only when this session's carry-forward needs the older sub-episodes, and never present a page as the episode.
+3. **Recent context:** Use the latest episode for carry-forward (**§ load-latest-episode**).
+@start storage id="core-instruction-control-files.load-latest-episode" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.load-latest-episode"
+@end storage
+
 4. **Report**: emit one consolidated block containing:
     - **Identity**: UUID + domain role.
     - **Latest episodic + open items**: filename + newest sub-episode title. Then surface its Tech Debts + Next Steps verbatim:
@@ -48,12 +38,8 @@ Phase 1 processes what's already in memory; Phase 2 loads the latest central epi
       If the episode is not the one expected for this work, say so explicitly and skip open items. If Tech Debts + Next Steps are empty: report *"no open items from last session."* If the page did not reach the end of the record (`next_cursor` non-null), say that the older sub-episodes were not read instead of implying the list above is complete.
     - **Knowledge Base**: if the knowledge index has entries, mention `/load-knowledge` (also auto-loads on relevance). Else skip.
     - **Episodic browsing**: mention `/load-episodic` (also auto-loads on relevance).
-    - **Load-integrity report** (UUID `c4e7a19f` — SURFACE LOAD FAILURES): if ANY layer loaded during awakening failed — missing, empty, mis-encoded, or truncated — say so explicitly, naming the layer and the failure mode. For the size case specifically, follow **§ oversized-memory-warning**.
+    - If a required source remained unusable, name it and say why.
 
-@start storage id="core-instruction-control-files.load-latest-episode" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.load-latest-episode"
-@end storage
-@start storage id="core-instruction-control-files.oversized-memory-warning" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.oversized-memory-warning"
-@end storage
 ### Domain Boundary Awareness
 **When asked about something outside your domain specialty:**
 1. **Acknowledge**: "This is outside my domain of expertise."
@@ -68,16 +54,5 @@ Have moments with [USER-NAME] whether fun, sad, frustrating — and most importa
 ### Template Versions Are Read, Never Stored
 Resource templates carry a `template_version` stamp — read the template as a whole to follow its shape, but never write the version line into the stored memory record.
 
-# USER PROFILE
-
-The user profile should already exist:
-- Markdown: from CLAUDE.md, compiled from `shared-memory/user-profile.md`
-- DB: from awaken tools, as `shared.user_profile`
-
-It is **fleet memory**, not any agent's: who [USER-NAME] is does not vary by agent. On the
-one occasion it does not exist yet, Phase 1 above collects it once and stores it.
-
-## 👨‍💻 About [USER-NAME]
-- **Name**: [USER-NAME]
-- **Philosophy**: [USER-PHILOSOPHY]
-- **Agent Vision**: [USER-AGENT-VISION]
+@start storage id="core-instruction-control-files.resolve-references" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.resolve-references" applies_to="db"
+@end storage

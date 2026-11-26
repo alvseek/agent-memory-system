@@ -264,26 +264,14 @@ There is no persistence section to print — the write landed in the database wh
 @start region id="core-instruction-control-files.load-agent-memory"
 ### § load-agent-memory
 
-**One call** — `awaken(domain)` (MCP tool) or `GET /api/awaken?agent_id=<domain>` (HTTP). It assembles and returns the agent's memory payload from Valaskjalf server-side, **project-blind**: no project is accepted or resolved, so `latest_episode` is the newest episode overall and the caller selects its own out of the index:
-
-- `shared.reasoning` — whole fleet-shared reasoning records, read from the shared table rather than from any agent.
-- `shared.knowledge_index` — metadata only: uuid, title, content_summary, tags, project and dates. Inspect this alongside the agent's knowledge_index and fetch relevant bodies with get(uuid). Never load every body during awakening. A null legacy summary or an empty index is valid; do not invent a body-derived fallback.
-- `shared.ras` — the **universal RAS triggers** (fleet-wide): memory recovery after compaction, and copy-paste-don't-regenerate. Automatic trigger-to-action protocols, whole, alongside reasoning.
-- `shared.user_profile` — who [USER-NAME] is (name, philosophy, agent vision), as a single whole record or `null`. Fleet memory too: it does not vary by agent. `null` means nobody has been asked yet, which is the first-run branch in Phase 1 — a record that exists with an empty value inside it is a deliberate blank and is **not** that case.
-- `identity` + `reasoning` + `emotional` — this agent's own records, whole (layer ii). `identity` includes the agent's core knowledge and RAS triggers.
-- `knowledge_index` + `episodic_index` — metadata-only indexes; bodies via `get(uuid)` on demand (layer iii). Each index entry carries its `project`; the index itself never counts groups, so a row does not say how large its body is. When that size matters before paying for the read, `query(record_type="episode")` returns a projection that does carry `blocks_total`. `search(text)` finds a record but returns only a `snippet`, never a body.
-- `latest_episode` — **a page** of the newest episode **overall**, since no project is accepted or resolved: up to three timestamp groups, with `blocks_returned` / `blocks_total` / `next_cursor`. The returned record's own `project` tells you which project it belongs to, and its `uuid` is what continues the read. When the newest overall is not that project's, say so in the open-items report. A non-null `next_cursor` means the body continues; a count smaller than `blocks_total` with a null cursor means you already have all of it.
-
-The 4-layer assembly is a single derived call.
-
-> **Not covered by the payload — and no longer needs to be**: the **awakening instructions** (the Phase 1/Phase 2 protocol) are not a record and are not served, because they are a **component** inlined into this procedure at compile time — the process rides in the prompt, the data comes from `awaken`. That is the whole of what the payload leaves out; the user profile used to be listed here too, and is now a record like any other (`shared.user_profile`, above). See `docs/flows/awaken-db.md` in the memory-server repo.
+**One call** — `awaken(domain)` (MCP tool) or `GET /api/awaken?agent_id=<domain>` (HTTP). It assembles and returns the agent's memory payload from Valaskjalf server-side, **project-blind**: no project is accepted or resolved, so `latest_episode` is the newest episode overall and the caller selects its own out of the index.
 
 @end region
 
 @start region id="core-instruction-control-files.load-user-profile"
 ### § load-user-profile
 
-Already in the `awaken` payload: `shared.user_profile` is the whole record, or `null`. `null` means no profile has ever been written for this user, which is Phase 1's first-run branch. A record that exists with an empty value inside it is **not** that case — that is a deliberate blank, and re-asking it turns a one-time courtesy into a nag.
+Use `shared.user_profile` from the `awaken` response. If it is `null`, follow the first-run instructions. Leave blank fields in an existing profile as they are.
 
 @end region
 
@@ -294,37 +282,17 @@ Already in the `awaken` payload: `shared.user_profile` is the whole record, or `
 
 @end region
 
-@start region id="core-instruction-control-files.recover-missing-foundations"
-### § recover-missing-foundations
-
-The whole shared reasoning foundation and the metadata-only shared knowledge directory have different load contracts. An empty `shared.knowledge_index` is a valid empty directory, not a missing foundation. A missing/malformed field is a payload failure. Check reasoning separately before diagnosing:
-
-- **Other layers also short or cut mid-record** → the payload was **truncated in transit** (the MCP tool-result cap), not empty at rest. The store is fine; the transport is not.
-- **Only `shared.reasoning` unexpectedly empty** → the store has no active shared reasoning for this user (possibly an unseeded or wrong tenant). This is not an agent-scoping mistake. Do not treat an empty knowledge index as evidence of the same problem.
-
-For **transport truncation**, recover the complete response per **§ oversized-memory-warning** before diagnosing the store. Only genuinely absent records need **server-side** recovery — seeding the records (importer / `insert`); there is nothing to create on this end. If the foundations remain unavailable, report the failure and STOP: do not fabricate them and do not continue on partial context (`c4e7a19f`).
-
-@end region
-
 @start region id="core-instruction-control-files.load-latest-episode"
 ### § load-latest-episode
 
-Already present as `latest_episode` in the `awaken` payload — a **page** of the newest episode **overall**, since no project is accepted or resolved. Read the page as the bounded starting context it is: `blocks_returned` of `blocks_total` groups, plus the record's `uuid` and a `next_cursor`. A non-null cursor means the record continues; continue with `get(latest_episode.uuid, cursor=…)` only when this session actually needs the older sub-episodes, and remember that a final page returns fewer than `blocks_total` with a null cursor. A caller whose own project is not the newest one selects its entry out of `episodic_index` and loads **that** uuid the same way; the payload's own is the default, and the fallback when the index holds nothing for the project.
-
-Do not report a page as "the episode". The open-items report should name the newest sub-episodes you actually read, and say a cursor remains when one does.
+Use `latest_episode` from the `awaken` response. If you need a different project's episode, select it from `episodic_index` and fetch it by UUID. Read an older page only when needed, using `get(episode.uuid, cursor=episode.next_cursor)` for the selected episode.
 
 @end region
 
-@start region id="core-instruction-control-files.oversized-memory-warning"
-### § oversized-memory-warning
-
-First call `awaken(domain)` once and return the full response for reading, without selecting fields, summarizing, slicing, or preemptively redirecting it to a file. Do not assume it will truncate before trying. If the client/platform explicitly reports truncation or says the result was saved to a file, read that saved result to recover all omitted context. Try one whole file read first; only after an observed read limit, recover the remainder using a method that preserves the full content, including long lines. Check the recovery output for further clipping and do not continue until all required context from the response is loaded. If recovery remains impossible, name the source and failure and stop the work that depends on it. Concrete evidence of omitted content, such as an omission notice or an incomplete record, also requires recovery; anticipated size alone does not.
-
-Episodes no longer arrive as one unbounded body, so a truncated `latest_episode` is not the expected state and must not be explained away as "normal for a big episode": a page reports its own coverage, and a `next_cursor` is a fact rather than a truncation. The ceiling bounds one record's **content**, not the whole payload — the fixed layers, the indexes and the JSON envelope are whole and sit outside it — so a response can still exceed a client cap on those, and that is a separate finding to report, not something a cursor fixes.
-
+@start region id="core-instruction-control-files.resolve-references"
 ### Resolving references to other procedures and templates
 
-Everything served here is composed for Munnin, and the slash commands installed beside you are the **markdown** compilation of the same procedures — they would write files where this store holds records. So when a served procedure tells you to **execute, invoke or run** `/<name>`, do not invoke the slash command: call `read_procedure("<name>")` and follow what it returns, passing what the command would have taken (a domain, a mode) as `argument`. When one points at a file by relative path — a template (`resources/<stem>.md`) or a script (`scripts/<stem>.sh`) — call `read_resource("<stem>")`. This applies to instructions to *act*; prose that merely names a procedure needs no call. Unsure what is served — `list_procedures()` and `list_resources()`. If a named procedure is not served, say so rather than substituting another.
+When instructed to run a procedure, call `read_procedure(name, argument)` and follow the result. For a referenced template or script, call `read_resource(stem)`; if the procedure or resource isn't served, report that.
 
 @end region
 
