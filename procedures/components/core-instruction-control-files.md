@@ -18,7 +18,6 @@ description = "The phased protocol every agent follows when loading its memory, 
 @start storage id="core-instruction-control-files.persist-user-profile" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.persist-user-profile"
 @end storage
 
-
 @start storage id="core-instruction-control-files.recover-missing-foundations" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.recover-missing-foundations" applies_to="markdown"
 @end storage
 
