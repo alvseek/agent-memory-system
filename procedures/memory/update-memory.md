@@ -30,12 +30,7 @@ Comprehensive memory update orchestrator. Five phases:
 
 ## Phase 0 — Set the evaluation window
 
-Look in **this conversation** for the last successful `/update-memory`, whether run directly or by `/wrap-up`.
-
-- **No confirmed success here:** evaluate the whole conversation (`fresh`), even if an older episode covers the same topic.
-- **Previous success here:** use that update as the cutoff and evaluate only work since then (`delta`), even if the topic changed or `new` was supplied. A failed or partial update does not advance the cutoff.
-
-Use this window for the gates, promotion scan, and episodic capture. The episode selected for writing never determines the window.
+Review what’s new in this chat. For the first memory update, review from the beginning. After that, review only what happened since the last successful memory update in this chat.
 
 ---
 
