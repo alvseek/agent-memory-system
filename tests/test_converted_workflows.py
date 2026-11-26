@@ -93,7 +93,7 @@ def test_current_workflows_keep_their_operational_contracts():
             "preserve the existing uuid",
             "reasoning-pattern-template",
         ],
-        "update-knowledge": ["discoverability", "knowledge-file-template"],
+        "update-knowledge": ["knowledge-file-template", "wait for approval", "partial write"],
         "update-emotional": ["newest", "emotional-moment-template"],
     }
     current = catalog()
@@ -125,6 +125,7 @@ def test_backend_mechanics_are_beside_steps_and_resources_remain_references():
         caller = composed.compose("update-memory", backend)
         assert "update-reasoning" in caller.calls and "add-reasoning" not in caller.calls
         assert "added / refined / skipped" in caller.text
+        assert "update-knowledge" in caller.calls and "added / updated / skipped" in caller.text
     text = composed.compose("update-reasoning", "db").text.replace("\r\n", "\n")
     assert text.index("### § read-reasoning-store\n") < text.index("## 2. Save")
     assert text.index("### § save\n") > text.index("## 2. Save")

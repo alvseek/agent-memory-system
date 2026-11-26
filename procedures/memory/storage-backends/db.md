@@ -95,26 +95,18 @@ Use the awakened agent’s domain as `<domain>`. If no agent is established, use
 
 ## update-knowledge
 
-@start region id="update-knowledge.template"
-### § template
+@start region id="update-knowledge.find-entry"
+### § find-entry
 
-**Served as an MCP Resource** (`knowledge-file-template`) — read it from resources.
-
-@end region
-
-@start region id="update-knowledge.persist-knowledge"
-### § persist-knowledge
-
-Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing.
-
-`insert(agent_id="<domain>", record_type="knowledge", title="<knowledge area>", tags=[…], content="<knowledge doc>", content_summary="<the entry's Summary row>", template_version="<the template's current stamp>")`. Read `knowledge-file-template` from resources first and declare its `template_version` — a missing or stale version is refused. `content_summary` is required for a knowledge record: pass the entry's `**Summary**` row verbatim, because that one line is what the knowledge index lists the record by. General/central knowledge only — Munnin is project-blind (no project-scoped knowledge).
+Use the awakened agent’s domain; if unknown, confirm it before selecting records. Reuse `knowledge_index` and `shared.knowledge_index`. If a fresh listing is needed, use `query(record_type="knowledge")`. Keep only active rows with `project` null and `agent_id` equal to the acting domain or null (shared). Read candidate bodies with `get(uuid)`.
 
 @end region
 
-@start region id="update-knowledge.update-knowledge-index"
-### § update-knowledge-index
+@start region id="update-knowledge.save"
+### § save
 
-**No-op.** The knowledge directory is a derived `query(record_type="knowledge")` — it reflects every insert automatically.
+- **Add:** Read `knowledge-file-template`. Call `insert(agent_id="<domain>", record_type="knowledge", title="<entry name>", tags=[…], content="<entry>", content_summary="<one-line summary>", template_version="<template stamp>")`. Copy the summary text verbatim from the entry’s `**Summary**` row. The insert creates the listing.
+- **Update:** Keep the record UUID. Read `get(uuid, include_edit_context=true)` and use `edit` for the affected text, including the body’s Summary row when it changes. Pass `expected_tenant` and `expected_revision` from the edit context; use the fresh context returned by each guarded write for the next. If the listing needs a different summary, use `edit_metadata(uuid, content_summary=…)` with the same summary text and fresh guards. On conflict, reread before retrying.
 
 @end region
 

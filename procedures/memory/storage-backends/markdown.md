@@ -133,24 +133,18 @@ Write the moment to `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` (i
 
 ## update-knowledge
 
-@start region id="update-knowledge.template"
-### § template
+@start region id="update-knowledge.find-entry"
+### § find-entry
 
-The knowledge-file format → read `[AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/knowledge-file-template.md`.
-
-@end region
-
-@start region id="update-knowledge.persist-knowledge"
-### § persist-knowledge
-
-Create in `[AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/research/` (domain expertise and research). Name the file `[date]-[descriptive-theme].md` or `[domain-area].md` — examples: `2025-09-11-nestjs-patterns.md` (dated research), `typescript-best-practices.md` (timeless domain knowledge). Create the file with the template structure, filling the frontmatter `tags` — the importer reads them into the record's `tags`.
+Use `# Core Knowledge Base` in `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md`; exclude project context. Follow the links for plausible entries. For shared knowledge, compare the relevant passages in `[AGENT-MEMORY-PATH]/shared-memory/core-knowledge-memory.md` loaded at awakening, following references when needed.
 
 @end region
 
-@start region id="update-knowledge.update-knowledge-index"
-### § update-knowledge-index
+@start region id="update-knowledge.save"
+### § save
 
-Update `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` knowledge directory - add an entry to the knowledge index for discoverability, of the form `- **[{Title}]({path})** - [one-line summary]`. Copy the summary from the entry's `**Summary**` row verbatim: this line is the record's listed description on the markdown backend and the `content_summary` on the DB one, so the two must not diverge.
+- **Add:** Use `[AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/knowledge-file-template.md`, including its frontmatter tags. Create `[date]-[descriptive-theme].md` or `[domain-area].md` under `[AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/research/`. In the agent’s knowledge index, add `- **[Title](path)** - one-line summary`, copying the Summary text verbatim.
+- **Update:** Edit the existing file or shared passage in place and keep its path and links. If its Summary changes, copy the new text to the existing index line. A shared passage with no separate listing needs no index edit.
 
 @end region
 
@@ -235,7 +229,7 @@ On success:
 Wrap-up complete (mode: [agent / all] · [fresh / delta from CUTOFF]):
 
 Memory update:
-- Phase 1 — Reusable lessons: reasoning: [added — pattern name / skipped] / knowledge: [added — entry name / skipped]
+- Phase 1 — Reusable lessons: reasoning [added / refined / skipped]; knowledge [added / updated / skipped]. Include the name or skip reason returned by `/update-memory`.
 - Phase 2 — Session captured: [appended to / created] [name] ([timestamp]) — [brief theme]; carry-forward: [N items / N/A]
 - Phase 3 — Feeling captured: emotional [captured — polarity + clearest criterion / skipped — brief reason]
 

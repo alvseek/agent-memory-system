@@ -3,69 +3,34 @@ format_version = 2
 id = "update-knowledge"
 kind = "procedure"
 title = "Update Knowledge Memory Protocol"
-description = "Capture domain expertise, technical patterns, research findings, and best practices that enhance agent capabilities. *How* the knowledge store + index are written is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics))."
+description = "Keep cross-project knowledge accurate by adding, updating, or skipping a finding."
 argument_name = "context"
-argument_description = "the knowledge to document; asks if omitted"
+argument_description = "the finding and its supporting evidence; asks for the finding if omitted"
 +++
 # Update Knowledge Memory Protocol
 
-Capture domain expertise, technical patterns, research findings, and best practices that enhance agent capabilities. *How* the knowledge store + index are written is delegated to the active **storage backend**.
+Keep cross-project knowledge accurate. A runbook or convention specific to one project belongs in project context.
 
 ## Arguments
 
-**Context:** `$ARGUMENTS` — the knowledge or domain expertise to document. If omitted, ask: "What knowledge or domain expertise should I document?"
+`$ARGUMENTS` — the finding and its supporting evidence, from `/update-memory` or a direct request. If the finding is missing, ask what to document. If the evidence is missing, ask for it before treating the claim as established.
 
----
+## 1. Find the entry that answers the same question
 
-## Procedure
+Start with the acting agent’s active general knowledge and the shared knowledge available at awakening. Use titles and summaries to find plausible entries, then read their bodies (**§ find-entry**). A keyword match alone does not mean two entries answer the same question.
 
-*IMPORTANT: Use TodoWrite tool with FULL VERBATIM copy of each step below (including all commands, examples, and sub-points) to prevent context loss and ensure complete execution*
-
-### Step 1: Evaluate Capture Criteria
-
-**Capture when:**
-- Domain expertise discoveries (new frameworks, libraries, patterns)
-- Technical patterns (architectural solutions, design patterns)
-- Research findings (comparative analysis, benchmarks, evaluations)
-- Best practices with evidence (proven approaches backed by data)
-- Specialized knowledge enhancing capabilities (tooling, methodologies)
-
-**Don't capture:**
-- Temporary workarounds or project-specific hacks
-- Unverified claims or assumptions
-- Context already covered in existing knowledge files
-- Information that should be in episodic memory instead
-
-> **Scope**: `/update-knowledge` writes **general** knowledge (research, core-domain, cross-cutting) — cross-project, always **central**. Project-specific context (VM access, deploy procedures, conventions) + project-scoped knowledge are handled by the coding overlay, not here.
-
-### Step 2: Compose from the Template
-
-Compose the entry using the knowledge-file template (**§ template**).
-
-**Quality Standards:**
-- Back claims with sources, documentation, or proven experience
-- Include links to official documentation when available
-- Reference specific examples or case studies
-- Distinguish between proven practices and experimental approaches
-
-@start storage id="update-knowledge.template" ref="procedures/memory/storage-backends/{backend}.md" target="update-knowledge.template"
+@start storage id="update-knowledge.find-entry" ref="procedures/memory/storage-backends/{backend}.md" target="update-knowledge.find-entry"
 @end storage
-### Step 3: Persist
 
-Save the entry in the knowledge store for the domain you are acting as (**§ persist-knowledge**).
+- **Skip** if the existing answer and its limits are accurate. Return the covering entry’s name without writing.
+- **Update** if the answer is incomplete, outdated, or broader than the evidence supports. Correct the existing entry in place. If it is shared, propose the exact wording, including any changed summary, and wait for approval. Do not create a private copy instead.
+- **Add** if no entry answers the question. Create one general knowledge entry owned by the acting agent.
 
-@start storage id="update-knowledge.persist-knowledge" ref="procedures/memory/storage-backends/{backend}.md" target="update-knowledge.persist-knowledge"
+## 2. Save the answer and its listing
+
+State what the evidence shows and under what conditions. Include the source or observation, and its version or date when that affects the answer. For a new entry, write a one-line summary a reader can use to find it. For an update, revise the summary only if it no longer describes the entry accurately.
+
+@start storage id="update-knowledge.save" ref="procedures/memory/storage-backends/{backend}.md" target="update-knowledge.save"
 @end storage
-### Step 4: Confirm Knowledge Discoverability
 
-Ensure the entry is discoverable through the knowledge directory (**§ update-knowledge-index**). Consider whether new knowledge should be core vs. specialized.
-
-**Cross-Reference Standards:**
-- Use markdown links for all file references: `[Pattern Name](file.md)`
-- Include context in link text: `[Database Migration Strategy](migrations.md#strategy)`
-- Test links to ensure they work properly
-
----
-
-@start storage id="update-knowledge.update-knowledge-index" ref="procedures/memory/storage-backends/{backend}.md" target="update-knowledge.update-knowledge-index"
-@end storage
+Return `added`, `updated`, or `skipped` with the entry name. If the body was saved but the listing was not, report the partial write rather than claiming success.
