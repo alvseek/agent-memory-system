@@ -74,7 +74,12 @@ def test_recorded_conversion_preserved_legacy_instructions_or_named_edits():
 def test_current_workflows_keep_their_operational_contracts():
     critical = {
         "awaken-agent": ["own context", "load-user-profile", "load-latest-episode"],
-        "wrap-up": ["call `/update-memory` without arguments", "one final report", "tech debts", "next steps"],
+        "wrap-up": [
+            "call `/update-memory` without arguments",
+            "one final report",
+            "tech debts",
+            "next steps",
+        ],
         "update-memory": ["cutoff", "all 5 must pass", "tech debts", "next steps"],
         "update-episodic": [
             "carry-forward",
