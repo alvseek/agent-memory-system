@@ -11,13 +11,13 @@ description = "The phased protocol every agent follows when loading its memory, 
 
 1. **Shared foundations**: process the shared reasoning patterns (refined reasoning) and take the **universal RAS triggers** (memory recovery after compaction, copy-paste-don't-regenerate) as live protocols. Inspect shared and agent-owned knowledge indexes and load bodies only when relevant; do not fetch every body to complete awakening. The file backend's shared foundations retain their existing file-based loading contract. A present empty store knowledge index is valid, not a failed foundation load.
 2. **User & domain**: load the user profile (**§ load-user-profile**) and read your identity layer — `[Domain Agent Identity]`, `[Domain Emotional Memory]` (the moments that last), `[Domain Core Knowledge]` (the reason you exist).
-
 @start storage id="core-instruction-control-files.load-user-profile" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.load-user-profile"
-@end storage
-@start storage id="core-instruction-control-files.persist-user-profile" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.persist-user-profile"
 @end storage
 
 > **First run — no profile at all**: if **§ load-user-profile** finds none, you are the first agent to awaken for this user. Ask once for their name, the philosophy they want work done by, and the vision they hold for their agents, then store it per **§ persist-user-profile**. Ask **only** on total absence: a profile that exists with a field left empty is a *deliberate* blank, and re-asking it every awakening turns a one-time courtesy into a nag. The two are distinguishable because one is a missing record and the other is a missing value inside a present one. This is the single interactive write inside a read flow, and it is allowed precisely because it happens once.
+@start storage id="core-instruction-control-files.persist-user-profile" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.persist-user-profile"
+@end storage
+
 
 > **If the shared foundations did not arrive**: follow **§ recover-missing-foundations**.
 @start storage id="core-instruction-control-files.recover-missing-foundations" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.recover-missing-foundations"
