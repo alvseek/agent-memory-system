@@ -243,7 +243,9 @@ The records you wrote this session ARE the promotions — list the reasoning / k
 
 ## wrap-up
 
-@start region id="wrap-up.report-db"
+@start region id="wrap-up.finish"
+## Finish wrap-up
+
 If every required write succeeded, report “Wrap-up complete” followed by the memory-update results and open items. If a required write failed, report “Wrap-up incomplete”: say what was saved, what remains unsaved, and why.
 @end region
 

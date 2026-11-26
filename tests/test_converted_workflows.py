@@ -101,9 +101,16 @@ def test_current_workflows_keep_their_operational_contracts():
     markdown = current.compose("wrap-up", "markdown").text
     assert current.compose("wrap-up", "db").argument_name is None
     assert "$ARGUMENTS" not in db and "$ARGUMENTS" in markdown
-    for git_only in ("§ persist-store", "/push-memory", "[agent|all]", "push error"):
+    for git_only in ("/push-memory", "[agent|all]", "push error"):
         assert git_only in markdown and git_only not in db
     assert "what remains unsaved" in db
+
+    # Helheim shows one card per span, including whitespace-only spans.
+    for backend in ("db", "markdown"):
+        shared, finish = current.compose("wrap-up", backend).spans
+        assert shared.path == "procedures/wrap-up.md" and shared.text.strip()
+        assert finish.path.endswith(f"/{backend}.md") and finish.target == "wrap-up.finish"
+        assert finish.text.strip()
 
 
 def test_backend_mechanics_are_beside_steps_and_resources_remain_references():

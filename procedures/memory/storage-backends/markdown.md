@@ -270,23 +270,15 @@ Identify cross-layer files written this session, by path:
 
 ## wrap-up
 
-@start region id="wrap-up.arguments"
-## Arguments
+@start region id="wrap-up.finish"
+## Finish wrap-up
 
 `$ARGUMENTS` — `[agent|all]`. Use `agent` (default) to commit and push only this agent's memory, or `all` for the whole memory store.
-
-@end region
-
-@start region id="wrap-up.persist-store"
-### § persist-store
 
 Execute `/push-memory <mode>` with the selected `agent` or `all` scope. Record each repository's result: pushed (with commit hash), no changes, or failed (with reason).
 
 **Completion gate:** Report success only when the required memory updates succeeded, nothing in scope is dirty, and no branch carrying this session's commits is ahead of its remote. In `agent` mode, report other agents' dirty files without treating them as a failure.
 
-@end region
-
-@start region id="wrap-up.report"
 On success:
 
 ```
@@ -310,9 +302,7 @@ Next steps:
 - [item 1]
 (or "None declared")
 ```
-@end region
 
-@start region id="wrap-up.failure-report"
 **On failure:** Report the failed update or outstanding commit or push instead of reporting completion:
 
 ```
