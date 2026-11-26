@@ -290,7 +290,7 @@ The whole shared reasoning foundation and the metadata-only shared knowledge dir
 - **Other layers also short or cut mid-record** → the payload was **truncated in transit** (the MCP tool-result cap), not empty at rest. The store is fine; the transport is not.
 - **Only `shared.reasoning` unexpectedly empty** → the store has no active shared reasoning for this user (possibly an unseeded or wrong tenant). This is not an agent-scoping mistake. Do not treat an empty knowledge index as evidence of the same problem.
 
-For **transport truncation**, recover the complete response per **§ oversized-memory-warning** before diagnosing the store. Only genuinely absent records need **server-side** recovery — seeding the records (importer / `insert`); there is nothing to create on this end. If the foundations remain unavailable, report the failure and STOP: do not fabricate them and do not continue on partial context (`c4e7a19f`).
+Only diagnose absent records from a complete response. Genuinely absent records need **server-side** recovery (importer / `insert`); there is nothing to create on this end.
 
 @end region
 
@@ -299,16 +299,7 @@ For **transport truncation**, recover the complete response per **§ oversized-m
 
 Already present as `latest_episode` in the `awaken` payload — a **page** of the newest episode **overall**, since no project is accepted or resolved. Read the page as the bounded starting context it is: `blocks_returned` of `blocks_total` groups, plus the record's `uuid` and a `next_cursor`. A non-null cursor means the record continues; continue with `get(latest_episode.uuid, cursor=…)` only when this session actually needs the older sub-episodes, and remember that a final page returns fewer than `blocks_total` with a null cursor. A caller whose own project is not the newest one selects its entry out of `episodic_index` and loads **that** uuid the same way; the payload's own is the default, and the fallback when the index holds nothing for the project.
 
-Do not report a page as "the episode". The open-items report should name the newest sub-episodes you actually read, and say a cursor remains when one does.
-
-@end region
-
-@start region id="core-instruction-control-files.oversized-memory-warning"
-### § oversized-memory-warning
-
-First call `awaken(domain)` once and return the full response for reading, without selecting fields, summarizing, slicing, or preemptively redirecting it to a file. Do not assume it will truncate before trying. If the client/platform explicitly reports truncation or says the result was saved to a file, read that saved result to recover all omitted context. Try one whole file read first; only after an observed read limit, recover the remainder using a method that preserves the full content, including long lines. Check the recovery output for further clipping and do not continue until all required context from the response is loaded. If recovery remains impossible, name the source and failure and stop the work that depends on it. Concrete evidence of omitted content, such as an omission notice or an incomplete record, also requires recovery; anticipated size alone does not.
-
-Episodes no longer arrive as one unbounded body, so a truncated `latest_episode` is not the expected state and must not be explained away as "normal for a big episode": a page reports its own coverage, and a `next_cursor` is a fact rather than a truncation. The ceiling bounds one record's **content**, not the whole payload — the fixed layers, the indexes and the JSON envelope are whole and sit outside it — so a response can still exceed a client cap on those, and that is a separate finding to report, not something a cursor fixes.
+A continuation cursor is pagination, not evidence of a clipped response. Name the sub-episodes you actually read and say whether older ones remain.
 
 ### Resolving references to other procedures and templates
 

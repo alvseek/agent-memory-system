@@ -40,7 +40,7 @@ Resume what was being done before compaction. Ask [USER-NAME] for clarification 
 
 ## Storage Mechanics
 
-The operations referenced above — **§ load-agent-memory**, plus the ops the inlined awakening-protocol component references (**§ recover-missing-foundations**, **§ load-latest-episode**, **§ oversized-memory-warning**) — are defined by the **active storage backend**:
+The **active storage backend** defines **§ load-agent-memory** and the operations used by the awakening protocol:
 
 - **Markdown (native fleet)** — follow `[STORAGE-BACKENDS-PATH]/markdown.md` → section `## core-instruction-control-files`.
 - **DB (Munnin)** — served automatically; see `[STORAGE-BACKENDS-PATH]/db.md` → section `## core-instruction-control-files`.
