@@ -88,7 +88,7 @@ def test_current_workflows_keep_their_operational_contracts():
             "tech debts",
             "next steps",
         ],
-        "add-reasoning": [
+        "update-reasoning": [
             "final conclusion",
             "preserve the existing uuid",
             "reasoning-pattern-template",
@@ -120,9 +120,14 @@ def test_current_workflows_keep_their_operational_contracts():
 
 def test_backend_mechanics_are_beside_steps_and_resources_remain_references():
     composed = catalog()
-    text = composed.compose("add-reasoning", "db").text
-    assert text.index("§ read-reasoning-store\n") < text.index("### Step 2:")
-    assert text.index("§ persist-reasoning\n") > text.index("### Step 4:")
+    assert "add-reasoning" not in composed.procedures
+    for backend in ("db", "markdown"):
+        caller = composed.compose("update-memory", backend)
+        assert "update-reasoning" in caller.calls and "add-reasoning" not in caller.calls
+        assert "added / refined / skipped" in caller.text
+    text = composed.compose("update-reasoning", "db").text.replace("\r\n", "\n")
+    assert text.index("### § read-reasoning-store\n") < text.index("## 2. Save")
+    assert text.index("### § save\n") > text.index("## 2. Save")
     assert "template_version" in text and "reasoning-pattern-template" in text
     awakening = composed.compose("awaken-agent", "db").text
     assert awakening.index("### § load-agent-memory") < awakening.index("### Step 2:")
@@ -198,8 +203,11 @@ def test_extraction_lineage_has_no_unrecorded_source_origins():
     for entry in extracted:
         origin = entry["source"]
         assert origin.startswith("storage-backends/") or origin in manifest["input_sha256"]
+    # The manifest identifies the original conversion; track later renames here.
+    renamed = {"add-reasoning": "update-reasoning"}
+    current = catalog().procedures
     for name in manifest["graph"]:
-        assert name in catalog().procedures
+        assert renamed.get(name, name) in current
 
 
 def test_missing_converted_source_refuses_instead_of_legacy_pointer_fallback():

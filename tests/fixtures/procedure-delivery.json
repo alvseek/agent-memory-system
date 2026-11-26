@@ -1,8 +1,4 @@
 {
-  "add-reasoning": {
-    "db": "504c2d1e459cf8d33e1dd6ec09151c5ec92318a210d2eec419bbd8449f02658c",
-    "markdown": "0c5cf37866d35db57257c6dd2af0c40bc194beae074247d58a29f0ebcc247804"
-  },
   "awaken-agent": {
     "db": "1ce90091bfe897578caa184168922dcedf62bfb8a4499f358df419f67ab8747d",
     "markdown": "77c11bffbd40ae7e4f3b70ae8c787dabc87580a42ed4b52bbf5b335ed739c2cb"
@@ -20,8 +16,12 @@
     "markdown": "ad673c242cc4fd5dd20d5b524e032b8894b57319dac07897ccc1ef3d608cdeb3"
   },
   "update-memory": {
-    "db": "eb500c73ccb74bb433be73a2c8a7801e13535428bcff5889de79cbe6f54315a5",
-    "markdown": "eb500c73ccb74bb433be73a2c8a7801e13535428bcff5889de79cbe6f54315a5"
+    "db": "76ab5c7e72365906f2770b40c9f69ad2be9c1dd31c010a25d93a244c945ea3ae",
+    "markdown": "76ab5c7e72365906f2770b40c9f69ad2be9c1dd31c010a25d93a244c945ea3ae"
+  },
+  "update-reasoning": {
+    "db": "cf2096832ff745fe0db0a7deba65cdb116ad1a4c130ba7a21c375ec397dc061e",
+    "markdown": "a5625e6e5feabff8708b5db2e99695817590042732573e8fb9c7a9735287c980"
   },
   "wrap-up": {
     "db": "e3b1ac203878be0717c8a0ac1e013176c0cdb4c2e2c8f015c85567deced06fa2",

@@ -114,7 +114,7 @@ The core installs as slash commands to `~/.claude/commands/`. These are the **me
 |---------|---------|
 | `/update-memory` | Comprehensive update (all layers evaluated) |
 | `/update-episodic` | Session log only |
-| `/add-reasoning` | Reasoning pattern capture |
+| `/update-reasoning` | Add, refine, or skip a proposed decision rule |
 | `/update-knowledge` | Knowledge entry capture |
 | `/update-emotional` | Emotional memory capture |
 | `/load-episodic` | Browse and load past episodic memories |

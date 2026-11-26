@@ -6,7 +6,7 @@ title = "Update Memory Protocol"
 description = "Save what’s new in this conversation to episodic memory, along with any reusable lessons or significant emotional moments that qualify."
 argument_name = "mode"
 argument_description = "Optional new: create a new episode instead of appending to a matching one"
-calls = ["add-reasoning", "update-knowledge", "update-episodic", "update-emotional"]
+calls = ["update-reasoning", "update-knowledge", "update-episodic", "update-emotional"]
 +++
 # Update Memory Protocol
 
@@ -30,7 +30,7 @@ Review what’s new in this chat. For the first memory update, review from the b
 
 Review only the work identified in Phase 0.
 
-- **Reasoning:** Promote a lesson only when it gives the agent a reusable rule for future decisions. Use recurring experience as evidence, or an explicit decision from the user that the rule should apply going forward. Pass the rule and a concrete example to `/add-reasoning`, which checks whether an existing rule already covers it.
+- **Reasoning:** Propose a lesson only when it gives the agent a reusable rule for future decisions, supported by recurring experience or the user’s explicit decision to apply it going forward. Pass the rule and a concrete example to `/update-reasoning`; use its outcome and rule name in the report.
 - **Knowledge:** If the conversation produced a reusable finding worth looking up again, pass the finding and its supporting evidence to `/update-knowledge`.
 
 Skip either step when nothing qualifies or the lesson was already saved during this conversation.
@@ -69,7 +69,7 @@ Report completion only after all required writes succeed. If the update is incom
 Mode: [fresh / delta since <previous successful update in this conversation>]
 
 Phase 1 — Reusable lessons (scope: [full session / delta since CUTOFF]):
-- Reasoning pattern: [added / skipped] — [pattern name if added]
+- Reasoning pattern: [added / refined / skipped] — [rule name if evaluated; otherwise why skipped]
 - Knowledge: [added / skipped] — [entry name if added]
 
 Phase 2 — Session captured:

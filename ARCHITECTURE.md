@@ -85,7 +85,7 @@ control-files/
 │   ├── memory/                        # Memory management procedures
 │   │   ├── update-memory.md           # Comprehensive memory update
 │   │   ├── update-episodic.md         # Episodic memory update
-│   │   ├── add-reasoning.md           # Reasoning pattern capture
+│   │   ├── update-reasoning.md        # Reasoning rule comparison and update
 │   │   ├── update-knowledge.md        # Knowledge memory capture
 │   │   ├── update-emotional.md        # Emotional memory capture
 │   │   ├── load-episodic.md           # List and load past episodes
@@ -416,7 +416,7 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 |-------------|----------------|---------------|
 | All Layers | `procedures/memory/update-memory.md` | `/update-memory` |
 | Episodic | `procedures/memory/update-episodic.md` | `/update-episodic` |
-| Reasoning | `procedures/memory/add-reasoning.md` | `/add-reasoning` |
+| Reasoning | `procedures/memory/update-reasoning.md` | `/update-reasoning` |
 | Knowledge | `procedures/memory/update-knowledge.md` | `/update-knowledge` |
 | Emotional | `procedures/memory/update-emotional.md` | `/update-emotional` |
 | Episodic (load) | `procedures/memory/load-episodic.md` | `/load-episodic` |
@@ -443,7 +443,7 @@ When updating memory, agents follow standardized procedures in `procedures/`:
 /wrap-up [all|agent]     # End-of-session memory capture + persist the store (via /update-memory, then § persist-store)
 /update-memory [new]     # Comprehensive update (all layers evaluated)
 /update-episodic [new]   # Episodic only
-/add-reasoning           # Add reasoning pattern
+/update-reasoning        # Add, refine, or skip a proposed rule
 /update-knowledge        # Update knowledge entry
 /update-emotional        # Update emotional memory
 /load-episodic           # List and load past episodic memories

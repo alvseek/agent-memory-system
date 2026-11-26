@@ -2,5 +2,5 @@
 
 ## CORE REASONING AND LOGIC FUNDAMENTALS
 
-<!-- Add your reasoning patterns here using the Add Reasoning Protocol (/add-reasoning) -->
+<!-- /update-reasoning compares proposals with these shared rules. -->
 <!-- Each pattern should have: UUID, Strict Action, What happened, Final Conclusion -->

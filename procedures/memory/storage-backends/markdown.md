@@ -97,38 +97,22 @@ When no `tags:` line exists yet, add one beneath `project:` in the same block. T
 @end region
 
 
-## add-reasoning
+## update-reasoning
 
-@start region id="add-reasoning.read-reasoning-store"
+@start region id="update-reasoning.read-reasoning-store"
 ### § read-reasoning-store
 
-Read the `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` reasoning memory section (`# DOMAIN REASONING MEMORY`).
+Reuse the rules loaded at awakening. If needed, read `# DOMAIN REASONING MEMORY` in `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` and `shared-memory/core-reasoning-memory.md` under the same memory root. For coding work, include `shared-memory/coding-reasoning-memory.md` when present.
 
 @end region
 
-@start region id="add-reasoning.template"
-### § template
+@start region id="update-reasoning.save"
+### § save
 
-The reasoning-pattern block format → read `[AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/reasoning-pattern-template.md`.
-
-@end region
-
-@start region id="add-reasoning.generate-uuid"
-### § generate-uuid
-
-Generate a unique identifier:
-- **Windows**: `powershell -c "[guid]::NewGuid().ToString()"`
-- **Linux/macOS**: `uuidgen` or `cat /proc/sys/kernel/random/uuid`
+- **Add:** Read `[AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/reasoning-pattern-template.md`. Generate a new UUID (`uuidgen` or PowerShell `[guid]::NewGuid()`) and add the completed rule to the acting agent’s `# DOMAIN REASONING MEMORY` section.
+- **Refine:** Find the existing rule by UUID in its owning file and edit that block in place. Keep its UUID and the surrounding rules unchanged.
 
 @end region
-
-@start region id="add-reasoning.persist-reasoning"
-### § persist-reasoning
-
-Write the completed pattern into the `# DOMAIN REASONING MEMORY` section of `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md`.
-
-@end region
-
 
 ## update-emotional
 

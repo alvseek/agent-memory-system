@@ -57,36 +57,22 @@ Call `create_episode(agent_id, title, entry_title, body, content_summary, projec
 @end region
 
 
-## add-reasoning
+## update-reasoning
 
-@start region id="add-reasoning.read-reasoning-store"
+@start region id="update-reasoning.read-reasoning-store"
 ### § read-reasoning-store
 
-Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing. Reuse the reasoning records returned by `awaken`; otherwise `query(agent_id="<domain>", record_type="reasoning")` lists metadata. Use `get(uuid)` for the patterns you need to compare.
+Use the awakened agent’s domain. If none is established, use `list_agents()` and confirm the domain. Reuse rules already loaded at awakening. Otherwise, `query(record_type="reasoning")` lists metadata: keep only rows owned by this domain or shared (`agent_id` is null). Include applicable shared `coding_reasoning` rules for coding work. Use `get(uuid)` for candidate bodies you do not already have.
 
 @end region
 
-@start region id="add-reasoning.template"
-### § template
+@start region id="update-reasoning.save"
+### § save
 
-**Served as an MCP Resource** (`reasoning-pattern-template`) — read it from resources.
-
-@end region
-
-@start region id="add-reasoning.generate-uuid"
-### § generate-uuid
-
-The pattern's cited UUID is content — generate any UUID for it; the `insert` response also returns the record's own `uuid` if you prefer to cite that.
+- **Add:** Read `reasoning-pattern-template`, generate a fresh UUID, and use it in the body and the new record. Call `insert(agent_id="<domain>", record_type="reasoning", uuid="<new UUID>", title="<rule name>", content="<rule>", template_version="<stamp from the template>")`.
+- **Refine:** Read the selected record with `get(uuid, include_edit_context=true)`. Use `edit` with its record UUID, exact old and replacement text, and the returned tenant and revision as `expected_tenant` and `expected_revision`. If the record changed, reread it and compare again.
 
 @end region
-
-@start region id="add-reasoning.persist-reasoning"
-### § persist-reasoning
-
-`insert(agent_id="<domain>", record_type="reasoning", title="<short memorable title>", content="<full pattern block>", template_version="<the template's current stamp>")`. Read `reasoning-pattern-template` from resources first and declare its `template_version` — a missing or stale version is refused.
-
-@end region
-
 
 ## update-emotional
 

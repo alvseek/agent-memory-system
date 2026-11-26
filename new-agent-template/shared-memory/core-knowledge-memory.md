@@ -18,7 +18,7 @@ Agent data file should be in the `[AGENT-MEMORY-PATH]/agent-[domain]/`
 
 ### **3. Reasoning & Logic Memory**
 **Included in**: `shared-memory/core-reasoning-memory.md`
-**Write Procedure**: `procedures/memory/add-reasoning.md`
+**Write Procedure**: `procedures/memory/update-reasoning.md`
 **Agent Data File**: `agent-core-memory.md` → `# DOMAIN REASONING MEMORY` section
 
 ### **4. Knowledge Memory**

@@ -25,7 +25,7 @@ _spec.loader.exec_module(cc)
 # procedures every healthy tree carries — asserted by presence, not exact count (a WIP
 # copy or a newly-added procedure shouldn't break the suite).
 _KNOWN = {
-    "add-reasoning", "awaken-agent", "wrap-up", "update-episodic",
+    "update-reasoning", "awaken-agent", "wrap-up", "update-episodic",
     "load-knowledge", "create-agent",
 }
 
@@ -87,11 +87,11 @@ def test_unwired_procedure_is_skipped(tmp_path: Path) -> None:
 
 def test_markdown_and_db_swap_the_right_mechanics(tmp_path: Path) -> None:
     cc.compile_all(CF, tmp_path)
-    md = (tmp_path / "add-reasoning.markdown.md").read_text(encoding="utf-8")
-    db = (tmp_path / "add-reasoning.db.md").read_text(encoding="utf-8")
+    md = (tmp_path / "update-reasoning.markdown.md").read_text(encoding="utf-8")
+    db = (tmp_path / "update-reasoning.db.md").read_text(encoding="utf-8")
     # markdown backend = file/shell mechanics; db backend = tool calls.
     assert "agent-core-memory.md" in md
-    assert 'powershell -c "[guid]' in md  # markdown-only generate-uuid shell op
+    assert "[guid]::NewGuid()" in md
     assert "insert(agent_id=" in db  # db-only persist tool call
     assert "insert(agent_id=" not in md
 
@@ -138,8 +138,8 @@ def test_dual_intermediates_are_separate_and_match_each_backend(tmp_path: Path) 
 def test_templates_stay_a_reference_not_inlined(tmp_path: Path) -> None:
     # templates live once as a separate Resource/file; the output references them, never inlines.
     cc.compile_all(CF, tmp_path)
-    md = (tmp_path / "add-reasoning.markdown.md").read_text(encoding="utf-8")
-    db = (tmp_path / "add-reasoning.db.md").read_text(encoding="utf-8")
+    md = (tmp_path / "update-reasoning.markdown.md").read_text(encoding="utf-8")
+    db = (tmp_path / "update-reasoning.db.md").read_text(encoding="utf-8")
     for text in (md, db):
         assert "## Templates (inlined)" not in text
     # markdown references the template by path; db names it as an MCP Resource
@@ -214,9 +214,9 @@ def test_single_backend_seam_is_decluttered(tmp_path: Path) -> None:
 
 def test_single_backend_db_composes_tool_calls(tmp_path: Path) -> None:
     cc.compile_all(CF, tmp_path, backend="db")
-    text = (tmp_path / "add-reasoning.md").read_text(encoding="utf-8")
+    text = (tmp_path / "update-reasoning.md").read_text(encoding="utf-8")
     assert "insert(agent_id=" in text  # db tool call inlined
-    assert 'powershell -c "[guid]' not in text  # markdown-only shell op absent
+    assert "[guid]::NewGuid()" not in text
 
 
 def test_single_backend_main_strict_is_clean(tmp_path: Path) -> None:
