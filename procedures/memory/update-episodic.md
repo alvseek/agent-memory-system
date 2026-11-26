@@ -39,35 +39,17 @@ If no active episode matches, search the archive in the same scope **only if the
 
 @start storage id="update-episodic.reopen-archived-theme" ref="procedures/memory/storage-backends/{backend}.md" target="update-episodic.reopen-archived-theme"
 @end storage
-#### Step 4: Match Heuristic
+#### Step 4: Compare candidates
 
-For each candidate, score theme overlap:
-- Tokenize the candidate's filename (sans extension and any legacy date prefix) and summary
-- Count keyword overlap with this session's theme keywords
-- Higher overlap = stronger merge signal
+- Read each candidate’s title and summary.
+- Ask: **Does the work being saved continue the task, decision, or problem recorded in this episode?**
+- Use shared keywords as clues. Don’t choose an episode just because it uses the same words.
 
-Identify:
-- **Top match**: highest-scoring candidate (if any meaningful overlap exists)
-- **Runner-ups**: 2nd-3rd scoring candidates if scores are close
+#### Step 5: Choose where to save
 
-If no candidate has meaningful overlap, use Step 3’s no-match rule.
-
-#### Step 5: Confirm Match
-
-Present the top match (and any close runner-ups) to [USER-NAME]:
-
-```
-Theme match candidate(s) found:
-  → [name] — [summary] (overlap: keyword1, keyword2)
-  → [runner-up name] — [summary] (overlap: keyword1)
-
-Append a new sub-episode to this one? Or create a new episode?
-  A) Append to [top-match]
-  B) Create new episode
-  C) Append to a different existing one (specify)
-```
-
-Wait for response. Auto-default to **A** only if confidence is high (≥3 strong overlapping keywords AND same project tag). Otherwise wait for explicit confirmation.
+- **One clear match** → Append to it without asking.
+- **No match** → Follow Step 3’s no-match rule.
+- **Unsure** → Show only the plausible candidates. Give one reason each might fit, then ask: **“Append to one of these, or start a new episode?”** Wait for the answer.
 
 #### Step 6: Branch — Append OR Create
 
