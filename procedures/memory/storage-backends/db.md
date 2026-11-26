@@ -34,13 +34,7 @@ Read `episodic-entry-template`. Pass its version separately. Supply the entry su
 @start region id="update-episodic.append-sub-episode"
 #### § append-sub-episode
 
-An episode is a single record whose body is the rolling, newest-first sub-episode list. Newest-first then needs no read and no string match — two writes:
-1. `prepend_episode_entry(uuid, entry_title, body, template_version)` — Munnin prepends the stamped entry and separator, preserving the existing body.
-2. `edit_metadata(uuid, content_summary="<the record's summary>")` — the summary is metadata and has one writer, so it moves in its own call.
-
-`content_summary` is the whole new summary, not an appended fragment: it describes the record's newest content, so skipping step 2 leaves the listing describing a block the body no longer starts with. Two writes can also disagree if the second fails, which is why both steps belong to this op rather than to the caller's judgement — that is the price of one owner per field.
-
-The index reflects the change automatically (derived `SELECT`).
+Call `prepend_episode_entry(uuid, entry_title, body, content_summary, template_version)`. Pass the new entry’s **Summary** verbatim as `content_summary`. Munnin saves the UTC-stamped entry and its listing summary together.
 
 @end region
 
