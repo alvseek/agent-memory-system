@@ -9,7 +9,7 @@ argument_description = "the agent domain to awaken; asks if omitted"
 +++
 # Awaken Agent
 
-Load agent memory and activate a domain-specific agent. *Where* the memory is loaded from is delegated to the active **storage backend**.
+Load agent memory and activate a domain-specific agent.
 
 ## Arguments
 
@@ -32,14 +32,13 @@ The awakening set has four layers:
 3. **Shared reasoning patterns.**
 4. **Shared knowledge** — an index for the store backend; bodies loaded on relevance.
 
-*(The awakening protocol itself is not one of them — it is carried by Step 2 below.)*
-
 🚨 **CRITICAL — load the awakening set into YOUR OWN context**
 
 @start storage id="core-instruction-control-files.load-agent-memory" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.load-agent-memory"
 @end storage
 @start component id="awaken-agent.include-no-subagent-load" ref="procedures/components/no-subagent-load.md"
 @end component
+
 ### Step 2: Follow Awakening Instructions
 
 Follow the phased protocol below — Phase 1 (Process Loaded Identity), then Phase 2 (Load Central Context & Report).
