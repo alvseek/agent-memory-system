@@ -13,7 +13,7 @@ calls = ["add-reasoning", "update-knowledge", "update-episodic", "update-emotion
 Comprehensive memory update orchestrator. Five phases:
 
 - **Phase 0** — Identify which part of this conversation to evaluate
-- **Phase 1** — Two gated auto-evals (reasoning / knowledge)
+- **Phase 1** — Save reusable lessons
 - **Phase 2** — Pre-scan promotion markers + episodic capture
 - **Phase 3** — Emotional 5-criteria gate (deep-emotion anchoring, polarity-neutral)
 - **Phase 4** — Report
@@ -34,25 +34,14 @@ Review what’s new in this chat. For the first memory update, review from the b
 
 ---
 
-## Phase 1 — Promote Durable Artifacts
+## Phase 1 — Save reusable lessons
 
-### Step 1: Reasoning Pattern Gate
+Review only the work identified in Phase 0.
 
-- [USER-NAME] explicit anti-pattern callout? Signals: *"we got burned"*, *"don't do X again"*, *"remember this anti-pattern"*
-- [USER-NAME] explicit pattern validation? Signals: *"always do it this way"*, *"this is the right pattern"*, *"let's encode this"*
-- New decision-framework emerged from back-and-forth that both agreed should govern future similar situations?
+- **Reasoning:** If the user identified a pattern to follow or avoid, or you agreed on a rule for future decisions, pass the rule and the example that prompted it to `/add-reasoning`.
+- **Knowledge:** If the conversation produced a reusable finding worth looking up again, pass the finding and its supporting evidence to `/update-knowledge`.
 
-**YES to any** → execute `/add-reasoning`. **NO to all** → skip silently.
-
-### Step 2: Knowledge Gate
-
-- Documented research with sources/citations treated as reference material throughout?
-- [USER-NAME] explicit "document this" signal? *"let's document this"*, *"future agents should know X"*, *"write this down"*
-- Non-obvious technical mechanism / edge case / framework internal costly to re-discover?
-
-**YES to any** → execute `/update-knowledge`. **NO to all** → skip silently.
-
-> **Note**: project-specific context is a **coding-overlay** concern — the memory core is project-blind. A coding agent's wrap-up runs the project-context gate before this step, so anything written is still caught by the Step 3 pre-scan below.
+Skip either step when nothing qualifies or the lesson was already saved during this conversation.
 
 ---
 
@@ -103,15 +92,15 @@ Report completion only after all required writes succeed. If the update is incom
 
 Mode: [fresh / delta since <previous successful update in this conversation>]
 
-Phase 1 — Promoted artifacts (scope: [full session / delta since CUTOFF]):
+Phase 1 — Reusable lessons (scope: [full session / delta since CUTOFF]):
 - Reasoning pattern: [added / skipped] — [pattern name if added]
 - Knowledge: [added / skipped] — [entry name if added]
-- Project context: [promoted / none] — [file name if a coding overlay wrote project-context this session]
 
 Phase 2 — Session captured:
 - Episodic: [appended to / created] [name] — [brief theme]
 - Carry-forward: [N prior open items carried when appending / N/A for a new episode]
 - Promotions: [N markers / none]
+- Project context: [promoted / none] — [reference if a coding overlay saved project context in this window]
 
 Phase 3 — Feeling captured (scope: [full session / delta since CUTOFF]):
 - Emotional: [captured / skipped] — [polarity + clearest criterion if captured]
@@ -124,5 +113,4 @@ Phase 3 — Feeling captured (scope: [full session / delta since CUTOFF]):
 ## Notes
 
 - **Conservative bias** on all 3 gates: when borderline, SKIP. False positives dilute memory; false negatives are recoverable via a direct command call.
-- **Phase 1 gates are safety-nets** — proactive mid-session writes preferred. Step 3 catches both sources.
 - **Phase 3 is polarity-neutral**: joy / frustration / astonishment / pride / disappointment / surprise — all qualify if the moment carries lasting weight.
