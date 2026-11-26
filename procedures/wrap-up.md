@@ -10,7 +10,7 @@ calls = { markdown = ["update-memory", "push-memory"], db = ["update-memory"] }
 +++
 # Wrap Up Session
 
-Save this session's memory and report what changed. To ship repository changes too, use the project wrap-up.
+Save this session's memory and report what changed.
 
 ## Arguments
 
