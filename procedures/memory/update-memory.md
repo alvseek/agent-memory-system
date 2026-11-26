@@ -14,7 +14,7 @@ Comprehensive memory update orchestrator. Five phases:
 
 - **Phase 0** — Identify which part of this conversation to evaluate
 - **Phase 1** — Save reusable lessons
-- **Phase 2** — Pre-scan promotion markers + episodic capture
+- **Phase 2** — Save the episode
 - **Phase 3** — Save a significant emotional moment
 - **Phase 4** — Report
 
@@ -38,28 +38,16 @@ Review what’s new in this chat. For the first memory update, review from the b
 
 Review only the work identified in Phase 0.
 
-- **Reasoning:** If the user identified a pattern to follow or avoid, or you agreed on a rule for future decisions, pass the rule and the example that prompted it to `/add-reasoning`.
+- **Reasoning:** Promote a lesson only when it gives the agent a reusable rule for future decisions. Use recurring experience as evidence, or an explicit decision from the user that the rule should apply going forward. Pass the rule and a concrete example to `/add-reasoning`, which checks whether an existing rule already covers it.
 - **Knowledge:** If the conversation produced a reusable finding worth looking up again, pass the finding and its supporting evidence to `/update-knowledge`.
 
 Skip either step when nothing qualifies or the lesson was already saved during this conversation.
 
 ---
 
-## Phase 2 — Capture the Session
+## Phase 2 — Save the episode
 
-### Step 3: Pre-Scan Promotion Markers
-
-Identify cross-layer memory written in the evaluation window, including Phase 1 and any earlier writes in that window, via **§ scan-promotion-markers**. Include **project context** (shared / private), **knowledge**, and **reasoning** (shared / per-agent).
-
-Per item: `→ Promoted to [layer-file](ref) — [brief: what was formalized]`
-
-@start storage id="update-memory.scan-promotion-markers" ref="procedures/memory/storage-backends/{backend}.md" target="update-memory.scan-promotion-markers"
-@end storage
-### Step 4: Run Episodic Capture
-
-Invoke `/update-episodic new` if `$ARGUMENTS` contains `new`, else `/update-episodic`. Describe the work from the evaluation window in the new sub-episode; if appending, also review the target episode's prior open items for carry-forward. Populate `**Promotions**` with markers from Step 3 (omit if empty).
-
-`/update-episodic` hands back that sub-episode's `Tech Debts` and `Next Steps` (its `## Returns`). **Capture both as data for the caller** — a session-ender surfaces them in its own report. This procedure does not print them, so its Phase 4 summary is unchanged.
+Call `/update-episodic` with the work identified in Phase 0. Forward `new` only if supplied. Return the episode's **Tech Debts** and **Next Steps** to the caller for its report.
 
 ---
 
@@ -95,8 +83,6 @@ Phase 1 — Reusable lessons (scope: [full session / delta since CUTOFF]):
 Phase 2 — Session captured:
 - Episodic: [appended to / created] [name] — [brief theme]
 - Carry-forward: [N prior open items carried when appending / N/A for a new episode]
-- Promotions: [N markers / none]
-- Project context: [promoted / none] — [reference if a coding overlay saved project context in this window]
 
 Phase 3 — Feeling captured (scope: [full session / delta since CUTOFF]):
 - Emotional: [captured / skipped] — [moment type and why it mattered, if captured]

@@ -84,7 +84,7 @@ Wait for response. Auto-default to **A** only if confidence is high (≥3 strong
 - **If Append** → execute [Append Sub-Episode](#append-sub-episode)
 - **If Create** → execute [Create New Episode](#create-new-episode)
 
-> **Scope note**: `/update-episodic` only writes the episode + its index projection. Cross-layer concerns (promotion markers to project context / knowledge / reasoning, and emotional memory auto-capture) are handled by `/update-memory`, which calls this procedure and then orchestrates the cross-layer work. If you're calling `/update-episodic` directly and want cross-layer orchestration, use `/update-memory` instead.
+> `/update-episodic` saves the episode and updates its index. To evaluate the session for reasoning, knowledge, or emotional memory as well, use `/update-memory`.
 
 ---
 

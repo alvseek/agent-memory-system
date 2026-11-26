@@ -224,16 +224,6 @@ Per moment: **keep** — no-op. **archive** — `archive(uuid)`: the record drop
 
 ---
 
-## update-memory
-
-@start region id="update-memory.scan-promotion-markers"
-### § scan-promotion-markers
-
-Identify the records from successful writes in this conversation's evaluation window using their returned UUIDs. Include project-context writes made by the coding overlay.
-
-@end region
-
-
 ## wrap-up
 
 @start region id="wrap-up.finish"

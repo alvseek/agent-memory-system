@@ -36,7 +36,6 @@ A single-session episode file *(the H3 header carries an optional `(agent: [doma
 - **Issues Encountered**: ...
 - **Outcomes**: ... (includes Deliverables, Progress, **Tech Debts**, **Next Steps**)
 - **Insights**: ...
-- **Promotions** (if any): → Promoted to [context-file](path) — [what was formalized]
 ```
 
 A multi-session episode file (after one or more appends — **newest sub-episode at top**):

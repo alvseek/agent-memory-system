@@ -12,7 +12,7 @@ Save this session's memory and report what changed.
 
 ## Save memory
 
-Run silently and give one final report. Call `/update-memory` without arguments. It evaluates this conversation since its last successful memory update, or the whole conversation if this is the first. Use the returned evaluation mode and cutoff, gate decisions, promotions, episodic entry, carry-forward count, emotional status, and the episode's **Tech Debts** and **Next Steps**.
+Run silently and give one final report. Call `/update-memory` without arguments. It evaluates this conversation since its last successful memory update, or the whole conversation if this is the first. Use the returned evaluation mode and cutoff, gate decisions, episodic entry, carry-forward count, emotional status, and the episode's **Tech Debts** and **Next Steps**.
 
 If both lists are empty, report “No open items declared from this session.”
 

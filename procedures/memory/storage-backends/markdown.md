@@ -243,24 +243,6 @@ Operate on `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` (`# DOMAIN 
 
 ---
 
-## update-memory
-
-@start region id="update-memory.scan-promotion-markers"
-### § scan-promotion-markers
-
-Identify cross-layer files written by this session within the evaluation window, by path:
-
-| Layer | Path |
-|-------|------|
-| Project context (shared) | `shared-memory/[project]/context/*.md` |
-| Project context (private) | `knowledge-base/[project]/*.md` |
-| Knowledge | `knowledge-base/[topic].md`, `knowledge-base/core-domain-knowledge.md` |
-| Reasoning (shared) | `shared-memory/core-reasoning-memory.md` |
-| Reasoning (per-agent) | `agent-core-memory.md` → `# DOMAIN REASONING MEMORY` |
-
-@end region
-
-
 ## wrap-up
 
 @start region id="wrap-up.finish"
@@ -278,8 +260,8 @@ On success:
 Wrap-up complete (mode: [agent / all] · [fresh / delta from CUTOFF]):
 
 Memory update:
-- Phase 1 — Promoted artifacts: project context: [updated/created — file / skipped] / reasoning: [added — pattern name / skipped] / knowledge: [added — entry name / skipped]
-- Phase 2 — Session captured: [appended to / created] [name] ([timestamp]) — [brief theme]; carry-forward: [N items / N/A]; promotions: [N markers / none]
+- Phase 1 — Reusable lessons: reasoning: [added — pattern name / skipped] / knowledge: [added — entry name / skipped]
+- Phase 2 — Session captured: [appended to / created] [name] ([timestamp]) — [brief theme]; carry-forward: [N items / N/A]
 - Phase 3 — Feeling captured: emotional [captured — polarity + clearest criterion / skipped — brief reason]
 
 Memory persisted:

@@ -1,6 +1,6 @@
 # Detailed Entry Template — Episodic Sub-Episode Block
 
-template_version: 2026-10-14-10-00
+template_version: 2026-11-26-12-36
 
 The format of a single sub-episode block. Storage-agnostic: the markdown backend fills this into an episode file; the DB backend passes it as the `content` of an `insert(record_type="episode", …)`. Rows carrying `Use "None declared" if genuinely none.` are required (presence-checked); all other rows are optional.
 
@@ -35,8 +35,6 @@ The format of a single sub-episode block. Storage-agnostic: the markdown backend
   - **New Understanding**: [What I learned]
   - **Pattern Recognition**: [Connections to previous work]
   - **Improvement Areas**: [What could be better next time]
-- **Promotions** (if any — populated by `/update-memory` orchestrator, or filled manually if the session explicitly promoted content to another memory layer):
-  → Promoted to [layer-file](path) — [what was formalized]
 ```
 
 **Multi-session files**: when appending to an existing episode, the new H3 block goes at the **top**, above any older H3 blocks. Each sub-episode is a full block following this template. Result is newest-first, mirroring the index ordering.

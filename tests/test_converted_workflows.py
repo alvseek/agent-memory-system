@@ -236,12 +236,12 @@ def test_backend_specific_impact_matches_actual_legacy_delivery():
     }
     db_path = "procedures/memory/storage-backends/db.md"
     markdown_path = "procedures/memory/storage-backends/markdown.md"
-    assert set(composed.dependents(db_path)) == set(composed.procedures) | externals
+    # update-memory delegates storage to the procedures it calls.
+    consumers = (set(composed.procedures) | externals) - {"update-memory"}
+    assert set(composed.dependents(db_path)) == consumers
     # Tenant sharing has no Markdown section. Each other external consumes its own
     # backend section or, for refresh-memory, the shared awakening component.
-    assert set(composed.dependents(markdown_path)) == (
-        set(composed.procedures) | externals
-    ) - {"tenant-sharing"}
+    assert set(composed.dependents(markdown_path)) == consumers - {"tenant-sharing"}
 
 
 @pytest.mark.parametrize("host", ["claude-code", "opencode"])
