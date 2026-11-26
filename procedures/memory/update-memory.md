@@ -18,7 +18,7 @@ Comprehensive memory update orchestrator. Five phases:
 - **Phase 3** — Emotional 5-criteria gate (deep-emotion anchoring, polarity-neutral)
 - **Phase 4** — Report
 
-`/update-episodic` writes only the episodic layer. `/update-memory` is the full end-of-session orchestrator (what `/wrap-up` invokes). *Storage-specific reads/scans are delegated to the active backend; the gates below are storage-agnostic.*
+`/update-episodic` writes only the episodic layer. `/update-memory` is the full end-of-session orchestrator (what `/wrap-up` invokes).
 
 **Execution style**: silent. Run Phases 0-3 silently — tool calls stay visible, but no prose narration of phases. Produce only the Phase 4 Step 6 summary block. (When invoked by `/wrap-up`, even that is folded into the caller's summary.)
 
