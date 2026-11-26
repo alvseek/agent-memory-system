@@ -74,7 +74,7 @@ def test_recorded_conversion_preserved_legacy_instructions_or_named_edits():
 def test_current_workflows_keep_their_operational_contracts():
     critical = {
         "awaken-agent": ["own context", "load-user-profile", "load-latest-episode"],
-        "wrap-up": ["persist-store", "completion gate", "tech debts", "next steps"],
+        "wrap-up": ["update-memory", "fresh", "one final report", "tech debts", "next steps"],
         "update-memory": ["cutoff", "all 5 must pass", "tech debts", "next steps"],
         "update-episodic": [
             "carry-forward",
@@ -96,6 +96,12 @@ def test_current_workflows_keep_their_operational_contracts():
         for backend in ("markdown", "db"):
             text = current.compose(identity, backend).text.replace("**", "").lower()
             assert all(token in text for token in tokens), (identity, backend)
+
+    db = current.compose("wrap-up", "db").text
+    markdown = current.compose("wrap-up", "markdown").text
+    for git_only in ("§ persist-store", "/push-memory", "[agent|all]", "push error"):
+        assert git_only in markdown and git_only not in db
+    assert "what remains unsaved" in db
 
 
 def test_backend_mechanics_are_beside_steps_and_resources_remain_references():

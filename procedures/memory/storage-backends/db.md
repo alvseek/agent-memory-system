@@ -243,19 +243,12 @@ The records you wrote this session ARE the promotions — list the reasoning / k
 
 ## wrap-up
 
-@start region id="wrap-up.persist-store"
-### § persist-store
-
-No action. A write through the memory tools lands in the database as it happens, so there is nothing to push and no separate save step that could fail. Report the persistence outcome as already durable.
-
+@start region id="wrap-up.arguments"
+`$ARGUMENTS` — optional `fresh`.
 @end region
 
 @start region id="wrap-up.report-db"
-There is no persistence section to print — the write landed in the database when it happened, so nothing was pushed and no separate save step could fail. Open with `Wrap-up complete (mode: [agent / all] · [fresh / delta from CUTOFF]):`, then the memory-update results captured in Step 1, then the open items.
-@end region
-
-@start region id="wrap-up.failure-report" ending="none"
-
+If every required write succeeded, report “Wrap-up complete” followed by the memory-update results and open items. If a required write failed, report “Wrap-up incomplete”: say what was saved, what remains unsaved, and why.
 @end region
 
 

@@ -270,16 +270,22 @@ Identify cross-layer files written this session, by path:
 
 ## wrap-up
 
+@start region id="wrap-up.arguments"
+`$ARGUMENTS` — `[agent|all] [fresh]`. Use `agent` (default) to commit and push only this agent's memory, or `all` for the whole memory store.
+@end region
+
 @start region id="wrap-up.persist-store"
 ### § persist-store
 
-This store is a git repository, so capturing memory is not the same as saving it. Execute `/push-memory <mode>` with the mode `/wrap-up` resolved, and carry its per-repo result back as the persistence outcome — pushed with its commit hash, no changes, or failed, including any branch left ahead of its remote.
+Execute `/push-memory <mode>` with the selected `agent` or `all` scope. Record each repository's result: pushed (with commit hash), no changes, or failed (with reason).
 
-**Completion gate** (per NO TODOS LEFT BEHIND, UUID a1b2c3d4): the wrap-up is complete only when Step 2's outcome says this session's memory is persisted. A backend that is durable at write time passes trivially. A git-backed store passes only when nothing in scope is dirty and no branch carrying this agent's commits is ahead of its remote. In `agent` mode another agent's dirty files are expected, reported, and never a failure.
+**Completion gate:** Report success only when the required memory updates succeeded, nothing in scope is dirty, and no branch carrying this session's commits is ahead of its remote. In `agent` mode, report other agents' dirty files without treating them as a failure.
 
 @end region
 
 @start region id="wrap-up.report"
+On success:
+
 ```
 Wrap-up complete (mode: [agent / all] · [fresh / delta from CUTOFF]):
 
@@ -304,7 +310,7 @@ Next steps:
 @end region
 
 @start region id="wrap-up.failure-report"
-**On failure** (Step 2's outcome reports anything of this agent's still uncommitted or unpushed) — do NOT print "complete". Print this block instead:
+**On failure:** Report the failed update or outstanding commit or push instead of reporting completion:
 
 ```
 🚨 WRAP-UP INCOMPLETE — MEMORY NOT SAVED. NEED CONFIRMATION.
@@ -312,13 +318,13 @@ Next steps:
 [Memory update / Open items sections — same as above]
 
 Memory persisted — FAILED / INCOMPLETE:
-- [repo]: ⚠️ [uncommitted N file(s) / branch ahead by N / push error: <reason>]
+- [repo]: ⚠️ [failed memory update / uncommitted files / unpushed commits / push error: <reason>]
 
-⚠️ This session's memory is written but NOT saved to the remote. What remains, and where:
+What remains unsaved, and where:
 - [repo → which path is uncommitted or unpushed]
 (In `agent` mode another agent's dirty files are expected and are NOT listed here.)
 
-Retry the persistence, or resolve the blocker, before leaving — the wrap-up is complete only when this session's memory is committed AND pushed.
+Resolve the failed update or push before reporting completion.
 ```
 @end region
 
