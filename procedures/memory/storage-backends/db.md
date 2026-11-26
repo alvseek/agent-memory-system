@@ -1,8 +1,8 @@
 # Storage Backend — DB (Valaskjalf via Munnin)
 
-Concrete storage mechanics for the **DB-backed** world. Each `## [procedure]` section collects the named regions that map the procedure's `§ op`s onto Munnin's data tools — `awaken` · `get` · `query` · `search` · `insert` · `edit` · `edit_metadata` · `prepend` · `archive` · `soft_delete` — with `list_agents`, `create_agent`, `permanent_layer`, `help` and the content tools (`list_procedures` · `read_procedure` · `list_resources` · `read_resource`) where a procedure needs one. See the [seam contract](README.md).
+Concrete storage mechanics for the **DB-backed** world. Each `## [procedure]` section collects the named regions that map the procedure's `§ op`s onto Munnin's data tools — `awaken` · `get_memory` · `list_memories` · `search_memories` · `insert_memory` · `edit_memory_body` · `edit_memory_metadata` · `prepend_memory_body` · `archive_memory` · `soft_delete_memory` — with `list_agents`, `create_agent`, `permanent_layer`, `help` and the content tools (`list_procedures` · `read_procedure` · `list_resources` · `read_resource`) where a procedure needs one. See the [seam contract](README.md).
 
-> **Model**: an **agent** is an entity with a row of its own, and memory belongs to it. One uniform record per memory item (`user_id`/`agent_id`/`record_type`/`project`/`title`/`tags`/dates + `full_content`), where `agent_id` is always a real kebab domain the store checks against the agent table — there is no sentinel value. **Fleet-shared memory** (reasoning + knowledge that belongs to no agent) lives apart and is written with `scope="shared"`, which takes no `agent_id` at all. `user_id` is stamped server-side. The index is a **derived `SELECT`** (`query`), not a stored artifact — so there are no index-maintenance steps to perform. Episodes are stored **one record per episode** (a rolling body of newest-first `---`-separated H3 sub-episodes).
+> **Model**: an **agent** is an entity with a row of its own, and memory belongs to it. One uniform record per memory item (`user_id`/`agent_id`/`record_type`/`project`/`title`/`tags`/dates + `full_content`), where `agent_id` is always a real kebab domain the store checks against the agent table — there is no sentinel value. **Fleet-shared memory** (reasoning + knowledge that belongs to no agent) lives apart and is written with `scope="shared"`, which takes no `agent_id` at all. `user_id` is stamped server-side. The index is a **derived `SELECT`** (`list_memories`), not a stored artifact — so there are no index-maintenance steps to perform. Episodes are stored **one record per episode** (a rolling body of newest-first `---`-separated H3 sub-episodes).
 
 ---
 
@@ -13,14 +13,14 @@ Concrete storage mechanics for the **DB-backed** world. Each `## [procedure]` se
 
 Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing. Use the caller’s project as `<project>`.
 
-Call `query(agent_id="<domain>", record_type="episode", project="<project>")` for active candidates. With no project, omit `project` and keep only rows whose `project` is `null`; omitting the filter returns rows across projects. Use titles, tags and summaries for matching. Before appending, read the selected episode’s latest entry with `get(uuid, limit=1)` for its open items.
+Call `list_memories(agent_id="<domain>", record_type="episode", project="<project>")` for active candidates. With no project, omit `project` and keep only rows whose `project` is `null`; omitting the filter returns rows across projects. Use titles, tags and summaries for matching. Before appending, read the selected episode’s latest entry with `get_memory(uuid, limit=1)` for its open items.
 
 @end region
 
 @start region id="update-episodic.reopen-archived-theme"
 ### § reopen-archived-theme
 
-Repeat the scoped query with `include_archived=true` and consider only archived matches. To reopen the selected episode, remove `finished` while preserving its other tags with `edit_metadata`, then call `unarchive(uuid)` before appending.
+Repeat the scoped query with `include_archived=true` and consider only archived matches. To reopen the selected episode, remove `finished` while preserving its other tags with `edit_memory_metadata`, then call `unarchive_memory(uuid)` before appending.
 
 @end region
 
@@ -41,7 +41,7 @@ Call `prepend_episode_entry(uuid, entry_title, body, content_summary, template_v
 @start region id="update-episodic.record-theme-state"
 #### § record-theme-state
 
-`edit_metadata(uuid, tags=[…])` — the tag list is written whole, so pass the record's existing tags with `finished` added when the block closes the theme, and the existing tags with it removed when it does not. `tags` is metadata with one writer, so this never rides on the body append. The write bumps `modified_date`, which is why the archive scan weighs the tag before the age.
+`edit_memory_metadata(uuid, tags=[…])` — the tag list is written whole, so pass the record's existing tags with `finished` added when the block closes the theme, and the existing tags with it removed when it does not. `tags` is metadata with one writer, so this never rides on the body append. The write bumps `modified_date`, which is why the archive scan weighs the tag before the age.
 
 A newly created episode carries no marker, so a create needs no call; an append that changes the state does.
 
@@ -62,15 +62,15 @@ Call `create_episode(agent_id, title, entry_title, body, content_summary, projec
 @start region id="update-reasoning.read-reasoning-store"
 ### § read-reasoning-store
 
-Use the awakened agent’s domain. If none is established, use `list_agents()` and confirm the domain. Reuse rules already loaded at awakening. Otherwise, `query(record_type="reasoning")` lists metadata: keep only rows owned by this domain or shared (`agent_id` is null). Include applicable shared `coding_reasoning` rules for coding work. Use `get(uuid)` for candidate bodies you do not already have.
+Use the awakened agent’s domain. If none is established, use `list_agents()` and confirm the domain. Reuse rules already loaded at awakening. Otherwise, `list_memories(record_type="reasoning")` lists metadata: keep only rows owned by this domain or shared (`agent_id` is null). Include applicable shared `coding_reasoning` rules for coding work. Use `get_memory(uuid)` for candidate bodies you do not already have.
 
 @end region
 
 @start region id="update-reasoning.save"
 ### § save
 
-- **Add:** Read `reasoning-pattern-template`, generate a fresh UUID, and use it in the body and the new record. Call `insert(agent_id="<domain>", record_type="reasoning", uuid="<new UUID>", title="<rule name>", content="<rule>", template_version="<stamp from the template>")`.
-- **Refine:** Read the selected record with `get(uuid, include_edit_context=true)`. Use `edit` with its record UUID, exact old and replacement text, and the returned tenant and revision as `expected_tenant` and `expected_revision`. If the record changed, reread it and compare again.
+- **Add:** Read `reasoning-pattern-template`, generate a fresh UUID, and use it in the body and the new record. Call `insert_memory(agent_id="<domain>", record_type="reasoning", uuid="<new UUID>", title="<rule name>", content="<rule>", template_version="<stamp from the template>")`.
+- **Refine:** Read the selected record with `get_memory(uuid, include_edit_context=true)`. Use `edit_memory_body` with its record UUID, exact old and replacement text, and the returned tenant and revision as `expected_tenant` and `expected_revision`. If the record changed, reread it and compare again.
 
 @end region
 
@@ -88,7 +88,7 @@ Read `emotional-moment-template` and keep its `template_version` for the write.
 
 Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing.
 
-`insert(agent_id="<domain>", record_type="emotional", title="<moment title>", content="<dated moment block>", template_version="<stamp from the template>")`. The server sets `created_date` separately and handles newest-first ordering on read.
+`insert_memory(agent_id="<domain>", record_type="emotional", title="<moment title>", content="<dated moment block>", template_version="<stamp from the template>")`. The server sets `created_date` separately and handles newest-first ordering on read.
 
 @end region
 
@@ -98,15 +98,15 @@ Use the awakened agent’s domain as `<domain>`. If no agent is established, use
 @start region id="update-knowledge.find-entry"
 ### § find-entry
 
-Use the awakened agent’s domain; if unknown, confirm it before selecting records. Reuse `knowledge_index` and `shared.knowledge_index`. If a fresh listing is needed, use `query(record_type="knowledge")`. Keep only active rows with `project` null and `agent_id` equal to the acting domain or null (shared). Read candidate bodies with `get(uuid)`.
+Use the awakened agent’s domain; if unknown, confirm it before selecting records. Reuse `knowledge_index` and `shared.knowledge_index`. If a fresh listing is needed, use `list_memories(record_type="knowledge")`. Keep only active rows with `project` null and `agent_id` equal to the acting domain or null (shared). Read candidate bodies with `get_memory(uuid)`.
 
 @end region
 
 @start region id="update-knowledge.save"
 ### § save
 
-- **Add:** Read `knowledge-file-template`. Call `insert(agent_id="<domain>", record_type="knowledge", title="<entry name>", tags=[…], content="<entry>", content_summary="<one-line summary>", template_version="<template stamp>")`. Copy the summary text verbatim from the entry’s `**Summary**` row. The insert creates the listing.
-- **Update:** Keep the record UUID. Read `get(uuid, include_edit_context=true)` and use `edit` for the affected text, including the body’s Summary row when it changes. Pass `expected_tenant` and `expected_revision` from the edit context; use the fresh context returned by each guarded write for the next. If the listing needs a different summary, use `edit_metadata(uuid, content_summary=…)` with the same summary text and fresh guards. On conflict, reread before retrying.
+- **Add:** Read `knowledge-file-template`. Call `insert_memory(agent_id="<domain>", record_type="knowledge", title="<entry name>", tags=[…], content="<entry>", content_summary="<one-line summary>", template_version="<template stamp>")`. Copy the summary text verbatim from the entry’s `**Summary**` row. The insert creates the listing.
+- **Update:** Keep the record UUID. Read `get_memory(uuid, include_edit_context=true)` and use `edit_memory_body` for the affected text, including the body’s Summary row when it changes. Pass `expected_tenant` and `expected_revision` from the edit context; use the fresh context returned by each guarded write for the next. If the listing needs a different summary, use `edit_memory_metadata(uuid, content_summary=…)` with the same summary text and fresh guards. On conflict, reread before retrying.
 
 @end region
 
@@ -116,13 +116,13 @@ Use the awakened agent’s domain; if unknown, confirm it before selecting recor
 @start region id="load-episodic.mechanics"
 ### § list-episodes
 
-Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing. `query(agent_id="<domain>", record_type="episode")` lists episode metadata newest first. Select by title, summary or tags; `blocks_total` counts timestamp groups, not pages.
+Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing. `list_memories(agent_id="<domain>", record_type="episode")` lists episode metadata newest first. Select by title, summary or tags; `blocks_total` counts timestamp groups, not pages.
 
 ### § load-episode-body
 
-`get(uuid)` for the selected episode — as much of the body as the content ceiling allows in one response, which is the whole of a small record and a page of a large one; name a `limit` or pass a `cursor` to read exactly one page. Follow `next_cursor` only when the task actually needs more of the record: a routine browse or a summary usually does not, and continuing is a deliberate call, one page at a time. To *find* an episode rather than read one, `search(text)` matches a keyword across bodies and returns a `snippet` — the match, not the body — so follow a hit with `get(uuid)` when you need the text.
+`get_memory(uuid)` for the selected episode — as much of the body as the content ceiling allows in one response, which is the whole of a small record and a page of a large one; name a `limit` or pass a `cursor` to read exactly one page. Follow `next_cursor` only when the task actually needs more of the record: a routine browse or a summary usually does not, and continuing is a deliberate call, one page at a time. To *find* an episode rather than read one, `search_memories(text)` matches a keyword across bodies and returns a `snippet` — the match, not the body — so follow a hit with `get_memory(uuid)` when you need the text.
 
-`blocks_returned` counts timestamp groups on this page. Only a non-null `next_cursor` means more remain. For a full episode, pass it as `cursor` to `get` with the same `uuid` until the cursor is null.
+`blocks_returned` counts timestamp groups on this page. Only a non-null `next_cursor` means more remain. For a full episode, pass it as `cursor` to `get_memory` with the same `uuid` until the cursor is null.
 @end region
 
 ---
@@ -132,11 +132,11 @@ Use the awakened agent’s domain as `<domain>`. If no agent is established, use
 @start region id="load-knowledge.mechanics"
 ### § list-knowledge
 
-Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing. Use the awakening's `knowledge_index` and `shared.knowledge_index` together for general knowledge. To refresh, `query(record_type="knowledge")` returns metadata: retain general rows (`project` null) owned by `<domain>` or carrying no `agent_id` (shared). Never include another agent's private rows. Project-scoped knowledge belongs to the coding overlay. Fetch selected bodies with `get(uuid)`, not the entire directory.
+Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing. Use the awakening's `knowledge_index` and `shared.knowledge_index` together for general knowledge. To refresh, `list_memories(record_type="knowledge")` returns metadata: retain general rows (`project` null) owned by `<domain>` or carrying no `agent_id` (shared). Never include another agent's private rows. Project-scoped knowledge belongs to the coding overlay. Fetch selected bodies with `get_memory(uuid)`, not the entire directory.
 
 ### § load-knowledge-body
 
-`get(uuid)` for the selected entry/entries — whole, since a knowledge record is well under the ceiling, or a page when given `cursor`/`limit`; it is one atomic block (`blocks_total: 1`), so paging it never splits a document. `search(text)` answers *what matched*: a `snippet` of the matching window and no body, so follow a hit with `get(uuid)` when you need the text rather than the mention. Never treat a snippet as the entry's content.
+`get_memory(uuid)` for the selected entry/entries — whole, since a knowledge record is well under the ceiling, or a page when given `cursor`/`limit`; it is one atomic block (`blocks_total: 1`), so paging it never splits a document. `search_memories(text)` answers *what matched*: a `snippet` of the matching window and no body, so follow a hit with `get_memory(uuid)` when you need the text rather than the mention. Never treat a snippet as the entry's content.
 @end region
 
 ---
@@ -160,17 +160,17 @@ Use the awakened agent’s domain as `<domain>`. If no agent is established, use
 
 ### § archive-selected
 
-`archive(uuid)` per theme the user chose from the ask list — sets `archived_date`, drops it from the hot index (a derived `SELECT`, so it updates itself), body retained and still `search`-able.
+`archive_memory(uuid)` per theme the user chose from the ask list — sets `archived_date`, drops it from the hot index (a derived `SELECT`, so it updates itself), body retained and still `search_memories`-able.
 
 ### § recover-archived
 
-Two calls, in this order: `edit_metadata(uuid, tags=[<existing without finished>])`, then `unarchive(uuid)`. Clearing first matters — a restored record that still carries the marker is archived again by the next scan.
+Two calls, in this order: `edit_memory_metadata(uuid, tags=[<existing without finished>])`, then `unarchive_memory(uuid)`. Clearing first matters — a restored record that still carries the marker is archived again by the next scan.
 
 ### § archive-emotional-apply
 
-Per moment: **keep** — no-op. **archive** — `archive(uuid)`: the record drops out of the awaken load while its full body is retained and stays `search`-able.
+Per moment: **keep** — no-op. **archive** — `archive_memory(uuid)`: the record drops out of the awaken load while its full body is retained and stays `search_memories`-able.
 
-> **No shorten/stub step, deliberately** (2026-10-08). The DB has no archive file, so shortening a moment means `edit`-ing its body to a stub in place — which overwrites the only copy and destroys the full text. The former Tier-2 (shorten + archive) is therefore retired: a moment is kept or archived, and archiving always retains the full body.
+> **No shorten/stub step, deliberately** (2026-10-08). The DB has no archive file, so shortening a moment means `edit_memory_body`-ing its body to a stub in place — which overwrites the only copy and destroys the full text. The former Tier-2 (shorten + archive) is therefore retired: a moment is kept or archived, and archiving always retains the full body.
 @end region
 
 ---
@@ -203,14 +203,14 @@ Use `shared.user_profile` from the `awaken` response. If it is `null`, follow th
 @start region id="core-instruction-control-files.persist-user-profile"
 ### § persist-user-profile
 
-`insert(scope="shared", record_type="user_profile", title="User Profile", content="<the profile markdown>")`. No `agent_id`: the profile has no owner, and `scope="shared"` forbids one. Write **one** record carrying all three values in the same bullet form the markdown backend uses — never one record per field, because presence is answered by a row count and three rows would admit partial states with no rule for resolving them.
+`insert_memory(scope="shared", record_type="user_profile", title="User Profile", content="<the profile markdown>")`. No `agent_id`: the profile has no owner, and `scope="shared"` forbids one. Write **one** record carrying all three values in the same bullet form the markdown backend uses — never one record per field, because presence is answered by a row count and three rows would admit partial states with no rule for resolving them.
 
 @end region
 
 @start region id="core-instruction-control-files.load-latest-episode"
 ### § load-latest-episode
 
-Use `latest_episode` from the `awaken` response. If you need a different project's episode, select it from `episodic_index` and fetch it by UUID. Read an older page only when needed, using `get(episode.uuid, cursor=episode.next_cursor)` for the selected episode.
+Use `latest_episode` from the `awaken` response. If you need a different project's episode, select it from `episodic_index` and fetch it by UUID. Read an older page only when needed, using `get_memory(episode.uuid, cursor=episode.next_cursor)` for the selected episode.
 
 @end region
 
@@ -243,7 +243,7 @@ An agent with no readable identity returns `name` and `role` as `null`. Keep it 
 ## create-agent
 
 @start region id="create-agent.mechanics"
-> Creation here is genuinely two steps, and the order is enforced by the store rather than by convention: an agent is a **row**, and every memory record names an owner the store checks against it. So `create_agent` comes first and `insert` cannot run before it. The agent now has an existence of its own — a row that must be created before any record can point at it.
+> Creation here is genuinely two steps, and the order is enforced by the store rather than by convention: an agent is a **row**, and every memory record names an owner the store checks against it. So `create_agent` comes first and `insert_memory` cannot run before it. The agent now has an existence of its own — a row that must be created before any record can point at it.
 
 ### § check-agent-exists
 
@@ -265,9 +265,9 @@ This is the agent coming into being — the row its memory will point at. It **r
 
 With the agent created, insert **three** `identity` records, mirroring the three sections the markdown template ships:
 
-- `insert(agent_id="<domain>", record_type="identity", title="Agent Identity", content="<name, role, main purpose, the three responsibilities, created date, UUID>")`
-- `insert(agent_id="<domain>", record_type="identity", title="Core Domain Knowledge", content="<empty — the agent grows this through use>")`
-- `insert(agent_id="<domain>", record_type="identity", title="Domain RAS", content="<empty — triggers are added as they emerge>")`
+- `insert_memory(agent_id="<domain>", record_type="identity", title="Agent Identity", content="<name, role, main purpose, the three responsibilities, created date, UUID>")`
+- `insert_memory(agent_id="<domain>", record_type="identity", title="Core Domain Knowledge", content="<empty — the agent grows this through use>")`
+- `insert_memory(agent_id="<domain>", record_type="identity", title="Domain RAS", content="<empty — triggers are added as they emerge>")`
 
 Three records, not one: `awaken` returns `identity` as the agent's whole always-load private layer, and keeping the split means a DB-born agent and a markdown-born agent wake up with the same shape.
 
