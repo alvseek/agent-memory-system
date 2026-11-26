@@ -21,10 +21,6 @@ An episode groups dated session entries by theme. By default, look for a matchin
 
 ### Default Flow
 
-#### Step 1: Stamp the Time
-
-Get the current local date and time for the new entry’s heading (`YYYY-MM-DD HH.MM`), whether adding to an episode or creating one.
-
 @start storage id="update-episodic.stamp-date" ref="procedures/memory/storage-backends/{backend}.md" target="update-episodic.stamp-date" applies_to="markdown"
 @end storage
 #### Step 2: Identify Project + Theme
@@ -95,10 +91,7 @@ Wait for response. Auto-default to **A** only if confidence is high (≥3 strong
 
    > **Why no time threshold**: the prior sub-episode's timestamp is deterministic. Recent prior (same conversation) → full context to review each item. Older prior (different session) → items are still carry-forward candidates, reviewed on their own descriptions; items that can't be confidently evaluated default to "still open" (conservative, per UUID a1b2c3d4 — debts never silently dropped).
 
-2. **Compose the sub-episode block** using the sub-episode-block template (**§ template**). The H3 header includes the stamped date+time and the domain you are acting as:
-   ```
-   ### YYYY-MM-DD HH.MM - [SESSION SUB-THEME] (agent: [domain])
-   ```
+2. **Compose the entry title and body** using the sub-episode template (**§ template**).
 
 3. **Append it newest-first** to the chosen episode (at the top, above older sub-episodes) and reflect the change in the index projection (**§ append-sub-episode**).
 
@@ -118,7 +111,7 @@ Wait for response. Auto-default to **A** only if confidence is high (≥3 strong
 @end storage
 ### Create New Episode
 
-1. **Compose the first sub-episode block** using the sub-episode-block template (**§ template**). The H3 header includes the stamped date+time and the domain you are acting as.
+1. **Compose the first entry title and body** using the sub-episode template (**§ template**).
 
 2. **Create a new episode** for `[project-name]-[context-theme]` seeded with that block, and register it in the index projection (**§ create-episode**).
 

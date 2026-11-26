@@ -9,7 +9,9 @@ Concrete storage mechanics for the **native markdown-over-git** world. Each `## 
 ## update-episodic
 
 @start region id="update-episodic.stamp-date"
-Use `date '+%Y-%m-%d %H.%M'`. Use the same date for the entry’s placement in the episode index.
+#### Step 1: Stamp the entry
+
+Read the host's UTC clock (for example, `date -u '+%Y-%m-%d %H.%M UTC'`). Use it in the template's heading and use the same UTC date for the index.
 
 @end region
 

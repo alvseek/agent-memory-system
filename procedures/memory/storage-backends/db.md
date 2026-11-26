@@ -27,7 +27,7 @@ Repeat the scoped query with `include_archived=true` and consider only archived 
 @start region id="update-episodic.template"
 ### § template
 
-**Served as an MCP Resource** (`episodic-entry-template`) — read it from resources. (`§ create-episode` inserts the record directly, so there is no separate scaffold template.)
+Read `episodic-entry-template`. Pass its version separately. Supply the entry subject as `entry_title` and the template rows as `body`, without the H3 heading. Munnin writes the UTC heading and agent domain.
 
 @end region
 
@@ -35,7 +35,7 @@ Repeat the scoped query with `include_archived=true` and consider only archived 
 ### § append-sub-episode
 
 An episode is a single record whose body is the rolling, newest-first sub-episode list. Newest-first then needs no read and no string match — two writes:
-1. `prepend(uuid, text="<new H3 block>\n\n---\n\n")` — the new block lands above the previous newest, and the separator you include keeps the two apart. Nothing has to match, so there is no `old_string` to get uniquely right.
+1. `prepend_episode_entry(uuid, entry_title, body, template_version)` — Munnin prepends the stamped entry and separator, preserving the existing body.
 2. `edit_metadata(uuid, content_summary="<the record's summary>")` — the summary is metadata and has one writer, so it moves in its own call.
 
 `content_summary` is the whole new summary, not an appended fragment: it describes the record's newest content, so skipping step 2 leaves the listing describing a block the body no longer starts with. Two writes can also disagree if the second fails, which is why both steps belong to this op rather than to the caller's judgement — that is the price of one owner per field.
@@ -63,9 +63,9 @@ A newly created episode carries no marker, so a create needs no call; an append 
 @start region id="update-episodic.create-episode"
 ### § create-episode
 
-Use the acting agent’s domain; if unknown, confirm it from `list_agents()` first. When no project was supplied, omit `project` from the insert and use the theme as the title.
+Use the acting agent’s domain; if unknown, confirm it from `list_agents()` first. When no project was supplied, omit `project` and use the theme as the episode title.
 
-`insert(agent_id="<domain>", record_type="episode", project="<project>", title="<project-theme>", tags=[…], content="<first sub-episode block>", content_summary="<the block's Summary row>", template_version="<the template's current stamp>")`. Read `episodic-entry-template` from resources first and declare its `template_version` — a missing or stale version is refused. `content_summary` is required for an episode: pass the block's `**Summary**` row verbatim, because that one line is what the index projection lists the record by. The record is assembled and `uuid`-stamped server-side and appears in the index projection immediately.
+Call `create_episode(agent_id, title, entry_title, body, content_summary, project=…, tags=…, template_version=…)`. `title` names the rolling episode; `entry_title` names this entry. Copy the entry’s **Summary** verbatim into `content_summary`.
 
 @end region
 
