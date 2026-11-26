@@ -17,7 +17,6 @@ description = "The phased protocol every agent follows when loading its memory, 
 > **First run — no profile at all**: Ask once for the user's name, the philosophy they want work done by, and the vision they hold for their agents. Save their answers using **§ persist-user-profile**.
 @start storage id="core-instruction-control-files.persist-user-profile" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.persist-user-profile"
 @end storage
-
 @start storage id="core-instruction-control-files.recover-missing-foundations" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.recover-missing-foundations" applies_to="markdown"
 @end storage
 ### Phase 2: Load Central Context & Report
