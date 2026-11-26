@@ -11,7 +11,7 @@ Concrete storage mechanics for the **DB-backed** world. Each `## [procedure]` se
 @start region id="update-episodic.list-candidate-episodes"
 ### § list-candidate-episodes
 
-Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing. Use the project identified in Step 2 as `<project>`.
+Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing. Use the caller’s project as `<project>`.
 
 Call `query(agent_id="<domain>", record_type="episode", project="<project>")` for active candidates. With no project, omit `project` and keep only rows whose `project` is `null`; omitting the filter returns rows across projects. Use titles, tags and summaries for matching. Before appending, read the selected episode’s latest entry with `get(uuid, limit=1)` for its open items.
 
@@ -32,7 +32,7 @@ Read `episodic-entry-template`. Pass its version separately. Supply the entry su
 @end region
 
 @start region id="update-episodic.append-sub-episode"
-### § append-sub-episode
+#### § append-sub-episode
 
 An episode is a single record whose body is the rolling, newest-first sub-episode list. Newest-first then needs no read and no string match — two writes:
 1. `prepend_episode_entry(uuid, entry_title, body, template_version)` — Munnin prepends the stamped entry and separator, preserving the existing body.
@@ -44,15 +44,8 @@ The index reflects the change automatically (derived `SELECT`).
 
 @end region
 
-@start region id="update-episodic.housekeeping"
-### § housekeeping
-
-**No-op.** The stored body has no length limit — shortening is a later curation *policy*, not a write mechanic — and records are keyed by `uuid`, so there is no split or rename to perform. Delivery is what is bounded now: a body is read as pages of timestamp groups, so a large record costs a cursor and not a truncated answer. Do not add a "split this record" step to compensate for a page.
-
-@end region
-
 @start region id="update-episodic.record-theme-state"
-### § record-theme-state
+#### § record-theme-state
 
 `edit_metadata(uuid, tags=[…])` — the tag list is written whole, so pass the record's existing tags with `finished` added when the block closes the theme, and the existing tags with it removed when it does not. `tags` is metadata with one writer, so this never rides on the body append. The write bumps `modified_date`, which is why the archive scan weighs the tag before the age.
 
@@ -61,7 +54,7 @@ A newly created episode carries no marker, so a create needs no call; an append 
 @end region
 
 @start region id="update-episodic.create-episode"
-### § create-episode
+#### § create-episode
 
 Use the acting agent’s domain; if unknown, confirm it from `list_agents()` first. When no project was supplied, omit `project` and use the theme as the episode title.
 

@@ -9,7 +9,7 @@ Concrete storage mechanics for the **native markdown-over-git** world. Each `## 
 ## update-episodic
 
 @start region id="update-episodic.stamp-date"
-#### Step 1: Stamp the entry
+### Stamp the entry
 
 Read the host's UTC clock (for example, `date -u '+%Y-%m-%d %H.%M UTC'`). Use it in the template's heading and use the same UTC date for the index.
 
@@ -37,7 +37,7 @@ The sub-episode block format → read `[AGENT-MEMORY-PATH]/control-files/procedu
 @end region
 
 @start region id="update-episodic.append-sub-episode"
-### § append-sub-episode
+#### § append-sub-episode
 
 1. **Open the chosen file** in `[AGENT-MEMORY-PATH]/agent-[domain]/episodes/`.
 2. **Insert the sub-episode H3 block at the TOP** (newest-first within the file), above any older H3 blocks. Sub-episodes are separated by `---`.
@@ -52,7 +52,7 @@ The sub-episode block format → read `[AGENT-MEMORY-PATH]/control-files/procedu
 @end region
 
 @start region id="update-episodic.housekeeping"
-### § housekeeping
+#### § housekeeping
 
 1. **Check line limit** after an append:
    - **> 500 lines**: warn — *"[filename] over 500 lines, consider splitting on next merge"*.
@@ -73,7 +73,7 @@ The sub-episode block format → read `[AGENT-MEMORY-PATH]/control-files/procedu
 @end region
 
 @start region id="update-episodic.record-theme-state"
-### § record-theme-state
+#### § record-theme-state
 
 Edit the episode file's frontmatter `tags:` line in place: add `finished` when this block closes the theme, remove it when it does not. Touch nothing else — the body and the other frontmatter fields stay verbatim.
 
@@ -82,7 +82,7 @@ When no `tags:` line exists yet, add one beneath `project:` in the same block. T
 @end region
 
 @start region id="update-episodic.create-episode"
-### § create-episode
+#### § create-episode
 
 1. **Build filename**: `[project-name]-[context-theme].md` (no date prefix). Examples: `agent-memory-task-system-framework-rules.md`, `plko-jira-mcp-integration.md`. If a file at this name already exists (and a separate file is wanted), use an incrementing suffix: `[project-name]-[context-theme]-2.md`.
 2. **Copy the file scaffold**:
