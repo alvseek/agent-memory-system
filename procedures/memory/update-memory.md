@@ -15,7 +15,7 @@ Comprehensive memory update orchestrator. Five phases:
 - **Phase 0** — Identify which part of this conversation to evaluate
 - **Phase 1** — Save reusable lessons
 - **Phase 2** — Pre-scan promotion markers + episodic capture
-- **Phase 3** — Emotional 5-criteria gate (deep-emotion anchoring, polarity-neutral)
+- **Phase 3** — Save a significant emotional moment
 - **Phase 4** — Report
 
 `/update-episodic` writes only the episodic layer. `/update-memory` is the full end-of-session orchestrator (what `/wrap-up` invokes).
@@ -63,21 +63,17 @@ Invoke `/update-episodic new` if `$ARGUMENTS` contains `new`, else `/update-epis
 
 ---
 
-## Phase 3 — Capture the Feeling
-
-### Step 5: Emotional 5-Criteria Gate (deep-emotion anchoring)
-
-For a delta, the emotion-bearing signal must come from after the cutoff.
+## Phase 3 — Save a significant emotional moment
 
 All 5 must pass:
 
-1. **Meaningful event happened** — change of state, discovery, mistake, correction, breakthrough, surprise. Not routine work.
-2. **Real impact** — real cost incurred, value created, time spent, trust shifted. Not a theoretical "interesting" moment.
-3. **Lasting weight** — generalizable lesson, identity claim, or pattern beyond this instance.
-4. **System or behavioral scope** — architecture / protocol / framework / identity / decision-making / relational dynamics. NOT typo, single function, config tweak, routine completion.
-5. **[USER-NAME] expressed deep emotion in this session** (any valence): joy/celebration · frustration/correction · astonishment/surprise · pride/recognition · disappointment/pushback · or sustained deep engagement escalating across the session.
+1. Something meaningful happened beyond routine work.
+2. It had a real impact.
+3. Its significance outlasts the immediate task.
+4. It matters to how we work, make decisions, or relate to each other.
+5. The user's own words in the Phase 0 window show why the moment mattered to them. Routine approval alone does not qualify.
 
-**All 5 pass** → execute `/update-emotional` with session context, [USER-NAME]'s verbatim emotion-bearing quote, and inferred polarity. **Any fail** → skip silently.
+If all five are true, call `/update-emotional` with the matching moment type (`happy`, `sad`, `frustrated`, or `bonding`). Provide the event and the user's exact quote as context. Otherwise, skip it.
 
 ---
 
@@ -103,7 +99,7 @@ Phase 2 — Session captured:
 - Project context: [promoted / none] — [reference if a coding overlay saved project context in this window]
 
 Phase 3 — Feeling captured (scope: [full session / delta since CUTOFF]):
-- Emotional: [captured / skipped] — [polarity + clearest criterion if captured]
+- Emotional: [captured / skipped] — [moment type and why it mattered, if captured]
 ```
 
 ---
@@ -113,4 +109,3 @@ Phase 3 — Feeling captured (scope: [full session / delta since CUTOFF]):
 ## Notes
 
 - **Conservative bias** on all 3 gates: when borderline, SKIP. False positives dilute memory; false negatives are recoverable via a direct command call.
-- **Phase 3 is polarity-neutral**: joy / frustration / astonishment / pride / disappointment / surprise — all qualify if the moment carries lasting weight.
