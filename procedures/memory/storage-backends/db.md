@@ -244,7 +244,7 @@ The records you wrote this session ARE the promotions — list the reasoning / k
 ## wrap-up
 
 @start region id="wrap-up.arguments"
-`$ARGUMENTS` — optional `fresh`.
+`$ARGUMENTS` — `[delta|fresh]`.
 @end region
 
 @start region id="wrap-up.report-db"

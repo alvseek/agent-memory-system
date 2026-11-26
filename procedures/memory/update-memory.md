@@ -5,7 +5,7 @@ kind = "procedure"
 title = "Update Memory Protocol"
 description = "Comprehensive memory update orchestrator. Five phases:"
 argument_name = "mode"
-argument_description = "`fresh` re-evaluates the whole session, `new` forces a new episode"
+argument_description = "Optional delta or fresh evaluation; new forces a new episode"
 calls = ["add-reasoning", "update-knowledge", "update-episodic", "update-emotional"]
 +++
 # Update Memory Protocol
@@ -24,7 +24,7 @@ Comprehensive memory update orchestrator. Five phases:
 
 ## Arguments
 
-**Mode:** `$ARGUMENTS` — `fresh` re-evaluates the whole session; `new` forces a new episode. They can be combined (`/update-memory fresh new`). Without `fresh`, a theme match determines delta vs. full-session evaluation. Without `new`, episodic capture follows its usual match-or-create flow.
+**Mode:** `$ARGUMENTS` — `[delta|fresh] [new]`. `delta` evaluates only work since the latest matching sub-episode; `fresh` evaluates the whole session. Without either, use the theme match below. Independently, `new` forces a new episode for the result; otherwise use the usual match-or-create flow.
 
 ---
 
@@ -32,9 +32,9 @@ Comprehensive memory update orchestrator. Five phases:
 
 ### Step 0: Detect Mode + Cutoff
 
-1. If `$ARGUMENTS` contains `fresh` → `MODE = fresh`, skip to Phase 1.
+1. If both `delta` and `fresh` were supplied, ask for one mode and stop before writing. If `fresh` was selected, set `MODE = fresh` and skip to Phase 1.
 2. Theme-match scan: list the acting agent's active episodes (**§ detect-mode-scan**). Find the top candidate where the name or summary contains the current project name + highest keyword overlap with the session theme.
-3. **No match** → `MODE = fresh` (new episode created in Phase 2). **Match** → `MODE = delta`, `CUTOFF = top sub-episode timestamp`.
+3. **Match:** Set `MODE = delta` and use the newest matching sub-episode timestamp as `CUTOFF`. **No usable cutoff:** If `delta` was requested, report that there is no prior matching update and stop before writing; use `fresh` for a full-session evaluation. In automatic mode, set `MODE = fresh`.
 4. Capture `MODE` and `CUTOFF` (if delta) for the Phase 4 summary.
 
 ---
@@ -132,5 +132,4 @@ Phase 3 — Feeling captured (scope: [full session / delta since CUTOFF]):
 
 - **Conservative bias** on all 3 gates: when borderline, SKIP. False positives dilute memory; false negatives are recoverable via a direct command call.
 - **Phase 1 gates are safety-nets** — proactive mid-session writes preferred. Step 3 catches both sources.
-- **Delta mode auto-detected via theme match alone** (no time threshold). Override with `fresh`.
 - **Phase 3 is polarity-neutral**: joy / frustration / astonishment / pride / disappointment / surprise — all qualify if the moment carries lasting weight.
