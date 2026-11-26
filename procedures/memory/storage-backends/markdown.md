@@ -340,7 +340,7 @@ Use the **Read tool directly** and read all 4 files in parallel:
 @start region id="core-instruction-control-files.load-user-profile"
 ### § load-user-profile
 
-**No action.** The profile is already in your context: the global instructions file carries it, compiled from `[AGENT-MEMORY-PATH]/shared-memory/user-profile.md`, which is the single source of truth. If the `## AI Agent - User Profile` section is absent from your instructions, or carries no values at all, treat that as *no profile exists* and take Phase 1's first-run branch.
+Use the `## AI Agent - User Profile` section already in the global instructions file. If the section is absent or all its fields are empty, follow the first-run instructions. Otherwise, leave blank fields as they are.
 
 @end region
 
