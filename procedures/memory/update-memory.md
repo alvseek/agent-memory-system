@@ -5,14 +5,14 @@ kind = "procedure"
 title = "Update Memory Protocol"
 description = "Comprehensive memory update orchestrator. Five phases:"
 argument_name = "mode"
-argument_description = "Optional delta or fresh evaluation; new forces a new episode"
+argument_description = "Optional new: create a new episode instead of appending to a matching one"
 calls = ["add-reasoning", "update-knowledge", "update-episodic", "update-emotional"]
 +++
 # Update Memory Protocol
 
 Comprehensive memory update orchestrator. Five phases:
 
-- **Phase 0** — Detect delta vs fresh mode (theme match)
+- **Phase 0** — Identify which part of this conversation to evaluate
 - **Phase 1** — Two gated auto-evals (reasoning / knowledge)
 - **Phase 2** — Pre-scan promotion markers + episodic capture
 - **Phase 3** — Emotional 5-criteria gate (deep-emotion anchoring, polarity-neutral)
@@ -24,26 +24,22 @@ Comprehensive memory update orchestrator. Five phases:
 
 ## Arguments
 
-**Mode:** `$ARGUMENTS` — `[delta|fresh] [new]`. `delta` evaluates only work since the latest matching sub-episode; `fresh` evaluates the whole session. Without either, use the theme match below. Independently, `new` forces a new episode for the result; otherwise use the usual match-or-create flow.
+`$ARGUMENTS` — optional `new`. Pass it to create a new episode instead of letting `/update-episodic` match or create one. It does not change which work is evaluated.
 
 ---
 
-## Phase 0 — Detect Mode
+## Phase 0 — Set the evaluation window
 
-### Step 0: Detect Mode + Cutoff
+Look in **this conversation** for the last successful `/update-memory`, whether run directly or by `/wrap-up`.
 
-1. If both `delta` and `fresh` were supplied, ask for one mode and stop before writing. If `fresh` was selected, set `MODE = fresh` and skip to Phase 1.
-2. Theme-match scan: list the acting agent's active episodes (**§ detect-mode-scan**). Find the top candidate where the name or summary contains the current project name + highest keyword overlap with the session theme.
-3. **Match with a usable cutoff:** Set `MODE = delta` and use the newest matching sub-episode timestamp as `CUTOFF`. **No usable cutoff:** Set `MODE = fresh` and evaluate the whole session, even if `delta` was requested.
-4. Capture `MODE` and `CUTOFF` (if delta) for the Phase 4 summary.
+- **No confirmed success here:** evaluate the whole conversation (`fresh`), even if an older episode covers the same topic.
+- **Previous success here:** use that update as the cutoff and evaluate only work since then (`delta`), even if the topic changed or `new` was supplied. A failed or partial update does not advance the cutoff.
+
+Use this window for the gates, promotion scan, and episodic capture. The episode selected for writing never determines the window.
 
 ---
 
-@start storage id="update-memory.detect-mode-scan" ref="procedures/memory/storage-backends/{backend}.md" target="update-memory.detect-mode-scan"
-@end storage
 ## Phase 1 — Promote Durable Artifacts
-
-> **Delta-mode scope rule**: when `MODE = delta`, each gate's checklist applies ONLY to work after `CUTOFF`. Pre-cutoff work was evaluated at the prior wrap-up.
 
 ### Step 1: Reasoning Pattern Gate
 
@@ -69,7 +65,7 @@ Comprehensive memory update orchestrator. Five phases:
 
 ### Step 3: Pre-Scan Promotion Markers
 
-Identify cross-layer memory written this session (Phase 1 + any mid-session writes) across these layers — **project context** (shared / private), **knowledge**, **reasoning** (shared / per-agent) — via **§ scan-promotion-markers**.
+Identify cross-layer memory written in the evaluation window, including Phase 1 and any earlier writes in that window, via **§ scan-promotion-markers**. Include **project context** (shared / private), **knowledge**, and **reasoning** (shared / per-agent).
 
 Per item: `→ Promoted to [layer-file](ref) — [brief: what was formalized]`
 
@@ -77,7 +73,7 @@ Per item: `→ Promoted to [layer-file](ref) — [brief: what was formalized]`
 @end storage
 ### Step 4: Run Episodic Capture
 
-Invoke `/update-episodic new` if `$ARGUMENTS` contains `new`, else `/update-episodic`. Populate the new sub-episode's `**Promotions**` field with markers from Step 3 (omit if empty).
+Invoke `/update-episodic new` if `$ARGUMENTS` contains `new`, else `/update-episodic`. Describe the work from the evaluation window in the new sub-episode; if appending, also review the target episode's prior open items for carry-forward. Populate `**Promotions**` with markers from Step 3 (omit if empty).
 
 `/update-episodic` hands back that sub-episode's `Tech Debts` and `Next Steps` (its `## Returns`). **Capture both as data for the caller** — a session-ender surfaces them in its own report. This procedure does not print them, so its Phase 4 summary is unchanged.
 
@@ -87,7 +83,7 @@ Invoke `/update-episodic new` if `$ARGUMENTS` contains `new`, else `/update-epis
 
 ### Step 5: Emotional 5-Criteria Gate (deep-emotion anchoring)
 
-> **Delta-mode scope rule**: when `MODE = delta`, criterion 5's signals must occur after `CUTOFF`. Reusing prior emotion = LARP duplication.
+For a delta, the emotion-bearing signal must come from after the cutoff.
 
 All 5 must pass:
 
@@ -105,10 +101,12 @@ All 5 must pass:
 
 ### Step 6: Summary
 
+Report completion only after all required writes succeed. If the update is incomplete, identify the failed write rather than marking a new cutoff.
+
 ```markdown
 ✅ MEMORY UPDATE COMPLETE
 
-Mode: [fresh / delta from CUTOFF YYYY-MM-DD HH.MM]
+Mode: [fresh / delta since <previous successful update in this conversation>]
 
 Phase 1 — Promoted artifacts (scope: [full session / delta since CUTOFF]):
 - Reasoning pattern: [added / skipped] — [pattern name if added]
@@ -117,7 +115,7 @@ Phase 1 — Promoted artifacts (scope: [full session / delta since CUTOFF]):
 
 Phase 2 — Session captured:
 - Episodic: [appended to / created] [name] — [brief theme]
-- Carry-forward (delta mode only): [N items carried / N/A]
+- Carry-forward: [N prior open items carried when appending / N/A for a new episode]
 - Promotions: [N markers / none]
 
 Phase 3 — Feeling captured (scope: [full session / delta since CUTOFF]):

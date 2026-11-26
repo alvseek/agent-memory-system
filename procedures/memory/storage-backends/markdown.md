@@ -245,17 +245,10 @@ Operate on `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` (`# DOMAIN 
 
 ## update-memory
 
-@start region id="update-memory.detect-mode-scan"
-### § detect-mode-scan
-
-Read the central episodic index `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` → `# Recent Context Episodes` for the theme-match scan.
-
-@end region
-
 @start region id="update-memory.scan-promotion-markers"
 ### § scan-promotion-markers
 
-Identify cross-layer files written this session, by path:
+Identify cross-layer files written by this session within the evaluation window, by path:
 
 | Layer | Path |
 |-------|------|

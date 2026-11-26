@@ -226,17 +226,10 @@ Per moment: **keep** — no-op. **archive** — `archive(uuid)`: the record drop
 
 ## update-memory
 
-@start region id="update-memory.detect-mode-scan"
-### § detect-mode-scan
-
-Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing. Match the title, summary and tags from `query(agent_id="<domain>", record_type="episode")`. For a delta, read the chosen record’s newest timestamp group with `get(uuid, limit=1)` to obtain the cutoff.
-
-@end region
-
 @start region id="update-memory.scan-promotion-markers"
 ### § scan-promotion-markers
 
-The records you wrote this session ARE the promotions — list the reasoning / knowledge / emotional records inserted since session start (track the `uuid`s your `insert` calls returned, or `query` by recency). Project context is the overlay's (project-keyed records), not Munnin's.
+Identify the records from successful writes in this conversation's evaluation window using their returned UUIDs. Include project-context writes made by the coding overlay.
 
 @end region
 
