@@ -25,7 +25,6 @@ description = "The phased protocol every agent follows when loading its memory, 
 ### Phase 2: Load Central Context & Report
 
 3. **Recent context:** Use the latest episode for carry-forward (**§ load-latest-episode**).
-
 @start storage id="core-instruction-control-files.load-latest-episode" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.load-latest-episode"
 @end storage
 
