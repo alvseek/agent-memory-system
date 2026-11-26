@@ -92,8 +92,8 @@ def test_markdown_and_db_swap_the_right_mechanics(tmp_path: Path) -> None:
     # markdown backend = file/shell mechanics; db backend = tool calls.
     assert "agent-core-memory.md" in md
     assert "[guid]::NewGuid()" in md
-    assert "insert(agent_id=" in db  # db-only persist tool call
-    assert "insert(agent_id=" not in md
+    assert "insert_memory(agent_id=" in db  # db-only persist tool call
+    assert "insert_memory(agent_id=" not in md
 
 
 @pytest.mark.parametrize("backend", cc.BACKENDS)
@@ -110,8 +110,8 @@ def test_dual_output_matches_single_backend_including_canonical_components(
             ).read_bytes(), report.name
     refresh = (tmp_path / "dual" / f"refresh-memory.{backend}.md").read_text(encoding="utf-8")
     if backend == "db":
-        assert 'insert(scope="shared"' in refresh
-        assert "get(episode.uuid, cursor=episode.next_cursor)" in refresh
+        assert 'insert_memory(scope="shared"' in refresh
+        assert "get_memory(episode.uuid, cursor=episode.next_cursor)" in refresh
         assert "Copy blank templates" not in refresh
         assert "Write the three values to" not in refresh
     else:
@@ -215,7 +215,7 @@ def test_single_backend_seam_is_decluttered(tmp_path: Path) -> None:
 def test_single_backend_db_composes_tool_calls(tmp_path: Path) -> None:
     cc.compile_all(CF, tmp_path, backend="db")
     text = (tmp_path / "update-reasoning.md").read_text(encoding="utf-8")
-    assert "insert(agent_id=" in text  # db tool call inlined
+    assert "insert_memory(agent_id=" in text  # db tool call inlined
     assert "[guid]::NewGuid()" not in text
 
 

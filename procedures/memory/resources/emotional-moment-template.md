@@ -2,7 +2,7 @@
 
 template_version: 2026-09-21-14-53
 
-The format of an emotional memory entry, one template per moment type. Storage-agnostic: the markdown backend writes the chosen block into the agent's emotional section (newest-first); the DB backend passes it as the `content` of an `insert(record_type="emotional", …)`. Rows carrying `Use "None declared" if genuinely none.` are required (presence-checked); all other rows are optional.
+The format of an emotional memory entry, one template per moment type. Storage-agnostic: the markdown backend writes the chosen block into the agent's emotional section (newest-first); the DB backend passes it as the `content` of an `insert_memory(record_type="emotional", …)`. Rows carrying `Use "None declared" if genuinely none.` are required (presence-checked); all other rows are optional.
 
 ## Happy Moment Template
 ```markdown
