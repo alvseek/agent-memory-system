@@ -292,7 +292,7 @@ Use `latest_episode` from the `awaken` response. If you need a different project
 @start region id="core-instruction-control-files.resolve-references"
 ### Resolving references to other procedures and templates
 
-Everything served here is composed for Munnin, and the slash commands installed beside you are the **markdown** compilation of the same procedures — they would write files where this store holds records. So when a served procedure tells you to **execute, invoke or run** `/<name>`, do not invoke the slash command: call `read_procedure("<name>")` and follow what it returns, passing what the command would have taken (a domain, a mode) as `argument`. When one points at a file by relative path — a template (`resources/<stem>.md`) or a script (`scripts/<stem>.sh`) — call `read_resource("<stem>")`. This applies to instructions to *act*; prose that merely names a procedure needs no call. Unsure what is served — `list_procedures()` and `list_resources()`. If a named procedure is not served, say so rather than substituting another.
+When instructed to run a procedure, call `read_procedure(name, argument)` and follow the result. For a referenced template or script, call `read_resource(stem)`; if the procedure or resource isn't served, report that.
 
 @end region
 
