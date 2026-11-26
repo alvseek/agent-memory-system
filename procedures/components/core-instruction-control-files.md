@@ -20,7 +20,6 @@ description = "The phased protocol every agent follows when loading its memory, 
 
 @start storage id="core-instruction-control-files.recover-missing-foundations" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.recover-missing-foundations" applies_to="markdown"
 @end storage
-
 ### Phase 2: Load Central Context & Report
 
 3. **Recent context:** Use the latest episode for carry-forward (**§ load-latest-episode**).
