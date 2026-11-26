@@ -354,7 +354,7 @@ Write the three values to `[AGENT-MEMORY-PATH]/shared-memory/user-profile.md`, k
 @start region id="core-instruction-control-files.recover-missing-foundations"
 ### § recover-missing-foundations
 
-The `shared-memory/` directory was not found on disk. Ask [USER-NAME]:
+If the `shared-memory/` directory is missing, ask [USER-NAME]:
 
 "shared-memory/ not found. Would you like me to:
 A) Copy blank templates from `[AGENT-MEMORY-PATH]/control-files/new-agent-template/shared-memory/`
@@ -365,7 +365,7 @@ B) Create empty shared-memory/ files with section headers only"
 @start region id="core-instruction-control-files.load-latest-episode"
 ### § load-latest-episode
 
-Read the episode file named by the index entry from `[AGENT-MEMORY-PATH]/agent-[domain]/episodes/`.
+Read the episode file named by the newest index entry from `[AGENT-MEMORY-PATH]/agent-[domain]/episodes/`. If a different entry matches the project you need, read that file instead.
 
 @end region
 

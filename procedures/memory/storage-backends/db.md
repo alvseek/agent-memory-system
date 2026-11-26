@@ -282,25 +282,14 @@ Use `shared.user_profile` from the `awaken` response. If it is `null`, follow th
 
 @end region
 
-@start region id="core-instruction-control-files.recover-missing-foundations"
-### § recover-missing-foundations
-
-The whole shared reasoning foundation and the metadata-only shared knowledge directory have different load contracts. An empty `shared.knowledge_index` is a valid empty directory, not a missing foundation. A missing/malformed field is a payload failure. Check reasoning separately before diagnosing:
-
-- **Other layers also short or cut mid-record** → the payload was **truncated in transit** (the MCP tool-result cap), not empty at rest. The store is fine; the transport is not.
-- **Only `shared.reasoning` unexpectedly empty** → the store has no active shared reasoning for this user (possibly an unseeded or wrong tenant). This is not an agent-scoping mistake. Do not treat an empty knowledge index as evidence of the same problem.
-
-Only diagnose absent records from a complete response. Genuinely absent records need **server-side** recovery (importer / `insert`); there is nothing to create on this end.
-
-@end region
-
 @start region id="core-instruction-control-files.load-latest-episode"
 ### § load-latest-episode
 
-Already present as `latest_episode` in the `awaken` payload — a **page** of the newest episode **overall**, since no project is accepted or resolved. Read the page as the bounded starting context it is: `blocks_returned` of `blocks_total` groups, plus the record's `uuid` and a `next_cursor`. A non-null cursor means the record continues; continue with `get(latest_episode.uuid, cursor=…)` only when this session actually needs the older sub-episodes, and remember that a final page returns fewer than `blocks_total` with a null cursor. A caller whose own project is not the newest one selects its entry out of `episodic_index` and loads **that** uuid the same way; the payload's own is the default, and the fallback when the index holds nothing for the project.
+Use `latest_episode` from the `awaken` response. If you need a different project's episode, select it from `episodic_index` and fetch it by UUID. Read an older page only when needed, using `get(episode.uuid, cursor=episode.next_cursor)` for the selected episode.
 
-A continuation cursor is pagination, not evidence of a clipped response. Name the sub-episodes you actually read and say whether older ones remain.
+@end region
 
+@start region id="core-instruction-control-files.resolve-references"
 ### Resolving references to other procedures and templates
 
 Everything served here is composed for Munnin, and the slash commands installed beside you are the **markdown** compilation of the same procedures — they would write files where this store holds records. So when a served procedure tells you to **execute, invoke or run** `/<name>`, do not invoke the slash command: call `read_procedure("<name>")` and follow what it returns, passing what the command would have taken (a domain, a mode) as `argument`. When one points at a file by relative path — a template (`resources/<stem>.md`) or a script (`scripts/<stem>.sh`) — call `read_resource("<stem>")`. This applies to instructions to *act*; prose that merely names a procedure needs no call. Unsure what is served — `list_procedures()` and `list_resources()`. If a named procedure is not served, say so rather than substituting another.

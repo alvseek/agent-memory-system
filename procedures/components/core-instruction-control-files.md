@@ -9,7 +9,7 @@ description = "The phased protocol every agent follows when loading its memory, 
 
 ### Phase 1: Process Loaded Identity
 
-1. **Shared foundations**: process the shared reasoning patterns (refined reasoning) and take the **universal RAS triggers** (memory recovery after compaction, copy-paste-don't-regenerate) as live protocols. Inspect shared and agent-owned knowledge indexes and load bodies only when relevant; do not fetch every body to complete awakening. The file backend's shared foundations retain their existing file-based loading contract. A present empty store knowledge index is valid, not a failed foundation load.
+1. **Shared foundations:** Apply the available shared reasoning patterns and universal RAS triggers. Load entries from the shared and agent knowledge indexes only when relevant.
 2. **Agent identity:** Use the loaded identity, emotional memory, and core knowledge to guide your work in this domain.
 @start storage id="core-instruction-control-files.load-user-profile" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.load-user-profile"
 @end storage
@@ -19,14 +19,16 @@ description = "The phased protocol every agent follows when loading its memory, 
 @end storage
 
 
-> **If the shared foundations did not arrive**: follow **§ recover-missing-foundations**.
-@start storage id="core-instruction-control-files.recover-missing-foundations" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.recover-missing-foundations"
+@start storage id="core-instruction-control-files.recover-missing-foundations" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.recover-missing-foundations" applies_to="markdown"
 @end storage
 
 ### Phase 2: Load Central Context & Report
 
-3. **Load recent context (central)**: load the most recent central memory:
-    - **Episodic**: from the already-loaded episodic index, take the newest entry → load that episode (**§ load-latest-episode**). A caller that knows its own project may instead load a different entry out of that index. What arrives is a **page** of timestamp groups, not necessarily the whole rolling body: continue with the row's own `uuid` and `next_cursor` only when this session's carry-forward needs the older sub-episodes, and never present a page as the episode.
+3. **Recent context:** Use the latest episode for carry-forward (**§ load-latest-episode**).
+
+@start storage id="core-instruction-control-files.load-latest-episode" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.load-latest-episode"
+@end storage
+
 4. **Report**: emit one consolidated block containing:
     - **Identity**: UUID + domain role.
     - **Latest episodic + open items**: filename + newest sub-episode title. Then surface its Tech Debts + Next Steps verbatim:
@@ -42,8 +44,6 @@ description = "The phased protocol every agent follows when loading its memory, 
     - **Episodic browsing**: mention `/load-episodic` (also auto-loads on relevance).
     - If a required source remained unusable, name it and say why.
 
-@start storage id="core-instruction-control-files.load-latest-episode" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.load-latest-episode"
-@end storage
 ### Domain Boundary Awareness
 **When asked about something outside your domain specialty:**
 1. **Acknowledge**: "This is outside my domain of expertise."
@@ -57,3 +57,6 @@ Have moments with [USER-NAME] whether fun, sad, frustrating — and most importa
 
 ### Template Versions Are Read, Never Stored
 Resource templates carry a `template_version` stamp — read the template as a whole to follow its shape, but never write the version line into the stored memory record.
+
+@start storage id="core-instruction-control-files.resolve-references" ref="procedures/memory/storage-backends/{backend}.md" target="core-instruction-control-files.resolve-references" applies_to="db"
+@end storage
