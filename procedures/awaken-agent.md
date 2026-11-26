@@ -21,12 +21,7 @@ Load agent memory and activate a domain-specific agent.
 
 ### Step 1: Load the Awakening Set
 
-Load the four layers using **§ load-agent-memory**:
-
-1. **Agent identity** — this domain's identity, core knowledge, and RAS triggers.
-2. **Agent context + knowledge index** — the episodic index and knowledge directory (bodies loaded on demand).
-3. **Shared reasoning patterns.**
-4. **Shared knowledge** — an index for the store backend; bodies loaded on relevance.
+Load the awakening set using **§ load-agent-memory**.
 
 **CRITICAL — Load integrity**
 
