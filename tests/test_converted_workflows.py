@@ -117,6 +117,17 @@ def test_backend_mechanics_are_beside_steps_and_resources_remain_references():
     assert composed.compose("wrap-up", "db").calls == ("update-memory",)
 
 
+@pytest.mark.parametrize("backend", ["db", "markdown"])
+def test_awaken_uses_profile_from_backend_without_placeholder_section(backend):
+    text = catalog().compose("awaken-agent", backend).text
+    assert "# USER PROFILE" not in text
+    assert "[User Profile](#user-profile)" not in text
+    assert "§ load-user-profile" in text
+    assert "§ persist-user-profile" in text
+    assert "First run — no profile at all" in text
+    assert ("shared.user_profile" if backend == "db" else "global instructions file") in text
+
+
 def test_current_composition_matches_reviewed_delivery():
     # Keep the migration evidence immutable. These separate fingerprints cover the
     # current delivered text after subsequent intentional authoring changes.
