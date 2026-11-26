@@ -132,18 +132,10 @@ Write the completed pattern into the `# DOMAIN REASONING MEMORY` section of `[AG
 
 ## update-emotional
 
-@start region id="update-emotional.stamp-date"
-### § stamp-date
-
-ALWAYS verify current date before writing:
-`date '+%Y-%m-%d %H:%M'`
-
-@end region
-
 @start region id="update-emotional.template"
 ### § template
 
-The emotional-moment block format (happy / sad / frustrated / bonding) → read `[AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/emotional-moment-template.md`.
+Read `[AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/emotional-moment-template.md`.
 
 @end region
 

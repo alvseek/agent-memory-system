@@ -90,17 +90,10 @@ The pattern's cited UUID is content — generate any UUID for it; the `insert` r
 
 ## update-emotional
 
-@start region id="update-emotional.stamp-date"
-### § stamp-date
-
-**No action.** The server stamps `created_date` on write; use the block's own timestamp as authored.
-
-@end region
-
 @start region id="update-emotional.template"
 ### § template
 
-**Served as an MCP Resource** (`emotional-moment-template`) — read it from resources.
+Read `emotional-moment-template` and keep its `template_version` for the write.
 
 @end region
 
@@ -109,7 +102,7 @@ The pattern's cited UUID is content — generate any UUID for it; the `insert` r
 
 Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing.
 
-`insert(agent_id="<domain>", record_type="emotional", title="<moment title>", content="<moment block>", template_version="<the template's current stamp>")`. Read `emotional-moment-template` from resources first and declare its `template_version` — a missing or stale version is refused. **Newest-first is a read concern** — the index projection orders by date, so ordering is automatic.
+`insert(agent_id="<domain>", record_type="emotional", title="<moment title>", content="<dated moment block>", template_version="<stamp from the template>")`. The server sets `created_date` separately and handles newest-first ordering on read.
 
 @end region
 
