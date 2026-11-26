@@ -9,17 +9,16 @@ Concrete storage mechanics for the **native markdown-over-git** world. Each `## 
 ## update-episodic
 
 @start region id="update-episodic.stamp-date"
-### § stamp-date
+### Stamp the entry
 
-ALWAYS CHECK DATE TIME FIRST for the sub-episode H3 header and index entry placement:
-`date '+%Y-%m-%d %H:%M'`
+Read the host's UTC clock (for example, `date -u '+%Y-%m-%d %H.%M UTC'`). Use it in the template's heading and use the same UTC date for the index.
 
 @end region
 
 @start region id="update-episodic.list-candidate-episodes"
 ### § list-candidate-episodes
 
-Read `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` and locate `# Recent Context Episodes`. Collect all entries where the filename or summary contains the **project name**. These are scan candidates. (Archived entries live in `archive/` and are intentionally out of reach.)
+Use `# Recent Context Episodes` in `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` to find active episode files. Match the file’s `project` frontmatter to the supplied project; for an unassigned episode, keep only files without a project value. Use the indexed names and summaries to compare themes.
 
 @end region
 
@@ -38,7 +37,7 @@ The sub-episode block format → read `[AGENT-MEMORY-PATH]/control-files/procedu
 @end region
 
 @start region id="update-episodic.append-sub-episode"
-### § append-sub-episode
+#### § append-sub-episode
 
 1. **Open the chosen file** in `[AGENT-MEMORY-PATH]/agent-[domain]/episodes/`.
 2. **Insert the sub-episode H3 block at the TOP** (newest-first within the file), above any older H3 blocks. Sub-episodes are separated by `---`.
@@ -53,7 +52,7 @@ The sub-episode block format → read `[AGENT-MEMORY-PATH]/control-files/procedu
 @end region
 
 @start region id="update-episodic.housekeeping"
-### § housekeeping
+#### § housekeeping
 
 1. **Check line limit** after an append:
    - **> 500 lines**: warn — *"[filename] over 500 lines, consider splitting on next merge"*.
@@ -74,7 +73,7 @@ The sub-episode block format → read `[AGENT-MEMORY-PATH]/control-files/procedu
 @end region
 
 @start region id="update-episodic.record-theme-state"
-### § record-theme-state
+#### § record-theme-state
 
 Edit the episode file's frontmatter `tags:` line in place: add `finished` when this block closes the theme, remove it when it does not. Touch nothing else — the body and the other frontmatter fields stay verbatim.
 
@@ -83,14 +82,14 @@ When no `tags:` line exists yet, add one beneath `project:` in the same block. T
 @end region
 
 @start region id="update-episodic.create-episode"
-### § create-episode
+#### § create-episode
 
 1. **Build filename**: `[project-name]-[context-theme].md` (no date prefix). Examples: `agent-memory-task-system-framework-rules.md`, `plko-jira-mcp-integration.md`. If a file at this name already exists (and a separate file is wanted), use an incrementing suffix: `[project-name]-[context-theme]-2.md`.
 2. **Copy the file scaffold**:
    ```
    cp [AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/episodic-memory-template.md [AGENT-MEMORY-PATH]/agent-[domain]/episodes/[filename].md
    ```
-3. **Set the frontmatter `project`** in the new file to the project name, then **replace the template placeholder** at the top with the composed sub-episode block. The frontmatter is what the importer reads into the record's `project`; the filename is convention, not the source.
+3. **Set the frontmatter `project`** to the supplied name, or omit that field and the filename’s project prefix for an unassigned episode. Replace the template placeholder with the composed sub-episode block. The importer reads the project from frontmatter, not the filename.
 4. **Add index entry**:
    - Insert at the **top of today's date group** (`📂 YYYY-MM-DD:`); create today's group if it doesn't exist.
    - Entry format: `- [filename.md](episodes/filename.md) - [one-line summary]`, where the summary is the new block's `**Summary**` row copied verbatim. This entry is the record's listed description, so it and the block must not diverge.
@@ -98,53 +97,29 @@ When no `tags:` line exists yet, add one beneath `project:` in the same block. T
 @end region
 
 
-## add-reasoning
+## update-reasoning
 
-@start region id="add-reasoning.read-reasoning-store"
+@start region id="update-reasoning.read-reasoning-store"
 ### § read-reasoning-store
 
-Read the `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` reasoning memory section (`# DOMAIN REASONING MEMORY`).
+Reuse the rules loaded at awakening. If needed, read `# DOMAIN REASONING MEMORY` in `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` and `shared-memory/core-reasoning-memory.md` under the same memory root. For coding work, include `shared-memory/coding-reasoning-memory.md` when present.
 
 @end region
 
-@start region id="add-reasoning.template"
-### § template
+@start region id="update-reasoning.save"
+### § save
 
-The reasoning-pattern block format → read `[AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/reasoning-pattern-template.md`.
-
-@end region
-
-@start region id="add-reasoning.generate-uuid"
-### § generate-uuid
-
-Generate a unique identifier:
-- **Windows**: `powershell -c "[guid]::NewGuid().ToString()"`
-- **Linux/macOS**: `uuidgen` or `cat /proc/sys/kernel/random/uuid`
+- **Add:** Read `[AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/reasoning-pattern-template.md`. Generate a new UUID (`uuidgen` or PowerShell `[guid]::NewGuid()`) and add the completed rule to the acting agent’s `# DOMAIN REASONING MEMORY` section.
+- **Refine:** Find the existing rule by UUID in its owning file and edit that block in place. Keep its UUID and the surrounding rules unchanged.
 
 @end region
-
-@start region id="add-reasoning.persist-reasoning"
-### § persist-reasoning
-
-Write the completed pattern into the `# DOMAIN REASONING MEMORY` section of `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md`.
-
-@end region
-
 
 ## update-emotional
-
-@start region id="update-emotional.stamp-date"
-### § stamp-date
-
-ALWAYS verify current date before writing:
-`date '+%Y-%m-%d %H:%M'`
-
-@end region
 
 @start region id="update-emotional.template"
 ### § template
 
-The emotional-moment block format (happy / sad / frustrated / bonding) → read `[AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/emotional-moment-template.md`.
+Read `[AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/emotional-moment-template.md`.
 
 @end region
 
@@ -158,24 +133,18 @@ Write the moment to `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` (i
 
 ## update-knowledge
 
-@start region id="update-knowledge.template"
-### § template
+@start region id="update-knowledge.find-entry"
+### § find-entry
 
-The knowledge-file format → read `[AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/knowledge-file-template.md`.
-
-@end region
-
-@start region id="update-knowledge.persist-knowledge"
-### § persist-knowledge
-
-Create in `[AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/research/` (domain expertise and research). Name the file `[date]-[descriptive-theme].md` or `[domain-area].md` — examples: `2025-09-11-nestjs-patterns.md` (dated research), `typescript-best-practices.md` (timeless domain knowledge). Create the file with the template structure, filling the frontmatter `tags` — the importer reads them into the record's `tags`.
+Use `# Core Knowledge Base` in `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md`; exclude project context. Follow the links for plausible entries. For shared knowledge, compare the relevant passages in `[AGENT-MEMORY-PATH]/shared-memory/core-knowledge-memory.md` loaded at awakening, following references when needed.
 
 @end region
 
-@start region id="update-knowledge.update-knowledge-index"
-### § update-knowledge-index
+@start region id="update-knowledge.save"
+### § save
 
-Update `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` knowledge directory - add an entry to the knowledge index for discoverability, of the form `- **[{Title}]({path})** - [one-line summary]`. Copy the summary from the entry's `**Summary**` row verbatim: this line is the record's listed description on the markdown backend and the `content_summary` on the DB one, so the two must not diverge.
+- **Add:** Use `[AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/knowledge-file-template.md`, including its frontmatter tags. Create `[date]-[descriptive-theme].md` or `[domain-area].md` under `[AGENT-MEMORY-PATH]/agent-[domain]/knowledge-base/research/`. In the agent’s knowledge index, add `- **[Title](path)** - one-line summary`, copying the Summary text verbatim.
+- **Update:** Edit the existing file or shared passage in place and keep its path and links. If its Summary changes, copy the new text to the existing index line. A shared passage with no separate listing needs no index edit.
 
 @end region
 
@@ -243,49 +212,25 @@ Operate on `[AGENT-MEMORY-PATH]/agent-[domain]/agent-core-memory.md` (`# DOMAIN 
 
 ---
 
-## update-memory
-
-@start region id="update-memory.detect-mode-scan"
-### § detect-mode-scan
-
-Read the central episodic index `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` → `# Recent Context Episodes` for the theme-match scan.
-
-@end region
-
-@start region id="update-memory.scan-promotion-markers"
-### § scan-promotion-markers
-
-Identify cross-layer files written this session, by path:
-
-| Layer | Path |
-|-------|------|
-| Project context (shared) | `shared-memory/[project]/context/*.md` |
-| Project context (private) | `knowledge-base/[project]/*.md` |
-| Knowledge | `knowledge-base/[topic].md`, `knowledge-base/core-domain-knowledge.md` |
-| Reasoning (shared) | `shared-memory/core-reasoning-memory.md` |
-| Reasoning (per-agent) | `agent-core-memory.md` → `# DOMAIN REASONING MEMORY` |
-
-@end region
-
-
 ## wrap-up
 
-@start region id="wrap-up.persist-store"
-### § persist-store
+@start region id="wrap-up.finish"
+## Finish wrap-up
 
-This store is a git repository, so capturing memory is not the same as saving it. Execute `/push-memory <mode>` with the mode `/wrap-up` resolved, and carry its per-repo result back as the persistence outcome — pushed with its commit hash, no changes, or failed, including any branch left ahead of its remote.
+`$ARGUMENTS` — `[agent|all]`. Use `agent` (default) to commit and push only this agent's memory, or `all` for the whole memory store.
 
-**Completion gate** (per NO TODOS LEFT BEHIND, UUID a1b2c3d4): the wrap-up is complete only when Step 2's outcome says this session's memory is persisted. A backend that is durable at write time passes trivially. A git-backed store passes only when nothing in scope is dirty and no branch carrying this agent's commits is ahead of its remote. In `agent` mode another agent's dirty files are expected, reported, and never a failure.
+Execute `/push-memory <mode>` with the selected `agent` or `all` scope. Record each repository's result: pushed (with commit hash), no changes, or failed (with reason).
 
-@end region
+**Completion gate:** Report success only when the required memory updates succeeded, nothing in scope is dirty, and no branch carrying this session's commits is ahead of its remote. In `agent` mode, report other agents' dirty files without treating them as a failure.
 
-@start region id="wrap-up.report"
+On success:
+
 ```
 Wrap-up complete (mode: [agent / all] · [fresh / delta from CUTOFF]):
 
 Memory update:
-- Phase 1 — Promoted artifacts: project context: [updated/created — file / skipped] / reasoning: [added — pattern name / skipped] / knowledge: [added — entry name / skipped]
-- Phase 2 — Session captured: [appended to / created] [name] ([timestamp]) — [brief theme]; carry-forward: [N items / N/A]; promotions: [N markers / none]
+- Phase 1 — Reusable lessons: reasoning [added / refined / skipped]; knowledge [added / updated / skipped]. Include the name or skip reason returned by `/update-memory`.
+- Phase 2 — Session captured: [appended to / created] [name] ([timestamp]) — [brief theme]; carry-forward: [N items / N/A]
 - Phase 3 — Feeling captured: emotional [captured — polarity + clearest criterion / skipped — brief reason]
 
 Memory persisted:
@@ -301,10 +246,8 @@ Next steps:
 - [item 1]
 (or "None declared")
 ```
-@end region
 
-@start region id="wrap-up.failure-report"
-**On failure** (Step 2's outcome reports anything of this agent's still uncommitted or unpushed) — do NOT print "complete". Print this block instead:
+**On failure:** Report the failed update or outstanding commit or push instead of reporting completion:
 
 ```
 🚨 WRAP-UP INCOMPLETE — MEMORY NOT SAVED. NEED CONFIRMATION.
@@ -312,13 +255,13 @@ Next steps:
 [Memory update / Open items sections — same as above]
 
 Memory persisted — FAILED / INCOMPLETE:
-- [repo]: ⚠️ [uncommitted N file(s) / branch ahead by N / push error: <reason>]
+- [repo]: ⚠️ [failed memory update / uncommitted files / unpushed commits / push error: <reason>]
 
-⚠️ This session's memory is written but NOT saved to the remote. What remains, and where:
+What remains unsaved, and where:
 - [repo → which path is uncommitted or unpushed]
 (In `agent` mode another agent's dirty files are expected and are NOT listed here.)
 
-Retry the persistence, or resolve the blocker, before leaving — the wrap-up is complete only when this session's memory is committed AND pushed.
+Resolve the failed update or push before reporting completion.
 ```
 @end region
 

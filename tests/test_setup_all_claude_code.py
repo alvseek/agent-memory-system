@@ -19,7 +19,7 @@ sys.modules["cf_setup"] = si
 _spec.loader.exec_module(si)
 
 _KNOWN = {
-    "awaken-agent", "wrap-up", "add-reasoning", "update-episodic",
+    "awaken-agent", "wrap-up", "update-reasoning", "update-episodic",
     "load-knowledge", "create-agent",
 }
 _NON_SEAM = {"refresh-memory", "push-memory", "pull-memory", "wait-options"}

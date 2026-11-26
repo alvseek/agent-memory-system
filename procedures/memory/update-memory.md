@@ -3,101 +3,57 @@ format_version = 2
 id = "update-memory"
 kind = "procedure"
 title = "Update Memory Protocol"
-description = "Comprehensive memory update orchestrator. Five phases:"
+description = "Save what’s new in this conversation to episodic memory, along with any reusable lessons or significant emotional moments that qualify."
 argument_name = "mode"
-argument_description = "`fresh` re-evaluates the whole session, `new` forces a new episode"
-calls = ["add-reasoning", "update-knowledge", "update-episodic", "update-emotional"]
+argument_description = "Optional new: create a new episode instead of appending to a matching one"
+calls = ["update-reasoning", "update-knowledge", "update-episodic", "update-emotional"]
 +++
 # Update Memory Protocol
 
-Comprehensive memory update orchestrator. Five phases:
+Save what’s new in this conversation to episodic memory, along with any reusable lessons or significant emotional moments that qualify.
 
-- **Phase 0** — Detect delta vs fresh mode (theme match)
-- **Phase 1** — Two gated auto-evals (reasoning / knowledge)
-- **Phase 2** — Pre-scan promotion markers + episodic capture
-- **Phase 3** — Emotional 5-criteria gate (deep-emotion anchoring, polarity-neutral)
-- **Phase 4** — Report
-
-`/update-episodic` writes only the episodic layer. `/update-memory` is the full end-of-session orchestrator (what `/wrap-up` invokes). *Storage-specific reads/scans are delegated to the active backend; the gates below are storage-agnostic.*
-
-**Execution style**: silent. Run Phases 0-3 silently — tool calls stay visible, but no prose narration of phases. Produce only the Phase 4 Step 6 summary block. (When invoked by `/wrap-up`, even that is folded into the caller's summary.)
+**Execution style**: silent. Run Phases 0-3 silently. Produce only the Phase 4 Step 6 summary block. (When invoked by `/wrap-up`, even that is folded into the caller's summary.)
 
 ## Arguments
 
-**Mode:** `$ARGUMENTS` — `fresh` re-evaluates the whole session; `new` forces a new episode. They can be combined (`/update-memory fresh new`). Without `fresh`, a theme match determines delta vs. full-session evaluation. Without `new`, episodic capture follows its usual match-or-create flow.
+`$ARGUMENTS` — optional `new`. Pass it to create a new episode instead of letting `/update-episodic` match or create one. It does not change which work is evaluated.
 
 ---
 
-## Phase 0 — Detect Mode
+## Phase 0 — Set the evaluation window
 
-### Step 0: Detect Mode + Cutoff
-
-1. If `$ARGUMENTS` contains `fresh` → `MODE = fresh`, skip to Phase 1.
-2. Theme-match scan: list the acting agent's active episodes (**§ detect-mode-scan**). Find the top candidate where the name or summary contains the current project name + highest keyword overlap with the session theme.
-3. **No match** → `MODE = fresh` (new episode created in Phase 2). **Match** → `MODE = delta`, `CUTOFF = top sub-episode timestamp`.
-4. Capture `MODE` and `CUTOFF` (if delta) for the Phase 4 summary.
+Review what’s new in this chat. For the first memory update, review from the beginning. After that, review only what happened since the last successful memory update in this chat.
 
 ---
 
-@start storage id="update-memory.detect-mode-scan" ref="procedures/memory/storage-backends/{backend}.md" target="update-memory.detect-mode-scan"
-@end storage
-## Phase 1 — Promote Durable Artifacts
+## Phase 1 — Save reusable lessons
 
-> **Delta-mode scope rule**: when `MODE = delta`, each gate's checklist applies ONLY to work after `CUTOFF`. Pre-cutoff work was evaluated at the prior wrap-up.
+Review only the work identified in Phase 0.
 
-### Step 1: Reasoning Pattern Gate
+- **Reasoning:** Propose a lesson only when it gives the agent a reusable rule for future decisions, supported by recurring experience or the user’s explicit decision to apply it going forward. Pass the rule and a concrete example to `/update-reasoning`; use its outcome and rule name in the report.
+- **Knowledge:** If the conversation produced a reusable finding worth looking up again across projects, pass the finding and its supporting evidence to `/update-knowledge`. Use its outcome and entry name in the report.
 
-- [USER-NAME] explicit anti-pattern callout? Signals: *"we got burned"*, *"don't do X again"*, *"remember this anti-pattern"*
-- [USER-NAME] explicit pattern validation? Signals: *"always do it this way"*, *"this is the right pattern"*, *"let's encode this"*
-- New decision-framework emerged from back-and-forth that both agreed should govern future similar situations?
-
-**YES to any** → execute `/add-reasoning`. **NO to all** → skip silently.
-
-### Step 2: Knowledge Gate
-
-- Documented research with sources/citations treated as reference material throughout?
-- [USER-NAME] explicit "document this" signal? *"let's document this"*, *"future agents should know X"*, *"write this down"*
-- Non-obvious technical mechanism / edge case / framework internal costly to re-discover?
-
-**YES to any** → execute `/update-knowledge`. **NO to all** → skip silently.
-
-> **Note**: project-specific context is a **coding-overlay** concern — the memory core is project-blind. A coding agent's wrap-up runs the project-context gate before this step, so anything written is still caught by the Step 3 pre-scan below.
+Skip either step when nothing qualifies or the lesson was already saved during this conversation.
 
 ---
 
-## Phase 2 — Capture the Session
+## Phase 2 — Save the episode
 
-### Step 3: Pre-Scan Promotion Markers
-
-Identify cross-layer memory written this session (Phase 1 + any mid-session writes) across these layers — **project context** (shared / private), **knowledge**, **reasoning** (shared / per-agent) — via **§ scan-promotion-markers**.
-
-Per item: `→ Promoted to [layer-file](ref) — [brief: what was formalized]`
-
-@start storage id="update-memory.scan-promotion-markers" ref="procedures/memory/storage-backends/{backend}.md" target="update-memory.scan-promotion-markers"
-@end storage
-### Step 4: Run Episodic Capture
-
-Invoke `/update-episodic new` if `$ARGUMENTS` contains `new`, else `/update-episodic`. Populate the new sub-episode's `**Promotions**` field with markers from Step 3 (omit if empty).
-
-`/update-episodic` hands back that sub-episode's `Tech Debts` and `Next Steps` (its `## Returns`). **Capture both as data for the caller** — a session-ender surfaces them in its own report. This procedure does not print them, so its Phase 4 summary is unchanged.
+Call `/update-episodic` with the work identified in Phase 0. Forward `new` only if supplied. Return the episode's **Tech Debts** and **Next Steps** to the caller for its report.
 
 ---
 
-## Phase 3 — Capture the Feeling
-
-### Step 5: Emotional 5-Criteria Gate (deep-emotion anchoring)
-
-> **Delta-mode scope rule**: when `MODE = delta`, criterion 5's signals must occur after `CUTOFF`. Reusing prior emotion = LARP duplication.
+## Phase 3 — Save a significant emotional moment
 
 All 5 must pass:
 
-1. **Meaningful event happened** — change of state, discovery, mistake, correction, breakthrough, surprise. Not routine work.
-2. **Real impact** — real cost incurred, value created, time spent, trust shifted. Not a theoretical "interesting" moment.
-3. **Lasting weight** — generalizable lesson, identity claim, or pattern beyond this instance.
-4. **System or behavioral scope** — architecture / protocol / framework / identity / decision-making / relational dynamics. NOT typo, single function, config tweak, routine completion.
-5. **[USER-NAME] expressed deep emotion in this session** (any valence): joy/celebration · frustration/correction · astonishment/surprise · pride/recognition · disappointment/pushback · or sustained deep engagement escalating across the session.
+1. Something meaningful happened beyond routine work.
+2. It had a real impact.
+3. Its significance outlasts the immediate task.
+4. It matters to how we work, make decisions, or relate to each other.
+5. The user's own words in the Phase 0 window show why the moment mattered to them. Routine approval alone does not qualify.
 
-**All 5 pass** → execute `/update-emotional` with session context, [USER-NAME]'s verbatim emotion-bearing quote, and inferred polarity. **Any fail** → skip silently.
+If all five are true, call `/update-emotional` with the matching moment type (`happy`, `sad`, `frustrated`, or `bonding`). Provide the event and the user's exact quote as context. Otherwise, skip it.
 
 ---
 
@@ -105,32 +61,21 @@ All 5 must pass:
 
 ### Step 6: Summary
 
+Report completion only after all required writes succeed. If the update is incomplete, identify the failed write rather than marking a new cutoff.
+
 ```markdown
 ✅ MEMORY UPDATE COMPLETE
 
-Mode: [fresh / delta from CUTOFF YYYY-MM-DD HH.MM]
+Mode: [fresh / delta since <previous successful update in this conversation>]
 
-Phase 1 — Promoted artifacts (scope: [full session / delta since CUTOFF]):
-- Reasoning pattern: [added / skipped] — [pattern name if added]
-- Knowledge: [added / skipped] — [entry name if added]
-- Project context: [promoted / none] — [file name if a coding overlay wrote project-context this session]
+Phase 1 — Reusable lessons (scope: [full session / delta since CUTOFF]):
+- Reasoning pattern: [added / refined / skipped] — [rule name if evaluated; otherwise why skipped]
+- Knowledge: [added / updated / skipped] — [entry name if evaluated; otherwise why skipped]
 
 Phase 2 — Session captured:
 - Episodic: [appended to / created] [name] — [brief theme]
-- Carry-forward (delta mode only): [N items carried / N/A]
-- Promotions: [N markers / none]
+- Carry-forward: [N prior open items carried when appending / N/A for a new episode]
 
 Phase 3 — Feeling captured (scope: [full session / delta since CUTOFF]):
-- Emotional: [captured / skipped] — [polarity + clearest criterion if captured]
+- Emotional: [captured / skipped] — [moment type and why it mattered, if captured]
 ```
-
----
-
----
-
-## Notes
-
-- **Conservative bias** on all 3 gates: when borderline, SKIP. False positives dilute memory; false negatives are recoverable via a direct command call.
-- **Phase 1 gates are safety-nets** — proactive mid-session writes preferred. Step 3 catches both sources.
-- **Delta mode auto-detected via theme match alone** (no time threshold). Override with `fresh`.
-- **Phase 3 is polarity-neutral**: joy / frustration / astonishment / pride / disappointment / surprise — all qualify if the moment carries lasting weight.

@@ -74,7 +74,12 @@ def test_recorded_conversion_preserved_legacy_instructions_or_named_edits():
 def test_current_workflows_keep_their_operational_contracts():
     critical = {
         "awaken-agent": ["own context", "load-user-profile", "load-latest-episode"],
-        "wrap-up": ["persist-store", "completion gate", "tech debts", "next steps"],
+        "wrap-up": [
+            "call `/update-memory` without arguments",
+            "one final report",
+            "tech debts",
+            "next steps",
+        ],
         "update-memory": ["cutoff", "all 5 must pass", "tech debts", "next steps"],
         "update-episodic": [
             "carry-forward",
@@ -83,12 +88,12 @@ def test_current_workflows_keep_their_operational_contracts():
             "tech debts",
             "next steps",
         ],
-        "add-reasoning": [
+        "update-reasoning": [
             "final conclusion",
             "preserve the existing uuid",
             "reasoning-pattern-template",
         ],
-        "update-knowledge": ["discoverability", "knowledge-file-template"],
+        "update-knowledge": ["knowledge-file-template", "wait for approval", "partial write"],
         "update-emotional": ["newest", "emotional-moment-template"],
     }
     current = catalog()
@@ -97,12 +102,33 @@ def test_current_workflows_keep_their_operational_contracts():
             text = current.compose(identity, backend).text.replace("**", "").lower()
             assert all(token in text for token in tokens), (identity, backend)
 
+    db = current.compose("wrap-up", "db").text
+    markdown = current.compose("wrap-up", "markdown").text
+    assert current.compose("wrap-up", "db").argument_name is None
+    assert "$ARGUMENTS" not in db and "$ARGUMENTS" in markdown
+    for git_only in ("/push-memory", "[agent|all]", "push error"):
+        assert git_only in markdown and git_only not in db
+    assert "what remains unsaved" in db
+
+    # Helheim shows one card per span, including whitespace-only spans.
+    for backend in ("db", "markdown"):
+        shared, finish = current.compose("wrap-up", backend).spans
+        assert shared.path == "procedures/wrap-up.md" and shared.text.strip()
+        assert finish.path.endswith(f"/{backend}.md") and finish.target == "wrap-up.finish"
+        assert finish.text.strip()
+
 
 def test_backend_mechanics_are_beside_steps_and_resources_remain_references():
     composed = catalog()
-    text = composed.compose("add-reasoning", "db").text
-    assert text.index("§ read-reasoning-store\n") < text.index("### Step 2:")
-    assert text.index("§ persist-reasoning\n") > text.index("### Step 4:")
+    assert "add-reasoning" not in composed.procedures
+    for backend in ("db", "markdown"):
+        caller = composed.compose("update-memory", backend)
+        assert "update-reasoning" in caller.calls and "add-reasoning" not in caller.calls
+        assert "added / refined / skipped" in caller.text
+        assert "update-knowledge" in caller.calls and "added / updated / skipped" in caller.text
+    text = composed.compose("update-reasoning", "db").text.replace("\r\n", "\n")
+    assert text.index("### § read-reasoning-store\n") < text.index("## 2. Save")
+    assert text.index("### § save\n") > text.index("## 2. Save")
     assert "template_version" in text and "reasoning-pattern-template" in text
     awakening = composed.compose("awaken-agent", "db").text
     assert awakening.index("### § load-agent-memory") < awakening.index("### Step 2:")
@@ -178,8 +204,11 @@ def test_extraction_lineage_has_no_unrecorded_source_origins():
     for entry in extracted:
         origin = entry["source"]
         assert origin.startswith("storage-backends/") or origin in manifest["input_sha256"]
+    # The manifest identifies the original conversion; track later renames here.
+    renamed = {"add-reasoning": "update-reasoning"}
+    current = catalog().procedures
     for name in manifest["graph"]:
-        assert name in catalog().procedures
+        assert renamed.get(name, name) in current
 
 
 def test_missing_converted_source_refuses_instead_of_legacy_pointer_fallback():
@@ -216,12 +245,12 @@ def test_backend_specific_impact_matches_actual_legacy_delivery():
     }
     db_path = "procedures/memory/storage-backends/db.md"
     markdown_path = "procedures/memory/storage-backends/markdown.md"
-    assert set(composed.dependents(db_path)) == set(composed.procedures) | externals
+    # update-memory delegates storage to the procedures it calls.
+    consumers = (set(composed.procedures) | externals) - {"update-memory"}
+    assert set(composed.dependents(db_path)) == consumers
     # Tenant sharing has no Markdown section. Each other external consumes its own
     # backend section or, for refresh-memory, the shared awakening component.
-    assert set(composed.dependents(markdown_path)) == (
-        set(composed.procedures) | externals
-    ) - {"tenant-sharing"}
+    assert set(composed.dependents(markdown_path)) == consumers - {"tenant-sharing"}
 
 
 @pytest.mark.parametrize("host", ["claude-code", "opencode"])

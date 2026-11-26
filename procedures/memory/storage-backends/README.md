@@ -23,14 +23,14 @@ then the complete generic body.
 A storage reference names the selected backend document and one region:
 
 ```markdown
-@start storage id="wrap-up.persist-store" ref="procedures/memory/storage-backends/{backend}.md" target="wrap-up.persist-store"
+@start storage id="wrap-up.finish" ref="procedures/memory/storage-backends/{backend}.md" target="wrap-up.finish"
 @end storage
 ```
 
 In each consolidated backend document the target is an authored region:
 
 ```markdown
-@start region id="wrap-up.persist-store"
+@start region id="wrap-up.finish"
 The actual instructions for this backend live here.
 @end region
 ```
@@ -85,12 +85,8 @@ Converted regions are organized under the procedure or component heading that ow
 ```
 ## wrap-up
 
-@start region id="wrap-up.persist-store"
-<concrete store mechanics>
-@end region
-
-@start region id="wrap-up.report"
-<concrete report mechanics, where this backend prints a report block>
+@start region id="wrap-up.finish"
+<how this backend finishes the wrap-up and reports the outcome>
 @end region
 ```
 

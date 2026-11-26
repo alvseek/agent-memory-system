@@ -1,15 +1,15 @@
 # Detailed Entry Template — Episodic Sub-Episode Block
 
-template_version: 2026-10-14-10-00
+template_version: 2026-11-26-14-07
 
-The format of a single sub-episode block. Storage-agnostic: the markdown backend fills this into an episode file; the DB backend passes it as the `content` of an `insert(record_type="episode", …)`. Rows carrying `Use "None declared" if genuinely none.` are required (presence-checked); all other rows are optional.
+The format of a stored sub-episode. Markdown writers fill in the heading. For a DB write, pass the subject as `entry_title` and everything below the heading as `body`; Munnin adds the dated heading. Rows marked `Use "None declared" if genuinely none.` are required; all other rows are optional.
 
 `**Summary**` is the block's own headline and the line the record is listed by. It is authored once here and copied verbatim to wherever the record is listed: the markdown backend's index entry, and the DB backend's `content_summary` argument. A rolling episode's summary describes its newest sub-episode, so an append rewrites it.
 
 *The H3 header carries an optional `(agent: [domain])` tag — omittable (harmless) for central per-agent episodes, where the `agent-[domain]/episodes/` folder already implies authorship. **Required** once a project is localized (episodic flat-merges across agents where the folder no longer implies authorship).*
 
 ```markdown
-### YYYY-MM-DD HH.MM - [SESSION SUB-THEME] (agent: [domain])
+### YYYY-MM-DD HH.MM UTC - [SESSION SUB-THEME] (agent: [domain])
 
 - **Summary**: [One line on what this sub-episode did, in plain words. Use "None declared" if genuinely none.]
 - **Context**: [What we were working on. Use "None declared" if genuinely none.]
@@ -35,8 +35,6 @@ The format of a single sub-episode block. Storage-agnostic: the markdown backend
   - **New Understanding**: [What I learned]
   - **Pattern Recognition**: [Connections to previous work]
   - **Improvement Areas**: [What could be better next time]
-- **Promotions** (if any — populated by `/update-memory` orchestrator, or filled manually if the session explicitly promoted content to another memory layer):
-  → Promoted to [layer-file](path) — [what was formalized]
 ```
 
 **Multi-session files**: when appending to an existing episode, the new H3 block goes at the **top**, above any older H3 blocks. Each sub-episode is a full block following this template. Result is newest-first, mirroring the index ordering.

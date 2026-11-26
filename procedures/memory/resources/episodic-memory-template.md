@@ -10,7 +10,7 @@ tags: []
 > **1. NEWEST FIRST**: Most recent context always stays on TOP — both in the index (newest date group at top) and inside each multi-session episode file (newest H3 block at top)
 >
 > **2. CHECK DATE**: Always verify current date before writing any new entries:
-> `date '+%Y-%m-%d %H:%M'`
+> `date -u '+%Y-%m-%d %H.%M UTC'`
 >
 > **3. ROLLING PER-THEME FILES**: Episodes are organized as rolling per-theme files. Filename convention: `[project-name]-[context-theme].md` (no date prefix). When a new session matches an existing theme on the same project, append a new H3 sub-episode at the top of that file instead of creating a new one. See [/update-episodic procedure](@agent-memory/control-files/procedures/memory/update-episodic.md) for the scan + heuristic flow.
 >
@@ -28,7 +28,7 @@ tags: []
 A single-session episode file *(the H3 header carries an optional `(agent: [domain])` tag — **required** once the project is localized, since episodic flat-merges across agents in `.agents/session/` where the folder no longer implies authorship; see [ADR-010]([AGENT-MEMORY-PATH]/docs/adr/2026-07-13-work-product-memory-localization.md))*:
 
 ```markdown
-### YYYY-MM-DD HH.MM - [SESSION SUB-THEME] (agent: [domain])
+### YYYY-MM-DD HH.MM UTC - [SESSION SUB-THEME] (agent: [domain])
 
 - **Context**: ...
 - **Discussion**: ...
@@ -36,7 +36,6 @@ A single-session episode file *(the H3 header carries an optional `(agent: [doma
 - **Issues Encountered**: ...
 - **Outcomes**: ... (includes Deliverables, Progress, **Tech Debts**, **Next Steps**)
 - **Insights**: ...
-- **Promotions** (if any): → Promoted to [context-file](path) — [what was formalized]
 ```
 
 A multi-session episode file (after one or more appends — **newest sub-episode at top**):

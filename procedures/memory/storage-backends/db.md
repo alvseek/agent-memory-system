@@ -8,58 +8,38 @@ Concrete storage mechanics for the **DB-backed** world. Each `## [procedure]` se
 
 ## update-episodic
 
-@start region id="update-episodic.stamp-date"
-### § stamp-date
-
-**No action.** The server stamps `created_date` / `updated_date` on write; use the block's H3 timestamp as authored.
-
-@end region
-
 @start region id="update-episodic.list-candidate-episodes"
 ### § list-candidate-episodes
 
-Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing. Use the project identified in Step 2 as `<project>`.
+Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing. Use the caller’s project as `<project>`.
 
-`query(agent_id="<domain>", record_type="episode", project="<project>")` lists active candidates by title, tags and summary. It returns metadata, not the prior open items: for an append, read the selected episode’s newest timestamp group with `get(uuid, limit=1)` for the carry-forward review. Include archived candidates only when asked to reopen a theme.
+Call `query(agent_id="<domain>", record_type="episode", project="<project>")` for active candidates. With no project, omit `project` and keep only rows whose `project` is `null`; omitting the filter returns rows across projects. Use titles, tags and summaries for matching. Before appending, read the selected episode’s latest entry with `get(uuid, limit=1)` for its open items.
 
 @end region
 
 @start region id="update-episodic.reopen-archived-theme"
 ### § reopen-archived-theme
 
-Two calls, in this order: `edit_metadata(uuid, tags=[<existing without finished>])`, then `unarchive(uuid)`. Clearing first matters — leave the marker in place and the next scan archives the theme straight back. `unarchive` returns the record to the index and to newest-episode selection, after which the append lands normally.
+Repeat the scoped query with `include_archived=true` and consider only archived matches. To reopen the selected episode, remove `finished` while preserving its other tags with `edit_metadata`, then call `unarchive(uuid)` before appending.
 
 @end region
 
 @start region id="update-episodic.template"
 ### § template
 
-**Served as an MCP Resource** (`episodic-entry-template`) — read it from resources. (`§ create-episode` inserts the record directly, so there is no separate scaffold template.)
+Read `episodic-entry-template`. Pass its version separately. Supply the entry subject as `entry_title` and the template rows as `body`, without the H3 heading. Munnin writes the UTC heading and agent domain.
 
 @end region
 
 @start region id="update-episodic.append-sub-episode"
-### § append-sub-episode
+#### § append-sub-episode
 
-An episode is a single record whose body is the rolling, newest-first sub-episode list. Newest-first then needs no read and no string match — two writes:
-1. `prepend(uuid, text="<new H3 block>\n\n---\n\n")` — the new block lands above the previous newest, and the separator you include keeps the two apart. Nothing has to match, so there is no `old_string` to get uniquely right.
-2. `edit_metadata(uuid, content_summary="<the record's summary>")` — the summary is metadata and has one writer, so it moves in its own call.
-
-`content_summary` is the whole new summary, not an appended fragment: it describes the record's newest content, so skipping step 2 leaves the listing describing a block the body no longer starts with. Two writes can also disagree if the second fails, which is why both steps belong to this op rather than to the caller's judgement — that is the price of one owner per field.
-
-The index reflects the change automatically (derived `SELECT`).
-
-@end region
-
-@start region id="update-episodic.housekeeping"
-### § housekeeping
-
-**No-op.** The stored body has no length limit — shortening is a later curation *policy*, not a write mechanic — and records are keyed by `uuid`, so there is no split or rename to perform. Delivery is what is bounded now: a body is read as pages of timestamp groups, so a large record costs a cursor and not a truncated answer. Do not add a "split this record" step to compensate for a page.
+Call `prepend_episode_entry(uuid, entry_title, body, content_summary, template_version)`. Pass the new entry’s **Summary** verbatim as `content_summary`. Munnin saves the UTC-stamped entry and its listing summary together.
 
 @end region
 
 @start region id="update-episodic.record-theme-state"
-### § record-theme-state
+#### § record-theme-state
 
 `edit_metadata(uuid, tags=[…])` — the tag list is written whole, so pass the record's existing tags with `finished` added when the block closes the theme, and the existing tags with it removed when it does not. `tags` is metadata with one writer, so this never rides on the body append. The write bumps `modified_date`, which is why the archive scan weighs the tag before the age.
 
@@ -68,59 +48,38 @@ A newly created episode carries no marker, so a create needs no call; an append 
 @end region
 
 @start region id="update-episodic.create-episode"
-### § create-episode
+#### § create-episode
 
-For a forced new episode, use the acting agent’s domain and the project identified for this episode; if the agent is unknown, confirm it from `list_agents()` first.
+Use the acting agent’s domain; if unknown, confirm it from `list_agents()` first. When no project was supplied, omit `project` and use the theme as the episode title.
 
-`insert(agent_id="<domain>", record_type="episode", project="<project>", title="<project-theme>", tags=[…], content="<first sub-episode block>", content_summary="<the block's Summary row>", template_version="<the template's current stamp>")`. Read `episodic-entry-template` from resources first and declare its `template_version` — a missing or stale version is refused. `content_summary` is required for an episode: pass the block's `**Summary**` row verbatim, because that one line is what the index projection lists the record by. The record is assembled and `uuid`-stamped server-side and appears in the index projection immediately.
+Call `create_episode(agent_id, title, entry_title, body, content_summary, project=…, tags=…, template_version=…)`. `title` names the rolling episode; `entry_title` names this entry. Copy the entry’s **Summary** verbatim into `content_summary`.
 
 @end region
 
 
-## add-reasoning
+## update-reasoning
 
-@start region id="add-reasoning.read-reasoning-store"
+@start region id="update-reasoning.read-reasoning-store"
 ### § read-reasoning-store
 
-Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing. Reuse the reasoning records returned by `awaken`; otherwise `query(agent_id="<domain>", record_type="reasoning")` lists metadata. Use `get(uuid)` for the patterns you need to compare.
+Use the awakened agent’s domain. If none is established, use `list_agents()` and confirm the domain. Reuse rules already loaded at awakening. Otherwise, `query(record_type="reasoning")` lists metadata: keep only rows owned by this domain or shared (`agent_id` is null). Include applicable shared `coding_reasoning` rules for coding work. Use `get(uuid)` for candidate bodies you do not already have.
 
 @end region
 
-@start region id="add-reasoning.template"
-### § template
+@start region id="update-reasoning.save"
+### § save
 
-**Served as an MCP Resource** (`reasoning-pattern-template`) — read it from resources.
-
-@end region
-
-@start region id="add-reasoning.generate-uuid"
-### § generate-uuid
-
-The pattern's cited UUID is content — generate any UUID for it; the `insert` response also returns the record's own `uuid` if you prefer to cite that.
+- **Add:** Read `reasoning-pattern-template`, generate a fresh UUID, and use it in the body and the new record. Call `insert(agent_id="<domain>", record_type="reasoning", uuid="<new UUID>", title="<rule name>", content="<rule>", template_version="<stamp from the template>")`.
+- **Refine:** Read the selected record with `get(uuid, include_edit_context=true)`. Use `edit` with its record UUID, exact old and replacement text, and the returned tenant and revision as `expected_tenant` and `expected_revision`. If the record changed, reread it and compare again.
 
 @end region
-
-@start region id="add-reasoning.persist-reasoning"
-### § persist-reasoning
-
-`insert(agent_id="<domain>", record_type="reasoning", title="<short memorable title>", content="<full pattern block>", template_version="<the template's current stamp>")`. Read `reasoning-pattern-template` from resources first and declare its `template_version` — a missing or stale version is refused.
-
-@end region
-
 
 ## update-emotional
-
-@start region id="update-emotional.stamp-date"
-### § stamp-date
-
-**No action.** The server stamps `created_date` on write; use the block's own timestamp as authored.
-
-@end region
 
 @start region id="update-emotional.template"
 ### § template
 
-**Served as an MCP Resource** (`emotional-moment-template`) — read it from resources.
+Read `emotional-moment-template` and keep its `template_version` for the write.
 
 @end region
 
@@ -129,33 +88,25 @@ The pattern's cited UUID is content — generate any UUID for it; the `insert` r
 
 Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing.
 
-`insert(agent_id="<domain>", record_type="emotional", title="<moment title>", content="<moment block>", template_version="<the template's current stamp>")`. Read `emotional-moment-template` from resources first and declare its `template_version` — a missing or stale version is refused. **Newest-first is a read concern** — the index projection orders by date, so ordering is automatic.
+`insert(agent_id="<domain>", record_type="emotional", title="<moment title>", content="<dated moment block>", template_version="<stamp from the template>")`. The server sets `created_date` separately and handles newest-first ordering on read.
 
 @end region
 
 
 ## update-knowledge
 
-@start region id="update-knowledge.template"
-### § template
+@start region id="update-knowledge.find-entry"
+### § find-entry
 
-**Served as an MCP Resource** (`knowledge-file-template`) — read it from resources.
-
-@end region
-
-@start region id="update-knowledge.persist-knowledge"
-### § persist-knowledge
-
-Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing.
-
-`insert(agent_id="<domain>", record_type="knowledge", title="<knowledge area>", tags=[…], content="<knowledge doc>", content_summary="<the entry's Summary row>", template_version="<the template's current stamp>")`. Read `knowledge-file-template` from resources first and declare its `template_version` — a missing or stale version is refused. `content_summary` is required for a knowledge record: pass the entry's `**Summary**` row verbatim, because that one line is what the knowledge index lists the record by. General/central knowledge only — Munnin is project-blind (no project-scoped knowledge).
+Use the awakened agent’s domain; if unknown, confirm it before selecting records. Reuse `knowledge_index` and `shared.knowledge_index`. If a fresh listing is needed, use `query(record_type="knowledge")`. Keep only active rows with `project` null and `agent_id` equal to the acting domain or null (shared). Read candidate bodies with `get(uuid)`.
 
 @end region
 
-@start region id="update-knowledge.update-knowledge-index"
-### § update-knowledge-index
+@start region id="update-knowledge.save"
+### § save
 
-**No-op.** The knowledge directory is a derived `query(record_type="knowledge")` — it reflects every insert automatically.
+- **Add:** Read `knowledge-file-template`. Call `insert(agent_id="<domain>", record_type="knowledge", title="<entry name>", tags=[…], content="<entry>", content_summary="<one-line summary>", template_version="<template stamp>")`. Copy the summary text verbatim from the entry’s `**Summary**` row. The insert creates the listing.
+- **Update:** Keep the record UUID. Read `get(uuid, include_edit_context=true)` and use `edit` for the affected text, including the body’s Summary row when it changes. Pass `expected_tenant` and `expected_revision` from the edit context; use the fresh context returned by each guarded write for the next. If the listing needs a different summary, use `edit_metadata(uuid, content_summary=…)` with the same summary text and fresh guards. On conflict, reread before retrying.
 
 @end region
 
@@ -224,38 +175,12 @@ Per moment: **keep** — no-op. **archive** — `archive(uuid)`: the record drop
 
 ---
 
-## update-memory
-
-@start region id="update-memory.detect-mode-scan"
-### § detect-mode-scan
-
-Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing. Match the title, summary and tags from `query(agent_id="<domain>", record_type="episode")`. For a delta, read the chosen record’s newest timestamp group with `get(uuid, limit=1)` to obtain the cutoff.
-
-@end region
-
-@start region id="update-memory.scan-promotion-markers"
-### § scan-promotion-markers
-
-The records you wrote this session ARE the promotions — list the reasoning / knowledge / emotional records inserted since session start (track the `uuid`s your `insert` calls returned, or `query` by recency). Project context is the overlay's (project-keyed records), not Munnin's.
-
-@end region
-
-
 ## wrap-up
 
-@start region id="wrap-up.persist-store"
-### § persist-store
+@start region id="wrap-up.finish"
+## Finish wrap-up
 
-No action. A write through the memory tools lands in the database as it happens, so there is nothing to push and no separate save step that could fail. Report the persistence outcome as already durable.
-
-@end region
-
-@start region id="wrap-up.report-db"
-There is no persistence section to print — the write landed in the database when it happened, so nothing was pushed and no separate save step could fail. Open with `Wrap-up complete (mode: [agent / all] · [fresh / delta from CUTOFF]):`, then the memory-update results captured in Step 1, then the open items.
-@end region
-
-@start region id="wrap-up.failure-report" ending="none"
-
+If every required write succeeded, report “Wrap-up complete” followed by the memory-update results and open items. If a required write failed, report “Wrap-up incomplete”: say what was saved, what remains unsaved, and why.
 @end region
 
 

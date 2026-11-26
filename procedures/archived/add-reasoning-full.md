@@ -1,6 +1,6 @@
 # Add Reasoning Memory Protocol — Full (detailed "What happened" shape)
 
-> **Reference / archival version.** This is the older, fuller reasoning-entry shape (multi-section `What happened` narrative). The live procedure is the slim [add-reasoning.md](add-reasoning.md) (lean Rule / Why / Signals / Final Conclusion). Use this full form only when a pattern genuinely needs the long narrative; otherwise prefer the slim shape.
+> **Reference / archival version.** This is the older reasoning-entry shape (multi-section `What happened` narrative). For current instructions, use [update-reasoning](../memory/update-reasoning.md).
 
 Capture anti-patterns, logic frameworks, and decision-making approaches to prevent recurring mistakes. *How* the reasoning store is read/written is delegated to the active **storage backend** (see [Storage Mechanics](#storage-mechanics)).
 
