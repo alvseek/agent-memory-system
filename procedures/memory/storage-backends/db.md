@@ -13,14 +13,14 @@ Concrete storage mechanics for the **DB-backed** world. Each `## [procedure]` se
 
 Use the awakened agent’s domain as `<domain>`. If no agent is established, use `list_agents()` and confirm the intended domain rather than guessing. Use the project identified in Step 2 as `<project>`.
 
-`query(agent_id="<domain>", record_type="episode", project="<project>")` lists active candidates by title, tags and summary. It returns metadata, not the prior open items: for an append, read the selected episode’s newest timestamp group with `get(uuid, limit=1)` for the carry-forward review. Include archived candidates only when asked to reopen a theme.
+Call `query(agent_id="<domain>", record_type="episode", project="<project>")` for active candidates. With no project, omit `project` and keep only rows whose `project` is `null`; omitting the filter returns rows across projects. Use titles, tags and summaries for matching. Before appending, read the selected episode’s latest entry with `get(uuid, limit=1)` for its open items.
 
 @end region
 
 @start region id="update-episodic.reopen-archived-theme"
 ### § reopen-archived-theme
 
-Two calls, in this order: `edit_metadata(uuid, tags=[<existing without finished>])`, then `unarchive(uuid)`. Clearing first matters — leave the marker in place and the next scan archives the theme straight back. `unarchive` returns the record to the index and to newest-episode selection, after which the append lands normally.
+Repeat the scoped query with `include_archived=true` and consider only archived matches. To reopen the selected episode, remove `finished` while preserving its other tags with `edit_metadata`, then call `unarchive(uuid)` before appending.
 
 @end region
 
@@ -63,7 +63,7 @@ A newly created episode carries no marker, so a create needs no call; an append 
 @start region id="update-episodic.create-episode"
 ### § create-episode
 
-For a forced new episode, use the acting agent’s domain and the project identified for this episode; if the agent is unknown, confirm it from `list_agents()` first.
+Use the acting agent’s domain; if unknown, confirm it from `list_agents()` first. When no project was supplied, omit `project` from the insert and use the theme as the title.
 
 `insert(agent_id="<domain>", record_type="episode", project="<project>", title="<project-theme>", tags=[…], content="<first sub-episode block>", content_summary="<the block's Summary row>", template_version="<the template's current stamp>")`. Read `episodic-entry-template` from resources first and declare its `template_version` — a missing or stale version is refused. `content_summary` is required for an episode: pass the block's `**Summary**` row verbatim, because that one line is what the index projection lists the record by. The record is assembled and `uuid`-stamped server-side and appears in the index projection immediately.
 

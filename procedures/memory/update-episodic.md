@@ -29,22 +29,18 @@ Get the current local date and time for the new entry’s heading (`YYYY-MM-DD H
 @end storage
 #### Step 2: Identify Project + Theme
 
-Determine:
-- **Project name**: the current project being worked on (from working directory or session context — e.g., `agent-memory`, `plko`, `ocx-platform`)
-- **Theme keywords**: 2-5 noun/topic keywords summarizing this session's focus (e.g., `episodic`, `rolling-file`, `redesign`)
+- **Project:** Use the project supplied by the caller. If none is supplied, leave the episode unassigned. For a new unassigned episode, use the theme alone as its name.
+- **Theme:** Identify the subject of the work being recorded. Choose keywords from that subject to compare candidate episodes.
 
 #### Step 3: List + Scan Candidate Episodes
 
-List the acting agent's active (non-archived) episodes for the current project (**§ list-candidate-episodes**). Collect all whose filename or summary contains the **project name** — these are the scan candidates.
-
-If no candidates → skip to Step 6 (Create branch).
-
-> **Why active-only?** The active episode set is already at hand (loaded at awakening / cheap to query). Archived entries are intentionally out of reach — old context should not be merged into.
->
-> **The one exception, and only on request**: when the user names a theme that is not in the active list because they are continuing it, look for it among the archived episodes before creating a second record for the same theme. Reopening is a deliberate action, never a scan behaviour: it clears the `finished` marker and returns the record to the active set (**§ reopen-archived-theme**), and the block then appends normally. A theme that is genuinely finished gets a successor file instead (Step 6, Create branch).
+List the acting agent’s active (non-archived) episodes for the selected project, or only their unassigned episodes if no project was supplied (**§ list-candidate-episodes**).
 
 @start storage id="update-episodic.list-candidate-episodes" ref="procedures/memory/storage-backends/{backend}.md" target="update-episodic.list-candidate-episodes"
 @end storage
+
+If no active episode matches, search the archive in the same scope **only if the user asked to continue a specific theme**. Reopen a matching episode to continue that work (**§ reopen-archived-theme**). Otherwise create a new episode, including for follow-up work on a finished theme.
+
 @start storage id="update-episodic.reopen-archived-theme" ref="procedures/memory/storage-backends/{backend}.md" target="update-episodic.reopen-archived-theme"
 @end storage
 #### Step 4: Match Heuristic
@@ -58,7 +54,7 @@ Identify:
 - **Top match**: highest-scoring candidate (if any meaningful overlap exists)
 - **Runner-ups**: 2nd-3rd scoring candidates if scores are close
 
-If the top match has zero meaningful overlap, treat as "no match" → skip to Step 6 (Create branch).
+If no candidate has meaningful overlap, use Step 3’s no-match rule.
 
 #### Step 5: Confirm Match
 

@@ -16,7 +16,7 @@ Use `date '+%Y-%m-%d %H.%M'`. Use the same date for the entry’s placement in t
 @start region id="update-episodic.list-candidate-episodes"
 ### § list-candidate-episodes
 
-Read `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` and locate `# Recent Context Episodes`. Collect all entries where the filename or summary contains the **project name**. These are scan candidates. (Archived entries live in `archive/` and are intentionally out of reach.)
+Use `# Recent Context Episodes` in `[AGENT-MEMORY-PATH]/agent-[domain]/agent-memory-index.md` to find active episode files. Match the file’s `project` frontmatter to the supplied project; for an unassigned episode, keep only files without a project value. Use the indexed names and summaries to compare themes.
 
 @end region
 
@@ -87,7 +87,7 @@ When no `tags:` line exists yet, add one beneath `project:` in the same block. T
    ```
    cp [AGENT-MEMORY-PATH]/control-files/procedures/memory/resources/episodic-memory-template.md [AGENT-MEMORY-PATH]/agent-[domain]/episodes/[filename].md
    ```
-3. **Set the frontmatter `project`** in the new file to the project name, then **replace the template placeholder** at the top with the composed sub-episode block. The frontmatter is what the importer reads into the record's `project`; the filename is convention, not the source.
+3. **Set the frontmatter `project`** to the supplied name, or omit that field and the filename’s project prefix for an unassigned episode. Replace the template placeholder with the composed sub-episode block. The importer reads the project from frontmatter, not the filename.
 4. **Add index entry**:
    - Insert at the **top of today's date group** (`📂 YYYY-MM-DD:`); create today's group if it doesn't exist.
    - Entry format: `- [filename.md](episodes/filename.md) - [one-line summary]`, where the summary is the new block's `**Summary**` row copied verbatim. This entry is the record's listed description, so it and the block must not diverge.
