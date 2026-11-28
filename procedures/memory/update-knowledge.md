@@ -13,7 +13,7 @@ Keep cross-project knowledge accurate. A runbook or convention specific to one p
 
 ## Arguments
 
-`$ARGUMENTS` — the finding and its supporting evidence, from `/update-memory` or a direct request. If the finding is missing, ask what to document. If the evidence is missing, ask for it before treating the claim as established.
+`$ARGUMENTS` — the finding and its supporting evidence, from `/update-memory` or a direct request. If either is missing, ask for it on a direct request; during unattended wrap-up, defer the finding for review.
 
 ## 1. Find the entry that answers the same question
 
@@ -23,7 +23,7 @@ Start with the acting agent’s active general knowledge and the shared knowledg
 @end storage
 
 - **Skip** if the existing answer and its limits are accurate. Return the covering entry’s name without writing.
-- **Update** if the answer is incomplete, outdated, or broader than the evidence supports. Correct the existing entry in place. If it is shared, propose the exact wording, including any changed summary, and wait for approval. Do not create a private copy instead.
+- **Update** if the answer is incomplete, outdated, or broader than the evidence supports. Apply verified factual corrections and additions to the existing entry without approval, including shared entries. If an edit would change a shared decision or the supporting evidence conflicts, ask for a decision before writing. During unattended wrap-up, defer just that edit instead of waiting. Keep the original entry; do not create a private copy.
 - **Add** if no entry answers the question. Create one general knowledge entry owned by the acting agent.
 
 ## 2. Save the answer and its listing
@@ -33,4 +33,4 @@ State what the evidence shows and under what conditions. Include the source or o
 @start storage id="update-knowledge.save" ref="procedures/memory/storage-backends/{backend}.md" target="update-knowledge.save"
 @end storage
 
-Return `added`, `updated`, or `skipped` with the entry name. If the body was saved but the listing was not, report the partial write rather than claiming success.
+Return `added`, `updated`, or `skipped` with the entry name. For a deferred edit, return `Needs review` with the proposed change and the evidence or decision needed; nothing was saved. If the body was saved but the listing was not, report the partial write rather than claiming success.

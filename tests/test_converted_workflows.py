@@ -93,7 +93,11 @@ def test_current_workflows_keep_their_operational_contracts():
             "preserve the existing uuid",
             "reasoning-pattern-template",
         ],
-        "update-knowledge": ["knowledge-file-template", "wait for approval", "partial write"],
+        "update-knowledge": [
+            "knowledge-file-template", "without approval, including shared entries",
+            "change a shared decision or the supporting evidence conflicts",
+            "defer just that edit instead of waiting", "partial write",
+        ],
         "update-emotional": ["newest", "emotional-moment-template"],
     }
     current = catalog()

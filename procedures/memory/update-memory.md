@@ -31,7 +31,7 @@ Review what’s new in this chat. For the first memory update, review from the b
 Review only the work identified in Phase 0.
 
 - **Reasoning:** Propose a lesson only when it gives the agent a reusable rule for future decisions, supported by recurring experience or the user’s explicit decision to apply it going forward. Pass the rule and a concrete example to `/update-reasoning`; use its outcome and rule name in the report.
-- **Knowledge:** If the conversation produced a reusable finding worth looking up again across projects, pass the finding and its supporting evidence to `/update-knowledge`. Use its outcome and entry name in the report.
+- **Knowledge:** If the conversation produced a reusable finding worth looking up again across projects, pass the finding and its supporting evidence to `/update-knowledge`. When running under wrap-up, identify the call as unattended. If it returns `Needs review`, continue the remaining phases and include that item in the final report without counting it as saved.
 
 Skip either step when nothing qualifies or the lesson was already saved during this conversation.
 
@@ -70,7 +70,7 @@ Mode: [fresh / delta since <previous successful update in this conversation>]
 
 Phase 1 — Reusable lessons (scope: [full session / delta since CUTOFF]):
 - Reasoning pattern: [added / refined / skipped] — [rule name if evaluated; otherwise why skipped]
-- Knowledge: [added / updated / skipped] — [entry name if evaluated; otherwise why skipped]
+- Knowledge: [added / updated / skipped / Needs review] — [entry name and outcome; for review, the proposed change and what is needed]
 
 Phase 2 — Session captured:
 - Episodic: [appended to / created] [name] — [brief theme]
